@@ -1,0 +1,16 @@
+{
+  "name": "@tutorhub/config",
+  "version": "1.0.0",
+  "description": "",
+  "exports": {
+    "./vite": "./src/vite/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.0",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "vite": "catalog:"
+  }
+}
