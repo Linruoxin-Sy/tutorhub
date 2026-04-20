@@ -4,9 +4,16 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.15.0"
+  "packageManager": "pnpm@10.15.0",
+  "devDependencies": {
+    "@tutorhub/config": "workspace:*",
+    "vite": "catalog:"
+  }
 }

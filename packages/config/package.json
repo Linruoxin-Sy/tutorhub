@@ -2,8 +2,9 @@
   "name": "@tutorhub/config",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "exports": {
-    "./vite": "./src/vite/index.ts"
+    "./vite/*": "./src/vite/*.ts"
   },
   "keywords": [],
   "author": "",
