@@ -38,6 +38,7 @@ coverage
 *.local
 
 # Editor / build artifacts
+.turbo
 *.tsbuildinfo
 .eslintcache
 
