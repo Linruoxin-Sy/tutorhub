@@ -1,3 +1,10 @@
+import { existsSync, readdirSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 /** @type {import('cz-git').UserConfig} */
 export default {
   extends: ['@commitlint/config-conventional'],
@@ -43,7 +50,7 @@ export default {
       { value: 'revert', name: '⏪ 回滚: 代码回滚' },
       { value: 'style', name: '🎨 样式: 格式调整（不影响代码运行）' },
     ],
-    scopes: ['root', 'web', 'api', 'shared', 'client', 'server'],
+    scopes: getScopes(),
     allowCustomScopes: true,
     skipQuestions: ['body', 'footerPrefix', 'footer', 'breaking'], // 跳过“详细描述”和“底部信息”
     messages: {
@@ -56,3 +63,24 @@ export default {
     },
   },
 };
+
+function getScopes() {
+  // 获取 apps 和 packages 目录下的子目录作为 scopes 选项
+  const appsDir = join(__dirname, 'apps');
+  const packagesDir = join(__dirname, 'packages');
+  const scopes = [];
+
+  const getSubDirs = dir =>
+    readdirSync(dir, { withFileTypes: true })
+      .filter(entry => entry.isDirectory())
+      .map(entry => entry.name);
+
+  if (existsSync(appsDir)) {
+    scopes.push(...getSubDirs(appsDir));
+  }
+  if (existsSync(packagesDir)) {
+    scopes.push(...getSubDirs(packagesDir));
+  }
+
+  return ['root', ...scopes];
+}
