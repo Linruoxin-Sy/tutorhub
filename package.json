@@ -10,8 +10,7 @@
     "format": "prettier --write .",
     "eslint": "eslint",
     "commit": "git-cz",
-    "test": "vitest",
-    "test:browser": "vitest --config=vitest.browser.config.ts"
+    "test": "vitest"
   },
   "config": {
     "commitizen": {
