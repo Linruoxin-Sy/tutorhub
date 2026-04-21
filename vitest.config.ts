@@ -2,6 +2,16 @@ import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 import vue from '@vitejs/plugin-vue';
 
+const createProject = (root: string) => ({
+  extends: true as const,
+  test: {
+    include: [`${root}/**/tests/**/*.{test,spec}.ts`],
+    alias: {
+      '@': new URL(`./${root}/src`, import.meta.url).pathname,
+    },
+  },
+});
+
 export default defineConfig({
   plugins: [vue()],
   test: {
@@ -13,33 +23,9 @@ export default defineConfig({
       instances: [{ browser: 'chromium' }],
     },
     projects: [
-      {
-        extends: true,
-        test: {
-          include: ['apps/api/tests/**/*.test.ts'],
-          alias: {
-            '@': new URL('./apps/api/src', import.meta.url).pathname,
-          },
-        },
-      },
-      {
-        extends: true,
-        test: {
-          include: ['apps/api/tests/**/*.test.ts'],
-          alias: {
-            '@': new URL('./apps/api/src', import.meta.url).pathname,
-          },
-        },
-      },
-      {
-        extends: true,
-        test: {
-          include: ['packages/shared/tests/**/*.test.ts'],
-          alias: {
-            '@': new URL('./packages/shared/src', import.meta.url).pathname,
-          },
-        },
-      },
+      createProject('apps/api'),
+      createProject('apps/web'),
+      createProject('packages/shared'),
     ],
   },
 });
