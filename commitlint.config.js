@@ -70,10 +70,10 @@ function getScopes() {
   const packagesDir = join(__dirname, 'packages');
   const scopes = [];
 
-  const getSubDirs = dir =>
+  const getSubDirs = (dir) =>
     readdirSync(dir, { withFileTypes: true })
-      .filter(entry => entry.isDirectory())
-      .map(entry => entry.name);
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name);
 
   if (existsSync(appsDir)) {
     scopes.push(...getSubDirs(appsDir));

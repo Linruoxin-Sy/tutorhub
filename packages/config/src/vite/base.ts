@@ -7,7 +7,7 @@ export const createBaseConfig = (packageDir: string): UserConfig =>
       lib: {
         entry: resolve(packageDir, 'src/index.ts'),
         formats: ['es', 'cjs'],
-        fileName: format => `index.${format}.js`,
+        fileName: (format) => `index.${format}.js`,
       },
       outDir: resolve(packageDir, 'dist'),
       emptyOutDir: true,
