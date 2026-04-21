@@ -50,7 +50,7 @@ export default {
       { value: 'revert', name: '⏪ 回滚: 代码回滚' },
       { value: 'style', name: '🎨 样式: 格式调整（不影响代码运行）' },
     ],
-    scopes: getScopes(),
+    scopes: getScopes(['apps', 'packages']),
     allowCustomScopes: true,
     skipQuestions: ['body', 'footerPrefix', 'footer', 'breaking'], // 跳过“详细描述”和“底部信息”
     messages: {
@@ -64,10 +64,8 @@ export default {
   },
 };
 
-function getScopes() {
-  // 获取 apps 和 packages 目录下的子目录作为 scopes 选项
-  const appsDir = join(__dirname, 'apps');
-  const packagesDir = join(__dirname, 'packages');
+function getScopes(scopeRoots = ['apps', 'packages']) {
+  // 获取指定目录下的子目录作为 scopes 选项
   const scopes = [];
 
   const getSubDirs = (dir) =>
@@ -75,12 +73,12 @@ function getScopes() {
       .filter((entry) => entry.isDirectory())
       .map((entry) => entry.name);
 
-  if (existsSync(appsDir)) {
-    scopes.push(...getSubDirs(appsDir));
-  }
-  if (existsSync(packagesDir)) {
-    scopes.push(...getSubDirs(packagesDir));
-  }
+  scopeRoots.forEach((root) => {
+    const dir = join(__dirname, root);
+    if (existsSync(dir)) {
+      scopes.push(...getSubDirs(dir));
+    }
+  });
 
   return ['root', ...scopes];
 }
