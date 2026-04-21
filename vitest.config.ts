@@ -1,24 +1,42 @@
 import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 import vue from '@vitejs/plugin-vue';
-import { fileURLToPath } from 'url';
 
 export default defineConfig({
   plugins: [vue()],
   test: {
+    globals: true,
+    browser: {
+      enabled: true,
+      provider: playwright(),
+      // https://vitest.dev/config/browser/playwright
+      instances: [{ browser: 'chromium' }],
+    },
     projects: [
       {
+        extends: true,
         test: {
-          globals: true,
-          include: ['packages/**/tests/**/*.test.ts'],
-          browser: {
-            enabled: true,
-            provider: playwright(),
-            // https://vitest.dev/config/browser/playwright
-            instances: [{ browser: 'chromium' }],
-          },
+          include: ['apps/api/tests/**/*.test.ts'],
           alias: {
-            '@': fileURLToPath(new URL('./packages/shared/src', import.meta.url)),
+            '@': new URL('./apps/api/src', import.meta.url).pathname,
+          },
+        },
+      },
+      {
+        extends: true,
+        test: {
+          include: ['apps/api/tests/**/*.test.ts'],
+          alias: {
+            '@': new URL('./apps/api/src', import.meta.url).pathname,
+          },
+        },
+      },
+      {
+        extends: true,
+        test: {
+          include: ['packages/shared/tests/**/*.test.ts'],
+          alias: {
+            '@': new URL('./packages/shared/src', import.meta.url).pathname,
           },
         },
       },
