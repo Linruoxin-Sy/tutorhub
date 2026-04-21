@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "exports": {
-    "./vite/*": "./src/vite/*.ts"
+    "./vite": "./src/vite/index.ts"
   },
   "keywords": [],
   "author": "",
