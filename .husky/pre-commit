@@ -1,1 +1,3 @@
-pnpm run-p format eslint
+#!/usr/bin/env sh
+
+pnpm exec run-p format eslint
