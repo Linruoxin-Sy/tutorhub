@@ -21,7 +21,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.15.0",
   "devDependencies": {
     "@types/pg": "^8.20.0",
     "prisma": "^7.7.0",
