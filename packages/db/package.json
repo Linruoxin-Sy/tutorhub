@@ -2,10 +2,21 @@
   "name": "@tutorhub/db",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.mts"
+    }
+  },
   "scripts": {
-    "build": "tsdown"
+    "dev": "tsdown --watch",
+    "build": "tsdown",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio"
   },
   "keywords": [],
   "author": "",
