@@ -1,0 +1,7 @@
+{
+  "files.autoSave": "onFocusChange",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
+  "js/ts.tsserver.experimental.enableProjectDiagnostics": true
+}
