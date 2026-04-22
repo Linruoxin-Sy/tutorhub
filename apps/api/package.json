@@ -1,6 +1,11 @@
 {
   "name": "@tutorhub/api",
   "type": "module",
+  "exports": {
+    "./rpc": {
+      "types": "./src/rpc.d.ts"
+    }
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsdown"
