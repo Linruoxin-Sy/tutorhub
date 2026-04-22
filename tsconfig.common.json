@@ -16,7 +16,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "moduleResolution": "node16"
+    "moduleResolution": "bundler"
   },
   "exclude": ["node_modules", "dist"]
 }
