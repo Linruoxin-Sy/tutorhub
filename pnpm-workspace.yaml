@@ -4,3 +4,4 @@ packages:
 
 catalog:
   vite: ^8.0.8
+  hono: ^4.12.12

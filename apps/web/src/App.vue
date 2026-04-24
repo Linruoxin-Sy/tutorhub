@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <h1>You did it!</h1>
   <p>
@@ -8,4 +6,10 @@
   </p>
 </template>
 
-<style scoped></style>
+<script setup lang="ts">
+import { client } from '@/api';
+
+const res = await client.index.$get();
+const data = await res.json();
+console.log(data.msg);
+</script>

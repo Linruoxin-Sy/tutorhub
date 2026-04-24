@@ -1,10 +1,8 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 
-const app = new Hono();
-
-app.get('/', (c) => {
-  return c.text('Hello Hono!');
+const app = new Hono().get('/', (c) => {
+  return c.json({ msg: 'Hello Hono!' });
 });
 
 serve(
