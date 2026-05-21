@@ -1,0 +1,33 @@
+model User {
+  /// 用户主键 ID（ULID）
+  id String @id @default(ulid())
+
+  /// 创建时间
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  /// 更新时间
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  /// 用户姓名
+  name String
+
+  /// 密码哈希值
+  passwordHash String @map("password_hash")
+
+  /// 密码盐值
+  passwordSalt String @map("password_salt")
+
+  /// 邮箱
+  email String? @unique
+
+  /// 联系电话
+  phone String? @unique
+
+  /// 头像 URL
+  avatarUrl String? @map("avatar_url")
+
+  /// 用户拥有的学生
+  students Student[]
+
+  @@map("user")
+}

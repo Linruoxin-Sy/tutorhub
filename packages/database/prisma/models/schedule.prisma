@@ -1,0 +1,34 @@
+model ClassRule {
+  /// 课程规则主键 ID（ULID）
+  id String @id @default(ulid())
+
+  /// 创建时间
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  /// 更新时间
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  /// 选课关系 ID
+  studentCourseId String @map("student_course_id")
+
+  /// 规则开始日期
+  startDate DateTime @map("start_date") @db.Date
+
+  /// 循环间隔天数
+  intervalDays Int @map("interval_days")
+
+  /// 规则结束日期（为空表示无限循环）
+  endDate DateTime? @map("end_date") @db.Date
+
+  /// 开始时间
+  startTime DateTime @map("start_time") @db.Time()
+
+  /// 结束时间
+  endTime DateTime @map("end_time") @db.Time()
+
+  /// 所属选课关系
+  studentCourse StudentCourse @relation(fields: [studentCourseId], references: [id], onDelete: Cascade)
+
+  @@index([studentCourseId])
+  @@map("class_rule")
+}
