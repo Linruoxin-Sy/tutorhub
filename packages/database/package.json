@@ -13,6 +13,9 @@
   "scripts": {
     "dev": "tsdown --watch",
     "build": "tsdown",
+    "db:pull": "prisma db pull",
+    "db:push": "prisma db push",
+    "db:reset": "prisma migrate reset",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
