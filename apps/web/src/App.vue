@@ -1,10 +1,16 @@
 <template>
-  <h1>{{ data.msg }}</h1>
+  <h1>{{ msgData }}</h1>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { client } from '@/utils';
 
-const res = await client.index.$get();
-const data = await res.json();
+const msgData = ref<string>('');
+const init = async () => {
+  const res = await client.index.$get();
+  const data = await res.json();
+  msgData.value = data.msg;
+};
+init();
 </script>
