@@ -22,7 +22,7 @@ export default defineConfig(
       parser: tseslint.parser, // 解析器
     },
     rules: {
-      // 自定义
+      'no-undef': 'off',
     },
   },
   // 前端配置
