@@ -1,4 +1,4 @@
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useLocalStorage } from '@vueuse/core';
 
 export type ThemeMode = 'system' | 'light' | 'dark';
 
@@ -7,7 +7,7 @@ const STORAGE_KEY = 'theme';
 const isClient = typeof window !== 'undefined' && typeof document !== 'undefined';
 
 export function useThemeToggle() {
-  const theme = ref<ThemeMode>('system');
+  const theme = useLocalStorage<ThemeMode>(STORAGE_KEY, 'system');
   const systemDark = ref(false);
   const isDark = computed(
     () => theme.value === 'dark' || (theme.value === 'system' && systemDark.value),
@@ -24,14 +24,6 @@ export function useThemeToggle() {
 
   const setTheme = (nextTheme: ThemeMode) => {
     theme.value = nextTheme;
-
-    if (!isClient) return;
-
-    if (nextTheme === 'system') {
-      localStorage.removeItem(STORAGE_KEY);
-    } else {
-      localStorage.setItem(STORAGE_KEY, nextTheme);
-    }
   };
 
   const updateSystemTheme = () => {
@@ -42,9 +34,6 @@ export function useThemeToggle() {
   };
 
   if (isClient) {
-    const storedTheme = localStorage.getItem(STORAGE_KEY);
-
-    theme.value = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'system';
     updateSystemTheme();
   }
 
