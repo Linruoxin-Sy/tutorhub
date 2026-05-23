@@ -35,6 +35,14 @@ export default defineConfig(
         ...globals.browser,
       },
     },
+    rules: {
+      'vue/multi-word-component-names': [
+        'error',
+        {
+          ignores: ['index'],
+        },
+      ],
+    },
   },
   // 后端配置
   {

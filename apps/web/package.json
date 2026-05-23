@@ -20,6 +20,9 @@
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
+    "@egoist/tailwindcss-icons": "^1.9.2",
+    "@iconify-json/lucide": "^1.2.109",
+    "@iconify-json/mdi": "^1.2.3",
     "@tsconfig/node24": "^24.0.4",
     "@tutorhub/api": "workspace:*",
     "@types/node": "^24.12.0",
