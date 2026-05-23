@@ -3,6 +3,7 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
 import eslintPluginVue from 'eslint-plugin-vue';
+import vueParser from 'vue-eslint-parser';
 import globals from 'globals';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 
@@ -31,6 +32,12 @@ export default defineConfig(
     files: ['apps/web/**/*.{ts,js,tsx,jsx,vue}'],
     extends: [...eslintPluginVue.configs['flat/recommended'], eslintConfigPrettier],
     languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tseslint.parser,
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
       globals: {
         ...globals.browser,
       },
