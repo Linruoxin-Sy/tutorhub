@@ -3,5 +3,6 @@
     <!-- img placeholder -->
     <div class="flex size-full items-center justify-center"></div>
     <!-- img -->
+    <AppImage src="" />
   </div>
 </template>
