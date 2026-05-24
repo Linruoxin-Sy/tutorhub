@@ -3,6 +3,9 @@
     <div class="">
       <div class="text-2xl font-bold text-gray-800 dark:text-white">TutorHub</div>
     </div>
+    <div class="">
+      <AppNavBar />
+    </div>
     <div class="flex items-center gap-4">
       <ThemeToggler />
       <AppAvatar />
@@ -12,5 +15,6 @@
 
 <script setup lang="ts">
 import AppAvatar from '@/ui/AppAvatar.vue';
+import AppNavBar from '@/ui/AppNavBar.vue';
 import ThemeToggler from '@/ui/ThemeToggler.vue';
 </script>

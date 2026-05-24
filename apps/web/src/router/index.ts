@@ -12,6 +12,21 @@ const router = createRouter({
       name: 'dashboard',
       component: () => import('@/features/dashboard/pages/index.vue'),
     },
+    {
+      path: '/student',
+      name: 'student',
+      component: () => import('@/features/student/pages/index.vue'),
+    },
+    {
+      path: '/course',
+      name: 'course',
+      component: () => import('@/features/course/pages/index.vue'),
+    },
+    {
+      path: '/session',
+      name: 'session',
+      component: () => import('@/features/session/pages/index.vue'),
+    },
   ],
 });
 
