@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between items-center h-20 px-4 bg-white dark:bg-[#2c2c2c]">
+  <div class="flex justify-between items-center h-full px-4 bg-white dark:bg-[#2c2c2c]">
     <div class="">
       <div class="text-2xl font-bold text-gray-800 dark:text-white">TutorHub</div>
     </div>

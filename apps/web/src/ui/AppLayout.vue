@@ -1,7 +1,11 @@
 <template>
   <div class="h-screen bg-gray-100 dark:bg-[#1b1b1b] text-gray-900 dark:text-white flex flex-col">
-    <AppHeader />
-    <slot></slot>
+    <div class="h-20 shrink-0">
+      <AppHeader />
+    </div>
+    <div class="flex-1">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
