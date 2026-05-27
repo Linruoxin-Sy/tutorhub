@@ -7,11 +7,15 @@ import tailwindcss from '@tailwindcss/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { analyzer } from 'vite-bundle-analyzer';
+import VueRouter from 'vue-router/vite';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     tailwindcss(),
+    VueRouter({
+      root: fileURLToPath(new URL('.', import.meta.url)),
+    }),
     vue(),
     AutoImport({
       imports: ['vue', 'vue-router', 'pinia'],
