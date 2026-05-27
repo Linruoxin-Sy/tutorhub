@@ -43,12 +43,7 @@ export default defineConfig(
       },
     },
     rules: {
-      'vue/multi-word-component-names': [
-        'error',
-        {
-          ignores: ['index'],
-        },
-      ],
+      'vue/multi-word-component-names': 'off',
     },
   },
   // 后端配置
