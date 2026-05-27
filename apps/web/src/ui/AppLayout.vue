@@ -3,7 +3,7 @@
     <div class="h-20 shrink-0">
       <AppHeader />
     </div>
-    <div class="flex-1">
+    <div class="flex-1 overflow-auto">
       <slot></slot>
     </div>
   </div>
