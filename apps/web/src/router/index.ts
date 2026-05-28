@@ -3,7 +3,13 @@ import { handleHotUpdate, routes } from 'vue-router/auto-routes';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
+  routes: [
+    {
+      path: '/',
+      redirect: '/dashboard',
+    },
+    ...routes,
+  ],
 });
 
 if (import.meta.hot) {
