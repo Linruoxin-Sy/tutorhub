@@ -14,7 +14,8 @@
       >
         <div
           :class="[
-            'flex size-9 shrink-0 items-center justify-center rounded-xl bg-gray-200 text-gray-700 shadow-sm dark:bg-[#3a3a3a] dark:text-gray-200',
+            'flex size-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-br text-white shadow-sm',
+            session.avatarClass,
           ]"
         >
           <i class="i-lucide-book-open text-sm"></i>
@@ -41,21 +42,25 @@ const recentSessions = [
     title: 'Physics Fundamentals',
     date: '2026-04-02',
     duration: '60m',
+    avatarClass: 'from-purple-500 to-violet-600',
   },
   {
     title: 'Advanced Mathematics',
     date: '2026-03-31',
     duration: '90m',
+    avatarClass: 'from-blue-500 to-indigo-600',
   },
   {
     title: 'English Literature',
     date: '2026-03-30',
     duration: '45m',
+    avatarClass: 'from-pink-500 to-rose-600',
   },
   {
     title: 'Physics Fundamentals',
     date: '2026-03-29',
     duration: '90m',
+    avatarClass: 'from-purple-500 to-violet-600',
   },
 ];
 </script>
