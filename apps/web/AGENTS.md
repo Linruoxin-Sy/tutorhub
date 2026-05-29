@@ -13,6 +13,21 @@ This package is the TutorHub web app. Keep guidance here focused on app-level st
 - Reuse shared generic components from `src/components` before creating new page-specific variants, and only place static display-only pieces in `src/ui`.
 - Keep page-level Vue code simple and explicit. The repo currently favors direct templates over elaborate abstraction.
 
+## Directory Structure
+
+- `components`: All shared components that are used across the entire application.
+- `hooks`: All shared composables.
+- `config`: Application configuration files.
+- `features`: Contains all the application features. We want to keep most of the application code inside here. More on this later.
+- `layouts`: Different layouts for the pages.
+- `lib`: Configurations for different third-party libraries that are used in our application.
+- `pages`: The pages of our application.
+- `services`: Shared application services and providers.
+- `stores`: Global state stores.
+- `test`: Test-related mocks, helpers, utilities, and configurations.
+- `types`: Shared TypeScript type definitions.
+- `utils`: Shared utility functions.
+
 ## Validation
 
 - Prefer package-scoped checks such as `pnpm --filter @tutorhub/web build` or `pnpm --filter @tutorhub/web dev`.
