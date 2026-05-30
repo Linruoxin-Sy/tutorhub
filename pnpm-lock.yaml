@@ -83,6 +83,9 @@ importers:
       '@hono/node-server':
         specifier: ^1.19.13
         version: 1.19.13(hono@4.12.12)
+      '@tutorhub/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       hono:
         specifier: 'catalog:'
         version: 4.12.12

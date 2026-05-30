@@ -8,9 +8,12 @@
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsdown"
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "eslint": "eslint \"src/**/*.ts\" --ignore-pattern \"src/**/*.d.ts\""
   },
   "dependencies": {
+    "@tutorhub/database": "workspace:*",
     "@hono/node-server": "^1.19.13",
     "hono": "catalog:"
   },
