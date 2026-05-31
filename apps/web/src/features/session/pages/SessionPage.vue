@@ -296,8 +296,4 @@ const sessionLookup = computed(
 
 const leaveRecords = computed(() => leaveRecordsQuery.data.value?.data ?? []);
 const reschedules = computed(() => rescheduleRecordsQuery.data.value?.data ?? []);
-
-function sessionLabel(studentCourseIdValue: string) {
-  return sessionLookup.value.get(studentCourseIdValue) ?? studentCourseIdValue;
-}
 </script>
