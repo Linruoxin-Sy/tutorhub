@@ -1,13 +1,7 @@
 <template>
-  <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <div class="space-y-6">
-      <ControlsSection />
-      <TableSection />
-    </div>
-  </main>
+  <SessionPage />
 </template>
 
 <script setup lang="ts">
-import ControlsSection from '@/features/session/components/ControlsSection.vue';
-import TableSection from '@/features/session/components/TableSection.vue';
+import SessionPage from '@/features/session/pages/SessionPage.vue';
 </script>

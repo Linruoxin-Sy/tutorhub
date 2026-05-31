@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import AppAvatar from '@/ui/AppAvatar.vue';
-import AppNavBar from '@/ui/AppNavBar.vue';
-import ThemeToggler from '@/ui/ThemeToggler.vue';
+import AppAvatar from '@/layouts/AppAvatar.vue';
+import AppNavBar from '@/layouts/AppNavBar.vue';
+import ThemeToggler from '@/layouts/ThemeToggler.vue';
 </script>

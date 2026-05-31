@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/vue-query": "^5.90.6",
     "@vueuse/core": "^14.3.0",
+    "dayjs": "^1.11.13",
     "hono": "catalog:",
     "ky": "^2.0.2",
     "pinia": "^3.0.4",

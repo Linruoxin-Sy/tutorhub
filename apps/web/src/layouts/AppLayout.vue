@@ -10,5 +10,5 @@
 </template>
 
 <script setup lang="ts">
-import AppHeader from '@/ui/AppHeader.vue';
+import AppHeader from '@/layouts/AppHeader.vue';
 </script>

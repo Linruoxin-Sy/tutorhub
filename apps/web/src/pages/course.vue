@@ -1,13 +1,7 @@
 <template>
-  <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <div class="space-y-6">
-      <ControlsSection />
-      <CardsSection />
-    </div>
-  </main>
+  <CoursePage />
 </template>
 
 <script setup lang="ts">
-import CardsSection from '@/features/course/components/CardsSection.vue';
-import ControlsSection from '@/features/course/components/ControlsSection.vue';
+import CoursePage from '@/features/course/pages/CoursePage.vue';
 </script>

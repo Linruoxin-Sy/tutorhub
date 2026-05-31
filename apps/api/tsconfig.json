@@ -9,10 +9,10 @@
     "types": ["node"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
-    "rootDir": "./src",
     "outDir": "./dist",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@tutorhub/database": ["../../packages/database/src/index.ts"]
     }
   },
   "include": ["src/**/*.ts"],
