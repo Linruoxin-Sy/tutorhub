@@ -11,9 +11,9 @@
     "jsxImportSource": "hono/jsx",
     "paths": {
       "@/*": ["./src/*"],
-      "@tutorhub/database": ["../../packages/database/src/index.ts"]
+      "@prisma-client": ["./prisma/generated/client"]
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*", "prisma/generated/**/*"],
   "exclude": ["node_modules", "dist"]
 }

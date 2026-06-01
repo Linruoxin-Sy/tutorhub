@@ -10,17 +10,30 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsdown",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "eslint": "eslint \"src/**/*.ts\" --ignore-pattern \"src/**/*.d.ts\""
+    "eslint": "eslint \"src/**/*.ts\" --ignore-pattern \"src/**/*.d.ts\"",
+    "db:pull": "prisma db pull",
+    "db:push": "prisma db push",
+    "db:reset": "prisma migrate reset",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
-    "@tutorhub/database": "workspace:*",
     "@hono/node-server": "^1.19.13",
-    "hono": "catalog:"
+    "hono": "catalog:",
+    "zod": "^4.4.3",
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "dotenv": "^17.4.2",
+    "pg": "^8.20.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
     "tsdown": "^0.21.9",
     "tsx": "^4.7.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "@types/pg": "^8.20.0",
+    "prisma": "^7.7.0"
   }
 }
