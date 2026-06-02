@@ -3,14 +3,14 @@ import type { User } from '@prisma-client';
 
 export const emailLoginSchema = z.object({
   email: z.email(),
-  password: z.string().min(1),
+  password: z.string().min(8).max(30),
 });
 
 export type EmailLoginInput = z.infer<typeof emailLoginSchema>;
 
 export const phoneLoginSchema = z.object({
   phone: z.string().length(11),
-  password: z.string().min(1),
+  password: z.string().min(8).max(30),
 });
 
 export type PhoneLoginInput = z.infer<typeof phoneLoginSchema>;
