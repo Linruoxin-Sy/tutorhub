@@ -211,12 +211,54 @@ watch([search, userId], () => {
 });
 
 const students = ref([
-  { id: 's1', name: 'Alice Johnson', email: 'alice@email.com', phone: '555-0101', grade: '10th Grade', createdAt: '2026-01-15T08:00:00Z' },
-  { id: 's2', name: 'Bob Smith', email: 'bob@email.com', phone: '555-0102', grade: '11th Grade', createdAt: '2026-01-20T09:00:00Z' },
-  { id: 's3', name: 'Carol White', email: 'carol@email.com', phone: '555-0103', grade: '9th Grade', createdAt: '2026-02-01T07:30:00Z' },
-  { id: 's4', name: 'David Lee', email: 'david@email.com', phone: '555-0104', grade: '10th Grade', createdAt: '2026-02-10T08:00:00Z' },
-  { id: 's5', name: 'Eva Martinez', email: 'eva@email.com', phone: '555-0105', grade: '12th Grade', createdAt: '2026-03-01T10:00:00Z' },
-  { id: 's6', name: 'Frank Wilson', email: 'frank@email.com', phone: '555-0106', grade: '10th Grade', createdAt: '2026-03-05T11:00:00Z' },
+  {
+    id: 's1',
+    name: 'Alice Johnson',
+    email: 'alice@email.com',
+    phone: '555-0101',
+    grade: '10th Grade',
+    createdAt: '2026-01-15T08:00:00Z',
+  },
+  {
+    id: 's2',
+    name: 'Bob Smith',
+    email: 'bob@email.com',
+    phone: '555-0102',
+    grade: '11th Grade',
+    createdAt: '2026-01-20T09:00:00Z',
+  },
+  {
+    id: 's3',
+    name: 'Carol White',
+    email: 'carol@email.com',
+    phone: '555-0103',
+    grade: '9th Grade',
+    createdAt: '2026-02-01T07:30:00Z',
+  },
+  {
+    id: 's4',
+    name: 'David Lee',
+    email: 'david@email.com',
+    phone: '555-0104',
+    grade: '10th Grade',
+    createdAt: '2026-02-10T08:00:00Z',
+  },
+  {
+    id: 's5',
+    name: 'Eva Martinez',
+    email: 'eva@email.com',
+    phone: '555-0105',
+    grade: '12th Grade',
+    createdAt: '2026-03-01T10:00:00Z',
+  },
+  {
+    id: 's6',
+    name: 'Frank Wilson',
+    email: 'frank@email.com',
+    phone: '555-0106',
+    grade: '10th Grade',
+    createdAt: '2026-03-05T11:00:00Z',
+  },
 ]);
 const total = ref(6);
 const isLoading = ref(false);

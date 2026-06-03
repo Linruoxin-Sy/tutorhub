@@ -232,12 +232,54 @@ watch([studentCourseId, classDate], () => {
 });
 
 const sessions = ref([
-  { id: 'ses1', studentCourseId: 'sc1', classDate: '2026-04-02', startTime: '09:00', endTime: '10:30', createdAt: '2026-04-02T08:00:00Z' },
-  { id: 'ses2', studentCourseId: 'sc3', classDate: '2026-04-02', startTime: '10:30', endTime: '12:00', createdAt: '2026-04-02T08:00:00Z' },
-  { id: 'ses3', studentCourseId: 'sc1', classDate: '2026-03-31', startTime: '09:00', endTime: '10:30', createdAt: '2026-03-31T08:00:00Z' },
-  { id: 'ses4', studentCourseId: 'sc5', classDate: '2026-03-31', startTime: '14:00', endTime: '15:30', createdAt: '2026-03-31T08:00:00Z' },
-  { id: 'ses5', studentCourseId: 'sc7', classDate: '2026-03-30', startTime: '09:00', endTime: '09:45', createdAt: '2026-03-30T08:00:00Z' },
-  { id: 'ses6', studentCourseId: 'sc1', classDate: '2026-03-28', startTime: '09:00', endTime: '10:00', createdAt: '2026-03-28T08:00:00Z' },
+  {
+    id: 'ses1',
+    studentCourseId: 'sc1',
+    classDate: '2026-04-02',
+    startTime: '09:00',
+    endTime: '10:30',
+    createdAt: '2026-04-02T08:00:00Z',
+  },
+  {
+    id: 'ses2',
+    studentCourseId: 'sc3',
+    classDate: '2026-04-02',
+    startTime: '10:30',
+    endTime: '12:00',
+    createdAt: '2026-04-02T08:00:00Z',
+  },
+  {
+    id: 'ses3',
+    studentCourseId: 'sc1',
+    classDate: '2026-03-31',
+    startTime: '09:00',
+    endTime: '10:30',
+    createdAt: '2026-03-31T08:00:00Z',
+  },
+  {
+    id: 'ses4',
+    studentCourseId: 'sc5',
+    classDate: '2026-03-31',
+    startTime: '14:00',
+    endTime: '15:30',
+    createdAt: '2026-03-31T08:00:00Z',
+  },
+  {
+    id: 'ses5',
+    studentCourseId: 'sc7',
+    classDate: '2026-03-30',
+    startTime: '09:00',
+    endTime: '09:45',
+    createdAt: '2026-03-30T08:00:00Z',
+  },
+  {
+    id: 'ses6',
+    studentCourseId: 'sc1',
+    classDate: '2026-03-28',
+    startTime: '09:00',
+    endTime: '10:00',
+    createdAt: '2026-03-28T08:00:00Z',
+  },
 ]);
 const total = ref(6);
 const isLoading = ref(false);
@@ -258,6 +300,11 @@ const leaveRecords = ref([
 ]);
 
 const reschedules = ref([
-  { id: 'rr1', originalSessionId: 'ses3', newSessionId: 'ses6', reason: 'Student requested reschedule' },
+  {
+    id: 'rr1',
+    originalSessionId: 'ses3',
+    newSessionId: 'ses6',
+    reason: 'Student requested reschedule',
+  },
 ]);
 </script>
