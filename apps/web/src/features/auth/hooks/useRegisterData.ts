@@ -6,7 +6,7 @@ import { toast } from 'vue-sonner';
 export function useRegisterData() {
   const router = useRouter();
 
-  const loginData = reactive({
+  const registerData = reactive({
     name: '',
     email: '',
     phone: '',
@@ -15,18 +15,18 @@ export function useRegisterData() {
   });
 
   const verify = () => {
-    const result = registerSchema.safeParse(loginData);
+    const result = registerSchema.safeParse(registerData);
     if (!result.success) {
       for (const { message } of result.error.issues) {
         toast.warning(message);
       }
       return false;
     }
-    if (!loginData.email.length && !loginData.phone.length) {
+    if (!registerData.email.length && !registerData.phone.length) {
       toast.warning('Either email or phone number is required');
       return false;
     }
-    if (loginData.password !== loginData.rePassword) {
+    if (registerData.password !== registerData.rePassword) {
       toast.warning('Passwords do not match');
       return false;
     }
@@ -36,13 +36,13 @@ export function useRegisterData() {
   const { withLoading, isLoadingRef: isSubmitting } = useLoading();
   const submit = withLoading(async () => {
     if (!verify()) return;
-    await request.post<RegisterResponse>('/auth/register', loginData);
+    await request.post<RegisterResponse>('/auth/register', registerData);
     toast.success('Registration successful!');
     router.push('/login');
   });
 
   return {
-    data: loginData,
+    data: registerData,
     verify,
     submit,
     isSubmitting,

@@ -1,17 +1,28 @@
-import { client } from '@/utils';
-import { loginSchema } from '@tutorhub/schema';
+import { z } from 'zod';
+import { useUserStore } from '@/features/auth/stores/user';
+import { useLoading } from '@/hooks/useLoading';
+import { emailLoginSchema, loginSchema, phoneLoginSchema } from '@tutorhub/schema';
 import { toast } from 'vue-sonner';
 
 export function useLoginData() {
   const router = useRouter();
+  const userStore = useUserStore();
 
-  const data = reactive({
+  const loginData = reactive({
     identifier: '',
     password: '',
   });
 
+  const isEmail = () => loginData.identifier.includes('@');
+
+  const loginPayload = (): z.infer<typeof loginSchema> =>
+    isEmail()
+      ? { email: loginData.identifier, password: loginData.password }
+      : { phone: loginData.identifier, password: loginData.password };
+
   const verify = () => {
-    const result = loginSchema.safeParse(data);
+    const schema = isEmail() ? emailLoginSchema : phoneLoginSchema;
+    const result = schema.safeParse(loginPayload());
     if (!result.success) {
       for (const { message } of result.error.issues) {
         toast.warning(message);
@@ -21,20 +32,17 @@ export function useLoginData() {
     return true;
   };
 
-  const submit = async () => {
+  const { withLoading, isLoadingRef: isSubmitting } = useLoading();
+  const submit = withLoading(async () => {
     if (!verify()) return;
-    const res = await client.auth.login!.$post({ json: data });
-    if (res.ok) {
-      toast.success('Login successful!');
-      router.push('/');
-      const user = await res.json();
-      return user;
-    }
-  };
+    await userStore.login(loginPayload());
+    toast.success('Login successful!');
+    router.push('/');
+  });
 
   return {
-    data,
-    verify,
+    data: loginData,
     submit,
+    isSubmitting,
   };
 }

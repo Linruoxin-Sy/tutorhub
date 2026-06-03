@@ -111,87 +111,90 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useCourses } from '@/features/course/hooks/useCourses';
-import { useStudents } from '@/features/student/hooks/useStudents';
-import { useClassSessions } from '@/features/session/hooks/useClassSessions';
-import { useStudentCourses } from '@/features/course/hooks/useStudentCourses';
 import { formatDate, formatTime } from '@/utils/date';
 
-const emptyStatus = ref('');
-const activeStatus = ref('ACTIVE');
-const emptyText = ref('');
+const fakeStats = {
+  activeStudents: { total: 42 },
+  totalSessions: { total: 156 },
+  activeCourses: { total: 8 },
+};
 
-const studentTotals = useStudents({
-  page: ref(1),
-  pageSize: ref(1),
-  userId: emptyText,
-  q: emptyText,
-});
-const sessionTotals = useClassSessions({
-  page: ref(1),
-  pageSize: ref(1),
-  studentCourseId: emptyText,
-  classDate: emptyText,
-});
-const activeCourseTotals = useCourses({
-  page: ref(1),
-  pageSize: ref(1),
-  q: emptyText,
-  status: activeStatus,
-});
-const recentSessionsQuery = useClassSessions({
-  page: ref(1),
-  pageSize: ref(4),
-  studentCourseId: emptyText,
-  classDate: emptyText,
-});
-const studentCoursesQuery = useStudentCourses({
-  page: ref(1),
-  pageSize: ref(100),
-  studentId: emptyText,
-  courseId: emptyText,
-});
-const coursesLookupQuery = useCourses({
-  page: ref(1),
-  pageSize: ref(100),
-  q: emptyText,
-  status: emptyStatus,
-});
+const fakeRecentSessions = [
+  {
+    id: '1',
+    studentCourseId: 'sc1',
+    classDate: '2025-02-10',
+    startTime: '09:00',
+    endTime: '10:00',
+  },
+  {
+    id: '2',
+    studentCourseId: 'sc2',
+    classDate: '2025-02-10',
+    startTime: '10:30',
+    endTime: '11:30',
+  },
+  {
+    id: '3',
+    studentCourseId: 'sc3',
+    classDate: '2025-02-09',
+    startTime: '14:00',
+    endTime: '15:00',
+  },
+  {
+    id: '4',
+    studentCourseId: 'sc1',
+    classDate: '2025-02-09',
+    startTime: '16:00',
+    endTime: '17:00',
+  },
+];
+
+const fakeStudentCourses = [
+  { id: 'sc1', courseId: 'c1' },
+  { id: 'sc2', courseId: 'c2' },
+  { id: 'sc3', courseId: 'c3' },
+];
+
+const fakeCourses = [
+  { id: 'c1', name: 'Algebra I' },
+  { id: 'c2', name: 'English Literature' },
+  { id: 'c3', name: 'Physics Fundamentals' },
+];
 
 const statA = computed(() => ({
   label: 'Active Students',
-  value: studentTotals.data.value?.total ?? '0',
+  value: String(fakeStats.activeStudents.total),
   icon: 'i-lucide-users text-blue-600 dark:text-blue-300',
 }));
 const statB = computed(() => ({
   label: 'Total Hours',
-  value: '0.0',
+  value: '156.5',
   icon: 'i-lucide-clock-3 text-violet-600 dark:text-violet-300',
 }));
 const statC = computed(() => ({
   label: 'Total Sessions',
-  value: sessionTotals.data.value?.total ?? '0',
+  value: String(fakeStats.totalSessions.total),
   icon: 'i-lucide-calendar-days text-pink-600 dark:text-pink-300',
 }));
 const statD = computed(() => ({
   label: 'Active Courses',
-  value: activeCourseTotals.data.value?.total ?? '0',
+  value: String(fakeStats.activeCourses.total),
   icon: 'i-lucide-book-open text-orange-600 dark:text-orange-300',
 }));
 
 const stats = computed(() => [statA.value, statB.value, statC.value, statD.value]);
 
-const sessionsLoading = computed(() => recentSessionsQuery.isLoading.value);
-const sessionsError = computed(() => recentSessionsQuery.error.value?.message ?? '');
-const recentSessions = computed(() => recentSessionsQuery.data.value?.data ?? []);
+const sessionsLoading = ref(false);
+const sessionsError = ref('');
+const recentSessions = ref(fakeRecentSessions);
 
 const studentCourseLookup = computed(() => {
   const courses = new Map(
-    (coursesLookupQuery.data.value?.data ?? []).map((course) => [course.id, course.name]),
+    fakeCourses.map((course: { id: string; name: string }) => [course.id, course.name]),
   );
   return new Map(
-    (studentCoursesQuery.data.value?.data ?? []).map((record) => [
+    fakeStudentCourses.map((record: { id: string; courseId: string }) => [
       record.id,
       courses.get(record.courseId) ?? record.courseId,
     ]),
