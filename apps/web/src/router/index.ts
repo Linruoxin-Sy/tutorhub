@@ -12,6 +12,10 @@ const router = createRouter({
   ],
 });
 
+router.beforeEach(() => {
+  return true;
+});
+
 if (import.meta.hot) {
   handleHotUpdate(router);
 }

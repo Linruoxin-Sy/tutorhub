@@ -11,9 +11,11 @@ import { rescheduleRecordRoute } from '@/features/reschedule-records/reschedule-
 import { studentCourseRoute } from '@/features/student-courses/student-course.route';
 import { studentRoute } from '@/features/students/student.route';
 import { userRoute } from '@/features/users/user.route';
+import { authRoute } from '@/features/auth/route';
 
 const api = new Hono()
   .get('/', (c) => c.json({ data: { name: 'TutorHub API', version: 'v1' } }))
+  .route('/auth', authRoute)
   .route('/users', userRoute)
   .route('/students', studentRoute)
   .route('/courses', courseRoute)

@@ -6,7 +6,7 @@ import { ApiError } from '@/shared/api-error';
 import { registerSchema } from '@/features/auth/schemas/register';
 import { registerService } from '@/features/auth/services/register';
 
-export const authRoutes = new Hono()
+export const authRoute = new Hono()
   .post('/login', zValidator('json', loginSchema), async (c) => {
     const input = c.req.valid('json');
 

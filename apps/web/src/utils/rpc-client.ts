@@ -1,6 +1,7 @@
 import ky, { type AfterResponseHook, type BeforeRequestHook } from 'ky';
 import type { AppType } from '@tutorhub/api/rpc';
 import { hc } from 'hono/client';
+import { getEnv } from '@/utils/env';
 
 const beforeRequestHooks: BeforeRequestHook[] = [
   // ({ request }) => {
@@ -33,6 +34,6 @@ const kyInstance = ky.create({
   },
 });
 
-export const client = hc<AppType>('http://localhost:3000/', {
+export const client = hc<AppType>(getEnv('BASE_URL'), {
   fetch: kyInstance,
-});
+}).api.v1;

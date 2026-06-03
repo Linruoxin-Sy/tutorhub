@@ -9,6 +9,6 @@ export const zValidator = <T extends z.ZodSchema, Target extends keyof Validatio
 ) =>
   zv(target, schema, (result) => {
     if (!result.success) {
-      throw new ApiError(400, 'VALIDATION_ERROR', 'Validation failed', result.error);
+      throw new ApiError(400, 'VALIDATION_ERROR', 'Validation failed', result.error.issues);
     }
   });

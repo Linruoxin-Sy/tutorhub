@@ -92,6 +92,9 @@ importers:
       '@prisma/client':
         specifier: ^7.7.0
         version: 7.7.0(prisma@7.7.0(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.9.3))(typescript@5.9.3)
+      '@tutorhub/schema':
+        specifier: workspace:*
+        version: link:../../packages/schema
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
@@ -138,6 +141,9 @@ importers:
       '@tanstack/vue-query':
         specifier: ^5.90.6
         version: 5.100.14(vue@3.5.32(typescript@6.0.2))
+      '@tutorhub/schema':
+        specifier: workspace:*
+        version: link:../../packages/schema
       '@vueuse/core':
         specifier: ^14.3.0
         version: 14.3.0(vue@3.5.32(typescript@6.0.2))
@@ -162,6 +168,9 @@ importers:
       vue-router:
         specifier: ^5.0.4
         version: 5.0.4(@vue/compiler-sfc@3.5.33)(pinia@3.0.4(typescript@6.0.2)(vue@3.5.32(typescript@6.0.2)))(vue@3.5.32(typescript@6.0.2))
+      vue-sonner:
+        specifier: ^2.0.9
+        version: 2.0.9
     devDependencies:
       '@egoist/tailwindcss-icons':
         specifier: ^1.9.2
@@ -223,6 +232,12 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 8.0.9(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.6.1)(tsx@4.22.3)(yaml@2.8.3)
+
+  packages/schema:
+    dependencies:
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/shared:
     devDependencies:
@@ -3142,6 +3157,20 @@ packages:
       pinia:
         optional: true
 
+  vue-sonner@2.0.9:
+    resolution: {integrity: sha512-i6BokNlNDL93fpzNxN/LZSn6D6MzlO+i3qXt6iVZne3x1k7R46d5HlFB4P8tYydhgqOrRbIZEsnRd3kG7qGXyw==}
+    peerDependencies:
+      '@nuxt/kit': ^4.0.3
+      '@nuxt/schema': ^4.0.3
+      nuxt: ^4.0.3
+    peerDependenciesMeta:
+      '@nuxt/kit':
+        optional: true
+      '@nuxt/schema':
+        optional: true
+      nuxt:
+        optional: true
+
   vue-tsc@3.2.6:
     resolution: {integrity: sha512-gYW/kWI0XrwGzd0PKc7tVB/qpdeAkIZLNZb10/InizkQjHjnT8weZ/vBarZoj4kHKbUTZT/bAVgoOr8x4NsQ/Q==}
     hasBin: true
@@ -6045,6 +6074,8 @@ snapshots:
     optionalDependencies:
       '@vue/compiler-sfc': 3.5.33
       pinia: 3.0.4(typescript@6.0.2)(vue@3.5.32(typescript@6.0.2))
+
+  vue-sonner@2.0.9: {}
 
   vue-tsc@3.2.6(typescript@5.9.3):
     dependencies:

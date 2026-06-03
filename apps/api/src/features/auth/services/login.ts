@@ -1,4 +1,5 @@
-import type { EmailLoginInput, PhoneLoginInput } from '@/features/auth/schemas/login';
+import z from 'zod';
+import type { emailLoginSchema, phoneLoginSchema } from '@/features/auth/schemas/login';
 import { JWTService } from '@/features/auth/services/jwt';
 import { passwordService } from '@/features/auth/services/password';
 import { ApiError } from '@/shared/api-error';
@@ -6,7 +7,7 @@ import { prisma } from '@/shared/prisma';
 import type { User } from '@prisma-client';
 
 export const loginService = {
-  async loginWithEmail(input: EmailLoginInput) {
+  async loginWithEmail(input: z.infer<typeof emailLoginSchema>) {
     const { email, password } = input;
 
     const user = await prisma.user.findUnique({
@@ -25,7 +26,7 @@ export const loginService = {
 
     return { user: safeUser, token };
   },
-  async loginWithPhone(input: PhoneLoginInput) {
+  async loginWithPhone(input: z.infer<typeof phoneLoginSchema>) {
     const { phone, password } = input;
 
     const user = await prisma.user.findUnique({
