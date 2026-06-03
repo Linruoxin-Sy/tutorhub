@@ -9,10 +9,7 @@ export const registerSchema = z.object({
   ),
   phone: z.preprocess(
     (val) => (typeof val === 'string' && val === '' ? null : val),
-    z.union([
-      z.string().length(11, 'Phone number must be 11 characters'),
-      z.null(),
-    ]),
+    z.union([z.string().length(11, 'Phone number must be 11 characters'), z.null()]),
   ),
   password: z
     .string()
