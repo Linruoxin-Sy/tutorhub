@@ -2,17 +2,12 @@
   "name": "@tutorhub/shared",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
   "type": "module",
-  "scripts": {
-    "dev": "vite build --watch",
-    "build": "vite build"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@tutorhub/config": "workspace:*",
-    "vite": "catalog:"
+    "@tutorhub/config": "workspace:*"
   }
 }

@@ -15,7 +15,7 @@
   "dependencies": {
     "@hono/node-server": "^1.19.13",
     "@hono/zod-validator": "^0.8.0",
-    "hono": "catalog:",
+    "hono": "^4.12.12",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.20.0",
     "zod": "^4.4.3",
