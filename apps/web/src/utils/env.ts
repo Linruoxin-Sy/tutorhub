@@ -1,4 +1,4 @@
-type envs = ['ASSETS_URL', 'BASE_URL'];
+type envs = ['BASE_URL'];
 
 type EnvKey = envs[number];
 

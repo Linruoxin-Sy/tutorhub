@@ -1,6 +1,7 @@
 import { useLoading } from '@/hooks/useLoading';
-import { client } from '@/utils';
-import { registerSchema } from '@tutorhub/schema';
+import { request } from '@/utils/request';
+
+import { registerSchema, type RegisterResponse } from '@tutorhub/schema';
 import { toast } from 'vue-sonner';
 
 export function useRegisterData() {
@@ -36,7 +37,7 @@ export function useRegisterData() {
   const { withLoading, isLoadingRef: isSubmitting } = useLoading();
   const submit = withLoading(async () => {
     if (!verify()) return;
-    await client.auth.register!.$post({ json: data });
+    await request.post<RegisterResponse>('/auth/register', data);
     toast.success('Registration successful!');
     router.push('/login');
   });

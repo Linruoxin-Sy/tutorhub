@@ -3,18 +3,8 @@
 </template>
 
 <script setup lang="ts">
-import { getEnv } from '@/utils/env';
-
-const props = defineProps<{
+defineProps<{
   src: string;
   alt?: string;
 }>();
-
-const src = computed(() => {
-  if (props.src.startsWith('http') || props.src.startsWith('data:')) {
-    return props.src;
-  } else {
-    return getEnv('ASSETS_URL') + props.src;
-  }
-});
 </script>
