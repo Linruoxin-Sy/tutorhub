@@ -118,9 +118,6 @@
 
 <script setup lang="ts">
 import { useRegisterData } from '@/features/auth/hooks/useRegisterData';
-import { useLoading } from '@/hooks/useLoading';
 
-const { data, submit: _submit } = useRegisterData();
-const { withLoading, isLoadingRef: isSubmitting } = useLoading();
-const submit = withLoading(_submit);
+const { data, submit, isSubmitting } = useRegisterData();
 </script>
