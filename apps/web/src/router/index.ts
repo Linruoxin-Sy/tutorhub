@@ -12,8 +12,15 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach(() => {
-  return true;
+router.beforeEach((to) => {
+  if (to.meta.publicRoute) {
+    return;
+  }
+  const token = localStorage.getItem('token');
+  if (token) {
+    return;
+  }
+  return '/login';
 });
 
 if (import.meta.hot) {
