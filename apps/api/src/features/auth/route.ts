@@ -1,9 +1,8 @@
 import { Hono } from 'hono';
-import { loginSchema, type LoginResponse } from '@/features/auth/schemas/login';
+import { loginSchema, type LoginResponse, registerSchema } from '@tutorhub/schema';
 import { zValidator } from '@/shared/validator';
 import { loginService } from '@/features/auth/services/login';
 import { ApiError } from '@/shared/api-error';
-import { registerSchema } from '@/features/auth/schemas/register';
 import { registerService } from '@/features/auth/services/register';
 
 export const authRoute = new Hono()

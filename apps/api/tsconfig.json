@@ -11,10 +11,9 @@
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
     "paths": {
-      "@/*": ["./src/*"],
-      "@prisma-client": ["./prisma/generated/client"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "prisma/generated/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

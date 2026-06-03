@@ -1,3 +1,4 @@
+import { User } from '@tutorhub/database';
 import z from 'zod';
 
 export const registerSchema = z.object({
@@ -12,3 +13,5 @@ export const registerSchema = z.object({
     .min(6, 'Password must be at least 6 characters')
     .max(20, 'Password must be at most 20 characters'),
 });
+
+export type RegisterResponse = Omit<User, 'passwordHash' | 'passwordSalt'>;

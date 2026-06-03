@@ -10,33 +10,21 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsdown",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "eslint": "eslint \"src/**/*.ts\" --ignore-pattern \"src/**/*.d.ts\"",
-    "db:pull": "prisma db pull",
-    "db:push": "prisma db push",
-    "db:reset": "prisma migrate reset",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:deploy": "prisma migrate deploy",
-    "db:studio": "prisma studio"
+    "eslint": "eslint \"src/**/*.ts\" --ignore-pattern \"src/**/*.d.ts\""
   },
   "dependencies": {
     "@hono/node-server": "^1.19.13",
     "@hono/zod-validator": "^0.8.0",
-    "@prisma/adapter-pg": "^7.7.0",
-    "@prisma/client": "^7.7.0",
-    "dotenv": "^17.4.2",
     "hono": "catalog:",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.20.0",
     "zod": "^4.4.3",
-    "@tutorhub/schema": "workspace:*"
+    "@tutorhub/schema": "workspace:*",
+    "@tutorhub/database": "workspace:*"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.11.17",
-    "@types/pg": "^8.20.0",
-    "prisma": "^7.7.0",
-    "tsdown": "^0.21.9",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
   }

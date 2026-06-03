@@ -1,3 +1,4 @@
+import { User } from '@tutorhub/database';
 import z from 'zod';
 
 export const emailLoginSchema = z.object({
@@ -11,3 +12,8 @@ export const phoneLoginSchema = z.object({
 });
 
 export const loginSchema = z.union([emailLoginSchema, phoneLoginSchema]);
+
+export type LoginResponse = {
+  user: Omit<User, 'passwordHash' | 'passwordSalt'>;
+  token: string;
+};

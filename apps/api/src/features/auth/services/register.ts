@@ -1,8 +1,8 @@
-import type { registerSchema } from '@/features/auth/schemas/register';
+import type { registerSchema } from '@tutorhub/schema';
 import { passwordService } from '@/features/auth/services/password';
 import { ApiError } from '@/shared/api-error';
 import { prisma } from '@/shared/prisma';
-import type { User } from '@prisma-client';
+import type { User } from '@tutorhub/database';
 import z from 'zod';
 
 export const registerService = {

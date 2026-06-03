@@ -1,10 +1,10 @@
 import z from 'zod';
-import type { emailLoginSchema, phoneLoginSchema } from '@/features/auth/schemas/login';
+import type { emailLoginSchema, phoneLoginSchema } from '@tutorhub/schema';
 import { JWTService } from '@/features/auth/services/jwt';
 import { passwordService } from '@/features/auth/services/password';
 import { ApiError } from '@/shared/api-error';
 import { prisma } from '@/shared/prisma';
-import type { User } from '@prisma-client';
+import type { User } from '@tutorhub/database';
 
 export const loginService = {
   async loginWithEmail(input: z.infer<typeof emailLoginSchema>) {
