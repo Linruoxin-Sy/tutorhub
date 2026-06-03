@@ -121,6 +121,6 @@ import { useRegisterData } from '@/features/auth/hooks/useRegisterData';
 import { useLoading } from '@/hooks/useLoading';
 
 const { data, submit: _submit } = useRegisterData();
-const { withLoading, isLoading: isSubmitting } = useLoading();
+const { withLoading, isLoadingRef: isSubmitting } = useLoading();
 const submit = withLoading(_submit);
 </script>

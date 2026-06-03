@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { getEnv } from '@/utils';
+import { getEnv } from '@/utils/env';
 
 const props = defineProps<{
   src: string;

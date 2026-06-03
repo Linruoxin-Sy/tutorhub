@@ -4,44 +4,36 @@ type AnyFunction = ((...args: unknown[]) => unknown) | AnyAsyncFunction;
 type UseLoadingReturn = {
   withLoading: <T extends AnyFunction>(
     fn: T,
-  ) => (...args: Parameters<T>) => Promise<ReturnType<T> | undefined>;
-  isLoading: boolean;
-};
-
-type UseLoadingWithRefReturn = UseLoadingReturn & {
+  ) => (...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>>;
+  isLoading: () => boolean;
   isLoadingRef: Readonly<Ref<boolean>>;
 };
 
-export function useLoading(options: { ref: true }): UseLoadingWithRefReturn;
-export function useLoading(options?: { ref?: false }): UseLoadingReturn;
-export function useLoading(options?: {
-  ref?: boolean;
-}): UseLoadingReturn | UseLoadingWithRefReturn {
-  const isNeedRef = options?.ref ?? false;
+export function useLoading(): UseLoadingReturn {
   let isLoading = false;
-  const isLoadingRef = isNeedRef ? ref(isLoading) : undefined;
+  const isLoadingRef = ref(isLoading);
 
   function _withLoading<T extends AnyFunction>(fn: T) {
-    return async function (...args: Parameters<T>): Promise<ReturnType<T> | undefined> {
-      if (isLoading) return undefined;
-      if (isRef(isLoadingRef)) isLoadingRef.value = true;
+    return async function (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>> {
+      if (isLoading) return undefined as Awaited<ReturnType<T>>;
+      isLoadingRef.value = true;
       isLoading = true;
       try {
-        return (await fn(...args)) as ReturnType<T>;
+        return (await fn(...args)) as Awaited<ReturnType<T>>;
       } finally {
         isLoading = false;
-        if (isRef(isLoadingRef)) isLoadingRef.value = false;
+        isLoadingRef.value = false;
       }
     };
   }
 
   function withLoading<T extends AnyFunction>(
     fn: T,
-  ): (...args: Parameters<T>) => Promise<ReturnType<T> | undefined>;
+  ): (...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>>;
   function withLoading<T extends AnyFunction[]>(
     ...fns: T
   ): {
-    [K in keyof T]: (...args: Parameters<T[K]>) => Promise<ReturnType<T[K]> | undefined>;
+    [K in keyof T]: (...args: Parameters<T[K]>) => Promise<Awaited<ReturnType<T[K]>>>;
   };
   function withLoading(...fns: AnyFunction[]) {
     if (fns.length === 0) return () => {};
@@ -49,16 +41,9 @@ export function useLoading(options?: {
     return fns.map((fn) => _withLoading(fn));
   }
 
-  if (isRef(isLoadingRef)) {
-    return {
-      withLoading,
-      isLoading,
-      isLoadingRef: readonly(isLoadingRef),
-    };
-  }
-
   return {
     withLoading,
-    isLoading,
+    isLoading: () => isLoading,
+    isLoadingRef: computed(() => isLoadingRef.value),
   };
 }
