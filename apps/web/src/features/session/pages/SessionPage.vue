@@ -217,13 +217,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { useClassSessions } from '@/features/session/hooks/useClassSessions';
-import { useLeaveRecords } from '@/features/session/hooks/useLeaveRecords';
-import { useRescheduleRecords } from '@/features/session/hooks/useRescheduleRecords';
-import { useStudentCourses } from '@/features/course/hooks/useStudentCourses';
-import { useStudents } from '@/features/student/hooks/useStudents';
-import { useCourses } from '@/features/course/hooks/useCourses';
+import { ref, watch } from 'vue';
 import { formatDate, formatDateTime, formatTime } from '@/utils/date';
 
 const columns = ['Session', 'Date', 'Duration', 'Created At', 'Student Course', 'Actions'];
@@ -233,67 +227,37 @@ const pageSize = ref(8);
 const studentCourseId = ref('');
 const classDate = ref('');
 
-const sessionsQuery = useClassSessions({ page, pageSize, studentCourseId, classDate });
-const leaveRecordsQuery = useLeaveRecords({
-  page: ref(1),
-  pageSize: ref(100),
-  classSessionId: ref(''),
-});
-const rescheduleRecordsQuery = useRescheduleRecords({
-  page: ref(1),
-  pageSize: ref(100),
-  originalSessionId: ref(''),
-  newSessionId: ref(''),
-});
-const studentCoursesQuery = useStudentCourses({
-  page: ref(1),
-  pageSize: ref(100),
-  studentId: ref(''),
-  courseId: ref(''),
-});
-const studentsQuery = useStudents({
-  page: ref(1),
-  pageSize: ref(100),
-  userId: ref(''),
-  q: ref(''),
-});
-const coursesQuery = useCourses({ page: ref(1), pageSize: ref(100), q: ref(''), status: ref('') });
-
 watch([studentCourseId, classDate], () => {
   page.value = 1;
 });
 
-const sessions = computed(() => sessionsQuery.data.value?.data ?? []);
-const total = computed(() => sessionsQuery.data.value?.total ?? 0);
-const isLoading = computed(() => sessionsQuery.isLoading.value);
-const error = computed(() => sessionsQuery.error.value?.message ?? '');
+const sessions = ref([
+  { id: 'ses1', studentCourseId: 'sc1', classDate: '2026-04-02', startTime: '09:00', endTime: '10:30', createdAt: '2026-04-02T08:00:00Z' },
+  { id: 'ses2', studentCourseId: 'sc3', classDate: '2026-04-02', startTime: '10:30', endTime: '12:00', createdAt: '2026-04-02T08:00:00Z' },
+  { id: 'ses3', studentCourseId: 'sc1', classDate: '2026-03-31', startTime: '09:00', endTime: '10:30', createdAt: '2026-03-31T08:00:00Z' },
+  { id: 'ses4', studentCourseId: 'sc5', classDate: '2026-03-31', startTime: '14:00', endTime: '15:30', createdAt: '2026-03-31T08:00:00Z' },
+  { id: 'ses5', studentCourseId: 'sc7', classDate: '2026-03-30', startTime: '09:00', endTime: '09:45', createdAt: '2026-03-30T08:00:00Z' },
+  { id: 'ses6', studentCourseId: 'sc1', classDate: '2026-03-28', startTime: '09:00', endTime: '10:00', createdAt: '2026-03-28T08:00:00Z' },
+]);
+const total = ref(6);
+const isLoading = ref(false);
+const error = ref('');
 
-const studentLookup = computed(
-  () =>
-    new Map((studentsQuery.data.value?.data ?? []).map((student) => [student.id, student.name])),
-);
-const courseLookup = computed(
-  () => new Map((coursesQuery.data.value?.data ?? []).map((course) => [course.id, course.name])),
-);
-const studentCourseLookup = computed(
-  () =>
-    new Map(
-      (studentCoursesQuery.data.value?.data ?? []).map((record) => [
-        record.id,
-        `${studentLookup.value.get(record.studentId) ?? record.studentId} · ${courseLookup.value.get(record.courseId) ?? record.courseId}`,
-      ]),
-    ),
-);
-const sessionLookup = computed(
-  () =>
-    new Map(
-      (sessionsQuery.data.value?.data ?? []).map((record) => [
-        record.id,
-        studentCourseLookup.value.get(record.studentCourseId) ?? record.studentCourseId,
-      ]),
-    ),
-);
+const sessionLookup = new Map<string, string>([
+  ['ses1', 'Alice Johnson · Advanced Mathematics'],
+  ['ses2', 'Alice Johnson · Physics Fundamentals'],
+  ['ses3', 'Alice Johnson · Advanced Mathematics'],
+  ['ses4', 'Bob Smith · Chemistry Lab'],
+  ['ses5', 'Alice Johnson · English Literature'],
+  ['ses6', 'Alice Johnson · Advanced Mathematics'],
+]);
 
-const leaveRecords = computed(() => leaveRecordsQuery.data.value?.data ?? []);
-const reschedules = computed(() => rescheduleRecordsQuery.data.value?.data ?? []);
+const leaveRecords = ref([
+  { id: 'lr1', classSessionId: 'ses3', reason: 'Sick leave' },
+  { id: 'lr2', classSessionId: 'ses5', reason: 'Family emergency' },
+]);
+
+const reschedules = ref([
+  { id: 'rr1', originalSessionId: 'ses3', newSessionId: 'ses6', reason: 'Student requested reschedule' },
+]);
 </script>

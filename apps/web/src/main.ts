@@ -4,7 +4,7 @@ import { VueQueryPlugin } from '@tanstack/vue-query';
 
 import App from './App.vue';
 import router from './router';
-import { queryClient } from './services/query';
+import { queryClient } from './utils/query.ts';
 
 import './index.css';
 

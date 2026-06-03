@@ -244,11 +244,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { useCourses } from '@/features/course/hooks/useCourses';
-import { useStudentCourses } from '@/features/course/hooks/useStudentCourses';
-import { useClassRules } from '@/features/course/hooks/useClassRules';
-import { useStudents } from '@/features/student/hooks/useStudents';
+import { ref, watch } from 'vue';
 import { formatDate, formatDateTime, formatTime } from '@/utils/date';
 
 const page = ref(1);
@@ -256,66 +252,69 @@ const pageSize = ref(8);
 const search = ref('');
 const status = ref<'ACTIVE' | 'DISABLED' | ''>('');
 
-const coursesQuery = useCourses({ page, pageSize, q: search, status });
-const studentCoursesQuery = useStudentCourses({
-  page: ref(1),
-  pageSize: ref(100),
-  studentId: ref(''),
-  courseId: ref(''),
-});
-const classRulesQuery = useClassRules({
-  page: ref(1),
-  pageSize: ref(100),
-  studentCourseId: ref(''),
-});
-const studentsQuery = useStudents({
-  page: ref(1),
-  pageSize: ref(100),
-  userId: ref(''),
-  q: ref(''),
-});
-const allCoursesQuery = useCourses({
-  page: ref(1),
-  pageSize: ref(100),
-  q: ref(''),
-  status: ref(''),
-});
-
 watch([search, status], () => {
   page.value = 1;
 });
 
-const courses = computed(() => coursesQuery.data.value?.data ?? []);
-const total = computed(() => coursesQuery.data.value?.total ?? 0);
-const isLoading = computed(() => coursesQuery.isLoading.value);
-const error = computed(() => coursesQuery.error.value?.message ?? '');
+const courses = ref([
+  { id: '1', name: 'Advanced Mathematics', description: 'Covers algebra, geometry, calculus, and statistics for advanced learners.', status: 'ACTIVE', createdAt: '2026-01-15T08:00:00Z', updatedAt: '2026-05-20T10:30:00Z' },
+  { id: '2', name: 'Physics Fundamentals', description: 'A foundational course in Newtonian mechanics, thermodynamics, and electromagnetism.', status: 'ACTIVE', createdAt: '2026-01-20T09:00:00Z', updatedAt: '2026-05-18T14:00:00Z' },
+  { id: '3', name: 'Chemistry Lab', description: 'Hands-on lessons in chemical bonding, organic chemistry, and lab techniques.', status: 'ACTIVE', createdAt: '2026-02-01T07:30:00Z', updatedAt: '2026-05-15T11:00:00Z' },
+  { id: '4', name: 'English Literature', description: 'Builds reading comprehension, writing skills, and literary analysis.', status: 'ACTIVE', createdAt: '2026-02-10T08:00:00Z', updatedAt: '2026-05-22T09:00:00Z' },
+  { id: '5', name: 'Biology Essentials', description: 'Introduction to cell biology, genetics, and ecology.', status: 'ACTIVE', createdAt: '2026-03-01T10:00:00Z', updatedAt: '2026-05-25T15:00:00Z' },
+  { id: '6', name: 'World History', description: 'Exploring major historical events and civilizations.', status: 'DISABLED', createdAt: '2026-01-05T08:00:00Z', updatedAt: '2026-04-01T12:00:00Z' },
+]);
+const total = ref(6);
+const isLoading = ref(false);
+const error = ref('');
 
-const studentLookup = computed(
-  () =>
-    new Map((studentsQuery.data.value?.data ?? []).map((student) => [student.id, student.name])),
-);
-const courseLookup = computed(
-  () => new Map((allCoursesQuery.data.value?.data ?? []).map((course) => [course.id, course.name])),
-);
-const studentCourseLookup = computed(
-  () =>
-    new Map(
-      (studentCoursesQuery.data.value?.data ?? []).map((record) => [
-        record.id,
-        `${studentLookup.value.get(record.studentId) ?? record.studentId} · ${courseLookup.value.get(record.courseId) ?? record.courseId}`,
-      ]),
-    ),
-);
+const studentLookup = new Map<string, string>([
+  ['s1', 'Alice Johnson'],
+  ['s2', 'Bob Smith'],
+  ['s3', 'Carol White'],
+  ['s4', 'David Lee'],
+]);
+const courseLookup = new Map<string, string>([
+  ['1', 'Advanced Mathematics'],
+  ['2', 'Physics Fundamentals'],
+  ['3', 'Chemistry Lab'],
+  ['4', 'English Literature'],
+  ['5', 'Biology Essentials'],
+  ['6', 'World History'],
+]);
+const studentCourseLookup = new Map<string, string>([
+  ['sc1', 'Alice Johnson · Advanced Mathematics'],
+  ['sc2', 'Bob Smith · Advanced Mathematics'],
+  ['sc3', 'Alice Johnson · Physics Fundamentals'],
+  ['sc4', 'Carol White · Physics Fundamentals'],
+  ['sc5', 'Bob Smith · Chemistry Lab'],
+  ['sc6', 'David Lee · Chemistry Lab'],
+  ['sc7', 'Alice Johnson · English Literature'],
+  ['sc8', 'Carol White · English Literature'],
+]);
 
-const studentCourseRecords = computed(() => studentCoursesQuery.data.value?.data ?? []);
-const studentCourseLoading = computed(() => studentCoursesQuery.isLoading.value);
-const studentCourseError = computed(() => studentCoursesQuery.error.value?.message ?? '');
+const studentCourseRecords = ref([
+  { id: 'sc1', studentId: 's1', courseId: '1' },
+  { id: 'sc2', studentId: 's2', courseId: '1' },
+  { id: 'sc3', studentId: 's1', courseId: '2' },
+  { id: 'sc4', studentId: 's3', courseId: '2' },
+  { id: 'sc5', studentId: 's2', courseId: '3' },
+  { id: 'sc6', studentId: 's4', courseId: '3' },
+  { id: 'sc7', studentId: 's1', courseId: '4' },
+  { id: 'sc8', studentId: 's3', courseId: '4' },
+]);
+const studentCourseLoading = ref(false);
+const studentCourseError = ref('');
 
-const classRuleRecords = computed(() => classRulesQuery.data.value?.data ?? []);
-const classRuleLoading = computed(() => classRulesQuery.isLoading.value);
-const classRuleError = computed(() => classRulesQuery.error.value?.message ?? '');
+const classRuleRecords = ref([
+  { id: 'cr1', studentCourseId: 'sc1', startDate: '2026-02-01', endDate: null, intervalDays: 7, startTime: '09:00', endTime: '10:30' },
+  { id: 'cr2', studentCourseId: 'sc3', startDate: '2026-02-01', endDate: null, intervalDays: 7, startTime: '10:30', endTime: '12:00' },
+  { id: 'cr3', studentCourseId: 'sc5', startDate: '2026-02-01', endDate: '2026-06-30', intervalDays: 7, startTime: '14:00', endTime: '15:30' },
+]);
+const classRuleLoading = ref(false);
+const classRuleError = ref('');
 
 function studentCourseLabel(studentId: string, courseId: string) {
-  return `${studentLookup.value.get(studentId) ?? studentId} · ${courseLookup.value.get(courseId) ?? courseId}`;
+  return `${studentLookup.get(studentId) ?? studentId} · ${courseLookup.get(courseId) ?? courseId}`;
 }
 </script>

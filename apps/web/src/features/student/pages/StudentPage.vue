@@ -196,9 +196,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { useStudents } from '@/features/student/hooks/useStudents';
-import { useUsers } from '@/features/student/hooks/useUsers';
+import { ref, watch } from 'vue';
 import { formatDateTime } from '@/utils/date';
 
 const columns = ['Name', 'Email', 'Phone', 'Grade', 'Created At', 'Actions'];
@@ -208,16 +206,26 @@ const pageSize = ref(8);
 const search = ref('');
 const userId = ref('');
 
-const studentsQuery = useStudents({ page, pageSize, userId, q: search });
-const usersQuery = useUsers({ page: ref(1), pageSize: ref(100), q: ref('') });
-
 watch([search, userId], () => {
   page.value = 1;
 });
 
-const students = computed(() => studentsQuery.data.value?.data ?? []);
-const total = computed(() => studentsQuery.data.value?.total ?? 0);
-const isLoading = computed(() => studentsQuery.isLoading.value);
-const error = computed(() => studentsQuery.error.value?.message ?? '');
-const users = computed(() => usersQuery.data.value?.data ?? []);
+const students = ref([
+  { id: 's1', name: 'Alice Johnson', email: 'alice@email.com', phone: '555-0101', grade: '10th Grade', createdAt: '2026-01-15T08:00:00Z' },
+  { id: 's2', name: 'Bob Smith', email: 'bob@email.com', phone: '555-0102', grade: '11th Grade', createdAt: '2026-01-20T09:00:00Z' },
+  { id: 's3', name: 'Carol White', email: 'carol@email.com', phone: '555-0103', grade: '9th Grade', createdAt: '2026-02-01T07:30:00Z' },
+  { id: 's4', name: 'David Lee', email: 'david@email.com', phone: '555-0104', grade: '10th Grade', createdAt: '2026-02-10T08:00:00Z' },
+  { id: 's5', name: 'Eva Martinez', email: 'eva@email.com', phone: '555-0105', grade: '12th Grade', createdAt: '2026-03-01T10:00:00Z' },
+  { id: 's6', name: 'Frank Wilson', email: 'frank@email.com', phone: '555-0106', grade: '10th Grade', createdAt: '2026-03-05T11:00:00Z' },
+]);
+const total = ref(6);
+const isLoading = ref(false);
+const error = ref('');
+
+const users = ref([
+  { id: 'u1', name: 'Alice Johnson', email: 'alice@email.com', phone: null },
+  { id: 'u2', name: 'Bob Smith', email: 'bob@email.com', phone: null },
+  { id: 'u3', name: 'Carol White', email: 'carol@email.com', phone: null },
+  { id: 'u4', name: 'David Lee', email: 'david@email.com', phone: null },
+]);
 </script>
