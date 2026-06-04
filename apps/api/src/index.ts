@@ -3,21 +3,25 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { ApiError } from '@/shared/api-error';
+import { authMiddleware } from '@/features/auth/middlewares/auth.middleware';
 import { classRuleRoute } from '@/features/class-rules/class-rule.route';
 import { classSessionRoute } from '@/features/class-sessions/class-session.route';
 import { courseRoute } from '@/features/courses/course.route';
 import { leaveRecordRoute } from '@/features/leave-records/leave-record.route';
 import { rescheduleRecordRoute } from '@/features/reschedule-records/reschedule-record.route';
 import { studentCourseRoute } from '@/features/student-courses/student-course.route';
-import { studentRoute } from '@/features/students/student.route';
+import { studentRoute } from '@/features/student/route';
 import { userRoute } from '@/features/users/user.route';
 import { authRoute } from '@/features/auth/route';
 
-const api = new Hono()
+const publicApi = new Hono()
   .get('/', (c) => c.json({ data: { name: 'TutorHub API', version: 'v1' } }))
-  .route('/auth', authRoute)
+  .route('/auth', authRoute);
+
+const protectedApi = new Hono()
+  .use(authMiddleware)
   .route('/users', userRoute)
-  .route('/students', studentRoute)
+  .route('/student', studentRoute)
   .route('/courses', courseRoute)
   .route('/student-courses', studentCourseRoute)
   .route('/class-sessions', classSessionRoute)
@@ -27,7 +31,8 @@ const api = new Hono()
 
 const app = new Hono()
   .use('*', cors())
-  .route('/api/v1', api)
+  .route('/api/v1', publicApi)
+  .route('/api/v1', protectedApi)
   .onError((error, c) => {
     if (error instanceof ApiError) {
       return c.json(
