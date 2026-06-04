@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { ApiError } from '@/shared/api-error';
-import { authMiddleware } from '@/features/auth/middlewares/auth.middleware';
+import { authMiddleware } from '@/features/auth/middlewares/auth';
 import { classRuleRoute } from '@/features/class-rules/class-rule.route';
 import { classSessionRoute } from '@/features/class-sessions/class-session.route';
 import { courseRoute } from '@/features/courses/course.route';
