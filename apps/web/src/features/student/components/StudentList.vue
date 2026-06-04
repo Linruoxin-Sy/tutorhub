@@ -1,120 +1,86 @@
 <template>
-  <section
-    class="flex-1 overflow-auto rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
+  <div v-if="isLoading" class="px-5 py-10 text-sm text-gray-500 dark:text-gray-400">
+    Loading students...
+  </div>
+  <div v-else-if="error" class="px-5 py-4 text-sm text-red-700 dark:text-red-200">
+    {{ error }}
+  </div>
+  <div
+    v-else-if="students.length === 0"
+    class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400"
   >
-    <div class="border-b border-gray-200 px-5 py-4 dark:border-[#343434]">
-      <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Students</h1>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="sm:min-w-80 sm:max-w-xs">
-            <label class="relative block">
-              <i
-                class="i-lucide-search absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400 dark:text-gray-500"
-              ></i>
-              <input
-                v-model="search"
-                type="text"
-                placeholder="Search students..."
-                class="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
-              />
-            </label>
-          </div>
-          <button
-            type="button"
-            class="inline-flex shrink-0 items-center cursor-pointer gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+    No students found.
+  </div>
+  <div v-else class="flex-1 overflow-auto">
+    <table class="min-w-full">
+      <thead
+        class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
+      >
+        <tr>
+          <th
+            v-for="column in columns"
+            :key="column"
+            class="whitespace-nowrap px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400"
           >
-            <i class="i-lucide-plus size-4"></i>
-            Add Student
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="isLoading" class="px-5 py-10 text-sm text-gray-500 dark:text-gray-400">
-      Loading students...
-    </div>
-    <div v-else-if="error" class="px-5 py-4 text-sm text-red-700 dark:text-red-200">
-      {{ error }}
-    </div>
-    <div
-      v-else-if="students.length === 0"
-      class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400"
-    >
-      No students found.
-    </div>
-    <div v-else class="overflow-x-auto">
-      <table class="min-w-full">
-        <thead class="border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]">
-          <tr>
-            <th
-              v-for="column in columns"
-              :key="column"
-              class="whitespace-nowrap px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400"
-            >
-              {{ column }}
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200 dark:divide-[#343434]">
-          <tr
-            v-for="student in students"
-            :key="student.id"
-            class="transition hover:bg-gray-50 dark:hover:bg-[#202020]"
-          >
-            <td class="whitespace-nowrap px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div
-                  class="flex size-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-blue-500 to-violet-600 text-sm font-semibold text-white shadow-sm"
-                >
-                  {{ student.name.charAt(0) }}
-                </div>
-                <span class="text-sm font-medium text-gray-900 dark:text-white">{{
-                  student.name
-                }}</span>
+            {{ column }}
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-[#343434]">
+        <tr
+          v-for="student in students"
+          :key="student.id"
+          class="transition hover:bg-gray-50 dark:hover:bg-[#202020]"
+        >
+          <td class="whitespace-nowrap px-6 py-4">
+            <div class="flex items-center gap-3">
+              <div
+                class="flex size-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-blue-500 to-violet-600 text-sm font-semibold text-white shadow-sm"
+              >
+                {{ student.name.charAt(0) }}
               </div>
-            </td>
-            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-              {{ student.email || '-' }}
-            </td>
-            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-              {{ student.phone || '-' }}
-            </td>
-            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-              {{ student.grade || '-' }}
-            </td>
-            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-              {{ formatDateTime(student.createdAt) }}
-            </td>
-            <td class="whitespace-nowrap px-6 py-4">
-              <div class="flex items-center justify-end gap-1">
-                <button
-                  type="button"
-                  class="rounded-lg p-1.5 text-blue-600 transition hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-500/10"
-                >
-                  <i class="i-lucide-square-pen size-4"></i></button
-                ><button
-                  type="button"
-                  class="rounded-lg p-1.5 text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-500/10"
-                >
-                  <i class="i-lucide-trash-2 size-4"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+              <span class="text-sm font-medium text-gray-900 dark:text-white">{{
+                student.name
+              }}</span>
+            </div>
+          </td>
+          <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+            {{ student.email || '-' }}
+          </td>
+          <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+            {{ student.phone || '-' }}
+          </td>
+          <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+            {{ student.grade || '-' }}
+          </td>
+          <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+            {{ formatDateTime(student.createdAt) }}
+          </td>
+          <td class="whitespace-nowrap px-6 py-4">
+            <div class="flex items-center justify-end gap-1">
+              <button
+                type="button"
+                class="rounded-lg p-1.5 text-blue-600 transition hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-500/10"
+              >
+                <i class="i-lucide-square-pen size-4"></i></button
+              ><button
+                type="button"
+                class="rounded-lg p-1.5 text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-500/10"
+              >
+                <i class="i-lucide-trash-2 size-4"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { formatDateTime } from '@/utils/date';
 
 const columns = ['Name', 'Email', 'Phone', 'Grade', 'Created At', 'Actions'];
-
-const search = ref('');
 
 const students = ref([
   {
