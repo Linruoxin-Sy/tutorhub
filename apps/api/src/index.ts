@@ -10,8 +10,8 @@ import { courseRoute } from '@/features/courses/course.route';
 import { leaveRecordRoute } from '@/features/leave-records/leave-record.route';
 import { rescheduleRecordRoute } from '@/features/reschedule-records/reschedule-record.route';
 import { studentCourseRoute } from '@/features/student-courses/student-course.route';
-import { studentRoute } from '@/features/student/route';
-import { authRoute } from '@/features/auth/route';
+import { studentRoute } from '@/features/student/routes';
+import { authRoute } from '@/features/auth/routes';
 
 const publicApi = new Hono()
   .get('/', (c) => c.json({ data: { name: 'TutorHub API', version: 'v1' } }))
