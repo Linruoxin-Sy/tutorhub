@@ -1,5 +1,10 @@
 import { Hono } from 'hono';
-import { loginSchema, type LoginResponse, registerSchema } from '@tutorhub/schema';
+import {
+  loginSchema,
+  registerSchema,
+  type LoginResponse,
+  type RegisterResponse,
+} from '@tutorhub/schema';
 import { zValidator } from '@/shared/validator';
 import { loginService } from '@/features/auth/services/login';
 import { ApiError } from '@/shared/api-error';
@@ -23,7 +28,7 @@ export const authRoute = new Hono()
   .post('/register', zValidator('json', registerSchema), async (c) => {
     const input = c.req.valid('json');
 
-    const res = await registerService.register(input);
+    const res: RegisterResponse = await registerService.register(input);
 
     return c.json(res);
   });
