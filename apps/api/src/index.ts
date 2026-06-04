@@ -11,7 +11,6 @@ import { leaveRecordRoute } from '@/features/leave-records/leave-record.route';
 import { rescheduleRecordRoute } from '@/features/reschedule-records/reschedule-record.route';
 import { studentCourseRoute } from '@/features/student-courses/student-course.route';
 import { studentRoute } from '@/features/student/route';
-import { userRoute } from '@/features/users/user.route';
 import { authRoute } from '@/features/auth/route';
 
 const publicApi = new Hono()
@@ -20,7 +19,6 @@ const publicApi = new Hono()
 
 const protectedApi = new Hono()
   .use(authMiddleware)
-  .route('/users', userRoute)
   .route('/student', studentRoute)
   .route('/courses', courseRoute)
   .route('/student-courses', studentCourseRoute)
