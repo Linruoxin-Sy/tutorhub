@@ -1,11 +1,11 @@
 ---
-description: 'Use when generating or editing pages and page-level UI in apps/web.'
-applyTo: 'apps/web/src/App.vue,apps/web/src/features/**/pages/**/*.vue,apps/web/src/ui/**/*.vue'
+description: 'Use when generating or editing pages and page-level layouts in apps/web.'
+applyTo: 'apps/web/src/App.vue,apps/web/src/features/**/pages/**/*.vue,apps/web/src/layouts/**/*.vue'
 ---
 
 # apps/web page generation
 
-Use this file for page generation inside `apps/web`. Keep generated UI aligned with the existing dashboard language instead of introducing a new visual system.
+Use this file for page generation inside `apps/web`. Keep generated layouts aligned with the existing dashboard language instead of introducing a new visual system.
 
 ## Visual Direction
 
@@ -16,14 +16,14 @@ Use this file for page generation inside `apps/web`. Keep generated UI aligned w
 
 ## Layout Pattern
 
-- Build pages inside the existing shell from [apps/web/src/ui/AppLayout.vue](../../apps/web/src/ui/AppLayout.vue) and [apps/web/src/ui/AppHeader.vue](../../apps/web/src/ui/AppHeader.vue).
+- Blayoutsld pages inside the existing shell from [apps/web/src/layouts/AppLayout.vue](../../apps/web/src/layouts/AppLayout.vue) and [apps/web/src/layouts/AppHeader.vue](../../apps/web/src/layouts/AppHeader.vue).
 - Keep the header compact and stable; avoid introducing new top-level chrome unless the task explicitly needs it.
 - Use card-like content blocks with consistent padding, rounded corners, and thin borders for page sections.
 - Prefer a clear content hierarchy over dense dashboards. If a page has multiple sections, separate them with spacing and light surface contrast.
 
 ## Navigation And Controls
 
-- Reuse the capsule navigation pattern from [apps/web/src/ui/AppNavBar.vue](../../apps/web/src/ui/AppNavBar.vue): icon plus label, muted inactive states, and a stronger active chip.
+- Reuse the capsule navigation pattern from [apps/web/src/layouts/AppNavBar.vue](../../apps/web/src/layouts/AppNavBar.vue): icon plus label, muted inactive states, and a stronger active chip.
 - Keep interactive controls compact and visually calm. Theme toggles and similar tools should read as small icon buttons inside rounded containers.
 - When adding actions, use existing icon utilities and restrained emphasis instead of large bespoke buttons.
 
