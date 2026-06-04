@@ -1,5 +1,5 @@
-import { User } from '@tutorhub/database';
-import z from 'zod';
+import { type User } from '@tutorhub/database';
+import { z } from 'zod';
 
 export const emailLoginSchema = z.object({
   email: z.email('Invalid email address'),

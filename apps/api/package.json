@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsdown",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "type-check": "tsc -p tsconfig.json --noEmit",
     "eslint": "eslint \"src/**/*.ts\" --ignore-pattern \"src/**/*.d.ts\""
   },
   "dependencies": {

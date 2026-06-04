@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "type-check": "turbo run type-check",
     "format": "prettier --write .",
     "eslint": "eslint",
     "test": "vitest"

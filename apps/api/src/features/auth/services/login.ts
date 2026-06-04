@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 import type { emailLoginSchema, phoneLoginSchema } from '@tutorhub/schema';
 import { JWTService } from '@/features/auth/services/jwt';
 import { passwordService } from '@/features/auth/services/password';

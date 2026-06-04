@@ -1,5 +1,5 @@
-import { User } from '@tutorhub/database';
-import z from 'zod';
+import { type User } from '@tutorhub/database';
+import { z } from 'zod';
 
 export const registerSchema = z.object({
   name: z.string().min(1, 'Name is required').max(50, 'Name must be at most 50 characters'),

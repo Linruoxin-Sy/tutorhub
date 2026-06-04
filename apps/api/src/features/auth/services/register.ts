@@ -3,7 +3,7 @@ import { passwordService } from '@/features/auth/services/password';
 import { ApiError } from '@/shared/api-error';
 import { prisma } from '@/shared/prisma';
 import type { User } from '@tutorhub/database';
-import z from 'zod';
+import { z } from 'zod';
 
 export const registerService = {
   async register(input: z.infer<typeof registerSchema>) {
