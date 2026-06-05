@@ -5,7 +5,7 @@ import type { Student } from '@tutorhub/database';
 // TODO Phase B: replace with `request.get('/student/list', { params })`
 // ---------------------------------------------------------------------------
 
-const TOTAL = 200;
+const TOTAL = 10000;
 const PAGE_SIZE = 20;
 
 const FIRST_NAMES = [
@@ -107,7 +107,7 @@ export async function fetchStudents(params: {
   const { cursor, limit = PAGE_SIZE } = params;
 
   // Simulate network latency
-  await new Promise((r) => setTimeout(r, 1));
+  // await new Promise((r) => setTimeout(r, 1));
 
   const startIndex = cursor ? ALL_MOCK_STUDENTS.findIndex((s) => s.id === cursor) + 1 : 0;
 
