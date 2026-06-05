@@ -4,10 +4,11 @@ import type { studentCreateSchema, studentListSchema, studentUpdateSchema } from
 import { z } from 'zod';
 
 export const studentService = {
-  async list(query: z.infer<typeof studentListSchema>) {
+  async list(query: z.infer<typeof studentListSchema>, userId: string) {
     const take = query.limit + 1;
 
     const items = await prisma.student.findMany({
+      where: { userId },
       orderBy: { createdAt: 'desc' },
       take,
       ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
@@ -20,8 +21,8 @@ export const studentService = {
     return { items: result, nextCursor, hasMore };
   },
 
-  async getById(id: string) {
-    const student = await prisma.student.findUnique({ where: { id } });
+  async getById(id: string, userId: string) {
+    const student = await prisma.student.findFirst({ where: { id, userId } });
 
     if (!student) {
       throw new ApiError(404, 'STUDENT_NOT_FOUND', 'Student not found');
@@ -34,11 +35,11 @@ export const studentService = {
     return await prisma.student.create({ data: { ...input, userId } });
   },
 
-  async update(id: string, input: z.infer<typeof studentUpdateSchema>) {
-    return await prisma.student.update({ where: { id }, data: input });
+  async update(id: string, input: z.infer<typeof studentUpdateSchema>, userId: string) {
+    return await prisma.student.update({ where: { id, userId }, data: input });
   },
 
-  async delete(id: string) {
-    return await prisma.student.delete({ where: { id } });
+  async delete(id: string, userId: string) {
+    return await prisma.student.delete({ where: { id, userId } });
   },
 };

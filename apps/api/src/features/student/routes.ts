@@ -17,7 +17,8 @@ import { studentService } from '@/features/student/services/student';
 export const studentRoute = new Hono()
   .get('/list', zValidator('query', studentListSchema), async (c) => {
     const query = c.req.valid('query');
-    const res: StudentListResponse = await studentService.list(query);
+    const userId = c.get('userId');
+    const res: StudentListResponse = await studentService.list(query, userId);
     return c.json(res);
   })
   .post('/', zValidator('json', studentCreateSchema), async (c) => {
@@ -28,7 +29,8 @@ export const studentRoute = new Hono()
   })
   .get('/:id', zValidator('param', studentDetailParamsSchema), async (c) => {
     const { id } = c.req.valid('param');
-    const res: StudentDetailResponse = await studentService.getById(id);
+    const userId = c.get('userId');
+    const res: StudentDetailResponse = await studentService.getById(id, userId);
     return c.json({ data: res });
   })
   .put(
@@ -38,12 +40,14 @@ export const studentRoute = new Hono()
     async (c) => {
       const { id } = c.req.valid('param');
       const input = c.req.valid('json');
-      const res: StudentUpdateResponse = await studentService.update(id, input);
+      const userId = c.get('userId');
+      const res: StudentUpdateResponse = await studentService.update(id, input, userId);
       return c.json({ data: res });
     },
   )
   .delete('/:id', zValidator('param', studentDeleteParamsSchema), async (c) => {
     const { id } = c.req.valid('param');
-    const res: StudentDeleteResponse = await studentService.delete(id);
+    const userId = c.get('userId');
+    const res: StudentDeleteResponse = await studentService.delete(id, userId);
     return c.json({ data: res });
   });
