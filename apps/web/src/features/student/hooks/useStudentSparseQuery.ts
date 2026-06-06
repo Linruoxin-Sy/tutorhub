@@ -18,16 +18,20 @@ const QUERY_KEY_PREFIX = ['students', 'offset'];
 export function useStudentSparseQuery() {
   const queryClient = useQueryClient();
   const total = ref(0);
+  /** 版本戳 — 每次预取完成后递增，驱动模板响应式重渲染 */
+  const version = ref(0);
 
   // ── 从缓存中读取指定索引的数据 ──
 
   function getItem(index: number): Student | undefined {
+    void version.value; // 建立响应式依赖
     const offset = Math.floor(index / PAGE_SIZE) * PAGE_SIZE;
     const data = queryClient.getQueryData<StudentListResponse>([...QUERY_KEY_PREFIX, offset]);
     return data?.items[index - offset];
   }
 
   function isLoaded(index: number): boolean {
+    void version.value; // 建立响应式依赖
     const offset = Math.floor(index / PAGE_SIZE) * PAGE_SIZE;
     return !!queryClient.getQueryData([...QUERY_KEY_PREFIX, offset]);
   }
@@ -60,6 +64,8 @@ export function useStudentSparseQuery() {
           }),
         ),
       );
+      // 每批加载完成后递增版本戳，触发模板重新渲染
+      version.value++;
     }
   }
 
@@ -74,6 +80,7 @@ export function useStudentSparseQuery() {
   watchEffect(() => {
     if (firstPageQuery.data.value) {
       total.value = firstPageQuery.data.value.total;
+      version.value++; // 第一页数据就绪后触发重渲染
     }
   });
 
