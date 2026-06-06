@@ -102,14 +102,22 @@ export interface StudentListResponse {
  */
 export async function fetchStudents(params: {
   cursor?: string;
+  offset?: number;
   limit?: number;
 }): Promise<StudentListResponse> {
-  const { cursor, limit = PAGE_SIZE } = params;
+  const { cursor, offset, limit = PAGE_SIZE } = params;
 
   // Simulate network latency
-  // await new Promise((r) => setTimeout(r, 1));
+  await new Promise((r) => setTimeout(r, 300));
 
-  const startIndex = cursor ? ALL_MOCK_STUDENTS.findIndex((s) => s.id === cursor) + 1 : 0;
+  let startIndex: number;
+  if (offset !== undefined) {
+    startIndex = offset;
+  } else if (cursor) {
+    startIndex = ALL_MOCK_STUDENTS.findIndex((s) => s.id === cursor) + 1;
+  } else {
+    startIndex = 0;
+  }
 
   if (startIndex < 0 || startIndex >= ALL_MOCK_STUDENTS.length) {
     return { items: [], nextCursor: null, total: TOTAL };

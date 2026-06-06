@@ -50,10 +50,7 @@
         }"
         :data-index="virtualRow.index"
       >
-        <StudentListItem
-          v-if="virtualRow.index < items.length"
-          :student="items[virtualRow.index]"
-        />
+        <StudentListItem v-if="isLoaded(virtualRow.index)" :student="getItem(virtualRow.index)!" />
         <StudentListItemSkeleton v-else />
       </div>
     </div>
@@ -61,14 +58,14 @@
     <!-- Bottom status indicator -->
     <div class="border-t border-gray-200 px-5 py-3 text-center text-sm dark:border-[#343434]">
       <span
-        v-if="isFetchingNextPage"
+        v-if="isFetching"
         class="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400"
       >
         <i class="i-lucide-loader-circle size-4 animate-spin"></i>
-        Loading more...
+        Loading data…
       </span>
-      <span v-else-if="!hasNextPage" class="text-gray-400 dark:text-gray-500">
-        All students loaded · {{ items.length }} total
+      <span v-else-if="loadedCount >= total" class="text-gray-400 dark:text-gray-500">
+        All students loaded · {{ total }} total
       </span>
       <span v-else class="text-gray-400 dark:text-gray-500"> Scroll for more </span>
     </div>
@@ -76,43 +73,40 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick } from 'vue';
 import { useVirtualizer } from '@tanstack/vue-virtual';
-import { useStudentInfiniteQuery } from '@/features/student/hooks/useStudentInfiniteQuery';
+import { useStudentSparseQuery } from '@/features/student/hooks/useStudentSparseQuery';
 import StudentListItem from '@/features/student/components/StudentListItem.vue';
 import StudentListItemSkeleton from '@/features/student/components/StudentListItemSkeleton.vue';
 
 const columns = ['Name', 'Email', 'Phone', 'Grade', 'Created At', 'Actions'];
 
-const { items, total, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, error } =
-  useStudentInfiniteQuery();
+const { getItem, isLoaded, total, loadedCount, isLoading, isFetching, error, ensureRange } =
+  useStudentSparseQuery();
 
 const scrollElement = ref<HTMLElement | null>(null);
-// Virtual
+
 const virtualizer = useVirtualizer(
   computed(() => ({
     count: total.value,
     getScrollElement: () => scrollElement.value,
     estimateSize: () => 70,
-    overscan: 5,
+    overscan: 10,
   })),
 );
 
-// Lazy load — keep fetching pages until visible range has real data
+// 可见范围变化 → 自动预取缺失的数据页
 watch(
   () => {
-    const virtualItems = virtualizer.value.getVirtualItems();
-    return virtualItems.length > 0 ? virtualItems[virtualItems.length - 1].index : 0;
+    const items = virtualizer.value.getVirtualItems();
+    if (items.length === 0) return null;
+    return { first: items[0].index, last: items[items.length - 1].index };
   },
-  async (lastVisibleIndex) => {
-    while (
-      lastVisibleIndex >= items.value.length - 5 &&
-      hasNextPage.value &&
-      !isFetchingNextPage.value
-    ) {
-      await fetchNextPage();
-      await nextTick();
-    }
+  async (range) => {
+    if (!range) return;
+    // 前后多缓冲 3 页（60 行），减少加载时的骨架闪现
+    const pad = 3 * 20;
+    await ensureRange(range.first - pad, range.last + pad);
   },
+  { deep: true },
 );
 </script>
