@@ -1,11 +1,8 @@
-import { getEnv } from '@/shared/getEnv';
 import { createHash, randomBytes, timingSafeEqual } from 'crypto';
-
-const SALT_BYTES = Number(getEnv('PASSWORD_SALT_BYTES', '16'));
 
 export const passwordService = {
   async generateSalt() {
-    return randomBytes(SALT_BYTES).toString('hex');
+    return randomBytes(16).toString('hex');
   },
 
   async hash(password: string, salt: string) {
