@@ -3,6 +3,7 @@ import { Student } from '@tutorhub/database';
 
 export const studentListSchema = z.object({
   cursor: z.string().optional(),
+  offset: z.coerce.number().int().min(0).optional(),
   limit: z
     .string()
     .default('20')
@@ -16,5 +17,5 @@ export const studentListSchema = z.object({
 export type StudentListResponse = {
   items: Student[];
   nextCursor: string | null;
-  hasMore: boolean;
+  total: number;
 };

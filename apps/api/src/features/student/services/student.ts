@@ -7,18 +7,44 @@ export const studentService = {
   async list(query: z.infer<typeof studentListSchema>, userId: string) {
     const take = query.limit + 1;
 
-    const items = await prisma.student.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      take,
-      ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
-    });
+    // offset 分页 — 直接跳过前 N 条
+    if (query.offset !== undefined) {
+      const [items, total] = await Promise.all([
+        prisma.student.findMany({
+          where: { userId },
+          orderBy: { createdAt: 'desc' },
+          take: query.limit,
+          skip: query.offset,
+        }),
+        prisma.student.count({ where: { userId } }),
+      ]);
+
+      const lastItem = items.at(-1);
+      const hasMore = query.offset + query.limit < total;
+
+      return {
+        items,
+        nextCursor: hasMore && lastItem ? lastItem.id : null,
+        total,
+      };
+    }
+
+    // cursor 分页
+    const [items, total] = await Promise.all([
+      prisma.student.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        take,
+        ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
+      }),
+      prisma.student.count({ where: { userId } }),
+    ]);
 
     const hasMore = items.length > query.limit;
     const result = hasMore ? items.slice(0, query.limit) : items;
     const nextCursor = hasMore ? result[result.length - 1].id : null;
 
-    return { items: result, nextCursor, hasMore };
+    return { items: result, nextCursor, total };
   },
 
   async getById(id: string, userId: string) {
