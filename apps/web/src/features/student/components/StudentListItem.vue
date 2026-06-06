@@ -1,7 +1,8 @@
 <template>
   <div class="flex items-center gap-3 whitespace-nowrap px-6 min-w-0">
     <div
-      class="flex size-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-blue-500 to-violet-600 text-sm font-semibold text-white shadow-sm"
+      class="flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm"
+      :style="{ background: getAvatarGradient(student.name) }"
     >
       {{ student.name.charAt(0) }}
     </div>
@@ -38,6 +39,7 @@
 
 <script setup lang="ts">
 import { formatDateTime } from '@/utils/date';
+import { getAvatarGradient } from '@/utils/avatar';
 import type { Student } from '@tutorhub/database';
 
 defineProps<{
