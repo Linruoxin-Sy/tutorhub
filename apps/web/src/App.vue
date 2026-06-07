@@ -2,7 +2,7 @@
   <AppLayout>
     <RouterView />
   </AppLayout>
-  <Toaster rich-colors position="top-center" :visible-toasts="6" :theme="theme" />
+  <Toaster rich-colors position="bottom-right" :visible-toasts="6" :theme="theme" />
 </template>
 
 <script setup lang="ts">
