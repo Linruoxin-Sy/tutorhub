@@ -17,9 +17,6 @@
     {{ student.phone || '-' }}
   </div>
   <div class="truncate whitespace-nowrap px-6 text-sm text-gray-600 dark:text-gray-300">
-    {{ student.grade || '-' }}
-  </div>
-  <div class="truncate whitespace-nowrap px-6 text-sm text-gray-600 dark:text-gray-300">
     {{ formatDateTime(student.createdAt) }}
   </div>
   <div class="flex items-center justify-end gap-1 whitespace-nowrap px-6">

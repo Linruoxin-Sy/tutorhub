@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { safeUser } from './user';
+import type { safeUser } from './user';
 
 export const registerSchema = z.object({
   name: z.string().min(1, 'Name is required').max(50, 'Name must be at most 50 characters'),

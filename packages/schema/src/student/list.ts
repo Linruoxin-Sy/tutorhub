@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Student } from '@tutorhub/database';
+import type { Student } from '@tutorhub/database';
 
 export const studentListSchema = z.object({
   cursor: z.string().optional(),

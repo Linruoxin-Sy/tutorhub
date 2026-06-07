@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Student } from '@tutorhub/database';
+import type { Student } from '@tutorhub/database';
 import { studentFields } from './student';
 
 const preprocessNullable = (schema: z.ZodType<string | null>) =>
@@ -11,7 +11,6 @@ export const studentUpdateSchema = z
     avatarUrl: preprocessNullable(studentFields.avatarUrl),
     email: preprocessNullable(studentFields.email),
     phone: preprocessNullable(studentFields.phone),
-    grade: preprocessNullable(studentFields.grade),
     description: preprocessNullable(studentFields.description),
   })
   .refine((data) => Object.values(data).some((val) => val !== undefined), {

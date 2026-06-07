@@ -26,9 +26,6 @@ model Student {
   /// 学生联系电话
   phone String?
 
-  /// 学生年级
-  grade String?
-
   /// 学生备注
   description String?
 

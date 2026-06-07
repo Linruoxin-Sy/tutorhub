@@ -69,8 +69,6 @@ const LAST_NAMES = [
   'Rodriguez',
 ] as const;
 
-const GRADES = ['9th Grade', '10th Grade', '11th Grade', '12th Grade'] as const;
-
 function pick<T>(arr: readonly T[], index: number): T {
   return arr[index % arr.length];
 }
@@ -85,7 +83,6 @@ function buildStudent(index: number, userId: string) {
     name: `${firstName} ${lastName}`,
     email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@email.com`,
     phone: `555-${padded}`,
-    grade: pick(GRADES, index),
   };
 }
 

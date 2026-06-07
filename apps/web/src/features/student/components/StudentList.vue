@@ -15,7 +15,7 @@
     <!-- Sticky header — CSS Grid keeps columns aligned with virtual rows -->
     <div
       class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
-      style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1fr 1.2fr 0.8fr"
+      style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 0.8fr"
     >
       <div
         v-for="column in columns"
@@ -39,7 +39,7 @@
         class="border-b border-gray-200 transition hover:bg-gray-50 dark:border-[#343434] dark:hover:bg-[#202020]"
         :style="{
           display: 'grid',
-          gridTemplateColumns: '1.5fr 2fr 1.2fr 1fr 1.2fr 0.8fr',
+          gridTemplateColumns: '1.5fr 2fr 1.2fr 1.2fr 0.8fr',
           alignItems: 'center',
           position: 'absolute',
           top: 0,
@@ -78,7 +78,7 @@ import { useStudentSparseQuery } from '@/features/student/hooks/useStudentSparse
 import StudentListItem from '@/features/student/components/StudentListItem.vue';
 import StudentListItemSkeleton from '@/features/student/components/StudentListItemSkeleton.vue';
 
-const columns = ['Name', 'Email', 'Phone', 'Grade', 'Created At', 'Actions'];
+const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
 
 const { getItem, isLoaded, total, loadedCount, isLoading, isFetching, error, ensureRange } =
   useStudentSparseQuery();

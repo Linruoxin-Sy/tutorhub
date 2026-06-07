@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { safeUser } from './user';
+import type { safeUser } from './user';
 
 export const emailLoginSchema = z.object({
   email: z.email('Invalid email address'),
