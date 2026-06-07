@@ -11,12 +11,12 @@ export const studentService = {
     if (query.offset !== undefined) {
       const [items, total] = await Promise.all([
         prisma.student.findMany({
-          where: { userId },
+          where: { userId, deletedAt: null },
           orderBy: { createdAt: 'desc' },
           take: query.limit,
           skip: query.offset,
         }),
-        prisma.student.count({ where: { userId } }),
+        prisma.student.count({ where: { userId, deletedAt: null } }),
       ]);
 
       const lastItem = items.at(-1);
@@ -32,12 +32,12 @@ export const studentService = {
     // cursor 分页
     const [items, total] = await Promise.all([
       prisma.student.findMany({
-        where: { userId },
+        where: { userId, deletedAt: null },
         orderBy: { createdAt: 'desc' },
         take,
         ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       }),
-      prisma.student.count({ where: { userId } }),
+      prisma.student.count({ where: { userId, deletedAt: null } }),
     ]);
 
     const hasMore = items.length > query.limit;
@@ -48,7 +48,7 @@ export const studentService = {
   },
 
   async getById(id: string, userId: string) {
-    const student = await prisma.student.findFirst({ where: { id, userId } });
+    const student = await prisma.student.findFirst({ where: { id, userId, deletedAt: null } });
 
     if (!student) {
       throw new ApiError(404, 'STUDENT_NOT_FOUND', 'Student not found');
@@ -66,6 +66,9 @@ export const studentService = {
   },
 
   async delete(id: string, userId: string) {
-    return await prisma.student.delete({ where: { id, userId } });
+    return await prisma.student.update({
+      where: { id, userId },
+      data: { deletedAt: new Date() },
+    });
   },
 };

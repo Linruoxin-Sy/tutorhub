@@ -23,6 +23,7 @@
           <button
             type="button"
             class="inline-flex shrink-0 items-center cursor-pointer gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+            @click="router.push('/student/create')"
           >
             <i class="i-lucide-plus size-4"></i>
             Add Student
@@ -36,5 +37,8 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
 import StudentList from '@/features/student/components/StudentList.vue';
+
+const router = useRouter();
 </script>
