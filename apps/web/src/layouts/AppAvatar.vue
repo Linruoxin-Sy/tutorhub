@@ -5,7 +5,7 @@
         <!-- img placeholder -->
         <div class="flex size-full items-center justify-center bg-gray-100 dark:bg-[#202020]"></div>
         <!-- img -->
-        <AppImage src="" />
+        <img src="" class="bg-cover bg-no-repeat bg-center object-cover" />
       </div>
     </div>
     <ul
