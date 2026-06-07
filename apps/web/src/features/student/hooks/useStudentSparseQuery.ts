@@ -1,3 +1,4 @@
+import pLimit from 'p-limit';
 import { computed, readonly, ref, watchEffect } from 'vue';
 import { useQueryClient, useQuery } from '@tanstack/vue-query';
 import type { Student } from '@tutorhub/database';
@@ -51,20 +52,22 @@ export function useStudentSparseQuery() {
 
     if (missing.length === 0) return;
 
-    // 分批并发，避免瞬间发起大量请求
+    // 使用 p-limit 控制并发数，避免瞬间发起大量请求
     const CONCURRENCY = 4;
-    for (let i = 0; i < missing.length; i += CONCURRENCY) {
-      const batch = missing.slice(i, i + CONCURRENCY);
-      await Promise.all(
-        batch.map((offset) =>
-          queryClient.prefetchQuery({
-            queryKey: [...QUERY_KEY_PREFIX, offset],
-            queryFn: () => fetchStudents({ offset, limit: PAGE_SIZE }),
-            staleTime: 30_000,
-          }),
-        ),
-      );
-      // 每批加载完成后递增版本戳，触发模板重新渲染
+    const limit = pLimit(CONCURRENCY);
+    const promises = missing.map((offset) =>
+      limit(() =>
+        queryClient.prefetchQuery({
+          queryKey: [...QUERY_KEY_PREFIX, offset],
+          queryFn: () => fetchStudents({ offset, limit: PAGE_SIZE }),
+          staleTime: 30_000,
+        }),
+      ),
+    );
+
+    // 每批加载完成后递增版本戳，触发模板重新渲染
+    for (let i = 0; i < promises.length; i += CONCURRENCY) {
+      await Promise.all(promises.slice(i, i + CONCURRENCY));
       version.value++;
     }
   }
