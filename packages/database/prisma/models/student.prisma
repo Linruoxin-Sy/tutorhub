@@ -8,6 +8,9 @@ model Student {
   /// 更新时间
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
+  /// 删除时间
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
+
   /// 所属用户 ID
   userId String @map("user_id")
 
@@ -35,7 +38,7 @@ model Student {
   /// 学生的选课关系
   studentCourses StudentCourse[]
 
-  @@index([userId])
+  @@index([userId], where: raw("deleted_at IS NULL"))
   @@map("student")
 }
 
