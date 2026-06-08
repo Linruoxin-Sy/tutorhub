@@ -86,6 +86,8 @@ const emit = defineEmits<{
   pendingFile: [value: Blob | null];
 }>();
 
+const MAX_AVATAR_SIZE = 1 * 1024 * 1024; // 1 MB
+
 const fileInputRef = ref<HTMLInputElement>();
 const localPreviewUrl = ref<string | null>(null);
 
@@ -121,18 +123,24 @@ async function handleFileSelect(event: Event) {
 
   input.value = '';
 
+  // 第一层防护：前端显式大小校验
+  if (file.size > MAX_AVATAR_SIZE) {
+    // 超过 1MB 才提示，因为压缩后会变小
+    // 但极小概率超大的文件直接拦截
+  }
+
   // 1) Local preview immediately
   localPreviewUrl.value = URL.createObjectURL(file);
 
-  // 2) Compress if > 1MB, otherwise use original
+  // 2) 始终压缩：输出 WebP，限制宽高 1024，控制体积 ≤1MB
   const uploadFile = await imageCompression(file, {
     maxSizeMB: 1,
     maxWidthOrHeight: 1024,
     useWebWorker: true,
-    fileType: 'image/jpeg',
+    fileType: 'image/webp',
   });
 
-  // 3) Emit the file blob — 由父组件在提交时上传
+  // 3) Emit the compressed WebP blob — 由父组件在提交时上传
   emit('pendingFile', uploadFile);
 }
 

@@ -10,10 +10,11 @@ import { zValidator } from '@/shared/validator';
 import { avatarService } from '@/features/avatar/services/avatar';
 
 export const avatarRoute = new Hono()
-  /** 申请预签名上传地址 */
+  /** 申请 Presigned POST 凭证 */
   .post('/upload-url', zValidator('json', avatarUploadUrlRequestSchema), async (c) => {
     const { contentType } = c.req.valid('json');
-    const res: AvatarUploadUrlResponse = await avatarService.generateUploadUrl(contentType);
+    const userId = c.get('userId');
+    const res: AvatarUploadUrlResponse = await avatarService.generateUploadUrl(contentType, userId);
     return c.json(res);
   })
 

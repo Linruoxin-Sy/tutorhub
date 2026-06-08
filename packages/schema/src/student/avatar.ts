@@ -1,15 +1,16 @@
 import { z } from 'zod';
 
-/** 申请头像上传地址的请求参数 */
+/** 申请头像 Presigned POST 地址 */
 export const avatarUploadUrlRequestSchema = z.object({
   contentType: z.string().min(1, 'contentType is required'),
 });
 
 export type AvatarUploadUrlRequest = z.infer<typeof avatarUploadUrlRequestSchema>;
 
-/** 申请头像上传地址的响应 */
+/** Presigned POST 响应：前端直接 POST 到 url + fields 即可上传文件 */
 export const avatarUploadUrlResponseSchema = z.object({
-  uploadUrl: z.string(),
+  url: z.string(),
+  fields: z.record(z.string(), z.string()),
   objectKey: z.string(),
 });
 
