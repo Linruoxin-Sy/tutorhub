@@ -1,10 +1,19 @@
+import { DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { ApiError } from '@/shared/api-error';
 import { prisma } from '@/shared/prisma';
+import { s3Client, bucketName } from '@/shared/s3';
 import type { studentCreateSchema, studentListSchema, studentUpdateSchema } from '@tutorhub/schema';
 import { z } from 'zod';
 import { getEnv } from '@/shared/getEnv';
 
 const AVATAR_BASE_URL = getEnv('AVATAR_BASE_URL', 'http://localhost:9000/tutorhub');
+
+/** 异步删除 MinIO 中的头像文件（失败仅日志，不影响主流程） */
+function deleteAvatarFile(objectKey: string): void {
+  s3Client
+    .send(new DeleteObjectCommand({ Bucket: bucketName, Key: objectKey }))
+    .catch((err) => console.error('Failed to delete avatar file:', err));
+}
 
 function addAvatarUrl<T extends { avatarKey: string | null }>(item: T) {
   return {
@@ -91,6 +100,16 @@ export const studentService = {
   async update(id: string, input: z.infer<typeof studentUpdateSchema>, userId: string) {
     const { avatarKey, ...rest } = input;
 
+    // 如果传入了新 avatarKey，先查出旧头像 key
+    let oldAvatarKey: string | null = null;
+    if (avatarKey) {
+      const existing = await prisma.student.findFirst({
+        where: { id, userId },
+        select: { avatarKey: true },
+      });
+      oldAvatarKey = existing?.avatarKey ?? null;
+    }
+
     const data: Record<string, unknown> = { ...rest };
     if (avatarKey) {
       data.avatarKey = avatarKey;
@@ -101,14 +120,31 @@ export const studentService = {
       data: data as Parameters<typeof prisma.student.update>[0]['data'],
     });
 
+    // 头像 key 变化 → 删除旧文件
+    if (oldAvatarKey && oldAvatarKey !== avatarKey) {
+      deleteAvatarFile(oldAvatarKey);
+    }
+
     return addAvatarUrl(student);
   },
 
   async delete(id: string, userId: string) {
+    // 先查出旧头像 key
+    const existing = await prisma.student.findFirst({
+      where: { id, userId },
+      select: { avatarKey: true },
+    });
+    const oldAvatarKey = existing?.avatarKey ?? null;
+
     const student = await prisma.student.update({
       where: { id, userId },
       data: { deletedAt: new Date() },
     });
+
+    // 删除头像文件
+    if (oldAvatarKey) {
+      deleteAvatarFile(oldAvatarKey);
+    }
 
     return addAvatarUrl(student);
   },
