@@ -1,5 +1,5 @@
-import { DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
-import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
+import { PutObjectCommand, DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'node:crypto';
 import { s3Client, bucketName } from '@/shared/s3';
 import { prisma } from '@/shared/prisma';
@@ -25,34 +25,33 @@ function deleteAvatarFile(objectKey: string): void {
 
 export const avatarService = {
   /**
-   * 生成 Presigned POST 凭证
+   * 生成 Presigned PUT URL
    *
-   * Policy 中限制：
-   * - content-length-range: 0 ~ 1MB（第三层防护）
-   * - key 前缀: avatars/{userId}/
-   * - Content-Type 必须是允许的图片类型
+   * 安全说明：
+   * - URL 5 分钟过期
+   * - Key 由后端生成（avatars/{userId}/{uuid}.webp），用户无法指定
+   * - 上传完成后后端通过 HeadObject 做最终校验（大小、MIME、路径）
    */
   async generateUploadUrl(contentType: string, userId: string) {
     if (!ALLOWED_MIME_PREFIXES.some((p) => contentType.startsWith(p))) {
-      throw new ApiError(400, 'INVALID_CONTENT_TYPE', '不支持的图片格式，仅允许 JPEG/PNG/WebP/AVIF');
+      throw new ApiError(
+        400,
+        'INVALID_CONTENT_TYPE',
+        '不支持的图片格式，仅允许 JPEG/PNG/WebP/AVIF',
+      );
     }
 
-    const ext = 'webp';
-    const objectKey = `avatars/${userId}/${randomUUID()}.${ext}`;
+    const objectKey = `avatars/${userId}/${randomUUID()}.webp`;
 
-    const { url, fields } = await createPresignedPost(s3Client, {
+    const command = new PutObjectCommand({
       Bucket: bucketName,
       Key: objectKey,
-      Conditions: [
-        // 限制文件大小 0 ~ 1MB
-        ['content-length-range', 0, MAX_FILE_SIZE],
-        // 限制 Content-Type 必须是允许的图片类型
-        ['starts-with', '$Content-Type', 'image/'],
-      ],
-      Expires: 300, // 5 分钟有效期
+      ContentType: contentType,
     });
 
-    return { url, fields, objectKey };
+    const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+
+    return { url: uploadUrl, fields: {}, objectKey };
   },
 
   /**
@@ -84,9 +83,7 @@ export const avatarService = {
     // 3) 查询对象信息（校验文件是否存在、大小、MIME）
     let head;
     try {
-      head = await s3Client.send(
-        new HeadObjectCommand({ Bucket: bucketName, Key: objectKey }),
-      );
+      head = await s3Client.send(new HeadObjectCommand({ Bucket: bucketName, Key: objectKey }));
     } catch {
       throw new ApiError(404, 'AVATAR_NOT_FOUND', '头像文件未找到，请重新上传');
     }

@@ -3,7 +3,6 @@ import {
   CreateBucketCommand,
   HeadBucketCommand,
   PutBucketPolicyCommand,
-  PutBucketCorsCommand,
 } from '@aws-sdk/client-s3';
 import { getEnv } from '@/shared/getEnv';
 
@@ -45,29 +44,7 @@ async function setBucketPublic(): Promise<void> {
   console.log(`Bucket "${bucketName}" is now publicly readable.`);
 }
 
-/** 设置 bucket CORS 规则（允许前端跨域直传） */
-async function setBucketCors(): Promise<void> {
-  await s3Client.send(
-    new PutBucketCorsCommand({
-      Bucket: bucketName,
-      CORSConfiguration: {
-        CORSRules: [
-          {
-            AllowedOrigins: ['*'],
-            AllowedMethods: ['GET', 'PUT', 'POST', 'DELETE'],
-            AllowedHeaders: ['*'],
-            ExposeHeaders: ['ETag'],
-            MaxAgeSeconds: 3600,
-          },
-        ],
-      },
-    }),
-  );
-
-  console.log(`CORS configured for bucket "${bucketName}".`);
-}
-
-/** 确保 bucket 存在并设置公开读权限 + CORS（应用启动时调用） */
+/** 确保 bucket 存在并设置公开读权限（应用启动时调用） */
 export async function ensureBucket(): Promise<void> {
   try {
     await s3Client.send(new HeadBucketCommand({ Bucket: bucketName }));
@@ -81,12 +58,5 @@ export async function ensureBucket(): Promise<void> {
     await setBucketPublic();
   } catch (err) {
     console.error('Failed to set bucket public policy:', err);
-  }
-
-  // 设置 CORS（前端直传需要）
-  try {
-    await setBucketCors();
-  } catch (err) {
-    console.error('Failed to set bucket CORS:', err);
   }
 }
