@@ -18,6 +18,7 @@
     "@tutorhub/schema": "workspace:*",
     "@vueuse/core": "^14.3.0",
     "axios": "^1.17.0",
+    "browser-image-compression": "^2.0.2",
     "dayjs": "^1.11.13",
     "es-toolkit": "^1.47.0",
     "ky": "^2.0.2",

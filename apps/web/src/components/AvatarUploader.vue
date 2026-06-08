@@ -74,6 +74,7 @@
 
 <script setup lang="ts">
 import { debounce } from 'es-toolkit';
+import imageCompression from 'browser-image-compression';
 import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
 
 const props = defineProps<{
@@ -84,8 +85,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   pendingFile: [value: Blob | null];
 }>();
-
-const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 
 const fileInputRef = ref<HTMLInputElement>();
 const localPreviewUrl = ref<string | null>(null);
@@ -113,71 +112,6 @@ function triggerFileInput() {
   fileInputRef.value?.click();
 }
 
-/**
- * Compress an image file to fit under MAX_FILE_SIZE using Canvas.
- * Returns a Blob (JPEG) that is guaranteed ≤ MAX_FILE_SIZE.
- */
-async function compressImage(file: File): Promise<Blob> {
-  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
-    const imgEl = new Image();
-    imgEl.onload = () => resolve(imgEl);
-    imgEl.onerror = reject;
-    imgEl.src = URL.createObjectURL(file);
-  });
-
-  let quality = 0.85;
-  let canvasWidth = img.width;
-  let canvasHeight = img.height;
-
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d')!;
-
-  const maxDim = 1024;
-
-  const tryCompress = (blob: Blob): boolean => blob.size <= MAX_FILE_SIZE;
-
-  let blob: Blob;
-
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    let w = canvasWidth;
-    let h = canvasHeight;
-    if (w > maxDim || h > maxDim) {
-      const ratio = Math.min(maxDim / w, maxDim / h);
-      w = Math.round(w * ratio);
-      h = Math.round(h * ratio);
-    }
-
-    canvas.width = w;
-    canvas.height = h;
-    ctx.clearRect(0, 0, w, h);
-
-    const sx = (w - w) / 2;
-    const sy = (h - h) / 2;
-    ctx.drawImage(img, sx, sy, w, h);
-
-    blob = await new Promise<Blob>((resolve) => {
-      canvas.toBlob(
-        (b) => resolve(b ?? new Blob([], { type: 'image/jpeg' })),
-        'image/jpeg',
-        quality,
-      );
-    });
-
-    if (tryCompress(blob)) break;
-
-    quality -= 0.1;
-    if (quality <= 0.1) {
-      canvasWidth = Math.round(canvasWidth * 0.8);
-      canvasHeight = Math.round(canvasHeight * 0.8);
-      quality = 0.7;
-    }
-  }
-
-  URL.revokeObjectURL(img.src);
-  return blob;
-}
-
 async function handleFileSelect(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
@@ -190,8 +124,13 @@ async function handleFileSelect(event: Event) {
   // 1) Local preview immediately
   localPreviewUrl.value = URL.createObjectURL(file);
 
-  // 2) Compress if > 1MB
-  const uploadFile = file.size > MAX_FILE_SIZE ? await compressImage(file) : file;
+  // 2) Compress if > 1MB, otherwise use original
+  const uploadFile = await imageCompression(file, {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1024,
+    useWebWorker: true,
+    fileType: 'image/jpeg',
+  });
 
   // 3) Emit the file blob — 由父组件在提交时上传
   emit('pendingFile', uploadFile);
