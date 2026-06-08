@@ -1121,7 +1121,7 @@ export const StudentScalarFieldEnum = {
   deletedAt: 'deletedAt',
   userId: 'userId',
   name: 'name',
-  avatarUrl: 'avatarUrl',
+  avatarKey: 'avatarKey',
   email: 'email',
   phone: 'phone',
   description: 'description',
