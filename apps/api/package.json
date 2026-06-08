@@ -21,6 +21,7 @@
     "@tutorhub/schema": "workspace:*",
     "hono": "^4.12.12",
     "jsonwebtoken": "^9.0.3",
+    "mime": "^4.1.0",
     "pg": "^8.20.0",
     "zod": "^4.4.3"
   },

@@ -1,6 +1,7 @@
 import { PutObjectCommand, DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'node:crypto';
+import mime from 'mime';
 import { s3Client, bucketName } from '@/shared/s3';
 import { prisma } from '@/shared/prisma';
 import { getEnv } from '@/shared/getEnv';
@@ -10,14 +11,7 @@ const AVATAR_BASE_URL = getEnv('AVATAR_BASE_URL', 'http://localhost:9000/tutorhu
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 
 function getExtension(contentType: string): string {
-  const map: Record<string, string> = {
-    'image/jpeg': 'jpg',
-    'image/png': 'png',
-    'image/gif': 'gif',
-    'image/webp': 'webp',
-    'image/avif': 'avif',
-  };
-  return map[contentType] ?? 'jpg';
+  return mime.getExtension(contentType) ?? 'jpg';
 }
 
 export const avatarService = {
