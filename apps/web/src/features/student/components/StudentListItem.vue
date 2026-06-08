@@ -8,8 +8,11 @@
     />
     <div
       v-else
-      class="flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm"
-      :style="{ background: getAvatarGradient(student.name) }"
+      class="flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold shadow-sm"
+      :style="{
+        background: getAvatarGradient(student.name),
+        color: getAvatarTextColor(student.name),
+      }"
     >
       {{ student.name.charAt(0) }}
     </div>
@@ -46,7 +49,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { formatDateTime } from '@/utils/date';
-import { getAvatarGradient } from '@/utils/avatar';
+import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
 import { useStudentDelete } from '@/features/student/hooks/useStudentDelete';
 import type { Student } from '@tutorhub/database';
 
