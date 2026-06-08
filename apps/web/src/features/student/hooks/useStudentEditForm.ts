@@ -41,7 +41,8 @@ export function useStudentEditForm(id: string) {
       formData.email !== (originalData.email ?? '') ||
       formData.phone !== (originalData.phone ?? '') ||
       formData.description !== (originalData.description ?? '') ||
-      pendingAvatarKey.value !== originalData.avatarKey
+      pendingAvatarKey.value !== originalData.avatarKey ||
+      pendingFile.value !== null
     );
   });
 
