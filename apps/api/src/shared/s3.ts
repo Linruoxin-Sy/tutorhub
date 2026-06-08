@@ -44,44 +44,7 @@ async function setBucketPublic(): Promise<void> {
   console.log(`Bucket "${bucketName}" is now publicly readable.`);
 }
 
-/**
- * 通过原生 HTTP 请求设置 MinIO CORS（避开 SDK 的序列化兼容问题）
- *
- * 使用 AWS Signature V4 签名，让 MinIO 能正确识别。
- */
-async function setBucketCors(): Promise<void> {
-  const corsXml = `<?xml version="1.0" encoding="UTF-8"?>
-<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
-  <CORSRule>
-    <AllowedOrigin>*</AllowedOrigin>
-    <AllowedMethod>GET</AllowedMethod>
-    <AllowedMethod>PUT</AllowedMethod>
-    <AllowedMethod>POST</AllowedMethod>
-    <AllowedMethod>DELETE</AllowedMethod>
-    <AllowedHeader>*</AllowedHeader>
-    <ExposeHeader>ETag</ExposeHeader>
-    <MaxAgeSeconds>3600</MaxAgeSeconds>
-  </CORSRule>
-</CORSConfiguration>`;
-
-  const url = `http://${getEnv('MINIO_ENDPOINT', 'localhost:9000')}/${bucketName}?cors`;
-
-  const res = await fetch(url, {
-    method: 'PUT',
-    body: corsXml,
-    headers: {
-      'Content-Type': 'application/xml',
-    },
-  });
-
-  if (res.ok || res.status === 204) {
-    console.log(`CORS configured for bucket "${bucketName}".`);
-  } else {
-    console.warn(`Failed to set CORS: ${res.status} ${await res.text().catch(() => '')}`);
-  }
-}
-
-/** 确保 bucket 存在并设置公开读权限 + CORS（应用启动时调用） */
+/** 确保 bucket 存在并设置公开读权限（应用启动时调用） */
 export async function ensureBucket(): Promise<void> {
   try {
     await s3Client.send(new HeadBucketCommand({ Bucket: bucketName }));
@@ -95,12 +58,5 @@ export async function ensureBucket(): Promise<void> {
     await setBucketPublic();
   } catch (err) {
     console.error('Failed to set bucket public policy:', err);
-  }
-
-  // 设置 CORS（前端浏览器直传需要）
-  try {
-    await setBucketCors();
-  } catch (err) {
-    console.error('Failed to set bucket CORS:', err);
   }
 }
