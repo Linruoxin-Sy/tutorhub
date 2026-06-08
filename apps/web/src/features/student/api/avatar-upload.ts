@@ -2,24 +2,33 @@ import { request } from '@/utils/request';
 import type { AvatarUploadUrlResponse } from '@tutorhub/schema';
 
 /**
- * 使用 Presigned PUT URL 将文件上传到 MinIO，返回 objectKey。
+ * 使用 Presigned POST 将文件上传到 MinIO，返回 objectKey。
  * 在表单提交时调用，上传失败则阻止提交。
+ *
+ * Policy 由后端生成，包含：
+ * - content-length-range（第三层防护：拒绝超限文件）
+ * - starts-with Content-Type（仅允许图片）
  */
 export async function uploadAvatarFile(file: Blob): Promise<string> {
   const contentType = file.type || 'image/webp';
 
-  // 1) 获取 Presigned PUT URL
+  // 1) 获取 Presigned POST 凭证（含签名 Policy）
   const { data: uploadData } = await request.post<AvatarUploadUrlResponse>('/avatar/upload-url', {
     contentType,
   });
 
-  const { url, objectKey } = uploadData;
+  const { url, fields, objectKey } = uploadData;
 
-  // 2) 直传 MinIO
+  // 2) 用 FormData 以 POST 方式提交（受 Policy 保护）
+  const formData = new FormData();
+  for (const [key, value] of Object.entries(fields)) {
+    formData.append(key, value);
+  }
+  formData.append('file', file);
+
   const res = await fetch(url, {
-    method: 'PUT',
-    body: file,
-    headers: { 'Content-Type': contentType },
+    method: 'POST',
+    body: formData,
   });
 
   if (!res.ok) {

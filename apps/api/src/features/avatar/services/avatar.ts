@@ -1,5 +1,5 @@
-import { PutObjectCommand, DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 import { randomUUID } from 'node:crypto';
 import { s3Client, bucketName } from '@/shared/s3';
 import { prisma } from '@/shared/prisma';
@@ -25,12 +25,11 @@ function deleteAvatarFile(objectKey: string): void {
 
 export const avatarService = {
   /**
-   * 生成 Presigned PUT URL
+   * 生成 Presigned POST 凭证
    *
-   * 安全说明：
-   * - URL 5 分钟过期
-   * - Key 由后端生成（avatars/{userId}/{uuid}.webp），用户无法指定
-   * - 上传完成后后端通过 HeadObject 做最终校验（大小、MIME、路径）
+   * Policy 包含：
+   * - content-length-range: 0 ~ 1MB → 拒绝超限文件
+   * - starts-with $Content-Type: image/ → 仅允许图片
    */
   async generateUploadUrl(contentType: string, userId: string) {
     if (!ALLOWED_MIME_PREFIXES.some((p) => contentType.startsWith(p))) {
@@ -43,15 +42,20 @@ export const avatarService = {
 
     const objectKey = `avatars/${userId}/${randomUUID()}.webp`;
 
-    const command = new PutObjectCommand({
+    const { url, fields } = await createPresignedPost(s3Client, {
       Bucket: bucketName,
       Key: objectKey,
-      ContentType: contentType,
+      Conditions: [
+        ['content-length-range', 0, MAX_FILE_SIZE],
+        ['starts-with', '$Content-Type', 'image/'],
+      ],
+      Expires: 300,
     });
 
-    const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+    // MinIO path-style 需要尾部斜杠
+    const postUrl = url.endsWith('/') ? url : `${url}/`;
 
-    return { url: uploadUrl, fields: {}, objectKey };
+    return { url: postUrl, fields, objectKey };
   },
 
   /**
