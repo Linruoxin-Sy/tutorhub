@@ -17,8 +17,8 @@ model Student {
   /// 学生姓名
   name String
 
-  /// 学生头像 URL
-  avatarUrl String? @map("avatar_url")
+  /// 学生头像对象存储 Key（如 avatars/uuid.jpg）
+  avatarKey String? @map("avatar_key")
 
   /// 学生邮箱
   email String?

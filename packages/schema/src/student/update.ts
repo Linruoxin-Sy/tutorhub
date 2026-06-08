@@ -8,7 +8,7 @@ const preprocessNullable = (schema: z.ZodType<string | null>) =>
 export const studentUpdateSchema = z
   .object({
     name: studentFields.name,
-    avatarUrl: preprocessNullable(studentFields.avatarUrl),
+    avatarKey: studentFields.avatarKey.optional(),
     email: preprocessNullable(studentFields.email),
     phone: preprocessNullable(studentFields.phone),
     description: preprocessNullable(studentFields.description),

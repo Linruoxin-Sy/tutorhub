@@ -12,6 +12,8 @@ import { rescheduleRecordRoute } from '@/features/reschedule-records/reschedule-
 import { studentCourseRoute } from '@/features/student-courses/student-course.route';
 import { studentRoute } from '@/features/student/routes';
 import { authRoute } from '@/features/auth/routes';
+import { avatarRoute } from '@/features/avatar/routes';
+import { ensureBucket } from '@/shared/s3';
 
 const publicApi = new Hono()
   .get('/', (c) => c.json({ data: { name: 'TutorHub API', version: 'v1' } }))
@@ -19,6 +21,7 @@ const publicApi = new Hono()
 
 const protectedApi = new Hono()
   .use(authMiddleware)
+  .route('/avatar', avatarRoute)
   .route('/student', studentRoute)
   .route('/courses', courseRoute)
   .route('/student-courses', studentCourseRoute)
@@ -64,6 +67,9 @@ const app = new Hono()
       404 as ContentfulStatusCode,
     ),
   );
+
+// 确保 MinIO bucket 存在
+ensureBucket().catch((err) => console.error('Failed to ensure bucket:', err));
 
 serve(
   {

@@ -4,6 +4,8 @@ import type {
   StudentCreateResponse,
   StudentUpdateResponse,
   StudentDeleteResponse,
+  AvatarUploadUrlResponse,
+  StudentAvatarUpdateResponse,
 } from '@tutorhub/schema';
 import type { z } from 'zod';
 import type { studentCreateSchema, studentUpdateSchema } from '@tutorhub/schema';
@@ -15,6 +17,8 @@ export type {
   StudentCreateResponse,
   StudentUpdateResponse,
   StudentDeleteResponse,
+  AvatarUploadUrlResponse,
+  StudentAvatarUpdateResponse,
 };
 
 /** Cursor / offset paginated fetch against the real backend API. */
@@ -53,5 +57,25 @@ export async function updateStudent(
 /** Delete (soft-delete) a student by ID. */
 export async function deleteStudent(id: string): Promise<StudentDeleteResponse> {
   const { data } = await request.delete<{ data: StudentDeleteResponse }>(`/student/${id}`);
+  return data.data;
+}
+
+/** 申请预签名上传地址 */
+export async function getUploadUrl(contentType: string): Promise<AvatarUploadUrlResponse> {
+  const { data } = await request.post<AvatarUploadUrlResponse>('/avatar/upload-url', {
+    contentType,
+  });
+  return data;
+}
+
+/** 保存学生头像 objectKey */
+export async function updateStudentAvatar(
+  id: string,
+  avatarKey: string,
+): Promise<StudentAvatarUpdateResponse> {
+  const { data } = await request.patch<{ data: StudentAvatarUpdateResponse }>(
+    `/avatar/student/${id}/avatar`,
+    { avatarKey },
+  );
   return data.data;
 }

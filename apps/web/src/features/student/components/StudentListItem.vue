@@ -1,6 +1,13 @@
 <template>
   <div class="flex items-center gap-3 whitespace-nowrap px-6 min-w-0">
+    <img
+      v-if="studentAvatarUrl"
+      :src="studentAvatarUrl"
+      class="size-9 shrink-0 rounded-full object-cover shadow-sm"
+      alt=""
+    />
     <div
+      v-else
       class="flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm"
       :style="{ background: getAvatarGradient(student.name) }"
     >
@@ -44,8 +51,12 @@ import { useStudentDelete } from '@/features/student/hooks/useStudentDelete';
 import type { Student } from '@tutorhub/database';
 
 const props = defineProps<{
-  student: Student;
+  student: Student & { avatarUrl?: string | null };
 }>();
+
+const studentAvatarUrl = computed(
+  () => (props.student as Record<string, unknown>).avatarUrl as string | undefined,
+);
 
 const router = useRouter();
 const { confirmAndDelete } = useStudentDelete();

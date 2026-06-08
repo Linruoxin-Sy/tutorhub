@@ -24,9 +24,14 @@
       <section
         class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
       >
-        <form class="grid gap-6 md:grid-cols-2" @submit.prevent="submit">
-          <!-- Left column -->
-          <div class="space-y-4">
+        <form class="space-y-6" @submit.prevent="submit">
+          <!-- Avatar row -->
+          <div class="flex justify-center">
+            <AvatarUploader :name="data.name" @pending-file="handlePendingFile" />
+          </div>
+
+          <!-- 4 fields in 2x2 grid -->
+          <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-2">
               <label for="name" class="text-sm font-medium text-gray-700 dark:text-gray-200">
                 Name <span class="text-red-500">*</span>
@@ -66,22 +71,6 @@
                 class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
               />
             </div>
-          </div>
-
-          <!-- Right column -->
-          <div class="space-y-4">
-            <div class="space-y-2">
-              <label for="avatarUrl" class="text-sm font-medium text-gray-700 dark:text-gray-200">
-                Avatar URL
-              </label>
-              <input
-                id="avatarUrl"
-                v-model.trim="data.avatarUrl"
-                type="url"
-                placeholder="https://example.com/avatar.jpg"
-                class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
-              />
-            </div>
 
             <div class="space-y-2">
               <label for="description" class="text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -98,16 +87,14 @@
           </div>
 
           <!-- Full-width submit -->
-          <div class="md:col-span-2">
-            <button
-              type="submit"
-              :disabled="isSubmitting"
-              class="inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
-            >
-              <span v-if="isSubmitting">Creating...</span>
-              <span v-else>Create Student</span>
-            </button>
-          </div>
+          <button
+            type="submit"
+            :disabled="isSubmitting"
+            class="inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            <span v-if="isSubmitting">Creating...</span>
+            <span v-else>Create Student</span>
+          </button>
         </form>
       </section>
     </div>
@@ -116,6 +103,7 @@
 
 <script setup lang="ts">
 import { useStudentCreateForm } from '@/features/student/hooks/useStudentCreateForm';
+import AvatarUploader from '@/components/AvatarUploader.vue';
 
-const { data, submit, isSubmitting } = useStudentCreateForm();
+const { data, submit, isSubmitting, handlePendingFile } = useStudentCreateForm();
 </script>

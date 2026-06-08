@@ -13,14 +13,16 @@
     "eslint": "eslint \"src/**/*.ts\" --ignore-pattern \"src/**/*.d.ts\""
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1063.0",
+    "@aws-sdk/s3-request-presigner": "^3.1063.0",
     "@hono/node-server": "^1.19.13",
     "@hono/zod-validator": "^0.8.0",
+    "@tutorhub/database": "workspace:*",
+    "@tutorhub/schema": "workspace:*",
     "hono": "^4.12.12",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.20.0",
-    "zod": "^4.4.3",
-    "@tutorhub/schema": "workspace:*",
-    "@tutorhub/database": "workspace:*"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.10",

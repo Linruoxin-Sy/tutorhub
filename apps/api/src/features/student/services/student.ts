@@ -2,6 +2,20 @@ import { ApiError } from '@/shared/api-error';
 import { prisma } from '@/shared/prisma';
 import type { studentCreateSchema, studentListSchema, studentUpdateSchema } from '@tutorhub/schema';
 import { z } from 'zod';
+import { getEnv } from '@/shared/getEnv';
+
+const AVATAR_BASE_URL = getEnv('AVATAR_BASE_URL', 'http://localhost:9000/tutorhub');
+
+function addAvatarUrl<T extends { avatarKey: string | null }>(item: T) {
+  return {
+    ...item,
+    avatarUrl: item.avatarKey ? `${AVATAR_BASE_URL}/${item.avatarKey}` : null,
+  };
+}
+
+function addAvatarUrlToList<T extends { avatarKey: string | null }>(items: T[]) {
+  return items.map(addAvatarUrl);
+}
 
 export const studentService = {
   async list(query: z.infer<typeof studentListSchema>, userId: string) {
@@ -9,7 +23,7 @@ export const studentService = {
 
     // offset 分页 — 直接跳过前 N 条
     if (query.offset !== undefined) {
-      const [items, total] = await Promise.all([
+      const [dbItems, total] = await Promise.all([
         prisma.student.findMany({
           where: { userId, deletedAt: null },
           orderBy: { createdAt: 'desc' },
@@ -19,6 +33,7 @@ export const studentService = {
         prisma.student.count({ where: { userId, deletedAt: null } }),
       ]);
 
+      const items = addAvatarUrlToList(dbItems);
       const lastItem = items.at(-1);
       const hasMore = query.offset + query.limit < total;
 
@@ -30,7 +45,7 @@ export const studentService = {
     }
 
     // cursor 分页
-    const [items, total] = await Promise.all([
+    const [dbItems, total] = await Promise.all([
       prisma.student.findMany({
         where: { userId, deletedAt: null },
         orderBy: { createdAt: 'desc' },
@@ -40,11 +55,12 @@ export const studentService = {
       prisma.student.count({ where: { userId, deletedAt: null } }),
     ]);
 
-    const hasMore = items.length > query.limit;
-    const result = hasMore ? items.slice(0, query.limit) : items;
-    const nextCursor = hasMore ? result[result.length - 1].id : null;
+    const hasMore = dbItems.length > query.limit;
+    const result = hasMore ? dbItems.slice(0, query.limit) : dbItems;
+    const items = addAvatarUrlToList(result);
+    const nextCursor = hasMore ? items[items.length - 1].id : null;
 
-    return { items: result, nextCursor, total };
+    return { items, nextCursor, total };
   },
 
   async getById(id: string, userId: string) {
@@ -54,21 +70,46 @@ export const studentService = {
       throw new ApiError(404, 'STUDENT_NOT_FOUND', 'Student not found');
     }
 
-    return student;
+    return addAvatarUrl(student);
   },
 
   async create(input: z.infer<typeof studentCreateSchema>, userId: string) {
-    return await prisma.student.create({ data: { ...input, userId } });
+    const { avatarKey, ...rest } = input;
+
+    const data: Record<string, unknown> = { ...rest, userId };
+    if (avatarKey) {
+      data.avatarKey = avatarKey;
+    }
+
+    const student = await prisma.student.create({
+      data: data as Parameters<typeof prisma.student.create>[0]['data'],
+    });
+
+    return addAvatarUrl(student);
   },
 
   async update(id: string, input: z.infer<typeof studentUpdateSchema>, userId: string) {
-    return await prisma.student.update({ where: { id, userId }, data: input });
+    const { avatarKey, ...rest } = input;
+
+    const data: Record<string, unknown> = { ...rest };
+    if (avatarKey) {
+      data.avatarKey = avatarKey;
+    }
+
+    const student = await prisma.student.update({
+      where: { id, userId },
+      data: data as Parameters<typeof prisma.student.update>[0]['data'],
+    });
+
+    return addAvatarUrl(student);
   },
 
   async delete(id: string, userId: string) {
-    return await prisma.student.update({
+    const student = await prisma.student.update({
       where: { id, userId },
       data: { deletedAt: new Date() },
     });
+
+    return addAvatarUrl(student);
   },
 };

@@ -7,10 +7,10 @@ const preprocessNullable = (schema: z.ZodType<string | null>) =>
 
 export const studentCreateSchema = z.object({
   name: studentFields.name,
-  avatarUrl: preprocessNullable(studentFields.avatarUrl),
+  avatarKey: z.string().nullable().optional(),
   email: preprocessNullable(studentFields.email),
   phone: preprocessNullable(studentFields.phone),
   description: preprocessNullable(studentFields.description),
 });
 
-export type StudentCreateResponse = Student;
+export type StudentCreateResponse = Student & { avatarUrl: string | null };
