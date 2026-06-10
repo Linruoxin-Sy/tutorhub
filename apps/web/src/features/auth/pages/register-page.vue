@@ -87,7 +87,7 @@
         <button
           type="submit"
           :disabled="isSubmitting"
-          class="inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
         >
           <span v-if="isSubmitting">Creating account...</span>
           <span v-else>Create account</span>
