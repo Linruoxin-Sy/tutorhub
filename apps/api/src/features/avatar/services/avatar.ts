@@ -81,7 +81,7 @@ export const avatarService = {
 
     // 2) 校验路径格式 — 防止注入 / 跨用户覆盖
     if (!isValidAvatarPath(objectKey, userId)) {
-      throw new ApiError(400, 'INVALID_AVATAR_PATH', '头像路径格式不合法');
+      throw new ApiError(400, 'INVALID_AVATAR_PATH', 'Invalid avatar path format');
     }
 
     // 3) 查询对象信息（校验文件是否存在、大小、MIME）
@@ -89,20 +89,20 @@ export const avatarService = {
     try {
       head = await s3Client.send(new HeadObjectCommand({ Bucket: bucketName, Key: objectKey }));
     } catch {
-      throw new ApiError(404, 'AVATAR_NOT_FOUND', '头像文件未找到，请重新上传');
+      throw new ApiError(404, 'AVATAR_NOT_FOUND', 'Avatar file not found, please re-upload');
     }
 
     // 4) 校验文件大小
     if (head.ContentLength != null && head.ContentLength > MAX_FILE_SIZE) {
       deleteAvatarFile(objectKey);
-      throw new ApiError(413, 'FILE_TOO_LARGE', '头像文件大小不能超过 1MB');
+      throw new ApiError(413, 'FILE_TOO_LARGE', 'Avatar file size must not exceed 1MB');
     }
 
     // 5) 校验 MIME 类型
     const contentType = head.ContentType ?? '';
     if (!ALLOWED_MIME_PREFIXES.some((p) => contentType.startsWith(p))) {
       deleteAvatarFile(objectKey);
-      throw new ApiError(400, 'INVALID_CONTENT_TYPE', '头像文件类型不合法');
+      throw new ApiError(400, 'INVALID_CONTENT_TYPE', 'Invalid avatar file type');
     }
 
     // 6) 更新数据库
