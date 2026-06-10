@@ -24,6 +24,8 @@ export async function uploadAvatarFile(file: Blob): Promise<string> {
   for (const [key, value] of Object.entries(fields)) {
     formData.append(key, value);
   }
+  // Policy 要求 $Content-Type 字段存在且值以 image/ 开头
+  formData.append('Content-Type', contentType);
   formData.append('file', file);
 
   const res = await fetch(url, {

@@ -5,11 +5,13 @@ import {
   studentCreateSchema,
   studentUpdateSchema,
   studentDeleteParamsSchema,
+  studentAvatarUpdateSchema,
   type StudentListResponse,
   type StudentDetailResponse,
   type StudentCreateResponse,
   type StudentUpdateResponse,
   type StudentDeleteResponse,
+  type StudentAvatarUpdateResponse,
 } from '@tutorhub/schema';
 import { zValidator } from '@/shared/validator';
 import { studentService } from '@/features/student/services/student';
@@ -42,6 +44,24 @@ export const studentRoute = new Hono()
       const input = c.req.valid('json');
       const userId = c.get('userId');
       const res: StudentUpdateResponse = await studentService.update(id, input, userId);
+      return c.json({ data: res });
+    },
+  )
+  .patch(
+    '/:id/avatar',
+    zValidator('param', studentDetailParamsSchema),
+    zValidator('json', studentAvatarUpdateSchema),
+    async (c) => {
+      const { id } = c.req.valid('param');
+      const { avatarKey } = c.req.valid('json');
+      const userId = c.get('userId');
+
+      const res: StudentAvatarUpdateResponse = await studentService.updateStudentAvatar(
+        id,
+        userId,
+        avatarKey,
+      );
+
       return c.json({ data: res });
     },
   )
