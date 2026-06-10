@@ -54,21 +54,6 @@
         <StudentListItemSkeleton v-else />
       </div>
     </div>
-
-    <!-- Bottom status indicator -->
-    <div class="border-t border-gray-200 px-5 py-3 text-center text-sm dark:border-[#343434]">
-      <span
-        v-if="isFetching"
-        class="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400"
-      >
-        <i class="i-lucide-loader-circle size-4 animate-spin"></i>
-        Loading data…
-      </span>
-      <span v-else-if="loadedCount >= total" class="text-gray-400 dark:text-gray-500">
-        All students loaded · {{ total }} total
-      </span>
-      <span v-else class="text-gray-400 dark:text-gray-500"> Scroll for more </span>
-    </div>
   </div>
 </template>
 
@@ -80,8 +65,7 @@ import StudentListItemSkeleton from '@/features/student/components/StudentListIt
 
 const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
 
-const { getItem, isLoaded, total, loadedCount, isLoading, isFetching, error, ensureRange } =
-  useStudentSparseQuery();
+const { getItem, isLoaded, total, isLoading, error, ensureRange } = useStudentSparseQuery();
 
 const scrollElement = ref<HTMLElement | null>(null);
 

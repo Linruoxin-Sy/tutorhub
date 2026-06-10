@@ -1,5 +1,5 @@
 import pLimit from 'p-limit';
-import { computed, readonly, ref, watchEffect } from 'vue';
+import { computed, readonly, ref, watch, watchEffect } from 'vue';
 import { useQueryClient, useQuery } from '@tanstack/vue-query';
 import type { Student } from '@tutorhub/database';
 import { fetchStudents, type StudentListResponse } from '../api/student-api';
@@ -87,15 +87,11 @@ export function useStudentSparseQuery() {
     }
   });
 
-  /** 当前已加载的总行数（用于底部状态栏） */
-  const loadedCount = computed(() => {
-    const allQueries = queryClient.getQueryCache().findAll({
-      queryKey: QUERY_KEY_PREFIX,
-    });
-    return allQueries.reduce((sum, query) => {
-      const data = query.state.data as StudentListResponse | undefined;
-      return sum + (data?.items.length ?? 0);
-    }, 0);
+  // total 确定后立即预取所有页面，避免因虚拟列表 watch 时机不可靠导致页面未加载
+  watch(total, (t) => {
+    if (t > 0) {
+      ensureRange(0, t - 1);
+    }
   });
 
   // 错误状态
@@ -112,9 +108,7 @@ export function useStudentSparseQuery() {
     getItem,
     isLoaded,
     total: readonly(total),
-    loadedCount,
     isLoading: computed(() => firstPageQuery.isLoading.value),
-    isFetching: computed(() => queryClient.isFetching({ queryKey: QUERY_KEY_PREFIX }) > 0),
     error: readonly(displayError),
     ensureRange,
   };
