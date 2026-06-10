@@ -97,7 +97,7 @@ export function useStudentEditForm(id: string) {
       try {
         finalAvatarKey = await uploadAvatarFile(pendingFile.value);
       } catch {
-        toast.error('头像上传失败，请重试');
+        toast.error('Avatar upload failed, please try again.');
         return;
       }
     }
