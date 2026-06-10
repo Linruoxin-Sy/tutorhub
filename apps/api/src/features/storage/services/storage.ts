@@ -6,15 +6,15 @@ import { ApiError } from '@/shared/api-error';
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 const ALLOWED_MIME_PREFIXES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
-export const avatarService = {
+export const storageService = {
   /**
-   * 生成 Presigned POST 凭证
+   * 生成学生头像的 Presigned POST 凭证
    *
    * Policy 包含：
    * - content-length-range: 0 ~ 1MB → 拒绝超限文件
    * - starts-with $Content-Type: image/ → 仅允许图片
    */
-  async generateUploadUrl(contentType: string, userId: string) {
+  async generateStudentAvatarUploadUrl(contentType: string, userId: string) {
     if (!ALLOWED_MIME_PREFIXES.some((p) => contentType.startsWith(p))) {
       throw new ApiError(
         400,
@@ -23,7 +23,7 @@ export const avatarService = {
       );
     }
 
-    const objectKey = `avatars/${userId}/${randomUUID()}.webp`;
+    const objectKey = `student-avatar/${userId}/${randomUUID()}.webp`;
 
     const { url, fields } = await createPresignedPost(s3Client, {
       Bucket: bucketName,

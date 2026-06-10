@@ -31,7 +31,7 @@ function addAvatarUrlToList<T extends { avatarKey: string | null }>(items: T[]) 
 
 /** 校验 objectKey 路径格式是否合法 */
 function isValidAvatarPath(objectKey: string, userId: string): boolean {
-  const pattern = new RegExp(`^avatars/${userId}/[a-f0-9-]+\\.webp$`);
+  const pattern = new RegExp(`^student-avatar/${userId}/[a-f0-9-]+\\.webp$`);
   return pattern.test(objectKey);
 }
 

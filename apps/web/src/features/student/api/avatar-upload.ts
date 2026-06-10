@@ -13,9 +13,12 @@ export async function uploadAvatarFile(file: Blob): Promise<string> {
   const contentType = file.type || 'image/webp';
 
   // 1) 获取 Presigned POST 凭证（含签名 Policy）
-  const { data: uploadData } = await request.post<AvatarUploadUrlResponse>('/avatar/upload-url', {
-    contentType,
-  });
+  const { data: uploadData } = await request.post<AvatarUploadUrlResponse>(
+    '/storage/student-avatar/upload-url',
+    {
+      contentType,
+    },
+  );
 
   const { url, fields, objectKey } = uploadData;
 

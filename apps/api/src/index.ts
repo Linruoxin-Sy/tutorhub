@@ -12,7 +12,7 @@ import { rescheduleRecordRoute } from '@/features/reschedule-records/reschedule-
 import { studentCourseRoute } from '@/features/student-courses/student-course.route';
 import { studentRoute } from '@/features/student/routes';
 import { authRoute } from '@/features/auth/routes';
-import { avatarRoute } from '@/features/avatar/routes';
+import { storageRoute } from '@/features/storage/routes';
 import { ensureBucket } from '@/shared/s3';
 
 const publicApi = new Hono()
@@ -21,7 +21,7 @@ const publicApi = new Hono()
 
 const protectedApi = new Hono()
   .use(authMiddleware)
-  .route('/avatar', avatarRoute)
+  .route('/storage', storageRoute)
   .route('/student', studentRoute)
   .route('/courses', courseRoute)
   .route('/student-courses', studentCourseRoute)

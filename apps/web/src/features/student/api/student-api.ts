@@ -62,9 +62,12 @@ export async function deleteStudent(id: string): Promise<StudentDeleteResponse> 
 
 /** 申请预签名上传地址 */
 export async function getUploadUrl(contentType: string): Promise<AvatarUploadUrlResponse> {
-  const { data } = await request.post<AvatarUploadUrlResponse>('/avatar/upload-url', {
-    contentType,
-  });
+  const { data } = await request.post<AvatarUploadUrlResponse>(
+    '/storage/student-avatar/upload-url',
+    {
+      contentType,
+    },
+  );
   return data;
 }
 
@@ -74,7 +77,7 @@ export async function updateStudentAvatar(
   avatarKey: string,
 ): Promise<StudentAvatarUpdateResponse> {
   const { data } = await request.patch<{ data: StudentAvatarUpdateResponse }>(
-    `/avatar/student/${id}/avatar`,
+    `/student/${id}/avatar`,
     { avatarKey },
   );
   return data.data;
