@@ -1,4 +1,4 @@
-import { cloneDeep, isEqual } from 'es-toolkit';
+import { cloneDeep, isEqual, isNil, mapValues, merge, pick } from 'es-toolkit';
 import { studentUpdateSchema } from '@tutorhub/schema';
 import { useLoading } from '@/hooks/useLoading';
 import { fetchStudentById, updateStudent } from '@/features/student/api/student-api';
@@ -6,28 +6,16 @@ import { uploadAvatarFile } from '@/features/student/api/avatar-upload';
 import { useQueryClient } from '@tanstack/vue-query';
 import { toast } from 'vue-sonner';
 
-interface StudentFormData {
-  name: string;
-  email: string;
-  phone: string;
-  description: string;
-}
-
-const DEFAULT_FORM_DATA: StudentFormData = {
+const DEFAULT_FORM_DATA = {
   name: '',
   email: '',
   phone: '',
   description: '',
 };
 
-function fromStudent(student: Awaited<ReturnType<typeof fetchStudentById>>): StudentFormData {
-  return {
-    name: student.name,
-    email: student.email ?? '',
-    phone: student.phone ?? '',
-    description: student.description ?? '',
-  };
-}
+const FORM_DATA_KEYS = Object.keys(DEFAULT_FORM_DATA) as (keyof typeof DEFAULT_FORM_DATA)[];
+
+type StudentFormData = typeof DEFAULT_FORM_DATA;
 
 export function useStudentEditForm(id: string) {
   const router = useRouter();
@@ -54,7 +42,8 @@ export function useStudentEditForm(id: string) {
   onMounted(async () => {
     try {
       const student = await fetchStudentById(id);
-      originalData.value = fromStudent(student);
+      // Only retain the fields related to the form and convert null values to ''
+      originalData.value = mapValues(pick(student, FORM_DATA_KEYS), (v) => (isNil(v) ? '' : v));
       formData.value = cloneDeep(originalData.value);
       currentAvatarUrl.value = student.avatarUrl ?? null;
     } catch {
@@ -81,16 +70,17 @@ export function useStudentEditForm(id: string) {
     if (!verify()) return;
 
     // 如果有待上传的头像文件，先上传到 MinIO
+    const avatarKeyObj: { avatarKey?: string } = {};
     if (pendingFile.value) {
       try {
-        await uploadAvatarFile(pendingFile.value);
+        avatarKeyObj.avatarKey = await uploadAvatarFile(pendingFile.value);
       } catch {
         toast.error('Avatar upload failed, please try again.');
         return;
       }
     }
 
-    const payload = cloneDeep(formData.value);
+    const payload = merge(cloneDeep(formData.value), avatarKeyObj);
     await updateStudent(id, payload);
     toast.success('Student updated successfully!');
     queryClient.invalidateQueries({ queryKey: ['students'] });
