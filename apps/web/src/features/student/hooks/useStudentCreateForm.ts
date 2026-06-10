@@ -1,3 +1,4 @@
+import { cloneDeep, merge } from 'es-toolkit';
 import { studentCreateSchema } from '@tutorhub/schema';
 import { useLoading } from '@/hooks/useLoading';
 import { createStudent } from '@/features/student/api/student-api';
@@ -5,29 +6,25 @@ import { uploadAvatarFile } from '@/features/student/api/avatar-upload';
 import { useQueryClient } from '@tanstack/vue-query';
 import { toast } from 'vue-sonner';
 
+const DEFAULT_FORM_DATA = {
+  name: '',
+  email: '',
+  phone: '',
+  description: '',
+};
+
+type StudentFormData = typeof DEFAULT_FORM_DATA;
+
 export function useStudentCreateForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const formData = reactive({
-    name: '',
-    email: '',
-    phone: '',
-    description: '',
-  });
+  const formData = ref<StudentFormData>(cloneDeep(DEFAULT_FORM_DATA));
 
   const pendingFile = ref<Blob | null>(null);
-  const avatarKey = ref<string | null>(null);
 
   const verify = (): boolean => {
-    const payload = {
-      name: formData.name,
-      email: formData.email || null,
-      phone: formData.phone || null,
-      avatarKey: avatarKey.value,
-      description: formData.description || null,
-    };
-    const result = studentCreateSchema.safeParse(payload);
+    const result = studentCreateSchema.safeParse(formData.value);
     if (!result.success) {
       for (const { message } of result.error.issues) {
         toast.warning(message);
@@ -41,24 +38,18 @@ export function useStudentCreateForm() {
   const submit = withLoading(async () => {
     if (!verify()) return;
 
-    // 如果有待上传的头像，先上传到 MinIO
-    let finalAvatarKey = avatarKey.value;
+    // 如果有待上传的头像，先上传到 MinIO 获取 objectKey
+    const avatarKeyObj: { avatarKey?: string } = {};
     if (pendingFile.value) {
       try {
-        finalAvatarKey = await uploadAvatarFile(pendingFile.value);
+        avatarKeyObj.avatarKey = await uploadAvatarFile(pendingFile.value);
       } catch {
         toast.error('Avatar upload failed, please try again.');
         return;
       }
     }
 
-    const payload = {
-      name: formData.name,
-      email: formData.email || null,
-      phone: formData.phone || null,
-      avatarKey: finalAvatarKey,
-      description: formData.description || null,
-    };
+    const payload = merge(cloneDeep(formData.value), avatarKeyObj);
     await createStudent(payload);
     toast.success('Student created successfully!');
     queryClient.invalidateQueries({ queryKey: ['students'] });
