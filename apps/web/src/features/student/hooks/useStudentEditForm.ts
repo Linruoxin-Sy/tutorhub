@@ -11,7 +11,6 @@ interface StudentFormData {
   email: string;
   phone: string;
   description: string;
-  avatarKey: string | null;
 }
 
 const DEFAULT_FORM_DATA: StudentFormData = {
@@ -19,7 +18,6 @@ const DEFAULT_FORM_DATA: StudentFormData = {
   email: '',
   phone: '',
   description: '',
-  avatarKey: null,
 };
 
 function fromStudent(student: Awaited<ReturnType<typeof fetchStudentById>>): StudentFormData {
@@ -28,13 +26,7 @@ function fromStudent(student: Awaited<ReturnType<typeof fetchStudentById>>): Stu
     email: student.email ?? '',
     phone: student.phone ?? '',
     description: student.description ?? '',
-    avatarKey: student.avatarKey as string | null,
   };
-}
-
-function toPayload(fd: StudentFormData) {
-  const { avatarKey, ...rest } = fd;
-  return { ...rest, avatarKey };
 }
 
 export function useStudentEditForm(id: string) {
@@ -43,9 +35,9 @@ export function useStudentEditForm(id: string) {
 
   const isInitialLoading = ref(true);
 
-  const originalData = ref<StudentFormData>({ ...DEFAULT_FORM_DATA });
+  const originalData = ref<StudentFormData>(cloneDeep(DEFAULT_FORM_DATA));
 
-  const formData = ref<StudentFormData>({ ...DEFAULT_FORM_DATA });
+  const formData = ref<StudentFormData>(cloneDeep(DEFAULT_FORM_DATA));
 
   /** 当前展示的头像 URL（加载时的原始值） */
   const currentAvatarUrl = ref<string | null>(null);
@@ -74,7 +66,7 @@ export function useStudentEditForm(id: string) {
   });
 
   const verify = (): boolean => {
-    const result = studentUpdateSchema.safeParse(toPayload(formData.value));
+    const result = studentUpdateSchema.safeParse(formData.value);
     if (!result.success) {
       for (const { message } of result.error.issues) {
         toast.warning(message);
@@ -89,17 +81,16 @@ export function useStudentEditForm(id: string) {
     if (!verify()) return;
 
     // 如果有待上传的头像文件，先上传到 MinIO
-    let finalAvatarKey = formData.value.avatarKey;
     if (pendingFile.value) {
       try {
-        finalAvatarKey = await uploadAvatarFile(pendingFile.value);
+        await uploadAvatarFile(pendingFile.value);
       } catch {
         toast.error('Avatar upload failed, please try again.');
         return;
       }
     }
 
-    const payload = toPayload({ ...formData.value, avatarKey: finalAvatarKey });
+    const payload = cloneDeep(formData.value);
     await updateStudent(id, payload);
     toast.success('Student updated successfully!');
     queryClient.invalidateQueries({ queryKey: ['students'] });

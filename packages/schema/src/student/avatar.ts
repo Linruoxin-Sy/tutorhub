@@ -24,5 +24,4 @@ export const studentAvatarUpdateSchema = z.object({
 export type StudentAvatarUpdateResponse = {
   id: string;
   avatarUrl: string;
-  avatarKey: string | null;
 };

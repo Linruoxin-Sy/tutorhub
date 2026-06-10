@@ -5,4 +5,4 @@ export const studentDeleteParamsSchema = z.object({
   id: z.string().min(1, 'id is required'),
 });
 
-export type StudentDeleteResponse = Student & { avatarUrl: string | null };
+export type StudentDeleteResponse = Omit<Student, 'avatarKey'> & { avatarUrl: string | null };

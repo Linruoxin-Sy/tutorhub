@@ -15,7 +15,7 @@ export const studentListSchema = z.object({
 });
 
 export type StudentListResponse = {
-  items: (Student & { avatarUrl: string | null })[];
+  items: (Omit<Student, 'avatarKey'> & { avatarUrl: string | null })[];
   nextCursor: string | null;
   total: number;
 };

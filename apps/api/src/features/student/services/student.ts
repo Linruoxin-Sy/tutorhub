@@ -19,9 +19,10 @@ function deleteAvatarFile(objectKey: string): void {
 }
 
 function addAvatarUrl<T extends { avatarKey: string | null }>(item: T) {
+  const { avatarKey, ...rest } = item;
   return {
-    ...item,
-    avatarUrl: item.avatarKey ? `${AVATAR_BASE_URL}/${item.avatarKey}` : null,
+    ...rest,
+    avatarUrl: avatarKey ? `${AVATAR_BASE_URL}/${avatarKey}` : null,
   };
 }
 
@@ -98,7 +99,6 @@ export const studentService = {
     return {
       id: updated.id,
       avatarUrl,
-      avatarKey: updated.avatarKey,
     };
   },
 

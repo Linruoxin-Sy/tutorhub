@@ -13,4 +13,4 @@ export const studentCreateSchema = z.object({
   description: preprocessNullable(studentFields.description),
 });
 
-export type StudentCreateResponse = Student & { avatarUrl: string | null };
+export type StudentCreateResponse = Omit<Student, 'avatarKey'> & { avatarUrl: string | null };

@@ -17,4 +17,4 @@ export const studentUpdateSchema = z
     message: 'Request body cannot be empty',
   });
 
-export type StudentUpdateResponse = Student;
+export type StudentUpdateResponse = Omit<Student, 'avatarKey'> & { avatarUrl: string | null };
