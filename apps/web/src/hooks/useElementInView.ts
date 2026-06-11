@@ -7,10 +7,8 @@ export function useElementInView(elRef: Ref<HTMLElement | null>) {
 
   const targetIsVisible = useElementVisibility(elRef);
 
-  watch(targetIsVisible, (visible) => {
-    if (visible && !isVisible.value) {
-      isVisible.value = true;
-    }
+  watch(targetIsVisible, () => {
+    isVisible.value = true;
   });
 
   return { isVisible };
