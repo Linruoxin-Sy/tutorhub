@@ -12,7 +12,7 @@ import {
   type CourseDeleteResponse,
 } from '@tutorhub/schema';
 import { zValidator } from '@/shared/validator';
-import { courseService } from '@/features/courses/services/course';
+import { courseService } from '@/features/course/services/course';
 
 export const courseRoute = new Hono()
   .get('/list', zValidator('query', courseListSchema), async (c) => {
