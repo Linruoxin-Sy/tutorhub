@@ -1,6 +1,8 @@
 <template>
   <article
-    class="flex h-36 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm dark:border-[#2f2f2f] dark:bg-[#202020]"
+    ref="cardRef"
+    class="flex h-36 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm transition-all duration-700 dark:border-[#2f2f2f] dark:bg-[#202020]"
+    :class="isVisible ? 'translate-x-0 opacity-100' : 'translate-x-32 opacity-0'"
   >
     <div class="px-5 py-4" :style="{ background: getAvatarGradient(course.name) }">
       <div class="flex items-start justify-between gap-4">
@@ -50,6 +52,8 @@ import { useRouter } from 'vue-router';
 import { formatDateTime } from '@/utils/date';
 import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
 import { useCourseDelete } from '@/features/course/hooks/useCourseDelete';
+import { useTemplateRef } from 'vue';
+import { useElementInView } from '@/hooks/useElementInView';
 import type { Course } from '@tutorhub/database';
 
 const props = defineProps<{
@@ -58,6 +62,9 @@ const props = defineProps<{
 
 const router = useRouter();
 const { confirmAndDelete } = useCourseDelete();
+
+const cardRef = useTemplateRef<HTMLElement>('cardRef');
+const { isVisible } = useElementInView(cardRef);
 
 async function handleDelete() {
   try {
