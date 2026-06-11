@@ -1,8 +1,8 @@
 <template>
   <article
     ref="cardRef"
-    class="flex h-36 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm transition-all duration-700 dark:border-[#2f2f2f] dark:bg-[#202020]"
-    :class="isVisible ? 'translate-x-0 opacity-100' : 'translate-x-32 opacity-0'"
+    class="flex h-36 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm transition-all duration-700 origin-bottom-right dark:border-[#2f2f2f] dark:bg-[#202020]"
+    :class="isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-32 scale-80 opacity-0'"
   >
     <div class="px-5 py-4" :style="{ background: getAvatarGradient(course.name) }">
       <div class="flex items-start justify-between gap-4">
