@@ -4,12 +4,6 @@ import { cors } from 'hono/cors';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { ApiError } from '@/shared/api-error';
 import { authMiddleware } from '@/features/auth/middlewares/auth';
-import { classRuleRoute } from '@/features/class-rules/class-rule.route';
-import { classSessionRoute } from '@/features/class-sessions/class-session.route';
-import { courseRoute } from '@/features/courses/course.route';
-import { leaveRecordRoute } from '@/features/leave-records/leave-record.route';
-import { rescheduleRecordRoute } from '@/features/reschedule-records/reschedule-record.route';
-import { studentCourseRoute } from '@/features/student-courses/student-course.route';
 import { studentRoute } from '@/features/student/routes';
 import { authRoute } from '@/features/auth/routes';
 import { storageRoute } from '@/features/storage/routes';
@@ -22,13 +16,7 @@ const publicApi = new Hono()
 const protectedApi = new Hono()
   .use(authMiddleware)
   .route('/storage', storageRoute)
-  .route('/student', studentRoute)
-  .route('/courses', courseRoute)
-  .route('/student-courses', studentCourseRoute)
-  .route('/class-sessions', classSessionRoute)
-  .route('/class-rules', classRuleRoute)
-  .route('/leave-records', leaveRecordRoute)
-  .route('/reschedule-records', rescheduleRecordRoute);
+  .route('/student', studentRoute);
 
 const app = new Hono()
   .use('*', cors())
