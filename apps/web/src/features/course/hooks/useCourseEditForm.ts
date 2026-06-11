@@ -1,9 +1,11 @@
-import { cloneDeep, isEqual, isNil, mapValues, merge, pick } from 'es-toolkit';
-import { courseUpdateSchema } from '@tutorhub/schema';
-import { useLoading } from '@/hooks/useLoading';
-import { fetchCourseById, updateCourse } from '@/features/course/api/course-api';
 import { useQueryClient } from '@tanstack/vue-query';
+import { cloneDeep, isEqual, isNil, mapValues, merge, pick } from 'es-toolkit';
 import { toast } from 'vue-sonner';
+
+import { courseUpdateSchema } from '@tutorhub/schema';
+
+import { fetchCourseById, updateCourse } from '@/features/course/api/course-api';
+import { useLoading } from '@/hooks/useLoading';
 
 const DEFAULT_FORM_DATA = {
   name: '',

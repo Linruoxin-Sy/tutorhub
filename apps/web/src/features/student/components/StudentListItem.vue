@@ -1,7 +1,7 @@
 <template>
   <div
     ref="cardRef"
-    class="transition-all duration-700 origin-bottom-right"
+    class="origin-bottom-right transition-all duration-700"
     :class="isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-16 scale-80 opacity-0'"
     style="
       display: grid;
@@ -10,7 +10,7 @@
       width: 100%;
     "
   >
-    <div class="flex items-center gap-3 whitespace-nowrap px-6 min-w-0">
+    <div class="flex min-w-0 items-center gap-3 px-6 whitespace-nowrap">
       <img
         v-if="studentAvatarUrl"
         :src="studentAvatarUrl"
@@ -31,16 +31,16 @@
         student.name
       }}</span>
     </div>
-    <div class="truncate whitespace-nowrap px-6 text-sm text-gray-600 dark:text-gray-300">
+    <div class="truncate px-6 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
       {{ student.email || '-' }}
     </div>
-    <div class="truncate whitespace-nowrap px-6 text-sm text-gray-600 dark:text-gray-300">
+    <div class="truncate px-6 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
       {{ student.phone || '-' }}
     </div>
-    <div class="truncate whitespace-nowrap px-6 text-sm text-gray-600 dark:text-gray-300">
+    <div class="truncate px-6 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
       {{ formatDateTime(student.createdAt) }}
     </div>
-    <div class="flex items-center justify-end gap-1 whitespace-nowrap px-6">
+    <div class="flex items-center justify-end gap-1 px-6 whitespace-nowrap">
       <button
         type="button"
         class="cursor-pointer rounded-lg p-1.5 text-blue-600 transition hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-500/10"

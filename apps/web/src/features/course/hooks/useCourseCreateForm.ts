@@ -1,9 +1,11 @@
-import { cloneDeep, merge } from 'es-toolkit';
-import { courseCreateSchema } from '@tutorhub/schema';
-import { useLoading } from '@/hooks/useLoading';
-import { createCourse } from '@/features/course/api/course-api';
 import { useQueryClient } from '@tanstack/vue-query';
+import { cloneDeep, merge } from 'es-toolkit';
 import { toast } from 'vue-sonner';
+
+import { courseCreateSchema } from '@tutorhub/schema';
+
+import { createCourse } from '@/features/course/api/course-api';
+import { useLoading } from '@/hooks/useLoading';
 
 const DEFAULT_FORM_DATA = {
   name: '',

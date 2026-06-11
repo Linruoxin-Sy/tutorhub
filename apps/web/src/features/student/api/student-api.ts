@@ -1,14 +1,17 @@
+import type { z } from 'zod';
+
 import type {
-  StudentListResponse,
-  StudentDetailResponse,
-  StudentCreateResponse,
-  StudentUpdateResponse,
-  StudentDeleteResponse,
   AvatarUploadUrlResponse,
   StudentAvatarUpdateResponse,
+  StudentCreateResponse,
+  studentCreateSchema,
+  StudentDeleteResponse,
+  StudentDetailResponse,
+  StudentListResponse,
+  StudentUpdateResponse,
+  studentUpdateSchema,
 } from '@tutorhub/schema';
-import type { z } from 'zod';
-import type { studentCreateSchema, studentUpdateSchema } from '@tutorhub/schema';
+
 import { request } from '@/utils/request';
 
 export type {

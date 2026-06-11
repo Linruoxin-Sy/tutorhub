@@ -1,20 +1,22 @@
 import { Hono } from 'hono';
+
 import {
-  studentListSchema,
-  studentDetailParamsSchema,
-  studentCreateSchema,
-  studentUpdateSchema,
-  studentDeleteParamsSchema,
   studentAvatarUpdateSchema,
-  type StudentListResponse,
-  type StudentDetailResponse,
-  type StudentCreateResponse,
-  type StudentUpdateResponse,
-  type StudentDeleteResponse,
+  studentCreateSchema,
+  studentDeleteParamsSchema,
+  studentDetailParamsSchema,
+  studentListSchema,
+  studentUpdateSchema,
   type StudentAvatarUpdateResponse,
+  type StudentCreateResponse,
+  type StudentDeleteResponse,
+  type StudentDetailResponse,
+  type StudentListResponse,
+  type StudentUpdateResponse,
 } from '@tutorhub/schema';
-import { zValidator } from '@/shared/validator';
+
 import { studentService } from '@/features/student/services/student';
+import { zValidator } from '@/shared/validator';
 
 export const studentRoute = new Hono()
   .get('/list', zValidator('query', studentListSchema), async (c) => {

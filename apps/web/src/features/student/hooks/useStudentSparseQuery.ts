@@ -1,6 +1,7 @@
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import pLimit from 'p-limit';
 import { computed, readonly, ref, watch, watchEffect } from 'vue';
-import { useQueryClient, useQuery } from '@tanstack/vue-query';
+
 import { fetchStudents, type StudentListResponse } from '../api/student-api';
 
 type StudentItem = StudentListResponse['items'][number];

@@ -1,6 +1,8 @@
 import axios from 'axios';
-import { getEnv } from './env';
+
 import router from '@/router';
+
+import { getEnv } from './env';
 
 export const request = axios.create({
   baseURL: getEnv('BASE_URL'),

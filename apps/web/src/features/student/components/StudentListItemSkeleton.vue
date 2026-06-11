@@ -7,7 +7,7 @@
       width: 100%;
     "
   >
-    <div class="flex items-center gap-3 whitespace-nowrap px-6">
+    <div class="flex items-center gap-3 px-6 whitespace-nowrap">
       <div class="size-9 shrink-0 animate-pulse rounded-full bg-gray-200 dark:bg-[#343434]" />
       <div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
     </div>

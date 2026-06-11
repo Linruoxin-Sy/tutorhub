@@ -1,12 +1,15 @@
-import type {
-  CourseListResponse,
-  CourseDetailResponse,
-  CourseCreateResponse,
-  CourseUpdateResponse,
-  CourseDeleteResponse,
-} from '@tutorhub/schema';
 import type { z } from 'zod';
-import type { courseCreateSchema, courseUpdateSchema } from '@tutorhub/schema';
+
+import type {
+  CourseCreateResponse,
+  courseCreateSchema,
+  CourseDeleteResponse,
+  CourseDetailResponse,
+  CourseListResponse,
+  CourseUpdateResponse,
+  courseUpdateSchema,
+} from '@tutorhub/schema';
+
 import { request } from '@/utils/request';
 
 export type {

@@ -2,12 +2,13 @@ import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
-import { ApiError } from '@/shared/api-error';
+
 import { authMiddleware } from '@/features/auth/middlewares/auth';
-import { studentRoute } from '@/features/student/routes';
-import { courseRoute } from '@/features/course/routes';
 import { authRoute } from '@/features/auth/routes';
+import { courseRoute } from '@/features/course/routes';
 import { storageRoute } from '@/features/storage/routes';
+import { studentRoute } from '@/features/student/routes';
+import { ApiError } from '@/shared/api-error';
 import { ensureBucket } from '@/shared/s3';
 
 const publicApi = new Hono()

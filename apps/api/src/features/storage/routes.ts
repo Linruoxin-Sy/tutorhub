@@ -1,7 +1,9 @@
 import { Hono } from 'hono';
+
 import { avatarUploadUrlRequestSchema, type AvatarUploadUrlResponse } from '@tutorhub/schema';
-import { zValidator } from '@/shared/validator';
+
 import { storageService } from '@/features/storage/services/storage';
+import { zValidator } from '@/shared/validator';
 
 export const storageRoute = new Hono()
   /** 申请学生头像的 Presigned POST 凭证 */

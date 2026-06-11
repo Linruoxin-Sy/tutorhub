@@ -1,10 +1,12 @@
-import { cloneDeep, isEqual, isNil, mapValues, merge, pick } from 'es-toolkit';
-import { studentUpdateSchema } from '@tutorhub/schema';
-import { useLoading } from '@/hooks/useLoading';
-import { fetchStudentById, updateStudent } from '@/features/student/api/student-api';
-import { uploadAvatarFile } from '@/features/student/api/avatar-upload';
 import { useQueryClient } from '@tanstack/vue-query';
+import { cloneDeep, isEqual, isNil, mapValues, merge, pick } from 'es-toolkit';
 import { toast } from 'vue-sonner';
+
+import { studentUpdateSchema } from '@tutorhub/schema';
+
+import { uploadAvatarFile } from '@/features/student/api/avatar-upload';
+import { fetchStudentById, updateStudent } from '@/features/student/api/student-api';
+import { useLoading } from '@/hooks/useLoading';
 
 const DEFAULT_FORM_DATA = {
   name: '',

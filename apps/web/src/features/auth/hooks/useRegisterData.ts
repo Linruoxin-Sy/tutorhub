@@ -1,7 +1,9 @@
+import { toast } from 'vue-sonner';
+
+import { registerSchema, type RegisterResponse } from '@tutorhub/schema';
+
 import { useLoading } from '@/hooks/useLoading';
 import { request } from '@/utils/request';
-import { registerSchema, type RegisterResponse } from '@tutorhub/schema';
-import { toast } from 'vue-sonner';
 
 export function useRegisterData() {
   const router = useRouter();

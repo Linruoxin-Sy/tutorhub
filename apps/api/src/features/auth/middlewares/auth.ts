@@ -1,4 +1,5 @@
 import type { MiddlewareHandler } from 'hono';
+
 import { JWTService } from '@/features/auth/services/jwt';
 import { ApiError } from '@/shared/api-error';
 

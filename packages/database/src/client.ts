@@ -1,9 +1,12 @@
 import 'dotenv/config';
-import { config as loadEnv } from 'dotenv';
+
 import { fileURLToPath } from 'node:url';
+
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../prisma/generated/client';
+import { config as loadEnv } from 'dotenv';
 import { env } from 'prisma/config';
+
+import { PrismaClient } from '../prisma/generated/client';
 
 loadEnv({ path: fileURLToPath(new URL('../.env', import.meta.url)) });
 

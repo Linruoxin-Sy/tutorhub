@@ -1,6 +1,7 @@
-import { deleteStudent } from '@/features/student/api/student-api';
 import { useQueryClient } from '@tanstack/vue-query';
 import { toast } from 'vue-sonner';
+
+import { deleteStudent } from '@/features/student/api/student-api';
 import { useDialog } from '@/hooks/useDialog';
 
 export function useStudentDelete() {

@@ -1,10 +1,12 @@
 import { DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
-import { ApiError } from '@/shared/api-error';
-import { prisma } from '@/shared/prisma';
-import { s3Client, bucketName } from '@/shared/s3';
-import type { studentCreateSchema, studentListSchema, studentUpdateSchema } from '@tutorhub/schema';
 import { z } from 'zod';
+
+import type { studentCreateSchema, studentListSchema, studentUpdateSchema } from '@tutorhub/schema';
+
+import { ApiError } from '@/shared/api-error';
 import { getEnv } from '@/shared/getEnv';
+import { prisma } from '@/shared/prisma';
+import { bucketName, s3Client } from '@/shared/s3';
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 const ALLOWED_MIME_PREFIXES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];

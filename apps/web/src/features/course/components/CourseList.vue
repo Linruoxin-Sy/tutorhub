@@ -11,7 +11,7 @@
 
   <div
     v-else-if="total === 0"
-    class="flex-1 flex items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+    class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
   >
     <div
       class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
@@ -20,7 +20,7 @@
     </div>
   </div>
 
-  <div v-else ref="scrollElement" class="flex-1 overflow-y-auto overflow-x-hidden p-5">
+  <div v-else ref="scrollElement" class="flex-1 overflow-x-hidden overflow-y-auto p-5">
     <div
       :style="{
         height: `${virtualizer.getTotalSize()}px`,

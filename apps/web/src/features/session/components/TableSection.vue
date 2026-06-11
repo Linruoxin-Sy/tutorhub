@@ -9,7 +9,7 @@
             <th
               v-for="column in columns"
               :key="column"
-              class="whitespace-nowrap px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400"
+              class="px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
             >
               {{ column }}
             </th>
@@ -22,7 +22,7 @@
             :key="session.course + session.date"
             class="transition hover:bg-gray-50 dark:hover:bg-[#202020]"
           >
-            <td class="whitespace-nowrap px-6 py-4">
+            <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center gap-2.5">
                 <div
                   :class="[
@@ -54,14 +54,14 @@
               </div>
             </td>
 
-            <td class="whitespace-nowrap px-6 py-4">
+            <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center gap-1.5">
                 <i class="i-lucide-clock size-3.5 text-gray-400"></i>
                 <span class="text-sm text-gray-700 dark:text-gray-300">{{ session.duration }}</span>
               </div>
             </td>
 
-            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+            <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
               {{ session.date }}
             </td>
 
@@ -69,7 +69,7 @@
               <span class="block truncate">{{ session.notes }}</span>
             </td>
 
-            <td class="whitespace-nowrap px-6 py-4">
+            <td class="px-6 py-4 whitespace-nowrap">
               <button
                 type="button"
                 class="rounded-lg p-1.5 text-red-500 transition-colors hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-500/10"

@@ -8,5 +8,19 @@
   "endOfLine": "lf",
   "bracketSpacing": true,
   "trailingComma": "all",
-  "plugins": []
+  "plugins": ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
+  "importOrder": [
+    "<BUILTIN_MODULES>",
+    "",
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^@tutorhub/",
+    "",
+    "^@/",
+    "",
+    "^[./]"
+  ],
+  "importOrderCaseSensitive": false,
+  "importOrderTypeScriptVersion": "6.0.0",
+  "importOrderParserPlugins": ["typescript", "jsx", "vue"]
 }

@@ -5,7 +5,7 @@
     >
       <div class="px-6 py-5">
         <p
-          class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-300"
+          class="text-xs font-semibold tracking-[0.2em] text-blue-600 uppercase dark:text-blue-300"
         >
           Welcome back
         </p>
@@ -23,7 +23,7 @@
             type="text"
             autocomplete="username"
             placeholder="Enter your email or phone number"
-            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
+            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
           />
         </div>
 
@@ -37,7 +37,7 @@
             type="password"
             autocomplete="current-password"
             placeholder="Enter your password"
-            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
+            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
           />
         </div>
 

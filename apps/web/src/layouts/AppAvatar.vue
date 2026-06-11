@@ -5,15 +5,15 @@
         <!-- img placeholder -->
         <div class="flex size-full items-center justify-center bg-gray-100 dark:bg-[#202020]"></div>
         <!-- img -->
-        <img src="" class="bg-cover bg-no-repeat bg-center object-cover" />
+        <img src="" class="bg-cover bg-center bg-no-repeat object-cover" />
       </div>
     </div>
     <ul
       tabindex="-1"
-      class="menu menu-sm dropdown-content bg-gray-100 dark:bg-[#202020] rounded-box z-1 mt-3 w-52 p-2 shadow"
+      class="menu menu-sm dropdown-content rounded-box z-1 mt-3 w-52 bg-gray-100 p-2 shadow dark:bg-[#202020]"
     >
       <li @click="logout">
-        <a class="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+        <a class="text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           >Logout</a
         >
       </li>

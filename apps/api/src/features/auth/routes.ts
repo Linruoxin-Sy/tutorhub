@@ -1,14 +1,16 @@
 import { Hono } from 'hono';
+
 import {
   loginSchema,
   registerSchema,
   type LoginResponse,
   type RegisterResponse,
 } from '@tutorhub/schema';
-import { zValidator } from '@/shared/validator';
+
 import { loginService } from '@/features/auth/services/login';
-import { ApiError } from '@/shared/api-error';
 import { registerService } from '@/features/auth/services/register';
+import { ApiError } from '@/shared/api-error';
+import { zValidator } from '@/shared/validator';
 
 export const authRoute = new Hono()
   .post('/login', zValidator('json', loginSchema), async (c) => {

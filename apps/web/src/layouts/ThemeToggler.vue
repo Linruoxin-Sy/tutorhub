@@ -2,11 +2,11 @@
   <div class="flex items-center gap-1 rounded-full bg-gray-100 p-1 dark:bg-[#202020]">
     <button
       type="button"
-      class="size-8 rounded-full flex items-center justify-center text-base transition cursor-pointer"
+      class="flex size-8 cursor-pointer items-center justify-center rounded-full text-base transition"
       :class="
         theme === 'system'
           ? 'bg-white text-gray-900 shadow-sm dark:bg-[#3a3a3a] dark:text-white'
-          : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-[#3a3a3a] dark:text-gray-300'
+          : 'text-gray-500 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-[#3a3a3a]'
       "
       aria-label="跟随系统主题"
       :aria-pressed="theme === 'system'"
@@ -17,11 +17,11 @@
 
     <button
       type="button"
-      class="size-8 rounded-full flex items-center justify-center text-base transition cursor-pointer"
+      class="flex size-8 cursor-pointer items-center justify-center rounded-full text-base transition"
       :class="
         theme === 'light'
           ? 'bg-white text-amber-500 shadow-sm dark:bg-[#3a3a3a]'
-          : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-[#3a3a3a] dark:text-gray-300'
+          : 'text-gray-500 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-[#3a3a3a]'
       "
       aria-label="亮色主题"
       :aria-pressed="theme === 'light'"
@@ -32,11 +32,11 @@
 
     <button
       type="button"
-      class="size-8 rounded-full flex items-center justify-center text-base transition cursor-pointer"
+      class="flex size-8 cursor-pointer items-center justify-center rounded-full text-base transition"
       :class="
         theme === 'dark'
           ? 'bg-white text-blue-500 shadow-sm dark:bg-[#3a3a3a]'
-          : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-[#3a3a3a] dark:text-gray-300'
+          : 'text-gray-500 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-[#3a3a3a]'
       "
       aria-label="暗色主题"
       :aria-pressed="theme === 'dark'"

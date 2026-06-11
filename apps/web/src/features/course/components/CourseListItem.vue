@@ -1,7 +1,7 @@
 <template>
   <article
     ref="cardRef"
-    class="flex h-36 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm transition-all duration-700 origin-bottom-right dark:border-[#2f2f2f] dark:bg-[#202020]"
+    class="flex h-36 origin-bottom-right flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm transition-all duration-700 dark:border-[#2f2f2f] dark:bg-[#202020]"
     :class="isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-32 scale-80 opacity-0'"
   >
     <div class="px-5 py-4" :style="{ background: getAvatarGradient(course.name) }">
@@ -27,7 +27,7 @@
           Created {{ formatDateTime(course.createdAt) }}
         </span>
       </div>
-      <div class="flex shrink-0 self-end gap-2">
+      <div class="flex shrink-0 gap-2 self-end">
         <button
           type="button"
           class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-blue-600 transition-colors hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-500/10"

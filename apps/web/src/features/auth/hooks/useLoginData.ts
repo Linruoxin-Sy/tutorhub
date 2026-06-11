@@ -1,8 +1,10 @@
+import { toast } from 'vue-sonner';
 import { z } from 'zod';
+
+import { emailLoginSchema, loginSchema, phoneLoginSchema } from '@tutorhub/schema';
+
 import { useUserStore } from '@/features/auth/stores/user';
 import { useLoading } from '@/hooks/useLoading';
-import { emailLoginSchema, loginSchema, phoneLoginSchema } from '@tutorhub/schema';
-import { toast } from 'vue-sonner';
 
 export function useLoginData() {
   const router = useRouter();

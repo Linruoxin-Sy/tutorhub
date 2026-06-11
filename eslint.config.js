@@ -1,11 +1,11 @@
-import { defineConfig } from 'eslint/config';
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
 import eslintPluginVue from 'eslint-plugin-vue';
-import vueParser from 'vue-eslint-parser';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
-import eslintConfigPrettier from 'eslint-config-prettier/flat';
+import tseslint from 'typescript-eslint';
+import vueParser from 'vue-eslint-parser';
 
 const ignores = ['**/dist/**', '**/node_modules/**', '.*', 'scripts/**', '**/*.d.ts'];
 

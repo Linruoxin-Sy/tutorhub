@@ -2,7 +2,7 @@
   <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div class="space-y-6">
       <section
-        class="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c] sm:flex-row sm:items-center sm:justify-between"
+        class="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
       >
         <div>
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Sessions</h1>
@@ -35,12 +35,12 @@
                 v-model="studentCourseId"
                 type="text"
                 placeholder="Filter by student course ID"
-                class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
+                class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
               />
               <input
                 v-model="classDate"
                 type="date"
-                class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
+                class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 transition outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
               />
             </div>
           </div>
@@ -67,7 +67,7 @@
                 <th
                   v-for="column in columns"
                   :key="column"
-                  class="whitespace-nowrap px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400"
+                  class="px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
                 >
                   {{ column }}
                 </th>
@@ -79,7 +79,7 @@
                 :key="session.id"
                 class="transition hover:bg-gray-50 dark:hover:bg-[#202020]"
               >
-                <td class="whitespace-nowrap px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center gap-3">
                     <div
                       class="flex size-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-blue-500 to-violet-600 text-sm font-semibold text-white shadow-sm"
@@ -91,19 +91,19 @@
                     }}</span>
                   </div>
                 </td>
-                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
                   {{ formatDate(session.classDate) }}
                 </td>
-                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
                   {{ formatTime(session.startTime) }} - {{ formatTime(session.endTime) }}
                 </td>
-                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
                   {{ formatDateTime(session.createdAt) }}
                 </td>
-                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
                   {{ session.studentCourseId }}
                 </td>
-                <td class="whitespace-nowrap px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center justify-end gap-1">
                     <button
                       type="button"

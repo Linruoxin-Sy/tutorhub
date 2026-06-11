@@ -1,4 +1,5 @@
 import { resolve } from 'path';
+
 import { defineConfig, type UserConfig } from 'vite';
 
 export const createBaseConfig = (packageDir: string): UserConfig =>

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import type { safeUser } from './user';
 
 export const emailLoginSchema = z.object({

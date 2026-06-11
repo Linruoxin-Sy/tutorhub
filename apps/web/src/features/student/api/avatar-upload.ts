@@ -1,5 +1,6 @@
-import { request } from '@/utils/request';
 import type { AvatarUploadUrlResponse } from '@tutorhub/schema';
+
+import { request } from '@/utils/request';
 
 /**
  * 使用 Presigned POST 将文件上传到 MinIO，返回 objectKey。

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import type { Course } from '@tutorhub/database';
 
 export const courseDeleteParamsSchema = z.object({

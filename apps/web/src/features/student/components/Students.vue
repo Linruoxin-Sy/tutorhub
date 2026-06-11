@@ -1,6 +1,6 @@
 <template>
   <section
-    class="flex-1 flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
+    class="flex flex-1 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
   >
     <div class="shrink-0 border-b border-gray-200 px-5 py-4 dark:border-[#343434]">
       <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -22,7 +22,7 @@
           </div> -->
           <button
             type="button"
-            class="inline-flex shrink-0 items-center cursor-pointer gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+            class="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
             @click="router.push('/student/create')"
           >
             <i class="i-lucide-plus size-4"></i>

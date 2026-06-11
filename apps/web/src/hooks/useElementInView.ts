@@ -1,6 +1,5 @@
-import type { Ref } from 'vue';
-import { ref, watch } from 'vue';
 import { useElementVisibility } from '@vueuse/core';
+import { ref, watch, type Ref } from 'vue';
 
 export function useElementInView(elRef: Ref<HTMLElement | null>) {
   const isVisible = ref(false);

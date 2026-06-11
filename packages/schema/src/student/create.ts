@@ -1,6 +1,8 @@
 import { z } from 'zod';
-import { studentFields } from './student';
+
 import type { Student } from '@tutorhub/database';
+
+import { studentFields } from './student';
 
 const preprocessNullable = (schema: z.ZodType<string | null>) =>
   z.preprocess((val) => (typeof val === 'string' && val === '' ? null : val), schema);

@@ -8,7 +8,7 @@
       <div class="px-5 py-4" :class="course.headerClass">
         <div class="flex items-start justify-between gap-4">
           <div>
-            <span class="text-xs font-semibold uppercase tracking-wider text-white/80">
+            <span class="text-xs font-semibold tracking-wider text-white/80 uppercase">
               {{ course.subject }}
             </span>
             <h3 class="mt-0.5 text-lg font-bold text-white">{{ course.title }}</h3>
@@ -27,7 +27,7 @@
 
         <div>
           <p
-            class="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+            class="mb-2 text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400"
           >
             Enrolled Students ({{ course.students.length }})
           </p>

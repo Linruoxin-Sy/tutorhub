@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import type { Student } from '@tutorhub/database';
 
 export const studentDetailParamsSchema = z.object({

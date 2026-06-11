@@ -1,10 +1,12 @@
-import { cloneDeep, merge } from 'es-toolkit';
-import { studentCreateSchema } from '@tutorhub/schema';
-import { useLoading } from '@/hooks/useLoading';
-import { createStudent } from '@/features/student/api/student-api';
-import { uploadAvatarFile } from '@/features/student/api/avatar-upload';
 import { useQueryClient } from '@tanstack/vue-query';
+import { cloneDeep, merge } from 'es-toolkit';
 import { toast } from 'vue-sonner';
+
+import { studentCreateSchema } from '@tutorhub/schema';
+
+import { uploadAvatarFile } from '@/features/student/api/avatar-upload';
+import { createStudent } from '@/features/student/api/student-api';
+import { useLoading } from '@/hooks/useLoading';
 
 const DEFAULT_FORM_DATA = {
   name: '',

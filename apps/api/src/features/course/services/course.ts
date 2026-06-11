@@ -1,7 +1,9 @@
-import { prisma } from '@/shared/prisma';
-import { ApiError } from '@/shared/api-error';
-import type { courseCreateSchema, courseListSchema, courseUpdateSchema } from '@tutorhub/schema';
 import { z } from 'zod';
+
+import type { courseCreateSchema, courseListSchema, courseUpdateSchema } from '@tutorhub/schema';
+
+import { ApiError } from '@/shared/api-error';
+import { prisma } from '@/shared/prisma';
 
 export const courseService = {
   async list(query: z.infer<typeof courseListSchema>) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen bg-gray-100 dark:bg-[#1b1b1b] text-gray-900 dark:text-white flex flex-col">
+  <div class="flex h-screen flex-col bg-gray-100 text-gray-900 dark:bg-[#1b1b1b] dark:text-white">
     <div v-if="!route.meta.hideAppHeader" class="h-20 shrink-0">
       <AppHeader />
     </div>

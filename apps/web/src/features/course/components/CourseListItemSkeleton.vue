@@ -10,7 +10,7 @@
         <div class="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-[#343434]"></div>
         <div class="h-3 w-1/3 animate-pulse rounded bg-gray-200 dark:bg-[#343434]"></div>
       </div>
-      <div class="flex shrink-0 self-end gap-2">
+      <div class="flex shrink-0 gap-2 self-end">
         <div class="h-8 w-16 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]"></div>
         <div class="h-8 w-18 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]"></div>
       </div>

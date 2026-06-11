@@ -1,7 +1,9 @@
-import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 import { randomUUID } from 'node:crypto';
-import { s3Client, bucketName } from '@/shared/s3';
+
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
+
 import { ApiError } from '@/shared/api-error';
+import { bucketName, s3Client } from '@/shared/s3';
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 const ALLOWED_MIME_PREFIXES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];

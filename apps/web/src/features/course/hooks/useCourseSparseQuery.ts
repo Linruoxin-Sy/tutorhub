@@ -1,7 +1,9 @@
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import pLimit from 'p-limit';
 import { computed, readonly, ref, watch, watchEffect } from 'vue';
-import { useQueryClient, useQuery } from '@tanstack/vue-query';
+
 import type { Course } from '@tutorhub/database';
+
 import { fetchCourses, type CourseListResponse } from '../api/course-api';
 
 const PAGE_SIZE = 20;

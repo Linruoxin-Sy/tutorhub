@@ -1,6 +1,7 @@
-import { deleteCourse } from '@/features/course/api/course-api';
 import { useQueryClient } from '@tanstack/vue-query';
 import { toast } from 'vue-sonner';
+
+import { deleteCourse } from '@/features/course/api/course-api';
 import { useDialog } from '@/hooks/useDialog';
 
 export function useCourseDelete() {

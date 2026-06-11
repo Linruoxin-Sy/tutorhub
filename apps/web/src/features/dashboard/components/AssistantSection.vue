@@ -51,12 +51,12 @@
         </div>
       </div>
 
-      <div class="border-t border-gray-100 px-4 pb-3 pt-2 dark:border-[#343434]">
+      <div class="border-t border-gray-100 px-4 pt-2 pb-3 dark:border-[#343434]">
         <div class="flex gap-2">
           <input
             type="text"
             placeholder="Enter a question, e.g. How are the students performing?"
-            class="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
+            class="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 transition outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
           />
           <button
             type="button"

@@ -1,18 +1,20 @@
 import { Hono } from 'hono';
+
 import {
-  courseListSchema,
-  courseDetailParamsSchema,
   courseCreateSchema,
-  courseUpdateSchema,
   courseDeleteParamsSchema,
-  type CourseListResponse,
-  type CourseDetailResponse,
+  courseDetailParamsSchema,
+  courseListSchema,
+  courseUpdateSchema,
   type CourseCreateResponse,
-  type CourseUpdateResponse,
   type CourseDeleteResponse,
+  type CourseDetailResponse,
+  type CourseListResponse,
+  type CourseUpdateResponse,
 } from '@tutorhub/schema';
-import { zValidator } from '@/shared/validator';
+
 import { courseService } from '@/features/course/services/course';
+import { zValidator } from '@/shared/validator';
 
 export const courseRoute = new Hono()
   .get('/list', zValidator('query', courseListSchema), async (c) => {
