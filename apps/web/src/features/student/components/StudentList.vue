@@ -11,7 +11,7 @@
   >
     No students found.
   </div>
-  <div v-else ref="scrollElement" class="flex-1 overflow-auto">
+  <div v-else ref="scrollElement" class="flex-1 overflow-y-auto overflow-x-hidden">
     <!-- Sticky header — CSS Grid keeps columns aligned with virtual rows -->
     <div
       class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
@@ -38,9 +38,6 @@
         :key="String(virtualRow.key)"
         class="border-b border-gray-200 transition hover:bg-gray-50 dark:border-[#343434] dark:hover:bg-[#202020]"
         :style="{
-          display: 'grid',
-          gridTemplateColumns: '1.5fr 2fr 1.2fr 1.2fr 0.8fr',
-          alignItems: 'center',
           position: 'absolute',
           top: 0,
           left: 0,
