@@ -25,6 +25,8 @@ export async function fetchCourses(params: {
   cursor?: string;
   offset?: number;
   limit?: number;
+  name?: string;
+  status?: string;
 }): Promise<CourseListResponse> {
   const { data } = await request.get<CourseListResponse>('/course/list', { params });
   return data;

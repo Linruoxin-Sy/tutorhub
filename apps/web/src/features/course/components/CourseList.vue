@@ -54,7 +54,18 @@ import { useCourseSparseQuery } from '@/features/course/hooks/useCourseSparseQue
 import CourseListItem from '@/features/course/components/CourseListItem.vue';
 import CourseListItemSkeleton from '@/features/course/components/CourseListItemSkeleton.vue';
 
-const { getItem, isLoaded, total, isLoading, error, ensureRange } = useCourseSparseQuery();
+const props = defineProps<{
+  searchTerm?: string;
+  statusTerm?: string;
+}>();
+
+const searchRef = computed(() => props.searchTerm ?? '');
+const statusRef = computed(() => props.statusTerm ?? '');
+
+const { getItem, isLoaded, total, isLoading, error, ensureRange } = useCourseSparseQuery({
+  searchTerm: searchRef,
+  statusTerm: statusRef,
+});
 
 const scrollElement = ref<HTMLElement | null>(null);
 

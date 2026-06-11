@@ -3,7 +3,7 @@
     class="flex flex-1 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
   >
     <div class="shrink-0 border-b border-gray-200 px-5 py-4 dark:border-[#343434]">
-      <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Courses</h1>
         </div>
@@ -44,12 +44,13 @@
       </div>
     </div>
 
-    <CourseList />
+    <CourseList :search-term="debouncedSearch" :status-term="status" />
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { debounce } from 'es-toolkit';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import CourseList from '@/features/course/components/CourseList.vue';
 
@@ -57,9 +58,17 @@ const router = useRouter();
 
 const search = ref('');
 const status = ref<'ACTIVE' | 'DISABLED' | ''>('');
-const page = ref(1);
+const debouncedSearch = ref('');
 
-watch([search, status], () => {
-  page.value = 1;
+const updateDebouncedSearch = debounce((val: string) => {
+  debouncedSearch.value = val;
+}, 300);
+
+watch(search, (val) => {
+  updateDebouncedSearch(val);
+});
+
+onUnmounted(() => {
+  updateDebouncedSearch.cancel();
 });
 </script>

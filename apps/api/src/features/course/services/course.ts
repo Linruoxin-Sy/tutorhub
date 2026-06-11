@@ -9,15 +9,22 @@ export const courseService = {
   async list(query: z.infer<typeof courseListSchema>) {
     const take = query.limit + 1;
 
+    // 基础 where 条件：名称模糊匹配 + 状态筛选
+    const baseWhere: NonNullable<Parameters<typeof prisma.course.findMany>[0]>['where'] = {
+      ...(query.name ? { name: { contains: query.name, mode: 'insensitive' } } : {}),
+      ...(query.status ? { status: query.status } : {}),
+    };
+
     // offset 分页
     if (query.offset !== undefined) {
       const [dbItems, total] = await Promise.all([
         prisma.course.findMany({
+          where: baseWhere,
           orderBy: { createdAt: 'desc' },
           take: query.limit,
           skip: query.offset,
         }),
-        prisma.course.count(),
+        prisma.course.count({ where: baseWhere }),
       ]);
 
       const lastItem = dbItems.at(-1);
@@ -33,11 +40,12 @@ export const courseService = {
     // cursor 分页
     const [dbItems, total] = await Promise.all([
       prisma.course.findMany({
+        where: baseWhere,
         orderBy: { createdAt: 'desc' },
         take,
         ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       }),
-      prisma.course.count(),
+      prisma.course.count({ where: baseWhere }),
     ]);
 
     const hasMore = dbItems.length > query.limit;
