@@ -31,12 +31,12 @@ const navItems: NavItem[] = [
   },
   {
     name: 'Student',
-    to: '/student/list',
+    to: '/student',
     icon: 'i-lucide-users',
   },
   {
     name: 'Course',
-    to: '/course/list',
+    to: '/course',
     icon: 'i-lucide-book-open',
   },
   {

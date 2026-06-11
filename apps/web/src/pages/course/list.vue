@@ -1,3 +1,9 @@
+<route lang="json">
+{
+  "path": "/course"
+}
+</route>
+
 <template>
   <CourseListPage />
 </template>

@@ -1,5 +1,6 @@
 <route lang="json">
 {
+  "path": "/register",
   "meta": {
     "hideAppHeader": true,
     "publicRoute": true

@@ -1,5 +1,6 @@
 <route lang="json">
 {
+  "path": "/login",
   "meta": {
     "hideAppHeader": true,
     "publicRoute": true

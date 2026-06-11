@@ -50,7 +50,7 @@ export function useStudentEditForm(id: string) {
       currentAvatarUrl.value = student.avatarUrl ?? null;
     } catch {
       toast.error('Failed to load student data');
-      router.push('/student/list');
+      router.push('/student');
     } finally {
       isInitialLoading.value = false;
     }
@@ -86,7 +86,7 @@ export function useStudentEditForm(id: string) {
     await updateStudent(id, payload);
     toast.success('Student updated successfully!');
     queryClient.invalidateQueries({ queryKey: ['students'] });
-    router.push('/student/list');
+    router.push('/student');
   });
 
   /** 用户选择头像后暂存文件，不立即上传到 MinIO */
