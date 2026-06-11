@@ -42,7 +42,7 @@ export function useCourseEditForm(id: string) {
       formData.value = cloneDeep(originalData.value);
     } catch {
       toast.error('Failed to load course data');
-      router.push('/course');
+      router.push('/course/list');
     } finally {
       isInitialLoading.value = false;
     }
@@ -67,7 +67,7 @@ export function useCourseEditForm(id: string) {
     await updateCourse(id, payload);
     toast.success('Course updated successfully!');
     queryClient.invalidateQueries({ queryKey: ['courses'] });
-    router.push('/course');
+    router.push('/course/list');
   });
 
   return {

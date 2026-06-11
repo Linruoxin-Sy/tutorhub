@@ -55,7 +55,7 @@ export function useStudentCreateForm() {
     await createStudent(payload);
     toast.success('Student created successfully!');
     queryClient.invalidateQueries({ queryKey: ['students'] });
-    router.push('/student');
+    router.push('/student/list');
   });
 
   function handlePendingFile(file: Blob | null) {
