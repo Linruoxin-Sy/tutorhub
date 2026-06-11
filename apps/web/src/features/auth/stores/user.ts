@@ -11,6 +11,7 @@ const initialUserState: UserState = {
   name: '',
   createdAt: new Date(),
   updatedAt: new Date(),
+  deletedAt: null,
   email: null,
   phone: null,
   avatarUrl: '',
