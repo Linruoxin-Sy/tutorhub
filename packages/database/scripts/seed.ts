@@ -2,6 +2,103 @@ import { createHash, randomBytes } from 'node:crypto';
 import { prisma } from '../src/client';
 
 // ---------------------------------------------------------------------------
+// Course seed data generators
+// ---------------------------------------------------------------------------
+
+const COURSE_ADJECTIVES = [
+  'Advanced',
+  'Introduction to',
+  'Fundamentals of',
+  'Principles of',
+  'Modern',
+  'Applied',
+  'Comprehensive',
+  'Essential',
+  'Practical',
+  'Theoretical',
+  'Intermediate',
+  'Foundations of',
+  'Advanced Topics in',
+  'Special Topics in',
+  'Survey of',
+] as const;
+
+const COURSE_SUBJECTS = [
+  'Algebra',
+  'Geometry',
+  'Calculus',
+  'Statistics',
+  'Physics',
+  'Chemistry',
+  'Biology',
+  'Astronomy',
+  'Geology',
+  'English Literature',
+  'World History',
+  'Philosophy',
+  'Psychology',
+  'Sociology',
+  'Economics',
+  'Computer Science',
+  'Data Structures',
+  'Algorithms',
+  'Machine Learning',
+  'Artificial Intelligence',
+  'Web Development',
+  'Database Systems',
+  'Network Security',
+  'Software Engineering',
+  'Operating Systems',
+  'Linear Algebra',
+  'Discrete Mathematics',
+  'Probability Theory',
+  'Thermodynamics',
+  'Quantum Mechanics',
+  'Organic Chemistry',
+  'Cell Biology',
+  'Genetics',
+  'Ecology',
+  'Neuroscience',
+  'Linguistics',
+  'Anthropology',
+  'Political Science',
+  'Art History',
+  'Music Theory',
+] as const;
+
+const COURSE_DESCRIPTIONS = [
+  'A comprehensive exploration of core concepts and modern applications.',
+  'Build a strong foundation with hands-on projects and real-world examples.',
+  'Covers both theoretical frameworks and practical implementation strategies.',
+  'An in-depth study designed for learners seeking advanced knowledge.',
+  'Learn essential techniques and best practices from industry experts.',
+  'Combines rigorous theory with practical exercises to reinforce learning.',
+  'Designed to provide a thorough understanding of key principles.',
+  'Explores cutting-edge developments and emerging trends in the field.',
+  'A structured approach to mastering complex topics step by step.',
+  'Focuses on developing critical thinking and problem-solving skills.',
+] as const;
+
+function pick<T>(arr: readonly T[], index: number): T {
+  return arr[index % arr.length];
+}
+
+function pseudoRandom(seed: number): number {
+  const x = Math.sin(seed * 9301 + 49297) * 49297;
+  return x - Math.floor(x);
+}
+
+function buildCourse(index: number) {
+  const adj = pick(COURSE_ADJECTIVES, index);
+  const subject = pick(COURSE_SUBJECTS, Math.floor(index / COURSE_ADJECTIVES.length));
+  const descIdx = Math.floor(pseudoRandom(index) * COURSE_DESCRIPTIONS.length);
+  const description = COURSE_DESCRIPTIONS[descIdx];
+  const status = pseudoRandom(index + 1000) > 0.15 ? 'ACTIVE' : 'DISABLED';
+
+  return { name: `${adj} ${subject}`, description, status } as const;
+}
+
+// ---------------------------------------------------------------------------
 // Password helpers (SHA-256 with salt, matching apps/api passwordService)
 // ---------------------------------------------------------------------------
 
@@ -69,10 +166,6 @@ const LAST_NAMES = [
   'Rodriguez',
 ] as const;
 
-function pick<T>(arr: readonly T[], index: number): T {
-  return arr[index % arr.length];
-}
-
 function buildStudent(index: number, userId: string) {
   const firstName = pick(FIRST_NAMES, index);
   const lastName = pick(LAST_NAMES, Math.floor(index / FIRST_NAMES.length) + index);
@@ -93,9 +186,10 @@ function buildStudent(index: number, userId: string) {
 async function main() {
   console.log('🌱 Seeding database …');
 
-  // 1. Clean existing data (CASCADE will remove related students)
-  await prisma.user.deleteMany();
-  console.log('  ✓ Cleared existing users');
+  // 1. Clean existing data
+  await prisma.course.deleteMany();
+  await prisma.user.deleteMany(); // CASCADE will remove related students
+  console.log('  ✓ Cleared existing data');
 
   // 2. Create admin user
   const salt = await generateSalt();
@@ -119,6 +213,20 @@ async function main() {
     skipDuplicates: true,
   });
   console.log(`  ✓ Created ${students.length} students`);
+
+  // 4. Create 10,000 courses
+  const courses = Array.from({ length: 10_000 }, (_, i) => buildCourse(i));
+
+  // Batch insert in chunks to avoid overwhelming the database
+  const CHUNK_SIZE = 500;
+  for (let i = 0; i < courses.length; i += CHUNK_SIZE) {
+    const chunk = courses.slice(i, i + CHUNK_SIZE);
+    await prisma.course.createMany({
+      data: chunk,
+      skipDuplicates: true,
+    });
+  }
+  console.log(`  ✓ Created ${courses.length} courses`);
 
   console.log('✅ Seed complete');
 }

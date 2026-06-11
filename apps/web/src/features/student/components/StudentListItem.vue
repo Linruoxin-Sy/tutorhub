@@ -53,8 +53,11 @@ import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
 import { useStudentDelete } from '@/features/student/hooks/useStudentDelete';
 import type { Student } from '@tutorhub/database';
 
+/** 从 API 列表接口返回的学生对象不包含 avatarKey，但包含 avatarUrl */
+type StudentListItemData = Omit<Student, 'avatarKey'> & { avatarUrl?: string | null };
+
 const props = defineProps<{
-  student: Student & { avatarUrl?: string | null };
+  student: StudentListItemData;
 }>();
 
 const studentAvatarUrl = computed(

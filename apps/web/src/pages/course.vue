@@ -3,5 +3,5 @@
 </template>
 
 <script setup lang="ts">
-import CoursePage from '@/features/course/pages/CoursePage.vue';
+import CoursePage from '@/features/course/pages/course-page.vue';
 </script>

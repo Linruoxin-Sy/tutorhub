@@ -5,6 +5,7 @@ import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { ApiError } from '@/shared/api-error';
 import { authMiddleware } from '@/features/auth/middlewares/auth';
 import { studentRoute } from '@/features/student/routes';
+import { courseRoute } from '@/features/courses/routes';
 import { authRoute } from '@/features/auth/routes';
 import { storageRoute } from '@/features/storage/routes';
 import { ensureBucket } from '@/shared/s3';
@@ -16,6 +17,7 @@ const publicApi = new Hono()
 const protectedApi = new Hono()
   .use(authMiddleware)
   .route('/storage', storageRoute)
+  .route('/course', courseRoute)
   .route('/student', studentRoute);
 
 const app = new Hono()
