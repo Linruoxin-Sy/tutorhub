@@ -38,6 +38,8 @@
         :key="String(virtualRow.key)"
         class="border-b border-gray-200 transition hover:bg-gray-50 dark:border-[#343434] dark:hover:bg-[#202020]"
         :style="{
+          display: 'flex',
+          alignItems: 'center',
           position: 'absolute',
           top: 0,
           left: 0,

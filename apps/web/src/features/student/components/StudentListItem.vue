@@ -3,7 +3,12 @@
     ref="cardRef"
     class="transition-all duration-700 origin-bottom-right"
     :class="isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-16 scale-80 opacity-0'"
-    style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 0.8fr; align-items: center"
+    style="
+      display: grid;
+      grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 0.8fr;
+      align-items: center;
+      width: 100%;
+    "
   >
     <div class="flex items-center gap-3 whitespace-nowrap px-6 min-w-0">
       <img
