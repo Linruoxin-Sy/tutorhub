@@ -5,7 +5,7 @@ import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { ApiError } from '@/shared/api-error';
 import { authMiddleware } from '@/features/auth/middlewares/auth';
 import { studentRoute } from '@/features/student/routes';
-import { courseRoute } from '@/features/courses/routes';
+import { courseRoute } from '@/features/course/routes';
 import { authRoute } from '@/features/auth/routes';
 import { storageRoute } from '@/features/storage/routes';
 import { ensureBucket } from '@/shared/s3';
