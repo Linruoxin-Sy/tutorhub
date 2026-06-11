@@ -8,7 +8,11 @@
   "endOfLine": "lf",
   "bracketSpacing": true,
   "trailingComma": "all",
-  "plugins": ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
+  "plugins": [
+    "@prettier/plugin-oxc",
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
+  ],
   "importOrder": [
     "<BUILTIN_MODULES>",
     "",
