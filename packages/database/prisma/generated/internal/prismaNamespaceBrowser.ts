@@ -48,9 +48,7 @@ export const JsonNull = runtime.JsonNull;
 export const AnyNull = runtime.AnyNull;
 
 export const ModelName = {
-  ClassSession: 'ClassSession',
-  LeaveRecord: 'LeaveRecord',
-  RescheduleRecord: 'RescheduleRecord',
+  ClassException: 'ClassException',
   Course: 'Course',
   ClassRule: 'ClassRule',
   Student: 'Student',
@@ -74,46 +72,25 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel =
   (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
 
-export const ClassSessionScalarFieldEnum = {
+export const ClassExceptionScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  studentCourseId: 'studentCourseId',
-  classDate: 'classDate',
-  startTime: 'startTime',
-  endTime: 'endTime',
-} as const;
-
-export type ClassSessionScalarFieldEnum =
-  (typeof ClassSessionScalarFieldEnum)[keyof typeof ClassSessionScalarFieldEnum];
-
-export const LeaveRecordScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  classSessionId: 'classSessionId',
+  deletedAt: 'deletedAt',
+  classRuleId: 'classRuleId',
+  occurrenceDate: 'occurrenceDate',
+  type: 'type',
   reason: 'reason',
 } as const;
 
-export type LeaveRecordScalarFieldEnum =
-  (typeof LeaveRecordScalarFieldEnum)[keyof typeof LeaveRecordScalarFieldEnum];
-
-export const RescheduleRecordScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  originalSessionId: 'originalSessionId',
-  newSessionId: 'newSessionId',
-  reason: 'reason',
-} as const;
-
-export type RescheduleRecordScalarFieldEnum =
-  (typeof RescheduleRecordScalarFieldEnum)[keyof typeof RescheduleRecordScalarFieldEnum];
+export type ClassExceptionScalarFieldEnum =
+  (typeof ClassExceptionScalarFieldEnum)[keyof typeof ClassExceptionScalarFieldEnum];
 
 export const CourseScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   name: 'name',
   description: 'description',
   status: 'status',
@@ -126,6 +103,7 @@ export const ClassRuleScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   studentCourseId: 'studentCourseId',
   startDate: 'startDate',
   intervalDays: 'intervalDays',
@@ -168,6 +146,7 @@ export const UserScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   name: 'name',
   passwordHash: 'passwordHash',
   passwordSalt: 'passwordSalt',

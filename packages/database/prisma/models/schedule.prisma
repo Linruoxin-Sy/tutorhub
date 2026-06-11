@@ -17,10 +17,10 @@ model ClassRule {
   /// 规则开始日期
   startDate DateTime @map("start_date") @db.Date
 
-  /// 循环间隔天数
-  intervalDays Int @map("interval_days")
+  /// 循环间隔天数（为空表示单次上课）
+  intervalDays Int? @map("interval_days")
 
-  /// 规则结束日期（为空表示无限循环）
+  /// 规则结束日期（为空表示无限循环或单次上课）
   endDate DateTime? @map("end_date") @db.Date
 
   /// 开始时间
@@ -31,6 +31,9 @@ model ClassRule {
 
   /// 所属选课关系
   studentCourse StudentCourse @relation(fields: [studentCourseId], references: [id], onDelete: Cascade)
+
+  /// 课程异常记录
+  classExceptions ClassException[]
 
   @@index([studentCourseId])
   @@map("class_rule")

@@ -61,10 +61,7 @@ model StudentCourse {
   /// 课程
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-  /// 课程实例
-  classSessions ClassSession[]
-
-  /// 循环规则
+  /// 课程规则
   classRules ClassRule[]
 
   @@unique([studentId, courseId])

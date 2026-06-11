@@ -1,47 +1,17 @@
-model ClassSession {
-  /// 课程实例主键 ID（ULID）
-  id String @id @default(ulid())
-
-  /// 创建时间
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
-
-  /// 更新时间
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
-
-  /// 删除时间
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
-
-  /// 选课关系 ID
-  studentCourseId String @map("student_course_id")
-
-  /// 上课日期
-  classDate DateTime @map("class_date") @db.Date
-
-  /// 开始时间
-  startTime DateTime @map("start_time") @db.Time()
-
-  /// 结束时间
-  endTime DateTime @map("end_time") @db.Time()
-
-  /// 所属选课关系
-  studentCourse StudentCourse @relation(fields: [studentCourseId], references: [id], onDelete: Cascade)
-
-  /// 请假记录
-  leaveRecords LeaveRecord[]
-
-  /// 原课程调课记录
-  originalReschedules RescheduleRecord[] @relation("OriginalSession")
-
-  /// 新课程调课记录
-  newReschedules RescheduleRecord[] @relation("NewSession")
-
-  @@index([studentCourseId])
-  @@index([classDate])
-  @@map("class_session")
+/// 课程异常类型
+enum ClassExceptionType {
+  /// 请假
+  LEAVE
+  /// 调课（原课取消）
+  RESCHEDULED
+  /// 课程取消
+  CANCELLED
+  /// 已完成
+  COMPLETED
 }
 
-model LeaveRecord {
-  /// 请假记录主键 ID（ULID）
+model ClassException {
+  /// 异常记录主键 ID（ULID）
   id String @id @default(ulid())
 
   /// 创建时间
@@ -53,48 +23,23 @@ model LeaveRecord {
   /// 删除时间
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
 
-  /// 课程实例 ID
-  classSessionId String @map("class_session_id")
+  /// 所属规则 ID
+  classRuleId String @map("class_rule_id")
 
-  /// 请假原因
+  /// 发生日期
+  occurrenceDate DateTime @map("occurrence_date") @db.Date
+
+  /// 异常类型
+  type ClassExceptionType
+
+  /// 原因说明
   reason String?
 
-  /// 所属课程实例
-  classSession ClassSession @relation(fields: [classSessionId], references: [id], onDelete: Cascade)
+  /// 所属规则
+  classRule ClassRule @relation(fields: [classRuleId], references: [id], onDelete: Cascade)
 
-  @@index([classSessionId])
-  @@map("leave_record")
-}
-
-model RescheduleRecord {
-  /// 调课记录主键 ID（ULID）
-  id String @id @default(ulid())
-
-  /// 创建时间
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
-
-  /// 更新时间
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
-
-  /// 删除时间
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
-
-  /// 原课程实例 ID
-  originalSessionId String @map("original_session_id")
-
-  /// 新课程实例 ID
-  newSessionId String @map("new_session_id")
-
-  /// 调课原因
-  reason String?
-
-  /// 原课程实例
-  originalSession ClassSession @relation("OriginalSession", fields: [originalSessionId], references: [id], onDelete: Cascade)
-
-  /// 新课程实例
-  newSession ClassSession @relation("NewSession", fields: [newSessionId], references: [id], onDelete: Cascade)
-
-  @@index([originalSessionId])
-  @@index([newSessionId])
-  @@map("reschedule_record")
+  @@unique([classRuleId, occurrenceDate])
+  @@index([classRuleId])
+  @@index([occurrenceDate])
+  @@map("class_exception")
 }

@@ -28,6 +28,7 @@ export type CourseMinAggregateOutputType = {
   id: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  deletedAt: Date | null;
   name: string | null;
   description: string | null;
   status: $Enums.CourseStatus | null;
@@ -37,6 +38,7 @@ export type CourseMaxAggregateOutputType = {
   id: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  deletedAt: Date | null;
   name: string | null;
   description: string | null;
   status: $Enums.CourseStatus | null;
@@ -46,6 +48,7 @@ export type CourseCountAggregateOutputType = {
   id: number;
   createdAt: number;
   updatedAt: number;
+  deletedAt: number;
   name: number;
   description: number;
   status: number;
@@ -56,6 +59,7 @@ export type CourseMinAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
+  deletedAt?: true;
   name?: true;
   description?: true;
   status?: true;
@@ -65,6 +69,7 @@ export type CourseMaxAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
+  deletedAt?: true;
   name?: true;
   description?: true;
   status?: true;
@@ -74,6 +79,7 @@ export type CourseCountAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
+  deletedAt?: true;
   name?: true;
   description?: true;
   status?: true;
@@ -157,6 +163,7 @@ export type CourseGroupByOutputType = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date | null;
   name: string;
   description: string | null;
   status: $Enums.CourseStatus;
@@ -184,6 +191,7 @@ export type CourseWhereInput = {
   id?: Prisma.StringFilter<'Course'> | string;
   createdAt?: Prisma.DateTimeFilter<'Course'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'Course'> | Date | string;
+  deletedAt?: Prisma.DateTimeNullableFilter<'Course'> | Date | string | null;
   name?: Prisma.StringFilter<'Course'> | string;
   description?: Prisma.StringNullableFilter<'Course'> | string | null;
   status?: Prisma.EnumCourseStatusFilter<'Course'> | $Enums.CourseStatus;
@@ -194,6 +202,7 @@ export type CourseOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   name?: Prisma.SortOrder;
   description?: Prisma.SortOrderInput | Prisma.SortOrder;
   status?: Prisma.SortOrder;
@@ -208,6 +217,7 @@ export type CourseWhereUniqueInput = Prisma.AtLeast<
     NOT?: Prisma.CourseWhereInput | Prisma.CourseWhereInput[];
     createdAt?: Prisma.DateTimeFilter<'Course'> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<'Course'> | Date | string;
+    deletedAt?: Prisma.DateTimeNullableFilter<'Course'> | Date | string | null;
     name?: Prisma.StringFilter<'Course'> | string;
     description?: Prisma.StringNullableFilter<'Course'> | string | null;
     status?: Prisma.EnumCourseStatusFilter<'Course'> | $Enums.CourseStatus;
@@ -220,6 +230,7 @@ export type CourseOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   name?: Prisma.SortOrder;
   description?: Prisma.SortOrderInput | Prisma.SortOrder;
   status?: Prisma.SortOrder;
@@ -235,6 +246,7 @@ export type CourseScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<'Course'> | string;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'Course'> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<'Course'> | Date | string;
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<'Course'> | Date | string | null;
   name?: Prisma.StringWithAggregatesFilter<'Course'> | string;
   description?: Prisma.StringNullableWithAggregatesFilter<'Course'> | string | null;
   status?: Prisma.EnumCourseStatusWithAggregatesFilter<'Course'> | $Enums.CourseStatus;
@@ -244,6 +256,7 @@ export type CourseCreateInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   name: string;
   description?: string | null;
   status?: $Enums.CourseStatus;
@@ -254,6 +267,7 @@ export type CourseUncheckedCreateInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   name: string;
   description?: string | null;
   status?: $Enums.CourseStatus;
@@ -264,6 +278,7 @@ export type CourseUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
@@ -274,6 +289,7 @@ export type CourseUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
@@ -284,6 +300,7 @@ export type CourseCreateManyInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   name: string;
   description?: string | null;
   status?: $Enums.CourseStatus;
@@ -293,6 +310,7 @@ export type CourseUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
@@ -302,6 +320,7 @@ export type CourseUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
@@ -311,6 +330,7 @@ export type CourseCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
@@ -320,6 +340,7 @@ export type CourseMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
@@ -329,6 +350,7 @@ export type CourseMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
   status?: Prisma.SortOrder;
@@ -373,6 +395,7 @@ export type CourseCreateWithoutStudentCoursesInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   name: string;
   description?: string | null;
   status?: $Enums.CourseStatus;
@@ -382,6 +405,7 @@ export type CourseUncheckedCreateWithoutStudentCoursesInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   name: string;
   description?: string | null;
   status?: $Enums.CourseStatus;
@@ -419,6 +443,7 @@ export type CourseUpdateWithoutStudentCoursesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
@@ -428,6 +453,7 @@ export type CourseUncheckedUpdateWithoutStudentCoursesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
@@ -475,6 +501,7 @@ export type CourseSelect<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    deletedAt?: boolean;
     name?: boolean;
     description?: boolean;
     status?: boolean;
@@ -491,6 +518,7 @@ export type CourseSelectCreateManyAndReturn<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    deletedAt?: boolean;
     name?: boolean;
     description?: boolean;
     status?: boolean;
@@ -505,6 +533,7 @@ export type CourseSelectUpdateManyAndReturn<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    deletedAt?: boolean;
     name?: boolean;
     description?: boolean;
     status?: boolean;
@@ -516,6 +545,7 @@ export type CourseSelectScalar = {
   id?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
+  deletedAt?: boolean;
   name?: boolean;
   description?: boolean;
   status?: boolean;
@@ -524,7 +554,7 @@ export type CourseSelectScalar = {
 export type CourseOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  'id' | 'createdAt' | 'updatedAt' | 'name' | 'description' | 'status',
+  'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'name' | 'description' | 'status',
   ExtArgs['result']['course']
 >;
 export type CourseInclude<
@@ -564,6 +594,10 @@ export type $CoursePayload<
        * 更新时间
        */
       updatedAt: Date;
+      /**
+       * 删除时间
+       */
+      deletedAt: Date | null;
       /**
        * 课程名称
        */
@@ -1131,6 +1165,7 @@ export interface CourseFieldRefs {
   readonly id: Prisma.FieldRef<'Course', 'String'>;
   readonly createdAt: Prisma.FieldRef<'Course', 'DateTime'>;
   readonly updatedAt: Prisma.FieldRef<'Course', 'DateTime'>;
+  readonly deletedAt: Prisma.FieldRef<'Course', 'DateTime'>;
   readonly name: Prisma.FieldRef<'Course', 'String'>;
   readonly description: Prisma.FieldRef<'Course', 'String'>;
   readonly status: Prisma.FieldRef<'Course', 'CourseStatus'>;

@@ -18,20 +18,10 @@ export { Prisma };
 export * as $Enums from './enums';
 export * from './enums';
 /**
- * Model ClassSession
+ * Model ClassException
  *
  */
-export type ClassSession = Prisma.ClassSessionModel;
-/**
- * Model LeaveRecord
- *
- */
-export type LeaveRecord = Prisma.LeaveRecordModel;
-/**
- * Model RescheduleRecord
- *
- */
-export type RescheduleRecord = Prisma.RescheduleRecordModel;
+export type ClassException = Prisma.ClassExceptionModel;
 /**
  * Model Course
  *

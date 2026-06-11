@@ -32,8 +32,8 @@ export * from './enums';
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more ClassSessions
- * const classSessions = await prisma.classSession.findMany()
+ * // Fetch zero or more ClassExceptions
+ * const classExceptions = await prisma.classException.findMany()
  * ```
  *
  * Read more in our [docs](https://pris.ly/d/client).
@@ -47,20 +47,10 @@ export type PrismaClient<
 export { Prisma };
 
 /**
- * Model ClassSession
+ * Model ClassException
  *
  */
-export type ClassSession = Prisma.ClassSessionModel;
-/**
- * Model LeaveRecord
- *
- */
-export type LeaveRecord = Prisma.LeaveRecordModel;
-/**
- * Model RescheduleRecord
- *
- */
-export type RescheduleRecord = Prisma.RescheduleRecordModel;
+export type ClassException = Prisma.ClassExceptionModel;
 /**
  * Model Course
  *

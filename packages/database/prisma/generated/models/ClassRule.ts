@@ -38,6 +38,7 @@ export type ClassRuleMinAggregateOutputType = {
   id: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  deletedAt: Date | null;
   studentCourseId: string | null;
   startDate: Date | null;
   intervalDays: number | null;
@@ -50,6 +51,7 @@ export type ClassRuleMaxAggregateOutputType = {
   id: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  deletedAt: Date | null;
   studentCourseId: string | null;
   startDate: Date | null;
   intervalDays: number | null;
@@ -62,6 +64,7 @@ export type ClassRuleCountAggregateOutputType = {
   id: number;
   createdAt: number;
   updatedAt: number;
+  deletedAt: number;
   studentCourseId: number;
   startDate: number;
   intervalDays: number;
@@ -83,6 +86,7 @@ export type ClassRuleMinAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
+  deletedAt?: true;
   studentCourseId?: true;
   startDate?: true;
   intervalDays?: true;
@@ -95,6 +99,7 @@ export type ClassRuleMaxAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
+  deletedAt?: true;
   studentCourseId?: true;
   startDate?: true;
   intervalDays?: true;
@@ -107,6 +112,7 @@ export type ClassRuleCountAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
+  deletedAt?: true;
   studentCourseId?: true;
   startDate?: true;
   intervalDays?: true;
@@ -209,9 +215,10 @@ export type ClassRuleGroupByOutputType = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date | null;
   studentCourseId: string;
   startDate: Date;
-  intervalDays: number;
+  intervalDays: number | null;
   endDate: Date | null;
   startTime: Date;
   endTime: Date;
@@ -241,9 +248,10 @@ export type ClassRuleWhereInput = {
   id?: Prisma.StringFilter<'ClassRule'> | string;
   createdAt?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
+  deletedAt?: Prisma.DateTimeNullableFilter<'ClassRule'> | Date | string | null;
   studentCourseId?: Prisma.StringFilter<'ClassRule'> | string;
   startDate?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
-  intervalDays?: Prisma.IntFilter<'ClassRule'> | number;
+  intervalDays?: Prisma.IntNullableFilter<'ClassRule'> | number | null;
   endDate?: Prisma.DateTimeNullableFilter<'ClassRule'> | Date | string | null;
   startTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
   endTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
@@ -251,19 +259,22 @@ export type ClassRuleWhereInput = {
     Prisma.StudentCourseScalarRelationFilter,
     Prisma.StudentCourseWhereInput
   >;
+  classExceptions?: Prisma.ClassExceptionListRelationFilter;
 };
 
 export type ClassRuleOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   studentCourseId?: Prisma.SortOrder;
   startDate?: Prisma.SortOrder;
-  intervalDays?: Prisma.SortOrder;
+  intervalDays?: Prisma.SortOrderInput | Prisma.SortOrder;
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder;
   startTime?: Prisma.SortOrder;
   endTime?: Prisma.SortOrder;
   studentCourse?: Prisma.StudentCourseOrderByWithRelationInput;
+  classExceptions?: Prisma.ClassExceptionOrderByRelationAggregateInput;
 };
 
 export type ClassRuleWhereUniqueInput = Prisma.AtLeast<
@@ -274,9 +285,10 @@ export type ClassRuleWhereUniqueInput = Prisma.AtLeast<
     NOT?: Prisma.ClassRuleWhereInput | Prisma.ClassRuleWhereInput[];
     createdAt?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
+    deletedAt?: Prisma.DateTimeNullableFilter<'ClassRule'> | Date | string | null;
     studentCourseId?: Prisma.StringFilter<'ClassRule'> | string;
     startDate?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
-    intervalDays?: Prisma.IntFilter<'ClassRule'> | number;
+    intervalDays?: Prisma.IntNullableFilter<'ClassRule'> | number | null;
     endDate?: Prisma.DateTimeNullableFilter<'ClassRule'> | Date | string | null;
     startTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
     endTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
@@ -284,6 +296,7 @@ export type ClassRuleWhereUniqueInput = Prisma.AtLeast<
       Prisma.StudentCourseScalarRelationFilter,
       Prisma.StudentCourseWhereInput
     >;
+    classExceptions?: Prisma.ClassExceptionListRelationFilter;
   },
   'id'
 >;
@@ -292,9 +305,10 @@ export type ClassRuleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   studentCourseId?: Prisma.SortOrder;
   startDate?: Prisma.SortOrder;
-  intervalDays?: Prisma.SortOrder;
+  intervalDays?: Prisma.SortOrderInput | Prisma.SortOrder;
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder;
   startTime?: Prisma.SortOrder;
   endTime?: Prisma.SortOrder;
@@ -316,9 +330,10 @@ export type ClassRuleScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<'ClassRule'> | string;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'ClassRule'> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<'ClassRule'> | Date | string;
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<'ClassRule'> | Date | string | null;
   studentCourseId?: Prisma.StringWithAggregatesFilter<'ClassRule'> | string;
   startDate?: Prisma.DateTimeWithAggregatesFilter<'ClassRule'> | Date | string;
-  intervalDays?: Prisma.IntWithAggregatesFilter<'ClassRule'> | number;
+  intervalDays?: Prisma.IntNullableWithAggregatesFilter<'ClassRule'> | number | null;
   endDate?: Prisma.DateTimeNullableWithAggregatesFilter<'ClassRule'> | Date | string | null;
   startTime?: Prisma.DateTimeWithAggregatesFilter<'ClassRule'> | Date | string;
   endTime?: Prisma.DateTimeWithAggregatesFilter<'ClassRule'> | Date | string;
@@ -328,57 +343,66 @@ export type ClassRuleCreateInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   startDate: Date | string;
-  intervalDays: number;
+  intervalDays?: number | null;
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
   studentCourse: Prisma.StudentCourseCreateNestedOneWithoutClassRulesInput;
+  classExceptions?: Prisma.ClassExceptionCreateNestedManyWithoutClassRuleInput;
 };
 
 export type ClassRuleUncheckedCreateInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   studentCourseId: string;
   startDate: Date | string;
-  intervalDays: number;
+  intervalDays?: number | null;
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  classExceptions?: Prisma.ClassExceptionUncheckedCreateNestedManyWithoutClassRuleInput;
 };
 
 export type ClassRuleUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  intervalDays?: Prisma.IntFieldUpdateOperationsInput | number;
+  intervalDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   studentCourse?: Prisma.StudentCourseUpdateOneRequiredWithoutClassRulesNestedInput;
+  classExceptions?: Prisma.ClassExceptionUpdateManyWithoutClassRuleNestedInput;
 };
 
 export type ClassRuleUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   studentCourseId?: Prisma.StringFieldUpdateOperationsInput | string;
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  intervalDays?: Prisma.IntFieldUpdateOperationsInput | number;
+  intervalDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  classExceptions?: Prisma.ClassExceptionUncheckedUpdateManyWithoutClassRuleNestedInput;
 };
 
 export type ClassRuleCreateManyInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   studentCourseId: string;
   startDate: Date | string;
-  intervalDays: number;
+  intervalDays?: number | null;
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
@@ -388,8 +412,9 @@ export type ClassRuleUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  intervalDays?: Prisma.IntFieldUpdateOperationsInput | number;
+  intervalDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -399,18 +424,25 @@ export type ClassRuleUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   studentCourseId?: Prisma.StringFieldUpdateOperationsInput | string;
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  intervalDays?: Prisma.IntFieldUpdateOperationsInput | number;
+  intervalDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+
+export type ClassRuleScalarRelationFilter = {
+  is?: Prisma.ClassRuleWhereInput;
+  isNot?: Prisma.ClassRuleWhereInput;
 };
 
 export type ClassRuleCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrder;
   studentCourseId?: Prisma.SortOrder;
   startDate?: Prisma.SortOrder;
   intervalDays?: Prisma.SortOrder;
@@ -427,6 +459,7 @@ export type ClassRuleMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrder;
   studentCourseId?: Prisma.SortOrder;
   startDate?: Prisma.SortOrder;
   intervalDays?: Prisma.SortOrder;
@@ -439,6 +472,7 @@ export type ClassRuleMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrder;
   studentCourseId?: Prisma.SortOrder;
   startDate?: Prisma.SortOrder;
   intervalDays?: Prisma.SortOrder;
@@ -461,16 +495,38 @@ export type ClassRuleOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder;
 };
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number;
+export type ClassRuleCreateNestedOneWithoutClassExceptionsInput = {
+  create?: Prisma.XOR<
+    Prisma.ClassRuleCreateWithoutClassExceptionsInput,
+    Prisma.ClassRuleUncheckedCreateWithoutClassExceptionsInput
+  >;
+  connectOrCreate?: Prisma.ClassRuleCreateOrConnectWithoutClassExceptionsInput;
+  connect?: Prisma.ClassRuleWhereUniqueInput;
+};
+
+export type ClassRuleUpdateOneRequiredWithoutClassExceptionsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.ClassRuleCreateWithoutClassExceptionsInput,
+    Prisma.ClassRuleUncheckedCreateWithoutClassExceptionsInput
+  >;
+  connectOrCreate?: Prisma.ClassRuleCreateOrConnectWithoutClassExceptionsInput;
+  upsert?: Prisma.ClassRuleUpsertWithoutClassExceptionsInput;
+  connect?: Prisma.ClassRuleWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.ClassRuleUpdateToOneWithWhereWithoutClassExceptionsInput,
+      Prisma.ClassRuleUpdateWithoutClassExceptionsInput
+    >,
+    Prisma.ClassRuleUncheckedUpdateWithoutClassExceptionsInput
+  >;
+};
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null;
   increment?: number;
   decrement?: number;
   multiply?: number;
   divide?: number;
-};
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null;
 };
 
 export type ClassRuleCreateNestedManyWithoutStudentCourseInput = {
@@ -559,26 +615,110 @@ export type ClassRuleUncheckedUpdateManyWithoutStudentCourseNestedInput = {
   deleteMany?: Prisma.ClassRuleScalarWhereInput | Prisma.ClassRuleScalarWhereInput[];
 };
 
+export type ClassRuleCreateWithoutClassExceptionsInput = {
+  id?: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  startDate: Date | string;
+  intervalDays?: number | null;
+  endDate?: Date | string | null;
+  startTime: Date | string;
+  endTime: Date | string;
+  studentCourse: Prisma.StudentCourseCreateNestedOneWithoutClassRulesInput;
+};
+
+export type ClassRuleUncheckedCreateWithoutClassExceptionsInput = {
+  id?: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  studentCourseId: string;
+  startDate: Date | string;
+  intervalDays?: number | null;
+  endDate?: Date | string | null;
+  startTime: Date | string;
+  endTime: Date | string;
+};
+
+export type ClassRuleCreateOrConnectWithoutClassExceptionsInput = {
+  where: Prisma.ClassRuleWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.ClassRuleCreateWithoutClassExceptionsInput,
+    Prisma.ClassRuleUncheckedCreateWithoutClassExceptionsInput
+  >;
+};
+
+export type ClassRuleUpsertWithoutClassExceptionsInput = {
+  update: Prisma.XOR<
+    Prisma.ClassRuleUpdateWithoutClassExceptionsInput,
+    Prisma.ClassRuleUncheckedUpdateWithoutClassExceptionsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.ClassRuleCreateWithoutClassExceptionsInput,
+    Prisma.ClassRuleUncheckedCreateWithoutClassExceptionsInput
+  >;
+  where?: Prisma.ClassRuleWhereInput;
+};
+
+export type ClassRuleUpdateToOneWithWhereWithoutClassExceptionsInput = {
+  where?: Prisma.ClassRuleWhereInput;
+  data: Prisma.XOR<
+    Prisma.ClassRuleUpdateWithoutClassExceptionsInput,
+    Prisma.ClassRuleUncheckedUpdateWithoutClassExceptionsInput
+  >;
+};
+
+export type ClassRuleUpdateWithoutClassExceptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  intervalDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  studentCourse?: Prisma.StudentCourseUpdateOneRequiredWithoutClassRulesNestedInput;
+};
+
+export type ClassRuleUncheckedUpdateWithoutClassExceptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  studentCourseId?: Prisma.StringFieldUpdateOperationsInput | string;
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  intervalDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+
 export type ClassRuleCreateWithoutStudentCourseInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   startDate: Date | string;
-  intervalDays: number;
+  intervalDays?: number | null;
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  classExceptions?: Prisma.ClassExceptionCreateNestedManyWithoutClassRuleInput;
 };
 
 export type ClassRuleUncheckedCreateWithoutStudentCourseInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   startDate: Date | string;
-  intervalDays: number;
+  intervalDays?: number | null;
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  classExceptions?: Prisma.ClassExceptionUncheckedCreateNestedManyWithoutClassRuleInput;
 };
 
 export type ClassRuleCreateOrConnectWithoutStudentCourseInput = {
@@ -631,9 +771,10 @@ export type ClassRuleScalarWhereInput = {
   id?: Prisma.StringFilter<'ClassRule'> | string;
   createdAt?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
+  deletedAt?: Prisma.DateTimeNullableFilter<'ClassRule'> | Date | string | null;
   studentCourseId?: Prisma.StringFilter<'ClassRule'> | string;
   startDate?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
-  intervalDays?: Prisma.IntFilter<'ClassRule'> | number;
+  intervalDays?: Prisma.IntNullableFilter<'ClassRule'> | number | null;
   endDate?: Prisma.DateTimeNullableFilter<'ClassRule'> | Date | string | null;
   startTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
   endTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
@@ -643,8 +784,9 @@ export type ClassRuleCreateManyStudentCourseInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   startDate: Date | string;
-  intervalDays: number;
+  intervalDays?: number | null;
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
@@ -654,33 +796,73 @@ export type ClassRuleUpdateWithoutStudentCourseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  intervalDays?: Prisma.IntFieldUpdateOperationsInput | number;
+  intervalDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  classExceptions?: Prisma.ClassExceptionUpdateManyWithoutClassRuleNestedInput;
 };
 
 export type ClassRuleUncheckedUpdateWithoutStudentCourseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  intervalDays?: Prisma.IntFieldUpdateOperationsInput | number;
+  intervalDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  classExceptions?: Prisma.ClassExceptionUncheckedUpdateManyWithoutClassRuleNestedInput;
 };
 
 export type ClassRuleUncheckedUpdateManyWithoutStudentCourseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  intervalDays?: Prisma.IntFieldUpdateOperationsInput | number;
+  intervalDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+
+/**
+ * Count Type ClassRuleCountOutputType
+ */
+
+export type ClassRuleCountOutputType = {
+  classExceptions: number;
+};
+
+export type ClassRuleCountOutputTypeSelect<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  classExceptions?: boolean | ClassRuleCountOutputTypeCountClassExceptionsArgs;
+};
+
+/**
+ * ClassRuleCountOutputType without action
+ */
+export type ClassRuleCountOutputTypeDefaultArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the ClassRuleCountOutputType
+   */
+  select?: Prisma.ClassRuleCountOutputTypeSelect<ExtArgs> | null;
+};
+
+/**
+ * ClassRuleCountOutputType without action
+ */
+export type ClassRuleCountOutputTypeCountClassExceptionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.ClassExceptionWhereInput;
 };
 
 export type ClassRuleSelect<
@@ -690,6 +872,7 @@ export type ClassRuleSelect<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    deletedAt?: boolean;
     studentCourseId?: boolean;
     startDate?: boolean;
     intervalDays?: boolean;
@@ -697,6 +880,8 @@ export type ClassRuleSelect<
     startTime?: boolean;
     endTime?: boolean;
     studentCourse?: boolean | Prisma.StudentCourseDefaultArgs<ExtArgs>;
+    classExceptions?: boolean | Prisma.ClassRule$classExceptionsArgs<ExtArgs>;
+    _count?: boolean | Prisma.ClassRuleCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['classRule']
 >;
@@ -708,6 +893,7 @@ export type ClassRuleSelectCreateManyAndReturn<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    deletedAt?: boolean;
     studentCourseId?: boolean;
     startDate?: boolean;
     intervalDays?: boolean;
@@ -726,6 +912,7 @@ export type ClassRuleSelectUpdateManyAndReturn<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    deletedAt?: boolean;
     studentCourseId?: boolean;
     startDate?: boolean;
     intervalDays?: boolean;
@@ -741,6 +928,7 @@ export type ClassRuleSelectScalar = {
   id?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
+  deletedAt?: boolean;
   studentCourseId?: boolean;
   startDate?: boolean;
   intervalDays?: boolean;
@@ -755,6 +943,7 @@ export type ClassRuleOmit<
   | 'id'
   | 'createdAt'
   | 'updatedAt'
+  | 'deletedAt'
   | 'studentCourseId'
   | 'startDate'
   | 'intervalDays'
@@ -767,6 +956,8 @@ export type ClassRuleInclude<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   studentCourse?: boolean | Prisma.StudentCourseDefaultArgs<ExtArgs>;
+  classExceptions?: boolean | Prisma.ClassRule$classExceptionsArgs<ExtArgs>;
+  _count?: boolean | Prisma.ClassRuleCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type ClassRuleIncludeCreateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
@@ -788,6 +979,10 @@ export type $ClassRulePayload<
      * 所属选课关系
      */
     studentCourse: Prisma.$StudentCoursePayload<ExtArgs>;
+    /**
+     * 课程异常记录
+     */
+    classExceptions: Prisma.$ClassExceptionPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -804,6 +999,10 @@ export type $ClassRulePayload<
        */
       updatedAt: Date;
       /**
+       * 删除时间
+       */
+      deletedAt: Date | null;
+      /**
        * 选课关系 ID
        */
       studentCourseId: string;
@@ -812,11 +1011,11 @@ export type $ClassRulePayload<
        */
       startDate: Date;
       /**
-       * 循环间隔天数
+       * 循环间隔天数（为空表示单次上课）
        */
-      intervalDays: number;
+      intervalDays: number | null;
       /**
-       * 规则结束日期（为空表示无限循环）
+       * 规则结束日期（为空表示无限循环或单次上课）
        */
       endDate: Date | null;
       /**
@@ -1379,6 +1578,17 @@ export interface Prisma__ClassRuleClient<
     ExtArgs,
     GlobalOmitOptions
   >;
+  classExceptions<T extends Prisma.ClassRule$classExceptionsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.ClassRule$classExceptionsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$ClassExceptionPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1413,6 +1623,7 @@ export interface ClassRuleFieldRefs {
   readonly id: Prisma.FieldRef<'ClassRule', 'String'>;
   readonly createdAt: Prisma.FieldRef<'ClassRule', 'DateTime'>;
   readonly updatedAt: Prisma.FieldRef<'ClassRule', 'DateTime'>;
+  readonly deletedAt: Prisma.FieldRef<'ClassRule', 'DateTime'>;
   readonly studentCourseId: Prisma.FieldRef<'ClassRule', 'String'>;
   readonly startDate: Prisma.FieldRef<'ClassRule', 'DateTime'>;
   readonly intervalDays: Prisma.FieldRef<'ClassRule', 'Int'>;
@@ -1850,6 +2061,34 @@ export type ClassRuleDeleteManyArgs<
    * Limit how many ClassRules to delete.
    */
   limit?: number;
+};
+
+/**
+ * ClassRule.classExceptions
+ */
+export type ClassRule$classExceptionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the ClassException
+   */
+  select?: Prisma.ClassExceptionSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the ClassException
+   */
+  omit?: Prisma.ClassExceptionOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClassExceptionInclude<ExtArgs> | null;
+  where?: Prisma.ClassExceptionWhereInput;
+  orderBy?:
+    | Prisma.ClassExceptionOrderByWithRelationInput
+    | Prisma.ClassExceptionOrderByWithRelationInput[];
+  cursor?: Prisma.ClassExceptionWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.ClassExceptionScalarFieldEnum | Prisma.ClassExceptionScalarFieldEnum[];
 };
 
 /**

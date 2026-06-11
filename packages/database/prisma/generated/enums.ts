@@ -8,6 +8,15 @@
  * 🟢 You can import this file directly.
  */
 
+export const ClassExceptionType = {
+  LEAVE: 'LEAVE',
+  RESCHEDULED: 'RESCHEDULED',
+  CANCELLED: 'CANCELLED',
+  COMPLETED: 'COMPLETED',
+} as const;
+
+export type ClassExceptionType = (typeof ClassExceptionType)[keyof typeof ClassExceptionType];
+
 export const CourseStatus = {
   ACTIVE: 'ACTIVE',
   DISABLED: 'DISABLED',

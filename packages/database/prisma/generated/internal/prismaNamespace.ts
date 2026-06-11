@@ -376,9 +376,7 @@ export type FieldRef<Model, FieldType> = runtime.FieldRef<Model, FieldType>;
 type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>;
 
 export const ModelName = {
-  ClassSession: 'ClassSession',
-  LeaveRecord: 'LeaveRecord',
-  RescheduleRecord: 'RescheduleRecord',
+  ClassException: 'ClassException',
   Course: 'Course',
   ClassRule: 'ClassRule',
   Student: 'Student',
@@ -403,240 +401,82 @@ export type TypeMap<
     omit: GlobalOmitOptions;
   };
   meta: {
-    modelProps:
-      | 'classSession'
-      | 'leaveRecord'
-      | 'rescheduleRecord'
-      | 'course'
-      | 'classRule'
-      | 'student'
-      | 'studentCourse'
-      | 'user';
+    modelProps: 'classException' | 'course' | 'classRule' | 'student' | 'studentCourse' | 'user';
     txIsolationLevel: TransactionIsolationLevel;
   };
   model: {
-    ClassSession: {
-      payload: Prisma.$ClassSessionPayload<ExtArgs>;
-      fields: Prisma.ClassSessionFieldRefs;
+    ClassException: {
+      payload: Prisma.$ClassExceptionPayload<ExtArgs>;
+      fields: Prisma.ClassExceptionFieldRefs;
       operations: {
         findUnique: {
-          args: Prisma.ClassSessionFindUniqueArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload> | null;
+          args: Prisma.ClassExceptionFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassExceptionPayload> | null;
         };
         findUniqueOrThrow: {
-          args: Prisma.ClassSessionFindUniqueOrThrowArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassExceptionFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassExceptionPayload>;
         };
         findFirst: {
-          args: Prisma.ClassSessionFindFirstArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload> | null;
+          args: Prisma.ClassExceptionFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassExceptionPayload> | null;
         };
         findFirstOrThrow: {
-          args: Prisma.ClassSessionFindFirstOrThrowArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassExceptionFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassExceptionPayload>;
         };
         findMany: {
-          args: Prisma.ClassSessionFindManyArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>[];
+          args: Prisma.ClassExceptionFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassExceptionPayload>[];
         };
         create: {
-          args: Prisma.ClassSessionCreateArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassExceptionCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassExceptionPayload>;
         };
         createMany: {
-          args: Prisma.ClassSessionCreateManyArgs<ExtArgs>;
+          args: Prisma.ClassExceptionCreateManyArgs<ExtArgs>;
           result: BatchPayload;
         };
         createManyAndReturn: {
-          args: Prisma.ClassSessionCreateManyAndReturnArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>[];
+          args: Prisma.ClassExceptionCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassExceptionPayload>[];
         };
         delete: {
-          args: Prisma.ClassSessionDeleteArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassExceptionDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassExceptionPayload>;
         };
         update: {
-          args: Prisma.ClassSessionUpdateArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassExceptionUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassExceptionPayload>;
         };
         deleteMany: {
-          args: Prisma.ClassSessionDeleteManyArgs<ExtArgs>;
+          args: Prisma.ClassExceptionDeleteManyArgs<ExtArgs>;
           result: BatchPayload;
         };
         updateMany: {
-          args: Prisma.ClassSessionUpdateManyArgs<ExtArgs>;
+          args: Prisma.ClassExceptionUpdateManyArgs<ExtArgs>;
           result: BatchPayload;
         };
         updateManyAndReturn: {
-          args: Prisma.ClassSessionUpdateManyAndReturnArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>[];
+          args: Prisma.ClassExceptionUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassExceptionPayload>[];
         };
         upsert: {
-          args: Prisma.ClassSessionUpsertArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassExceptionUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassExceptionPayload>;
         };
         aggregate: {
-          args: Prisma.ClassSessionAggregateArgs<ExtArgs>;
-          result: runtime.Types.Utils.Optional<Prisma.AggregateClassSession>;
+          args: Prisma.ClassExceptionAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClassException>;
         };
         groupBy: {
-          args: Prisma.ClassSessionGroupByArgs<ExtArgs>;
-          result: runtime.Types.Utils.Optional<Prisma.ClassSessionGroupByOutputType>[];
+          args: Prisma.ClassExceptionGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.ClassExceptionGroupByOutputType>[];
         };
         count: {
-          args: Prisma.ClassSessionCountArgs<ExtArgs>;
+          args: Prisma.ClassExceptionCountArgs<ExtArgs>;
           result:
-            | runtime.Types.Utils.Optional<Prisma.ClassSessionCountAggregateOutputType>
-            | number;
-        };
-      };
-    };
-    LeaveRecord: {
-      payload: Prisma.$LeaveRecordPayload<ExtArgs>;
-      fields: Prisma.LeaveRecordFieldRefs;
-      operations: {
-        findUnique: {
-          args: Prisma.LeaveRecordFindUniqueArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveRecordPayload> | null;
-        };
-        findUniqueOrThrow: {
-          args: Prisma.LeaveRecordFindUniqueOrThrowArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveRecordPayload>;
-        };
-        findFirst: {
-          args: Prisma.LeaveRecordFindFirstArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveRecordPayload> | null;
-        };
-        findFirstOrThrow: {
-          args: Prisma.LeaveRecordFindFirstOrThrowArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveRecordPayload>;
-        };
-        findMany: {
-          args: Prisma.LeaveRecordFindManyArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveRecordPayload>[];
-        };
-        create: {
-          args: Prisma.LeaveRecordCreateArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveRecordPayload>;
-        };
-        createMany: {
-          args: Prisma.LeaveRecordCreateManyArgs<ExtArgs>;
-          result: BatchPayload;
-        };
-        createManyAndReturn: {
-          args: Prisma.LeaveRecordCreateManyAndReturnArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveRecordPayload>[];
-        };
-        delete: {
-          args: Prisma.LeaveRecordDeleteArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveRecordPayload>;
-        };
-        update: {
-          args: Prisma.LeaveRecordUpdateArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveRecordPayload>;
-        };
-        deleteMany: {
-          args: Prisma.LeaveRecordDeleteManyArgs<ExtArgs>;
-          result: BatchPayload;
-        };
-        updateMany: {
-          args: Prisma.LeaveRecordUpdateManyArgs<ExtArgs>;
-          result: BatchPayload;
-        };
-        updateManyAndReturn: {
-          args: Prisma.LeaveRecordUpdateManyAndReturnArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveRecordPayload>[];
-        };
-        upsert: {
-          args: Prisma.LeaveRecordUpsertArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveRecordPayload>;
-        };
-        aggregate: {
-          args: Prisma.LeaveRecordAggregateArgs<ExtArgs>;
-          result: runtime.Types.Utils.Optional<Prisma.AggregateLeaveRecord>;
-        };
-        groupBy: {
-          args: Prisma.LeaveRecordGroupByArgs<ExtArgs>;
-          result: runtime.Types.Utils.Optional<Prisma.LeaveRecordGroupByOutputType>[];
-        };
-        count: {
-          args: Prisma.LeaveRecordCountArgs<ExtArgs>;
-          result: runtime.Types.Utils.Optional<Prisma.LeaveRecordCountAggregateOutputType> | number;
-        };
-      };
-    };
-    RescheduleRecord: {
-      payload: Prisma.$RescheduleRecordPayload<ExtArgs>;
-      fields: Prisma.RescheduleRecordFieldRefs;
-      operations: {
-        findUnique: {
-          args: Prisma.RescheduleRecordFindUniqueArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RescheduleRecordPayload> | null;
-        };
-        findUniqueOrThrow: {
-          args: Prisma.RescheduleRecordFindUniqueOrThrowArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RescheduleRecordPayload>;
-        };
-        findFirst: {
-          args: Prisma.RescheduleRecordFindFirstArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RescheduleRecordPayload> | null;
-        };
-        findFirstOrThrow: {
-          args: Prisma.RescheduleRecordFindFirstOrThrowArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RescheduleRecordPayload>;
-        };
-        findMany: {
-          args: Prisma.RescheduleRecordFindManyArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RescheduleRecordPayload>[];
-        };
-        create: {
-          args: Prisma.RescheduleRecordCreateArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RescheduleRecordPayload>;
-        };
-        createMany: {
-          args: Prisma.RescheduleRecordCreateManyArgs<ExtArgs>;
-          result: BatchPayload;
-        };
-        createManyAndReturn: {
-          args: Prisma.RescheduleRecordCreateManyAndReturnArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RescheduleRecordPayload>[];
-        };
-        delete: {
-          args: Prisma.RescheduleRecordDeleteArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RescheduleRecordPayload>;
-        };
-        update: {
-          args: Prisma.RescheduleRecordUpdateArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RescheduleRecordPayload>;
-        };
-        deleteMany: {
-          args: Prisma.RescheduleRecordDeleteManyArgs<ExtArgs>;
-          result: BatchPayload;
-        };
-        updateMany: {
-          args: Prisma.RescheduleRecordUpdateManyArgs<ExtArgs>;
-          result: BatchPayload;
-        };
-        updateManyAndReturn: {
-          args: Prisma.RescheduleRecordUpdateManyAndReturnArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RescheduleRecordPayload>[];
-        };
-        upsert: {
-          args: Prisma.RescheduleRecordUpsertArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$RescheduleRecordPayload>;
-        };
-        aggregate: {
-          args: Prisma.RescheduleRecordAggregateArgs<ExtArgs>;
-          result: runtime.Types.Utils.Optional<Prisma.AggregateRescheduleRecord>;
-        };
-        groupBy: {
-          args: Prisma.RescheduleRecordGroupByArgs<ExtArgs>;
-          result: runtime.Types.Utils.Optional<Prisma.RescheduleRecordGroupByOutputType>[];
-        };
-        count: {
-          args: Prisma.RescheduleRecordCountArgs<ExtArgs>;
-          result:
-            | runtime.Types.Utils.Optional<Prisma.RescheduleRecordCountAggregateOutputType>
+            | runtime.Types.Utils.Optional<Prisma.ClassExceptionCountAggregateOutputType>
             | number;
         };
       };
@@ -1052,46 +892,25 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel =
   (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
 
-export const ClassSessionScalarFieldEnum = {
+export const ClassExceptionScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  studentCourseId: 'studentCourseId',
-  classDate: 'classDate',
-  startTime: 'startTime',
-  endTime: 'endTime',
-} as const;
-
-export type ClassSessionScalarFieldEnum =
-  (typeof ClassSessionScalarFieldEnum)[keyof typeof ClassSessionScalarFieldEnum];
-
-export const LeaveRecordScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  classSessionId: 'classSessionId',
+  deletedAt: 'deletedAt',
+  classRuleId: 'classRuleId',
+  occurrenceDate: 'occurrenceDate',
+  type: 'type',
   reason: 'reason',
 } as const;
 
-export type LeaveRecordScalarFieldEnum =
-  (typeof LeaveRecordScalarFieldEnum)[keyof typeof LeaveRecordScalarFieldEnum];
-
-export const RescheduleRecordScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  originalSessionId: 'originalSessionId',
-  newSessionId: 'newSessionId',
-  reason: 'reason',
-} as const;
-
-export type RescheduleRecordScalarFieldEnum =
-  (typeof RescheduleRecordScalarFieldEnum)[keyof typeof RescheduleRecordScalarFieldEnum];
+export type ClassExceptionScalarFieldEnum =
+  (typeof ClassExceptionScalarFieldEnum)[keyof typeof ClassExceptionScalarFieldEnum];
 
 export const CourseScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   name: 'name',
   description: 'description',
   status: 'status',
@@ -1104,6 +923,7 @@ export const ClassRuleScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   studentCourseId: 'studentCourseId',
   startDate: 'startDate',
   intervalDays: 'intervalDays',
@@ -1146,6 +966,7 @@ export const UserScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   name: 'name',
   passwordHash: 'passwordHash',
   passwordSalt: 'passwordSalt',
@@ -1200,6 +1021,22 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>;
+
+/**
+ * Reference to a field of type 'ClassExceptionType'
+ */
+export type EnumClassExceptionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'ClassExceptionType'
+>;
+
+/**
+ * Reference to a field of type 'ClassExceptionType[]'
+ */
+export type ListEnumClassExceptionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'ClassExceptionType[]'
+>;
 
 /**
  * Reference to a field of type 'CourseStatus'
@@ -1340,9 +1177,7 @@ export type PrismaClientOptions = (
   comments?: runtime.SqlCommenterPlugin[];
 };
 export type GlobalOmitConfig = {
-  classSession?: Prisma.ClassSessionOmit;
-  leaveRecord?: Prisma.LeaveRecordOmit;
-  rescheduleRecord?: Prisma.RescheduleRecordOmit;
+  classException?: Prisma.ClassExceptionOmit;
   course?: Prisma.CourseOmit;
   classRule?: Prisma.ClassRuleOmit;
   student?: Prisma.StudentOmit;

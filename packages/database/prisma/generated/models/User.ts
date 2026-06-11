@@ -28,6 +28,7 @@ export type UserMinAggregateOutputType = {
   id: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  deletedAt: Date | null;
   name: string | null;
   passwordHash: string | null;
   passwordSalt: string | null;
@@ -40,6 +41,7 @@ export type UserMaxAggregateOutputType = {
   id: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  deletedAt: Date | null;
   name: string | null;
   passwordHash: string | null;
   passwordSalt: string | null;
@@ -52,6 +54,7 @@ export type UserCountAggregateOutputType = {
   id: number;
   createdAt: number;
   updatedAt: number;
+  deletedAt: number;
   name: number;
   passwordHash: number;
   passwordSalt: number;
@@ -65,6 +68,7 @@ export type UserMinAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
+  deletedAt?: true;
   name?: true;
   passwordHash?: true;
   passwordSalt?: true;
@@ -77,6 +81,7 @@ export type UserMaxAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
+  deletedAt?: true;
   name?: true;
   passwordHash?: true;
   passwordSalt?: true;
@@ -89,6 +94,7 @@ export type UserCountAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
+  deletedAt?: true;
   name?: true;
   passwordHash?: true;
   passwordSalt?: true;
@@ -175,6 +181,7 @@ export type UserGroupByOutputType = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date | null;
   name: string;
   passwordHash: string;
   passwordSalt: string;
@@ -205,6 +212,7 @@ export type UserWhereInput = {
   id?: Prisma.StringFilter<'User'> | string;
   createdAt?: Prisma.DateTimeFilter<'User'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'User'> | Date | string;
+  deletedAt?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null;
   name?: Prisma.StringFilter<'User'> | string;
   passwordHash?: Prisma.StringFilter<'User'> | string;
   passwordSalt?: Prisma.StringFilter<'User'> | string;
@@ -218,6 +226,7 @@ export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   name?: Prisma.SortOrder;
   passwordHash?: Prisma.SortOrder;
   passwordSalt?: Prisma.SortOrder;
@@ -237,6 +246,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[];
     createdAt?: Prisma.DateTimeFilter<'User'> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<'User'> | Date | string;
+    deletedAt?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null;
     name?: Prisma.StringFilter<'User'> | string;
     passwordHash?: Prisma.StringFilter<'User'> | string;
     passwordSalt?: Prisma.StringFilter<'User'> | string;
@@ -250,6 +260,7 @@ export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   name?: Prisma.SortOrder;
   passwordHash?: Prisma.SortOrder;
   passwordSalt?: Prisma.SortOrder;
@@ -268,6 +279,7 @@ export type UserScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<'User'> | string;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'User'> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<'User'> | Date | string;
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<'User'> | Date | string | null;
   name?: Prisma.StringWithAggregatesFilter<'User'> | string;
   passwordHash?: Prisma.StringWithAggregatesFilter<'User'> | string;
   passwordSalt?: Prisma.StringWithAggregatesFilter<'User'> | string;
@@ -280,6 +292,7 @@ export type UserCreateInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   name: string;
   passwordHash: string;
   passwordSalt: string;
@@ -293,6 +306,7 @@ export type UserUncheckedCreateInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   name: string;
   passwordHash: string;
   passwordSalt: string;
@@ -306,6 +320,7 @@ export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordSalt?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -319,6 +334,7 @@ export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordSalt?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -332,6 +348,7 @@ export type UserCreateManyInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   name: string;
   passwordHash: string;
   passwordSalt: string;
@@ -344,6 +361,7 @@ export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordSalt?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -356,6 +374,7 @@ export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordSalt?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -373,6 +392,7 @@ export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   passwordHash?: Prisma.SortOrder;
   passwordSalt?: Prisma.SortOrder;
@@ -385,6 +405,7 @@ export type UserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   passwordHash?: Prisma.SortOrder;
   passwordSalt?: Prisma.SortOrder;
@@ -397,6 +418,7 @@ export type UserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
+  deletedAt?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   passwordHash?: Prisma.SortOrder;
   passwordSalt?: Prisma.SortOrder;
@@ -435,6 +457,7 @@ export type UserCreateWithoutStudentsInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   name: string;
   passwordHash: string;
   passwordSalt: string;
@@ -447,6 +470,7 @@ export type UserUncheckedCreateWithoutStudentsInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
   name: string;
   passwordHash: string;
   passwordSalt: string;
@@ -487,6 +511,7 @@ export type UserUpdateWithoutStudentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordSalt?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -499,6 +524,7 @@ export type UserUncheckedUpdateWithoutStudentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   passwordSalt?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -549,6 +575,7 @@ export type UserSelect<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    deletedAt?: boolean;
     name?: boolean;
     passwordHash?: boolean;
     passwordSalt?: boolean;
@@ -568,6 +595,7 @@ export type UserSelectCreateManyAndReturn<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    deletedAt?: boolean;
     name?: boolean;
     passwordHash?: boolean;
     passwordSalt?: boolean;
@@ -585,6 +613,7 @@ export type UserSelectUpdateManyAndReturn<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    deletedAt?: boolean;
     name?: boolean;
     passwordHash?: boolean;
     passwordSalt?: boolean;
@@ -599,6 +628,7 @@ export type UserSelectScalar = {
   id?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
+  deletedAt?: boolean;
   name?: boolean;
   passwordHash?: boolean;
   passwordSalt?: boolean;
@@ -613,6 +643,7 @@ export type UserOmit<
   | 'id'
   | 'createdAt'
   | 'updatedAt'
+  | 'deletedAt'
   | 'name'
   | 'passwordHash'
   | 'passwordSalt'
@@ -658,6 +689,10 @@ export type $UserPayload<
        * 更新时间
        */
       updatedAt: Date;
+      /**
+       * 删除时间
+       */
+      deletedAt: Date | null;
       /**
        * 用户姓名
        */
@@ -1237,6 +1272,7 @@ export interface UserFieldRefs {
   readonly id: Prisma.FieldRef<'User', 'String'>;
   readonly createdAt: Prisma.FieldRef<'User', 'DateTime'>;
   readonly updatedAt: Prisma.FieldRef<'User', 'DateTime'>;
+  readonly deletedAt: Prisma.FieldRef<'User', 'DateTime'>;
   readonly name: Prisma.FieldRef<'User', 'String'>;
   readonly passwordHash: Prisma.FieldRef<'User', 'String'>;
   readonly passwordSalt: Prisma.FieldRef<'User', 'String'>;
