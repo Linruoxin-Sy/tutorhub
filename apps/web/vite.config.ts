@@ -6,11 +6,11 @@ import vueDevTools from 'vite-plugin-vue-devtools';
 import tailwindcss from '@tailwindcss/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
-// import { analyzer } from 'vite-bundle-analyzer';
+import { analyzer } from 'vite-bundle-analyzer';
 import VueRouter from 'vue-router/vite';
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     tailwindcss(),
     VueRouter({
@@ -25,7 +25,7 @@ export default defineConfig({
       dts: 'src/components.d.ts',
     }),
     vueDevTools(),
-    // analyzer(),
+    ...(mode === 'analyze' ? [analyzer()] : []),
   ],
   resolve: {
     alias: {
@@ -35,4 +35,4 @@ export default defineConfig({
       ),
     },
   },
-});
+}));
