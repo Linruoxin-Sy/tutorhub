@@ -70,7 +70,8 @@ export function useCourseSparseQuery(filters?: {
       limit(() =>
         queryClient.prefetchQuery({
           queryKey: [...prefix, offset],
-          queryFn: () => fetchCourses({ offset, limit: PAGE_SIZE, name: nameArg, status: statusArg }),
+          queryFn: () =>
+            fetchCourses({ offset, limit: PAGE_SIZE, name: nameArg, status: statusArg }),
           staleTime: 30_000,
         }),
       ),
