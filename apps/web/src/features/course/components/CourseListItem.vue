@@ -2,14 +2,18 @@
   <article
     class="flex h-36 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm dark:border-[#2f2f2f] dark:bg-[#202020]"
   >
-    <div class="bg-linear-to-r from-blue-500 to-indigo-600 px-5 py-4">
+    <div class="px-5 py-4" :style="{ background: getAvatarGradient(course.name) }">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <h3 class="text-lg font-bold text-white">{{ course.name }}</h3>
+          <h3 class="text-lg font-bold" :style="{ color: getAvatarTextColor(course.name) }">
+            {{ course.name }}
+          </h3>
         </div>
-        <span class="rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold text-white">{{
-          course.status
-        }}</span>
+        <span
+          class="rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold"
+          :style="{ color: getAvatarTextColor(course.name) }"
+          >{{ course.status }}</span
+        >
       </div>
     </div>
     <div class="flex flex-1 items-start justify-between gap-4 px-5 py-4">
@@ -44,6 +48,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { formatDateTime } from '@/utils/date';
+import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
 import { useCourseDelete } from '@/features/course/hooks/useCourseDelete';
 import type { Course } from '@tutorhub/database';
 
