@@ -20,7 +20,7 @@
     </div>
   </div>
 
-  <div v-else ref="scrollElement" class="flex-1 overflow-auto p-5">
+  <div v-else ref="scrollElement" class="flex-1 overflow-y-auto overflow-x-hidden p-5">
     <div
       :style="{
         height: `${virtualizer.getTotalSize()}px`,
