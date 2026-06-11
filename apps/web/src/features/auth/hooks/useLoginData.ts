@@ -39,7 +39,7 @@ export function useLoginData() {
     if (!verify()) return;
     await userStore.login(loginPayload());
     toast.success('Login successful!');
-    router.push('/');
+    router.push({ name: 'dashboard' });
   });
 
   return {

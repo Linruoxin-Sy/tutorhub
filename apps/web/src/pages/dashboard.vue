@@ -1,3 +1,9 @@
+<route lang="json">
+{
+  "name": "dashboard"
+}
+</route>
+
 <template>
   <DashboardPage />
 </template>

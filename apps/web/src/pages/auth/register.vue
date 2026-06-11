@@ -1,5 +1,6 @@
 <route lang="json">
 {
+  "name": "auth.register",
   "path": "/register",
   "meta": {
     "hideAppHeader": true,

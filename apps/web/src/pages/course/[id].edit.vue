@@ -1,3 +1,9 @@
+<route lang="json">
+{
+  "name": "course.edit"
+}
+</route>
+
 <template>
   <CourseEditPage />
 </template>

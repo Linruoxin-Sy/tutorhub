@@ -44,7 +44,7 @@
       <button
         type="button"
         class="cursor-pointer rounded-lg p-1.5 text-blue-600 transition hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-500/10"
-        @click="router.push('/student/' + student.id + '/edit')"
+        @click="router.push({ name: 'student.edit', params: { id: student.id } })"
       >
         <i class="i-lucide-square-pen size-4"></i></button
       ><button

@@ -1,5 +1,6 @@
 <route lang="json">
 {
+  "name": "auth.login",
   "path": "/login",
   "meta": {
     "hideAppHeader": true,

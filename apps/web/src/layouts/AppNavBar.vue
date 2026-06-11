@@ -6,9 +6,9 @@
     <RouterLink
       v-for="item in navItems"
       :key="item.name"
-      :to="item.to"
+      :to="{ name: item.routeName }"
       class="group inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition"
-      :class="isActive(item.to) ? activeClass : inactiveClass"
+      :class="isActive(item.routeName) ? activeClass : inactiveClass"
     >
       <i :class="item.icon"></i>
       <span>{{ item.name }}</span>
@@ -17,34 +17,28 @@
 </template>
 
 <script setup lang="ts">
-type NavItem = {
-  name: string;
-  to: string;
-  icon: string;
-};
-
-const navItems: NavItem[] = [
+const navItems = [
   {
     name: 'Dashboard',
-    to: '/dashboard',
+    routeName: 'dashboard',
     icon: 'i-mdi-view-dashboard-outline',
   },
   {
     name: 'Student',
-    to: '/student',
+    routeName: 'student.list',
     icon: 'i-lucide-users',
   },
   {
     name: 'Course',
-    to: '/course',
+    routeName: 'course.list',
     icon: 'i-lucide-book-open',
   },
   {
     name: 'Session',
-    to: '/session',
+    routeName: 'session',
     icon: 'i-mdi-timer-outline',
   },
-];
+] as const;
 
 const route = useRoute();
 
@@ -53,9 +47,9 @@ const activeClass =
 const inactiveClass =
   'text-gray-500 hover:bg-white hover:text-gray-900 dark:text-gray-400 dark:hover:bg-[#2a2a2a] dark:hover:text-white';
 
-const activePath = computed(() => route.path);
-
-function isActive(path: string) {
-  return activePath.value === path || activePath.value.startsWith(`${path}/`);
+function isActive(routeName: string) {
+  const current = String(route.name ?? '');
+  const prefix = routeName.includes('.') ? routeName.split('.')[0] + '.' : routeName;
+  return current === routeName || current.startsWith(prefix);
 }
 </script>

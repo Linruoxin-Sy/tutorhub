@@ -40,7 +40,7 @@ export function useRegisterData() {
     if (!verify()) return;
     await request.post<RegisterResponse>('/auth/register', registerData);
     toast.success('Registration successful!');
-    router.push('/login');
+    router.push({ name: 'auth.login' });
   });
 
   return {

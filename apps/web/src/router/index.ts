@@ -20,7 +20,7 @@ router.beforeEach((to) => {
   if (token) {
     return;
   }
-  return '/login';
+  return { name: 'auth.login' };
 });
 
 if (import.meta.hot) {

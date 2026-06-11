@@ -53,7 +53,7 @@
         <p class="text-center text-sm text-gray-500 dark:text-gray-400">
           No account yet?
           <RouterLink
-            to="/register"
+            :to="{ name: 'auth.register' }"
             class="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-300"
           >
             Create one

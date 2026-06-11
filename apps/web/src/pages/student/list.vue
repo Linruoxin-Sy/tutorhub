@@ -1,5 +1,6 @@
 <route lang="json">
 {
+  "name": "student.list",
   "path": "/student"
 }
 </route>

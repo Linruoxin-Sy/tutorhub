@@ -29,6 +29,6 @@ const userStore = useUserStore();
 
 const logout = () => {
   userStore.logout();
-  router.push('/login');
+  router.push({ name: 'auth.login' });
 };
 </script>

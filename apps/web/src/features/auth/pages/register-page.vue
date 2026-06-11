@@ -96,7 +96,7 @@
         <p class="text-center text-sm text-gray-500 dark:text-gray-400">
           Already have an account?
           <RouterLink
-            to="/login"
+            :to="{ name: 'auth.login' }"
             class="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-300"
           >
             Sign in

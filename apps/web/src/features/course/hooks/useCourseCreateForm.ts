@@ -40,7 +40,7 @@ export function useCourseCreateForm() {
     await createCourse(payload);
     toast.success('Course created successfully!');
     queryClient.invalidateQueries({ queryKey: ['courses'] });
-    router.push('/course');
+    router.push({ name: 'course.list' });
   });
 
   return {

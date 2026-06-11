@@ -22,7 +22,7 @@ request.interceptors.response.use(
   (error) => {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
       localStorage.removeItem('token');
-      router.push('/login');
+      router.push({ name: 'auth.login' });
     }
     return Promise.reject(error);
   },

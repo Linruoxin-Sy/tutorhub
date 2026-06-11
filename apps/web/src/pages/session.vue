@@ -1,3 +1,9 @@
+<route lang="json">
+{
+  "name": "session"
+}
+</route>
+
 <template>
   <SessionPage />
 </template>

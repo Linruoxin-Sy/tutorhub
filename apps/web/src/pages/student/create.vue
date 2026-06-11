@@ -1,3 +1,9 @@
+<route lang="json">
+{
+  "name": "student.create"
+}
+</route>
+
 <template>
   <StudentCreatePage />
 </template>

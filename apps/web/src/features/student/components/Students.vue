@@ -24,7 +24,7 @@
           <button
             type="button"
             class="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-            @click="router.push('/student/create')"
+            @click="router.push({ name: 'student.create' })"
           >
             <i class="i-lucide-plus size-4"></i>
             Add Student
