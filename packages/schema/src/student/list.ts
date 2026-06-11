@@ -13,6 +13,7 @@ export const studentListSchema = z.object({
       if (!Number.isFinite(parsed) || parsed < 1) return 20;
       return Math.min(parsed, 100);
     }),
+  name: z.string().optional(),
 });
 
 export type StudentListResponse = {

@@ -1,58 +1,70 @@
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import pLimit from 'p-limit';
-import { computed, readonly, ref, watch, watchEffect } from 'vue';
+import { computed, readonly, ref, watch, watchEffect, type Ref } from 'vue';
 
 import { fetchStudents, type StudentListResponse } from '../api/student-api';
 
 type StudentItem = StudentListResponse['items'][number];
 
 const PAGE_SIZE = 20;
-const QUERY_KEY_PREFIX = ['students', 'offset'];
 
 /**
  * 基于 offset 分页 + TanStack Query 缓存的稀疏数据查询。
  *
- * 与 cursor 分页不同，offset 分页允许直接跳转到任意索引位置加载数据，
- * 配合 virtual scroll 可以实现「滑到哪就加载哪」的体验。
- *
- * 内部以 `['students', 'offset', N]` 为 key 将每页数据存入 Query 缓存，
- * 滚动时自动 pre-fetch 缺失的页面，已有的页面直接通过 getQueryData 读取。
+ * 支持按姓名搜索：传入 `searchTerm` ref，查询 key 自动包含搜索词，
+ * 搜索词变化时清空旧缓存并重新加载第一页。
  */
-export function useStudentSparseQuery() {
+export function useStudentSparseQuery(searchTerm?: Ref<string>) {
   const queryClient = useQueryClient();
   const total = ref(0);
   /** 版本戳 — 每次预取完成后递增，驱动模板响应式重渲染 */
   const version = ref(0);
+  /** 当前搜索词快照，用于构建 query key */
+  const currentSearch = ref('');
+  /** 搜索变化时是否正在重置中，避免重复触发 */
+  const isResetting = ref(false);
+
+  // 构建查询 key 前缀，搜索词不同则缓存隔离
+  function queryKeyPrefix(): (string | number)[] {
+    return currentSearch.value
+      ? ['students', currentSearch.value, 'offset']
+      : ['students', '', 'offset'];
+  }
 
   // ── 从缓存中读取指定索引的数据 ──
 
   function getItem(index: number): StudentItem | undefined {
     void version.value; // 建立响应式依赖
+    const prefix = queryKeyPrefix();
     const offset = Math.floor(index / PAGE_SIZE) * PAGE_SIZE;
-    const data = queryClient.getQueryData<StudentListResponse>([...QUERY_KEY_PREFIX, offset]);
+    const data = queryClient.getQueryData<StudentListResponse>([...prefix, offset]);
     return data?.items[index - offset];
   }
 
   function isLoaded(index: number): boolean {
     void version.value; // 建立响应式依赖
+    const prefix = queryKeyPrefix();
     const offset = Math.floor(index / PAGE_SIZE) * PAGE_SIZE;
-    return !!queryClient.getQueryData([...QUERY_KEY_PREFIX, offset]);
+    return !!queryClient.getQueryData([...prefix, offset]);
   }
 
   // ── 预取指定范围内的页面 ──
 
   async function ensureRange(startIdx: number, endIdx: number): Promise<void> {
+    const prefix = queryKeyPrefix();
     const s = Math.max(0, Math.floor(startIdx / PAGE_SIZE) * PAGE_SIZE);
     const e = Math.min(total.value || Infinity, Math.ceil((endIdx + 1) / PAGE_SIZE) * PAGE_SIZE);
 
     const missing: number[] = [];
     for (let offset = s; offset < e; offset += PAGE_SIZE) {
-      if (!queryClient.getQueryData([...QUERY_KEY_PREFIX, offset])) {
+      if (!queryClient.getQueryData([...prefix, offset])) {
         missing.push(offset);
       }
     }
 
     if (missing.length === 0) return;
+
+    const nameArg = currentSearch.value || undefined;
 
     // 使用 p-limit 控制并发数，避免瞬间发起大量请求
     const CONCURRENCY = 4;
@@ -60,8 +72,8 @@ export function useStudentSparseQuery() {
     const promises = missing.map((offset) =>
       limit(() =>
         queryClient.prefetchQuery({
-          queryKey: [...QUERY_KEY_PREFIX, offset],
-          queryFn: () => fetchStudents({ offset, limit: PAGE_SIZE }),
+          queryKey: [...prefix, offset],
+          queryFn: () => fetchStudents({ offset, limit: PAGE_SIZE, name: nameArg }),
           staleTime: 30_000,
         }),
       ),
@@ -74,11 +86,44 @@ export function useStudentSparseQuery() {
     }
   }
 
+  // ── 监听 searchTerm 变化，重置缓存并重新加载 ──
+
+  if (searchTerm) {
+    watch(
+      searchTerm,
+      (newVal) => {
+        const trimmed = newVal?.trim() ?? '';
+        if (trimmed === currentSearch.value) return;
+
+        isResetting.value = true;
+
+        // 清空旧搜索的所有缓存
+        const oldPrefix = currentSearch.value
+          ? ['students', currentSearch.value, 'offset']
+          : ['students', '', 'offset'];
+        queryClient.removeQueries({ queryKey: oldPrefix, exact: false });
+
+        currentSearch.value = trimmed;
+        total.value = 0;
+        version.value++;
+
+        // 重置完成后重新加载第一页
+        isResetting.value = false;
+      },
+      { immediate: true },
+    );
+  }
+
   // ── 加载第一页获取 total ──
 
+  const prefix = computed(() => queryKeyPrefix());
+
   const firstPageQuery = useQuery({
-    queryKey: [...QUERY_KEY_PREFIX, 0],
-    queryFn: () => fetchStudents({ offset: 0, limit: PAGE_SIZE }),
+    queryKey: computed(() => [...prefix.value, 0]),
+    queryFn: () => {
+      const nameArg = currentSearch.value || undefined;
+      return fetchStudents({ offset: 0, limit: PAGE_SIZE, name: nameArg });
+    },
     staleTime: 30_000,
   });
 
@@ -89,9 +134,9 @@ export function useStudentSparseQuery() {
     }
   });
 
-  // total 确定后立即预取所有页面，避免因虚拟列表 watch 时机不可靠导致页面未加载
+  // total 确定后立即预取所有页面
   watch(total, (t) => {
-    if (t > 0) {
+    if (t > 0 && !isResetting.value) {
       ensureRange(0, t - 1);
     }
   });

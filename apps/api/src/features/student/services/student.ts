@@ -107,16 +107,23 @@ export const studentService = {
   async list(query: z.infer<typeof studentListSchema>, userId: string) {
     const take = query.limit + 1;
 
+    // 基础 where 条件：归属用户 + 未删除
+    const baseWhere: NonNullable<Parameters<typeof prisma.student.findMany>[0]>['where'] = {
+      userId,
+      deletedAt: null,
+      ...(query.name ? { name: { contains: query.name, mode: 'insensitive' } } : {}),
+    };
+
     // offset 分页 — 直接跳过前 N 条
     if (query.offset !== undefined) {
       const [dbItems, total] = await Promise.all([
         prisma.student.findMany({
-          where: { userId, deletedAt: null },
+          where: baseWhere,
           orderBy: { createdAt: 'desc' },
           take: query.limit,
           skip: query.offset,
         }),
-        prisma.student.count({ where: { userId, deletedAt: null } }),
+        prisma.student.count({ where: baseWhere }),
       ]);
 
       const items = addAvatarUrlToList(dbItems);
@@ -133,12 +140,12 @@ export const studentService = {
     // cursor 分页
     const [dbItems, total] = await Promise.all([
       prisma.student.findMany({
-        where: { userId, deletedAt: null },
+        where: baseWhere,
         orderBy: { createdAt: 'desc' },
         take,
         ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
       }),
-      prisma.student.count({ where: { userId, deletedAt: null } }),
+      prisma.student.count({ where: baseWhere }),
     ]);
 
     const hasMore = dbItems.length > query.limit;

@@ -29,6 +29,7 @@ export async function fetchStudents(params: {
   cursor?: string;
   offset?: number;
   limit?: number;
+  name?: string;
 }): Promise<StudentListResponse> {
   const { data } = await request.get<StudentListResponse>('/student/list', { params });
   return data;
