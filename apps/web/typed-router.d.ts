@@ -41,6 +41,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    'course.detail': RouteRecordInfo<
+      'course.detail',
+      '/course/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
     'course.edit': RouteRecordInfo<
       'course.edit',
       '/course/:id/edit',
@@ -126,6 +133,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/auth/register.vue': {
       routes:
         | 'auth.register'
+      views:
+        | never
+    }
+    'src/pages/course/[id].vue': {
+      routes:
+        | 'course.detail'
       views:
         | never
     }

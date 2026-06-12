@@ -1,8 +1,9 @@
 <template>
   <article
     ref="cardRef"
-    class="flex h-36 origin-bottom-right flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm transition-all duration-700 dark:border-[#2f2f2f] dark:bg-[#202020]"
+    class="flex h-36 origin-bottom-right cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm transition-all duration-700 hover:-translate-y-2 hover:shadow-lg dark:border-[#2f2f2f] dark:bg-[#202020]"
     :class="isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-32 scale-80 opacity-0'"
+    @click="goToDetail"
   >
     <div class="px-5 py-4" :style="{ background: getAvatarGradient(course.name) }">
       <div class="flex items-start justify-between gap-4">
@@ -31,14 +32,14 @@
         <button
           type="button"
           class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-blue-600 transition-colors hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-500/10"
-          @click="router.push({ name: 'course.edit', params: { id: course.id } })"
+          @click.stop="router.push({ name: 'course.edit', params: { id: course.id } })"
         >
           <i class="i-lucide-square-pen size-3.5"></i> Edit
         </button>
         <button
           type="button"
           class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-500/10"
-          @click="handleDelete"
+          @click.stop="handleDelete"
         >
           <i class="i-lucide-trash-2 size-3.5"></i> Delete
         </button>
@@ -65,6 +66,10 @@ const { confirmAndDelete } = useCourseDelete();
 
 const cardRef = useTemplateRef<HTMLElement>('cardRef');
 const { isVisible } = useElementInView(cardRef);
+
+function goToDetail() {
+  router.push({ name: 'course.detail', params: { id: props.course.id } });
+}
 
 async function handleDelete() {
   try {
