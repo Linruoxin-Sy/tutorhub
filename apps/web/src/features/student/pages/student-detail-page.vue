@@ -108,7 +108,7 @@
               Description
             </label>
             <p
-              class="min-h-[3rem] rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
+              class="min-h-12 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
             >
               {{ student.description || '-' }}
             </p>

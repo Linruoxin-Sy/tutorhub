@@ -76,6 +76,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    'student.detail': RouteRecordInfo<
+      'student.detail',
+      '/student/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
     'student.edit': RouteRecordInfo<
       'student.edit',
       '/student/:id/edit',
@@ -149,6 +156,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/session.vue': {
       routes:
         | 'session'
+      views:
+        | never
+    }
+    'src/pages/student/[id].vue': {
+      routes:
+        | 'student.detail'
       views:
         | never
     }
