@@ -6,14 +6,14 @@ import { studentCreateSchema } from '@tutorhub/schema';
 
 import { uploadAvatarFile } from '@/features/student/api/avatar-upload';
 import { createStudent } from '@/features/student/api/student-api';
+import { DEFAULT_FORM_DATA, type StudentForm } from '@/features/student/types/studentForm';
 import { useLoading } from '@/hooks/useLoading';
-import { DEFAULT_FORM_DATA, type StudentFormData } from '@/features/student/types/studentForm';
 
 export function useStudentCreateForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const formData = ref<StudentFormData>(cloneDeep(DEFAULT_FORM_DATA));
+  const formData = ref<StudentForm>(cloneDeep(DEFAULT_FORM_DATA));
 
   const pendingFile = ref<Blob | null>(null);
 

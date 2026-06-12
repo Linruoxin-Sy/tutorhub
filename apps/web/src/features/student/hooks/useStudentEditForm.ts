@@ -6,12 +6,12 @@ import { studentUpdateSchema } from '@tutorhub/schema';
 
 import { uploadAvatarFile } from '@/features/student/api/avatar-upload';
 import { fetchStudentById, updateStudent } from '@/features/student/api/student-api';
-import { useLoading } from '@/hooks/useLoading';
 import {
   DEFAULT_FORM_DATA,
   FORM_DATA_KEYS,
-  type StudentFormData,
+  type StudentForm,
 } from '@/features/student/types/studentForm';
+import { useLoading } from '@/hooks/useLoading';
 
 export function useStudentEditForm(id: string) {
   const router = useRouter();
@@ -19,9 +19,9 @@ export function useStudentEditForm(id: string) {
 
   const isInitialLoading = ref(true);
 
-  const originalData = ref<StudentFormData>(cloneDeep(DEFAULT_FORM_DATA));
+  const originalData = ref<StudentForm>(cloneDeep(DEFAULT_FORM_DATA));
 
-  const formData = ref<StudentFormData>(cloneDeep(DEFAULT_FORM_DATA));
+  const formData = ref<StudentForm>(cloneDeep(DEFAULT_FORM_DATA));
 
   /** 当前展示的头像 URL（加载时的原始值） */
   const currentAvatarUrl = ref<string | null>(null);
