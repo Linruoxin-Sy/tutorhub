@@ -1,7 +1,7 @@
 <template>
   <div
     ref="cardRef"
-    class="origin-bottom-right transition-all duration-700"
+    class="origin-bottom-right cursor-pointer transition-all duration-700"
     :class="isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-16 scale-80 opacity-0'"
     style="
       display: grid;
@@ -9,6 +9,7 @@
       align-items: center;
       width: 100%;
     "
+    @click="router.push({ name: 'student.detail', params: { id: student.id } })"
   >
     <div class="flex min-w-0 items-center gap-3 px-6 whitespace-nowrap">
       <img
@@ -44,13 +45,13 @@
       <button
         type="button"
         class="cursor-pointer rounded-lg p-1.5 text-blue-600 transition hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-500/10"
-        @click="router.push({ name: 'student.edit', params: { id: student.id } })"
+        @click.stop="router.push({ name: 'student.edit', params: { id: student.id } })"
       >
         <i class="i-lucide-square-pen size-4"></i></button
       ><button
         type="button"
         class="cursor-pointer rounded-lg p-1.5 text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-500/10"
-        @click="handleDelete"
+        @click.stop="handleDelete"
       >
         <i class="i-lucide-trash-2 size-4"></i>
       </button>
