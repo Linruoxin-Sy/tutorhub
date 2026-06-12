@@ -7,17 +7,11 @@ import { studentUpdateSchema } from '@tutorhub/schema';
 import { uploadAvatarFile } from '@/features/student/api/avatar-upload';
 import { fetchStudentById, updateStudent } from '@/features/student/api/student-api';
 import { useLoading } from '@/hooks/useLoading';
-
-const DEFAULT_FORM_DATA = {
-  name: '',
-  email: '',
-  phone: '',
-  description: '',
-};
-
-const FORM_DATA_KEYS = Object.keys(DEFAULT_FORM_DATA) as (keyof typeof DEFAULT_FORM_DATA)[];
-
-type StudentFormData = typeof DEFAULT_FORM_DATA;
+import {
+  DEFAULT_FORM_DATA,
+  FORM_DATA_KEYS,
+  type StudentFormData,
+} from '@/features/student/types/studentForm';
 
 export function useStudentEditForm(id: string) {
   const router = useRouter();

@@ -7,15 +7,7 @@ import { studentCreateSchema } from '@tutorhub/schema';
 import { uploadAvatarFile } from '@/features/student/api/avatar-upload';
 import { createStudent } from '@/features/student/api/student-api';
 import { useLoading } from '@/hooks/useLoading';
-
-const DEFAULT_FORM_DATA = {
-  name: '',
-  email: '',
-  phone: '',
-  description: '',
-};
-
-type StudentFormData = typeof DEFAULT_FORM_DATA;
+import { DEFAULT_FORM_DATA, type StudentFormData } from '@/features/student/types/studentForm';
 
 export function useStudentCreateForm() {
   const router = useRouter();
