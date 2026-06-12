@@ -1,84 +1,17 @@
 import { createHash, randomBytes } from 'node:crypto';
 
 import { prisma } from '../src/client';
+import {
+  COURSE_ADJECTIVES,
+  COURSE_DESCRIPTIONS,
+  COURSE_SUBJECTS,
+  FIRST_NAMES,
+  LAST_NAMES,
+} from './seed-data';
 
 // ---------------------------------------------------------------------------
 // Course seed data generators
 // ---------------------------------------------------------------------------
-
-const COURSE_ADJECTIVES = [
-  'Advanced',
-  'Introduction to',
-  'Fundamentals of',
-  'Principles of',
-  'Modern',
-  'Applied',
-  'Comprehensive',
-  'Essential',
-  'Practical',
-  'Theoretical',
-  'Intermediate',
-  'Foundations of',
-  'Advanced Topics in',
-  'Special Topics in',
-  'Survey of',
-] as const;
-
-const COURSE_SUBJECTS = [
-  'Algebra',
-  'Geometry',
-  'Calculus',
-  'Statistics',
-  'Physics',
-  'Chemistry',
-  'Biology',
-  'Astronomy',
-  'Geology',
-  'English Literature',
-  'World History',
-  'Philosophy',
-  'Psychology',
-  'Sociology',
-  'Economics',
-  'Computer Science',
-  'Data Structures',
-  'Algorithms',
-  'Machine Learning',
-  'Artificial Intelligence',
-  'Web Development',
-  'Database Systems',
-  'Network Security',
-  'Software Engineering',
-  'Operating Systems',
-  'Linear Algebra',
-  'Discrete Mathematics',
-  'Probability Theory',
-  'Thermodynamics',
-  'Quantum Mechanics',
-  'Organic Chemistry',
-  'Cell Biology',
-  'Genetics',
-  'Ecology',
-  'Neuroscience',
-  'Linguistics',
-  'Anthropology',
-  'Political Science',
-  'Art History',
-  'Music Theory',
-] as const;
-
-const COURSE_DESCRIPTIONS = [
-  'A comprehensive exploration of core concepts and modern applications.',
-  'Build a strong foundation with hands-on projects and real-world examples.',
-  'Covers both theoretical frameworks and practical implementation strategies.',
-  'An in-depth study designed for learners seeking advanced knowledge.',
-  'Learn essential techniques and best practices from industry experts.',
-  'Combines rigorous theory with practical exercises to reinforce learning.',
-  'Designed to provide a thorough understanding of key principles.',
-  'Explores cutting-edge developments and emerging trends in the field.',
-  'A structured approach to mastering complex topics step by step.',
-  'Focuses on developing critical thinking and problem-solving skills.',
-] as const;
 
 function pick<T>(arr: readonly T[], index: number): T {
   return arr[index % arr.length];
@@ -114,58 +47,6 @@ async function hash(password: string, salt: string): Promise<string> {
 // ---------------------------------------------------------------------------
 // Mock student data generators
 // ---------------------------------------------------------------------------
-
-const FIRST_NAMES = [
-  'Alice',
-  'Bob',
-  'Carol',
-  'David',
-  'Eva',
-  'Frank',
-  'Grace',
-  'Henry',
-  'Ivy',
-  'Jack',
-  'Karen',
-  'Leo',
-  'Mia',
-  'Noah',
-  'Olivia',
-  'Patrick',
-  'Quinn',
-  'Rachel',
-  'Samuel',
-  'Tina',
-  'Uma',
-  'Victor',
-  'Wendy',
-  'Xavier',
-  'Yara',
-  'Zane',
-] as const;
-
-const LAST_NAMES = [
-  'Johnson',
-  'Smith',
-  'White',
-  'Lee',
-  'Martinez',
-  'Wilson',
-  'Kim',
-  'Brown',
-  'Chen',
-  'Davis',
-  'Taylor',
-  'Garcia',
-  'Anderson',
-  'Thomas',
-  'Jackson',
-  'Harris',
-  'Martin',
-  'Moore',
-  'Clark',
-  'Rodriguez',
-] as const;
 
 function buildStudent(index: number, userId: string) {
   const firstName = pick(FIRST_NAMES, index);
