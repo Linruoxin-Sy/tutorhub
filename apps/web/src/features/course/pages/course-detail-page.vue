@@ -119,5 +119,5 @@ const props = defineProps<{
   id: string;
 }>();
 
-const { course, isInitialLoading, error } = useCourseDetail(props.id);
+const { course, isInitialLoading } = useCourseDetail(props.id);
 </script>
