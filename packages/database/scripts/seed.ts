@@ -110,6 +110,42 @@ async function main() {
   }
   console.log(`  ✓ Created ${courses.length} courses`);
 
+  // 5. Assign random courses to each student
+  await prisma.studentCourse.deleteMany();
+  const allStudents = await prisma.student.findMany({ select: { id: true } });
+  const allCourseIds = (
+    await prisma.course.findMany({
+      where: { status: 'ACTIVE' },
+      select: { id: true },
+    })
+  ).map((c) => c.id);
+  console.log(`  ✓ Found ${allStudents.length} students, ${allCourseIds.length} active courses`);
+
+  const enrollments: { studentId: string; courseId: string }[] = [];
+
+  for (let si = 0; si < allStudents.length; si++) {
+    const count = 10 + Math.floor(pseudoRandom(si + 3000) * 11); // 10–20
+    const picked = new Set<number>();
+
+    let attempt = 0;
+    while (picked.size < count && picked.size < allCourseIds.length) {
+      picked.add(Math.floor(pseudoRandom(si * 10007 + attempt * 13 + 4000) * allCourseIds.length));
+      attempt++;
+    }
+
+    for (const ci of picked) {
+      enrollments.push({ studentId: allStudents[si].id, courseId: allCourseIds[ci] });
+    }
+  }
+
+  // Batch insert in chunks
+  const ENROLLMENT_CHUNK_SIZE = 1_000;
+  for (let i = 0; i < enrollments.length; i += ENROLLMENT_CHUNK_SIZE) {
+    const chunk = enrollments.slice(i, i + ENROLLMENT_CHUNK_SIZE);
+    await prisma.studentCourse.createMany({ data: chunk, skipDuplicates: true });
+  }
+  console.log(`  ✓ Created ${enrollments.length} course enrollments`);
+
   console.log('✅ Seed complete');
 }
 
