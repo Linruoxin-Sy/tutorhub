@@ -24,5 +24,6 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SearchInput: typeof import('./components/SearchInput.vue')['default']
     SelectInput: typeof import('./components/SelectInput.vue')['default']
+    VirtualList: typeof import('./components/VirtualList.vue')['default']
   }
 }
