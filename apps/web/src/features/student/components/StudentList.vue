@@ -15,7 +15,7 @@
     <!-- Sticky header — CSS Grid keeps columns aligned with virtual rows -->
     <div
       class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
-      style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 0.8fr"
+      style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr"
     >
       <div
         v-for="column in columns"

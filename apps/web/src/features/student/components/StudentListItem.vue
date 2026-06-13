@@ -5,7 +5,7 @@
     :class="isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-16 scale-80 opacity-0'"
     style="
       display: grid;
-      grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 0.8fr;
+      grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr;
       align-items: center;
       width: 100%;
     "
@@ -41,7 +41,7 @@
     <div class="truncate px-6 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
       {{ formatDateTime(student.createdAt) }}
     </div>
-    <div class="flex items-center justify-end gap-1 px-6 whitespace-nowrap">
+    <div class="flex items-center justify-start gap-1 px-6 whitespace-nowrap">
       <button
         type="button"
         class="cursor-pointer rounded-lg p-1.5 text-blue-600 transition hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-500/10"
