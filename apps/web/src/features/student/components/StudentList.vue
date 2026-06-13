@@ -1,11 +1,6 @@
 <template>
   <VirtualList
-    :get-item="getItem"
-    :is-loaded="isLoaded"
-    :total="total"
-    :is-loading="isLoading"
-    :error="error"
-    :ensure-range="ensureRange"
+    :query="sparseQuery"
     :estimate-size="70"
     :overscan="10"
     row-class="border-b border-gray-200 transition hover:bg-gray-50 dark:border-[#343434] dark:hover:bg-[#202020]"
@@ -64,7 +59,7 @@ const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
 
 const searchRef = computed(() => props.searchTerm ?? '');
 
-const { getItem, isLoaded, total, isLoading, error, ensureRange } = useSparseQuery<StudentItem>({
+const sparseQuery = useSparseQuery<StudentItem>({
   queryKeyPrefix: ['students'],
   fetchFn: (params) => fetchStudents(params as Parameters<typeof fetchStudents>[0]),
   filters: { name: searchRef },

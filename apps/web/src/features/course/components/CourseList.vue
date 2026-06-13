@@ -1,11 +1,6 @@
 <template>
   <VirtualList
-    :get-item="getItem"
-    :is-loaded="isLoaded"
-    :total="total"
-    :is-loading="isLoading"
-    :error="error"
-    :ensure-range="ensureRange"
+    :query="sparseQuery"
     :estimate-size="164"
     :overscan="5"
     scroll-class="flex-1 overflow-x-hidden overflow-y-auto p-5"
@@ -52,7 +47,7 @@ const props = defineProps<{
 const searchRef = computed(() => props.searchTerm ?? '');
 const statusRef = computed(() => props.statusTerm ?? '');
 
-const { getItem, isLoaded, total, isLoading, error, ensureRange } = useSparseQuery<Course>({
+const sparseQuery = useSparseQuery<Course>({
   queryKeyPrefix: ['courses'],
   fetchFn: (params) => fetchCourses(params as Parameters<typeof fetchCourses>[0]),
   filters: { name: searchRef, status: statusRef },

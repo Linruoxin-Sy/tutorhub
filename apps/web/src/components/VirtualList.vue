@@ -52,16 +52,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, unref } from 'vue';
 import { useVirtualizer } from '@tanstack/vue-virtual';
+import type { Ref, ComputedRef } from 'vue';
 
-const props = defineProps<{
+interface SparseQueryResult {
   getItem: (index: number) => unknown;
   isLoaded: (index: number) => boolean;
-  total: number;
-  isLoading: boolean;
-  error: string;
+  total: Ref<number> | ComputedRef<number> | Readonly<Ref<number>> | number;
+  isLoading: Ref<boolean> | ComputedRef<boolean> | boolean;
+  error: Ref<string> | Readonly<Ref<string>> | string;
   ensureRange: (start: number, end: number) => Promise<void>;
+}
+
+const props = defineProps<{
+  query: SparseQueryResult;
   estimateSize: number;
   overscan?: number;
   scrollClass?: string;
@@ -71,14 +76,18 @@ const props = defineProps<{
 
 const overscan = props.overscan ?? 10;
 const scrollClass = props.scrollClass ?? 'flex-1 overflow-x-hidden overflow-y-auto';
-
 const rowStyle = computed<Record<string, string>>(() => props.rowStyle ?? {});
+
+// 从 query 中解出响应式值（兼容 Ref / 原始值）
+const total = computed(() => unref(props.query.total));
+const isLoading = computed(() => unref(props.query.isLoading));
+const error = computed(() => unref(props.query.error));
 
 const scrollElement = ref<HTMLElement | null>(null);
 
 const virtualizer = useVirtualizer(
   computed(() => ({
-    count: props.total,
+    count: total.value,
     getScrollElement: () => scrollElement.value,
     estimateSize: () => props.estimateSize,
     overscan,
@@ -96,7 +105,7 @@ watch(
     if (!range) return;
     // 前后多缓冲 3 页（60 行），减少加载时的骨架闪现
     const pad = 3 * 20;
-    await props.ensureRange(range.first - pad, range.last + pad);
+    await props.query.ensureRange(range.first - pad, range.last + pad);
   },
   { deep: true },
 );
