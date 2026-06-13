@@ -3,15 +3,11 @@
     <div class="space-y-6">
       <PageHeader title="Edit Course" description="Update the course information below." />
 
-      <!-- Loading state -->
       <section
         v-if="isInitialLoading"
         class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
       >
-        <div class="flex items-center justify-center py-10">
-          <i class="i-lucide-loader-circle size-6 animate-spin text-gray-400"></i>
-          <span class="ml-3 text-sm text-gray-500 dark:text-gray-400">Loading course data...</span>
-        </div>
+        <LoadingIndicator text="Loading course data..." />
       </section>
 
       <!-- Form -->
