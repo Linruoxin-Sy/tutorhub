@@ -7,9 +7,7 @@
       />
 
       <!-- Form -->
-      <section
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection class="p-6">
         <StudentForm v-model="data" @avatar-change="handlePendingFile">
           <template #actions>
             <button
@@ -22,7 +20,7 @@
             </button>
           </template>
         </StudentForm>
-      </section>
+      </CardSection>
     </div>
   </main>
 </template>

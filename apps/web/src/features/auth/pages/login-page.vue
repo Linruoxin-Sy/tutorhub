@@ -1,8 +1,6 @@
 <template>
   <main class="flex h-full items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
-    <section
-      class="w-full max-w-md overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-    >
+    <CardSection class="w-full max-w-md overflow-hidden">
       <div class="px-6 py-5">
         <p
           class="text-xs font-semibold tracking-[0.2em] text-blue-600 uppercase dark:text-blue-300"
@@ -60,7 +58,7 @@
           </RouterLink>
         </p>
       </form>
-    </section>
+    </CardSection>
   </main>
 </template>
 

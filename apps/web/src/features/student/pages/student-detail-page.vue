@@ -3,20 +3,14 @@
     <div class="space-y-6">
       <PageHeader title="Student Details" description="View the student's information below." />
 
-      <section
-        v-if="isInitialLoading"
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection v-if="isInitialLoading" class="p-6">
         <LoadingIndicator text="Loading student data..." />
-      </section>
+      </CardSection>
 
       <!-- Detail content -->
-      <section
-        v-else-if="student"
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection v-else-if="student" class="p-6">
         <StudentForm v-model="student" :avatar-url="avatarUrl" readonly />
-      </section>
+      </CardSection>
     </div>
   </main>
 </template>

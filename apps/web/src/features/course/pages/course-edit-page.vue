@@ -3,18 +3,12 @@
     <div class="space-y-6">
       <PageHeader title="Edit Course" description="Update the course information below." />
 
-      <section
-        v-if="isInitialLoading"
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection v-if="isInitialLoading" class="p-6">
         <LoadingIndicator text="Loading course data..." />
-      </section>
+      </CardSection>
 
       <!-- Form -->
-      <section
-        v-else
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection v-else class="p-6">
         <form class="space-y-6" @submit.prevent="submit">
           <div class="space-y-2">
             <label for="name" class="text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -67,7 +61,7 @@
             <span v-else>Save Changes</span>
           </button>
         </form>
-      </section>
+      </CardSection>
     </div>
   </main>
 </template>

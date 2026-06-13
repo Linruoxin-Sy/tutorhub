@@ -7,9 +7,7 @@
       />
 
       <!-- Form -->
-      <section
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection class="p-6">
         <form class="space-y-6" @submit.prevent="submit">
           <div class="space-y-2">
             <label for="name" class="text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -61,7 +59,7 @@
             <span v-else>Create Course</span>
           </button>
         </form>
-      </section>
+      </CardSection>
     </div>
   </main>
 </template>

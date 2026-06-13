@@ -3,18 +3,12 @@
     <div class="space-y-6">
       <PageHeader title="Course Details" description="View the full information of the course." />
 
-      <section
-        v-if="isInitialLoading"
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection v-if="isInitialLoading" class="p-6">
         <LoadingIndicator text="Loading course data..." />
-      </section>
+      </CardSection>
 
       <!-- Details -->
-      <section
-        v-else-if="course"
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection v-else-if="course" class="p-6">
         <div class="space-y-6">
           <div class="space-y-2">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-200"> Name </label>
@@ -85,7 +79,7 @@
             Back to Courses
           </RouterLink>
         </div>
-      </section>
+      </CardSection>
     </div>
   </main>
 </template>

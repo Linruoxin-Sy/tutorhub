@@ -13,9 +13,7 @@
         </button>
       </div>
 
-      <section
-        class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection class="overflow-hidden">
         <div class="border-b border-gray-200 px-5 py-4 dark:border-[#343434]">
           <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
@@ -140,11 +138,9 @@
             </button>
           </div>
         </div>
-      </section>
+      </CardSection>
 
-      <section
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection class="p-5">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Leave records</h2>
@@ -171,11 +167,9 @@
             </p>
           </article>
         </div>
-      </section>
+      </CardSection>
 
-      <section
-        class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection class="p-5">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Reschedule records</h2>
@@ -205,7 +199,7 @@
             </p>
           </article>
         </div>
-      </section>
+      </CardSection>
     </div>
   </main>
 </template>

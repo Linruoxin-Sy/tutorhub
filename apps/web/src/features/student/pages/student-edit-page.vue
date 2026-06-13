@@ -3,18 +3,12 @@
     <div class="space-y-6">
       <PageHeader title="Edit Student" description="Update the student's information below." />
 
-      <section
-        v-if="isInitialLoading"
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection v-if="isInitialLoading" class="p-6">
         <LoadingIndicator text="Loading student data..." />
-      </section>
+      </CardSection>
 
       <!-- Form -->
-      <section
-        v-else
-        class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
+      <CardSection v-else class="p-6">
         <StudentForm
           v-model="formData"
           :avatar-url="currentAvatarUrl"
@@ -32,7 +26,7 @@
             </button>
           </template>
         </StudentForm>
-      </section>
+      </CardSection>
     </div>
   </main>
 </template>

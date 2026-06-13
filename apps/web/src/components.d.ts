@@ -12,6 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AvatarUploader: typeof import('./components/AvatarUploader.vue')['default']
+    CardSection: typeof import('./components/CardSection.vue')['default']
     ConfirmDialog: typeof import('./components/ConfirmDialog.vue')['default']
     LoadingIndicator: typeof import('./components/LoadingIndicator.vue')['default']
     PageHeader: typeof import('./components/PageHeader.vue')['default']

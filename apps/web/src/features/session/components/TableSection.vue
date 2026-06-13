@@ -1,7 +1,5 @@
 <template>
-  <section
-    class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-  >
+  <CardSection class="overflow-hidden">
     <div class="overflow-x-auto">
       <table class="min-w-full">
         <thead class="border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]">
@@ -82,7 +80,7 @@
         </tbody>
       </table>
     </div>
-  </section>
+  </CardSection>
 </template>
 
 <script setup lang="ts">
