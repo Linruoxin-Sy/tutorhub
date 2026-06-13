@@ -15,6 +15,8 @@ declare module 'vue' {
     AvatarUploader: typeof import('./components/AvatarUploader.vue')['default']
     CardSection: typeof import('./components/CardSection.vue')['default']
     ConfirmDialog: typeof import('./components/ConfirmDialog.vue')['default']
+    DeleteButton: typeof import('./components/DeleteButton.vue')['default']
+    EditButton: typeof import('./components/EditButton.vue')['default']
     ListPageShell: typeof import('./components/ListPageShell.vue')['default']
     LoadingIndicator: typeof import('./components/LoadingIndicator.vue')['default']
     PageHeader: typeof import('./components/PageHeader.vue')['default']
