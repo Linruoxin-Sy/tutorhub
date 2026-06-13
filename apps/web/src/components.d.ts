@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AvatarUploader: typeof import('./components/AvatarUploader.vue')['default']
     ConfirmDialog: typeof import('./components/ConfirmDialog.vue')['default']
+    PageHeader: typeof import('./components/PageHeader.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
