@@ -134,13 +134,6 @@ export function useStudentSparseQuery(searchTerm?: Ref<string>) {
     }
   });
 
-  // total 确定后立即预取所有页面
-  watch(total, (t) => {
-    if (t > 0 && !isResetting.value) {
-      ensureRange(0, t - 1);
-    }
-  });
-
   // 错误状态
   const displayError = computed(() => {
     if (firstPageQuery.error.value) {

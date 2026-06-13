@@ -139,12 +139,6 @@ export function useCourseSparseQuery(filters?: {
     }
   });
 
-  watch(total, (t) => {
-    if (t > 0 && !isResetting.value) {
-      ensureRange(0, t - 1);
-    }
-  });
-
   const displayError = computed(() => {
     if (firstPageQuery.error.value) {
       return firstPageQuery.error.value instanceof Error
