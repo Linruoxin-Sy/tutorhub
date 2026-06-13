@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts" generic="TItem">
-import { ref, computed, watch, unref } from 'vue';
+import { ref, computed, watch, unref, type VNode } from 'vue';
 import { useVirtualizer } from '@tanstack/vue-virtual';
 import type { Ref, ComputedRef } from 'vue';
 
@@ -75,10 +75,10 @@ const props = defineProps<{
 }>();
 
 defineSlots<{
-  header(): any;
-  loading(): any;
-  item(props: { item: TItem | undefined; index: number; isLoaded: boolean }): any;
-  empty(): any;
+  header(): VNode[];
+  loading(): VNode[];
+  item(props: { item: TItem | undefined; index: number; isLoaded: boolean }): VNode[];
+  empty(): VNode[];
 }>();
 
 const overscan = props.overscan ?? 10;
