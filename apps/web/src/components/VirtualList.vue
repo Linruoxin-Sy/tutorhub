@@ -51,13 +51,13 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="TItem">
 import { ref, computed, watch, unref } from 'vue';
 import { useVirtualizer } from '@tanstack/vue-virtual';
 import type { Ref, ComputedRef } from 'vue';
 
 interface SparseQueryResult {
-  getItem: (index: number) => unknown;
+  getItem: (index: number) => TItem | undefined;
   isLoaded: (index: number) => boolean;
   total: Ref<number> | ComputedRef<number> | Readonly<Ref<number>> | number;
   isLoading: Ref<boolean> | ComputedRef<boolean> | boolean;
@@ -72,6 +72,13 @@ const props = defineProps<{
   scrollClass?: string;
   rowClass?: string;
   rowStyle?: Record<string, string>;
+}>();
+
+defineSlots<{
+  header(): any;
+  loading(): any;
+  item(props: { item: TItem | undefined; index: number; isLoaded: boolean }): any;
+  empty(): any;
 }>();
 
 const overscan = props.overscan ?? 10;

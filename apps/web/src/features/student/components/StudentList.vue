@@ -28,7 +28,7 @@
     </template>
 
     <template #item="{ item, isLoaded }">
-      <StudentListItem v-if="isLoaded" :student="item as StudentItem" />
+      <StudentListItem v-if="isLoaded" :student="item!" />
       <StudentListItemSkeleton v-else />
     </template>
 

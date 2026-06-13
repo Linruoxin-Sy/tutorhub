@@ -12,7 +12,7 @@
     </template>
 
     <template #item="{ item, isLoaded }">
-      <CourseListItem v-if="isLoaded" :course="item as Course" />
+      <CourseListItem v-if="isLoaded" :course="item!" />
       <CourseListItemSkeleton v-else />
     </template>
 
