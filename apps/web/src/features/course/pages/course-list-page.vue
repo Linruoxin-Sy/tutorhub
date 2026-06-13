@@ -3,7 +3,7 @@
     <div class="flex h-full flex-col gap-6">
       <ListPageShell title="Courses">
         <template #filters>
-          <div class="grid gap-3 sm:grid-cols-2 lg:min-w-136 lg:grid-cols-[max-content_12rem]">
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
             <SearchInput v-model="search" placeholder="Search courses..." />
 
             <SelectInput v-model="status">
