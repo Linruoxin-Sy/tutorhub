@@ -19,5 +19,7 @@ declare module 'vue' {
     PageHeader: typeof import('./components/PageHeader.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchInput: typeof import('./components/SearchInput.vue')['default']
+    SelectInput: typeof import('./components/SelectInput.vue')['default']
   }
 }

@@ -26,14 +26,10 @@
             <label for="status" class="text-sm font-medium text-gray-700 dark:text-gray-200">
               Status
             </label>
-            <select
-              id="status"
-              v-model="data.status"
-              class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
-            >
+            <SelectInput id="status" v-model="data.status" size="md">
               <option value="ACTIVE">Active</option>
               <option value="DISABLED">Disabled</option>
-            </select>
+            </SelectInput>
           </div>
 
           <div class="space-y-2">
