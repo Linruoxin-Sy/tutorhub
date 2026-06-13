@@ -74,9 +74,12 @@
 
 <script setup lang="ts">
 import { useVirtualizer } from '@tanstack/vue-virtual';
-import { useStudentSparseQuery } from '@/features/student/hooks/useStudentSparseQuery';
+import { useSparseQuery } from '@/hooks/useSparseQuery';
+import { fetchStudents, type StudentListResponse } from '@/features/student/api/student-api';
 import StudentListItem from '@/features/student/components/StudentListItem.vue';
 import StudentListItemSkeleton from '@/features/student/components/StudentListItemSkeleton.vue';
+
+type StudentItem = StudentListResponse['items'][number];
 
 const props = defineProps<{
   searchTerm?: string;
@@ -86,8 +89,11 @@ const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
 
 const searchRef = computed(() => props.searchTerm ?? '');
 
-const { getItem, isLoaded, total, isLoading, error, ensureRange } =
-  useStudentSparseQuery(searchRef);
+const { getItem, isLoaded, total, isLoading, error, ensureRange } = useSparseQuery<StudentItem>({
+  queryKeyPrefix: ['students'],
+  fetchFn: (params) => fetchStudents(params as Parameters<typeof fetchStudents>[0]),
+  filters: { name: searchRef },
+});
 
 const scrollElement = ref<HTMLElement | null>(null);
 

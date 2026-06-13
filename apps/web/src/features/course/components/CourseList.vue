@@ -50,7 +50,9 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useVirtualizer } from '@tanstack/vue-virtual';
-import { useCourseSparseQuery } from '@/features/course/hooks/useCourseSparseQuery';
+import type { Course } from '@tutorhub/database';
+import { useSparseQuery } from '@/hooks/useSparseQuery';
+import { fetchCourses } from '@/features/course/api/course-api';
 import CourseListItem from '@/features/course/components/CourseListItem.vue';
 import CourseListItemSkeleton from '@/features/course/components/CourseListItemSkeleton.vue';
 
@@ -62,9 +64,10 @@ const props = defineProps<{
 const searchRef = computed(() => props.searchTerm ?? '');
 const statusRef = computed(() => props.statusTerm ?? '');
 
-const { getItem, isLoaded, total, isLoading, error, ensureRange } = useCourseSparseQuery({
-  searchTerm: searchRef,
-  statusTerm: statusRef,
+const { getItem, isLoaded, total, isLoading, error, ensureRange } = useSparseQuery<Course>({
+  queryKeyPrefix: ['courses'],
+  fetchFn: (params) => fetchCourses(params as Parameters<typeof fetchCourses>[0]),
+  filters: { name: searchRef, status: statusRef },
 });
 
 const scrollElement = ref<HTMLElement | null>(null);
