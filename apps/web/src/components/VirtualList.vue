@@ -83,6 +83,10 @@ const total = computed(() => unref(props.query.total));
 const isLoading = computed(() => unref(props.query.isLoading));
 const error = computed(() => unref(props.query.error));
 
+// getItem / isLoaded 是稳定函数，通过 props.query 转发以保持响应性
+const getItem = (index: number) => props.query.getItem(index);
+const isLoaded = (index: number) => props.query.isLoaded(index);
+
 const scrollElement = ref<HTMLElement | null>(null);
 
 const virtualizer = useVirtualizer(
