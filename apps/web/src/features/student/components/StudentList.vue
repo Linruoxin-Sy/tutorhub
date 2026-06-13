@@ -1,6 +1,23 @@
 <template>
-  <div v-if="isLoading" class="px-5 py-10 text-sm text-gray-500 dark:text-gray-400">
-    Loading students...
+  <div v-if="isLoading" class="flex-1 overflow-x-hidden overflow-y-auto">
+    <!-- Sticky header — matches data table layout -->
+    <div
+      class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
+      style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr"
+    >
+      <div
+        v-for="column in columns"
+        :key="column"
+        class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
+      >
+        {{ column }}
+      </div>
+    </div>
+
+    <!-- Skeleton rows -->
+    <div class="divide-y divide-gray-200 dark:divide-[#343434]">
+      <StudentListItemSkeleton v-for="index in 8" :key="index" />
+    </div>
   </div>
   <div v-else-if="error" class="px-5 py-4 text-sm text-red-700 dark:text-red-200">
     {{ error }}
