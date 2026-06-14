@@ -112,6 +112,9 @@ export const studentService = {
       userId,
       deletedAt: null,
       ...(query.name ? { name: { contains: query.name, mode: 'insensitive' } } : {}),
+      ...(query.courseId
+        ? { studentCourses: { some: { courseId: query.courseId } } }
+        : {}),
     };
 
     // offset 分页 — 直接跳过前 N 条

@@ -11,17 +11,43 @@
       <CardSection v-else class="p-6">
         <CourseForm v-model="data" readonly />
       </CardSection>
+
+      <!-- Enrolled students -->
+      <ListPageShell title="Enrolled Students">
+        <template #filters>
+          <SearchInput v-model="search" placeholder="Search students..." />
+        </template>
+
+        <div class="flex h-125 flex-col">
+          <StudentList
+            :course-id="id"
+            :search-term="debouncedSearch"
+            :actions="[]"
+            @view="() => {}"
+            @edit="() => {}"
+            @delete="() => {}"
+          />
+        </div>
+      </ListPageShell>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+import { refDebounced } from '@vueuse/core';
 import { useCourseDetail } from '@/features/course/hooks/useCourseDetail';
 import CourseForm from '@/features/course/components/CourseForm.vue';
+import StudentList from '@/features/student/components/StudentList.vue';
+import ListPageShell from '@/components/ListPageShell.vue';
+import SearchInput from '@/components/SearchInput.vue';
 
 const props = defineProps<{
   id: string;
 }>();
 
 const { data, isInitialLoading } = useCourseDetail(props.id);
+
+const search = ref('');
+const debouncedSearch = refDebounced(search, 300);
 </script>

@@ -61,10 +61,12 @@ type StudentItem = StudentListResponse['items'][number];
 const props = withDefaults(
   defineProps<{
     searchTerm?: string;
+    courseId?: string;
     actions?: ('edit' | 'delete')[];
   }>(),
   {
     searchTerm: '',
+    courseId: '',
     actions: () => ['edit', 'delete'],
   },
 );
@@ -78,10 +80,11 @@ const emit = defineEmits<{
 const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
 
 const searchRef = computed(() => props.searchTerm ?? '');
+const courseIdRef = computed(() => props.courseId ?? '');
 
 const sparseQuery = useSparseQuery<StudentItem>({
   queryKeyPrefix: ['students'],
   fetchFn: (params) => fetchStudents(params as Parameters<typeof fetchStudents>[0]),
-  filters: { name: searchRef },
+  filters: { name: searchRef, courseId: courseIdRef },
 });
 </script>
