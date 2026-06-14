@@ -69,15 +69,6 @@
               {{ formatDateTime(course.updatedAt) }}
             </p>
           </div>
-
-          <!-- Back button -->
-          <RouterLink
-            :to="{ name: 'course.list' }"
-            class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-[#3a3a3a] dark:bg-transparent dark:text-gray-300 dark:hover:bg-[#202020]"
-          >
-            <i class="i-lucide-arrow-left size-4"></i>
-            Back to Courses
-          </RouterLink>
         </div>
       </CardSection>
     </div>
