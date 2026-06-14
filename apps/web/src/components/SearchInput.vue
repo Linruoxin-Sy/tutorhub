@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-const { size = 'sm' } = defineProps<{
+const { placeholder = 'Search...', size = 'sm' } = defineProps<{
   placeholder?: string;
   size?: 'sm' | 'md';
 }>();
