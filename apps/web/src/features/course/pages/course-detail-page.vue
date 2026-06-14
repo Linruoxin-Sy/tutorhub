@@ -9,7 +9,7 @@
 
       <!-- Detail content -->
       <CardSection v-else class="p-6">
-        <CourseForm v-model="data" :created-at="createdAt" :updated-at="updatedAt" readonly />
+        <CourseForm v-model="data" readonly />
       </CardSection>
     </div>
   </main>
@@ -23,5 +23,5 @@ const props = defineProps<{
   id: string;
 }>();
 
-const { data, createdAt, updatedAt, isInitialLoading } = useCourseDetail(props.id);
+const { data, isInitialLoading } = useCourseDetail(props.id);
 </script>

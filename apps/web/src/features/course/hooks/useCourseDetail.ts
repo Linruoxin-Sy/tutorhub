@@ -14,8 +14,6 @@ export function useCourseDetail(id: string) {
   const isInitialLoading = ref(true);
 
   const formData = ref<CourseFormData>(cloneDeep(DEFAULT_FORM_DATA));
-  const createdAt = ref<Date | string | null>(null);
-  const updatedAt = ref<Date | string | null>(null);
 
   onMounted(async () => {
     try {
@@ -23,8 +21,6 @@ export function useCourseDetail(id: string) {
       formData.value = mapValues(pick(course, FORM_DATA_KEYS), (v) =>
         isNil(v) ? '' : v,
       ) as CourseFormData;
-      createdAt.value = course.createdAt;
-      updatedAt.value = course.updatedAt;
     } catch {
       toast.error('Failed to load course details');
       router.push({ name: 'course.list' });
@@ -35,8 +31,6 @@ export function useCourseDetail(id: string) {
 
   return {
     data: formData,
-    createdAt,
-    updatedAt,
     isInitialLoading,
   };
 }

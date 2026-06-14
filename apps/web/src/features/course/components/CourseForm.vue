@@ -75,26 +75,6 @@
       </p>
     </div>
 
-    <!-- Created At (readonly only) -->
-    <div v-if="readonly && createdAt" class="space-y-2">
-      <label class="text-sm font-medium text-gray-700 dark:text-gray-200"> Created At </label>
-      <p
-        class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
-      >
-        {{ formatDateTime(createdAt) }}
-      </p>
-    </div>
-
-    <!-- Updated At (readonly only) -->
-    <div v-if="readonly && updatedAt" class="space-y-2">
-      <label class="text-sm font-medium text-gray-700 dark:text-gray-200"> Updated At </label>
-      <p
-        class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
-      >
-        {{ formatDateTime(updatedAt) }}
-      </p>
-    </div>
-
     <!-- Actions slot (only shown in editable mode) -->
     <div v-if="!readonly">
       <slot name="actions" />
@@ -104,7 +84,6 @@
 
 <script setup lang="ts">
 import type { CourseFormData } from '@/features/course/types/courseForm';
-import { formatDateTime } from '@/utils/date';
 import { useFieldId } from '@/hooks/useFieldId';
 
 const model = defineModel<CourseFormData>({
@@ -114,8 +93,6 @@ const model = defineModel<CourseFormData>({
 withDefaults(
   defineProps<{
     readonly?: boolean;
-    createdAt?: Date | string | null;
-    updatedAt?: Date | string | null;
   }>(),
   {
     readonly: false,
