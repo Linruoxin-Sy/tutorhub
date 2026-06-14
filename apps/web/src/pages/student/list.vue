@@ -1,7 +1,10 @@
 <route lang="json">
 {
   "name": "student.list",
-  "path": "/student"
+  "path": "/student",
+  "meta": {
+    "navbarIndex": 1
+  }
 }
 </route>
 

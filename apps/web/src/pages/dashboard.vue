@@ -1,6 +1,9 @@
 <route lang="json">
 {
-  "name": "dashboard"
+  "name": "dashboard",
+  "meta": {
+    "navbarIndex": 0
+  }
 }
 </route>
 

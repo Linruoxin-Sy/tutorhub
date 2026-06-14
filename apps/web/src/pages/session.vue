@@ -1,6 +1,9 @@
 <route lang="json">
 {
-  "name": "session"
+  "name": "session",
+  "meta": {
+    "navbarIndex": 3
+  }
 }
 </route>
 
