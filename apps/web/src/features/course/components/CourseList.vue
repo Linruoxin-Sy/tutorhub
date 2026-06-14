@@ -12,7 +12,13 @@
     </template>
 
     <template #item="{ item, isLoaded }">
-      <CourseListItem v-if="isLoaded" :course="item!" />
+      <CourseListItem
+        v-if="isLoaded"
+        :course="item!"
+        @view="emit('view', item!)"
+        @edit="emit('edit', item!)"
+        @delete="emit('delete', item!)"
+      />
       <CourseListItemSkeleton v-else />
     </template>
 
@@ -42,6 +48,12 @@ import VirtualList from '@/components/VirtualList.vue';
 const props = defineProps<{
   searchTerm?: string;
   statusTerm?: string;
+}>();
+
+const emit = defineEmits<{
+  view: [item: Course];
+  edit: [item: Course];
+  delete: [item: Course];
 }>();
 
 const searchRef = computed(() => props.searchTerm ?? '');

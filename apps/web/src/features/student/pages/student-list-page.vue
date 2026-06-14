@@ -12,7 +12,12 @@
           </AddButton>
         </template>
 
-        <StudentList :search-term="debouncedSearch" />
+        <StudentList
+          :search-term="debouncedSearch"
+          @view="(item) => router.push({ name: 'student.detail', params: { id: item.id } })"
+          @edit="(item) => router.push({ name: 'student.edit', params: { id: item.id } })"
+          @delete="handleDelete"
+        />
       </ListPageShell>
     </div>
   </main>
@@ -21,10 +26,23 @@
 <script setup lang="ts">
 import { refDebounced } from '@vueuse/core';
 import { useRouter } from 'vue-router';
+import { useStudentDelete } from '@/features/student/hooks/useStudentDelete';
 import StudentList from '@/features/student/components/StudentList.vue';
+import type { StudentListResponse } from '@/features/student/api/student-api';
+
+type StudentItem = StudentListResponse['items'][number];
 
 const router = useRouter();
+const { confirmAndDelete } = useStudentDelete();
 
 const searchInput = ref('');
 const debouncedSearch = refDebounced(searchInput, 300);
+
+async function handleDelete(item: StudentItem) {
+  try {
+    await confirmAndDelete({ id: item.id, name: item.name });
+  } catch {
+    // User cancelled or delete failed — nothing to do
+  }
+}
 </script>

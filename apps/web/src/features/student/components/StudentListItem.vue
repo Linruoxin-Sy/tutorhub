@@ -9,7 +9,7 @@
       align-items: center;
       width: 100%;
     "
-    @click="router.push({ name: 'student.detail', params: { id: student.id } })"
+    @click="emit('view')"
   >
     <div class="flex min-w-0 items-center gap-3 px-6 whitespace-nowrap">
       <img
@@ -42,18 +42,16 @@
       {{ formatDateTime(student.createdAt) }}
     </div>
     <div class="flex items-center justify-start gap-1 px-6 whitespace-nowrap">
-      <EditButton @click.stop="router.push({ name: 'student.edit', params: { id: student.id } })" />
-      <DeleteButton @click.stop="handleDelete" />
+      <EditButton @click.stop="emit('edit')" />
+      <DeleteButton @click.stop="emit('delete')" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
 import { useTemplateRef } from 'vue';
 import { formatDateTime } from '@/utils/date';
 import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
-import { useStudentDelete } from '@/features/student/hooks/useStudentDelete';
 import { useElementInView } from '@/hooks/useElementInView';
 import type { Student } from '@tutorhub/database';
 
@@ -64,21 +62,16 @@ const props = defineProps<{
   student: StudentListItemData;
 }>();
 
+const emit = defineEmits<{
+  view: [];
+  edit: [];
+  delete: [];
+}>();
+
 const studentAvatarUrl = computed(
   () => (props.student as Record<string, unknown>).avatarUrl as string | undefined,
 );
 
-const router = useRouter();
-const { confirmAndDelete } = useStudentDelete();
-
 const cardRef = useTemplateRef<HTMLElement>('cardRef');
 const { isVisible } = useElementInView(cardRef);
-
-async function handleDelete() {
-  try {
-    await confirmAndDelete({ id: props.student.id, name: props.student.name });
-  } catch {
-    // User cancelled or delete failed — nothing to do
-  }
-}
 </script>

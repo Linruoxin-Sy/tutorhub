@@ -28,7 +28,13 @@
     </template>
 
     <template #item="{ item, isLoaded }">
-      <StudentListItem v-if="isLoaded" :student="item!" />
+      <StudentListItem
+        v-if="isLoaded"
+        :student="item!"
+        @view="emit('view', item!)"
+        @edit="emit('edit', item!)"
+        @delete="emit('delete', item!)"
+      />
       <StudentListItemSkeleton v-else />
     </template>
 
@@ -53,6 +59,12 @@ type StudentItem = StudentListResponse['items'][number];
 
 const props = defineProps<{
   searchTerm?: string;
+}>();
+
+const emit = defineEmits<{
+  view: [item: StudentItem];
+  edit: [item: StudentItem];
+  delete: [item: StudentItem];
 }>();
 
 const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
