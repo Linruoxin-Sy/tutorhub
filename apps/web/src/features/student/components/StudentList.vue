@@ -31,6 +31,7 @@
       <StudentListItem
         v-if="isLoaded"
         :student="item!"
+        :actions="actions"
         @view="emit('view', item!)"
         @edit="emit('edit', item!)"
         @delete="emit('delete', item!)"
@@ -57,9 +58,15 @@ import VirtualList from '@/components/VirtualList.vue';
 
 type StudentItem = StudentListResponse['items'][number];
 
-const props = defineProps<{
-  searchTerm?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    searchTerm?: string;
+    actions?: ('edit' | 'delete')[];
+  }>(),
+  {
+    actions: () => ['edit', 'delete'],
+  },
+);
 
 const emit = defineEmits<{
   view: [item: StudentItem];

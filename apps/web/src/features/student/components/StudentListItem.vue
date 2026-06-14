@@ -41,9 +41,9 @@
     <div class="truncate px-6 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
       {{ formatDateTime(student.createdAt) }}
     </div>
-    <div class="flex items-center justify-start gap-1 px-6 whitespace-nowrap">
-      <EditButton @click.stop="emit('edit')" />
-      <DeleteButton @click.stop="emit('delete')" />
+    <div v-if="actions.length" class="flex items-center justify-start gap-1 px-6 whitespace-nowrap">
+      <EditButton v-if="actions.includes('edit')" @click.stop="emit('edit')" />
+      <DeleteButton v-if="actions.includes('delete')" @click.stop="emit('delete')" />
     </div>
   </div>
 </template>
@@ -58,9 +58,15 @@ import type { Student } from '@tutorhub/database';
 /** 从 API 列表接口返回的学生对象不包含 avatarKey，但包含 avatarUrl */
 type StudentListItemData = Omit<Student, 'avatarKey'> & { avatarUrl?: string | null };
 
-const props = defineProps<{
-  student: StudentListItemData;
-}>();
+withDefaults(
+  defineProps<{
+    student: StudentListItemData;
+    actions?: ('edit' | 'delete')[];
+  }>(),
+  {
+    actions: () => ['edit', 'delete'],
+  },
+);
 
 const emit = defineEmits<{
   view: [];

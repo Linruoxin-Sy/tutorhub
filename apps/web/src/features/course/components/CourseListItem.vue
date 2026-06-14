@@ -28,9 +28,9 @@
           Created {{ formatDateTime(course.createdAt) }}
         </span>
       </div>
-      <div class="flex shrink-0 gap-2 self-end">
-        <EditButton @click.stop="emit('edit')" />
-        <DeleteButton @click.stop="emit('delete')" />
+      <div v-if="actions.length" class="flex shrink-0 gap-2 self-end">
+        <EditButton v-if="actions.includes('edit')" @click.stop="emit('edit')" />
+        <DeleteButton v-if="actions.includes('delete')" @click.stop="emit('delete')" />
       </div>
     </div>
   </article>
@@ -43,9 +43,15 @@ import { useTemplateRef } from 'vue';
 import { useElementInView } from '@/hooks/useElementInView';
 import type { Course } from '@tutorhub/database';
 
-defineProps<{
-  course: Course;
-}>();
+withDefaults(
+  defineProps<{
+    course: Course;
+    actions?: ('edit' | 'delete')[];
+  }>(),
+  {
+    actions: () => ['edit', 'delete'],
+  },
+);
 
 const emit = defineEmits<{
   view: [];

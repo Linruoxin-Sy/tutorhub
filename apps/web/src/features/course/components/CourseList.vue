@@ -15,6 +15,7 @@
       <CourseListItem
         v-if="isLoaded"
         :course="item!"
+        :actions="actions"
         @view="emit('view', item!)"
         @edit="emit('edit', item!)"
         @delete="emit('delete', item!)"
@@ -45,10 +46,16 @@ import CourseListItem from '@/features/course/components/CourseListItem.vue';
 import CourseListItemSkeleton from '@/features/course/components/CourseListItemSkeleton.vue';
 import VirtualList from '@/components/VirtualList.vue';
 
-const props = defineProps<{
-  searchTerm?: string;
-  statusTerm?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    searchTerm?: string;
+    statusTerm?: string;
+    actions?: ('edit' | 'delete')[];
+  }>(),
+  {
+    actions: () => ['edit', 'delete'],
+  },
+);
 
 const emit = defineEmits<{
   view: [item: Course];
