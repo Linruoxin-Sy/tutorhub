@@ -30,12 +30,12 @@
     <div class="grid gap-6 md:grid-cols-2">
       <!-- Name -->
       <div class="space-y-2">
-        <label :for="fieldId('name')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
+        <label :for="field.id('name')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
           Name <span v-if="!readonly" class="text-red-500">*</span>
         </label>
         <input
           v-if="!readonly"
-          :id="fieldId('name')"
+          :id="field.id('name')"
           v-model.trim="model.name"
           type="text"
           placeholder="Student name"
@@ -51,12 +51,15 @@
 
       <!-- Email -->
       <div class="space-y-2">
-        <label :for="fieldId('email')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
+        <label
+          :for="field.id('email')"
+          class="text-sm font-medium text-gray-700 dark:text-gray-200"
+        >
           Email
         </label>
         <input
           v-if="!readonly"
-          :id="fieldId('email')"
+          :id="field.id('email')"
           v-model.trim="model.email"
           type="email"
           placeholder="student@example.com"
@@ -72,12 +75,15 @@
 
       <!-- Phone -->
       <div class="space-y-2">
-        <label :for="fieldId('phone')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
+        <label
+          :for="field.id('phone')"
+          class="text-sm font-medium text-gray-700 dark:text-gray-200"
+        >
           Phone
         </label>
         <input
           v-if="!readonly"
-          :id="fieldId('phone')"
+          :id="field.id('phone')"
           v-model.trim="model.phone"
           type="text"
           inputmode="numeric"
@@ -95,14 +101,14 @@
       <!-- Description -->
       <div class="space-y-2">
         <label
-          :for="fieldId('description')"
+          :for="field.id('description')"
           class="text-sm font-medium text-gray-700 dark:text-gray-200"
         >
           Description
         </label>
         <textarea
           v-if="!readonly"
-          :id="fieldId('description')"
+          :id="field.id('description')"
           v-model="model.description"
           rows="4"
           placeholder="Additional notes about the student..."
@@ -127,7 +133,7 @@
 <script setup lang="ts">
 import type { StudentForm } from '@/features/student/types/studentForm';
 import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
-import { useFieldId } from '@/hooks/useFieldId';
+import { useField } from '@/hooks/useField';
 
 const model = defineModel<StudentForm>({
   required: true,
@@ -148,7 +154,7 @@ const emit = defineEmits<{
   avatarChange: [value: Blob | null];
 }>();
 
-const { fieldId } = useFieldId('student-form');
+const field = useField();
 
 function handleAvatarFile(file: Blob | null) {
   emit('avatarChange', file);

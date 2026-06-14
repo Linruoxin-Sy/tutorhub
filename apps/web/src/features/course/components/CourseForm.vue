@@ -2,12 +2,12 @@
   <form class="space-y-6">
     <!-- Name -->
     <div class="space-y-2">
-      <label :for="fieldId('name')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
+      <label :for="field.id('name')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
         Name <span v-if="!readonly" class="text-red-500">*</span>
       </label>
       <input
         v-if="!readonly"
-        :id="fieldId('name')"
+        :id="field.id('name')"
         v-model.trim="model.name"
         type="text"
         placeholder="Course name"
@@ -23,10 +23,10 @@
 
     <!-- Status -->
     <div class="space-y-2">
-      <label :for="fieldId('status')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
+      <label :for="field.id('status')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
         Status
       </label>
-      <SelectInput v-if="!readonly" :id="fieldId('status')" v-model="model.status" size="md">
+      <SelectInput v-if="!readonly" :id="field.id('status')" v-model="model.status" size="md">
         <option value="ACTIVE">Active</option>
         <option value="DISABLED">Disabled</option>
       </SelectInput>
@@ -54,14 +54,14 @@
     <!-- Description -->
     <div class="space-y-2">
       <label
-        :for="fieldId('description')"
+        :for="field.id('description')"
         class="text-sm font-medium text-gray-700 dark:text-gray-200"
       >
         Description
       </label>
       <textarea
         v-if="!readonly"
-        :id="fieldId('description')"
+        :id="field.id('description')"
         v-model="model.description"
         rows="4"
         placeholder="Course description..."
@@ -84,7 +84,7 @@
 
 <script setup lang="ts">
 import type { CourseFormData } from '@/features/course/types/courseForm';
-import { useFieldId } from '@/hooks/useFieldId';
+import { useField } from '@/hooks/useField';
 
 const model = defineModel<CourseFormData>({
   required: true,
@@ -101,5 +101,5 @@ withDefaults(
   },
 );
 
-const { fieldId } = useFieldId('course-form');
+const field = useField();
 </script>
