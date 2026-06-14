@@ -11,17 +11,43 @@
       <CardSection v-else-if="student" class="p-6">
         <StudentForm v-model="student" :avatar-url="avatarUrl" readonly />
       </CardSection>
+
+      <!-- Enrolled courses -->
+      <ListPageShell title="Enrolled Courses">
+        <template #filters>
+          <SearchInput v-model="search" placeholder="Search courses..." />
+        </template>
+
+        <div class="flex h-125 flex-col">
+          <CourseList
+            :student-id="id"
+            :search-term="debouncedSearch"
+            :actions="[]"
+            @view="() => {}"
+            @edit="() => {}"
+            @delete="() => {}"
+          />
+        </div>
+      </ListPageShell>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+import { refDebounced } from '@vueuse/core';
 import { useRoute } from 'vue-router';
 import StudentForm from '@/features/student/components/StudentForm.vue';
 import { useStudentDetailForm } from '@/features/student/hooks/useStudentDetailForm';
+import CourseList from '@/features/course/components/CourseList.vue';
+import ListPageShell from '@/components/ListPageShell.vue';
+import SearchInput from '@/components/SearchInput.vue';
 
 const route = useRoute();
 const id = (route.params as Record<string, string>).id;
 
 const { data: student, isInitialLoading, avatarUrl } = useStudentDetailForm(id);
+
+const search = ref('');
+const debouncedSearch = refDebounced(search, 300);
 </script>

@@ -50,11 +50,13 @@ const props = withDefaults(
   defineProps<{
     searchTerm?: string;
     statusTerm?: string;
+    studentId?: string;
     actions?: ('edit' | 'delete')[];
   }>(),
   {
     searchTerm: '',
     statusTerm: '',
+    studentId: '',
     actions: () => ['edit', 'delete'],
   },
 );
@@ -67,10 +69,11 @@ const emit = defineEmits<{
 
 const searchRef = computed(() => props.searchTerm ?? '');
 const statusRef = computed(() => props.statusTerm ?? '');
+const studentIdRef = computed(() => props.studentId ?? '');
 
 const sparseQuery = useSparseQuery<Course>({
   queryKeyPrefix: ['courses'],
   fetchFn: (params) => fetchCourses(params as Parameters<typeof fetchCourses>[0]),
-  filters: { name: searchRef, status: statusRef },
+  filters: { name: searchRef, status: statusRef, studentId: studentIdRef },
 });
 </script>

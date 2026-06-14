@@ -27,14 +27,43 @@
           </template>
         </StudentForm>
       </CardSection>
+
+      <!-- Enrolled courses -->
+      <ListPageShell title="Enrolled Courses">
+        <template #filters>
+          <SearchInput v-model="search" placeholder="Search courses..." />
+        </template>
+        <template #actions>
+          <AddButton @click="() => {}">
+            <i class="i-lucide-plus size-4"></i>
+            <span>Add Course</span>
+          </AddButton>
+        </template>
+
+        <div class="flex h-125 flex-col">
+          <CourseList
+            :student-id="id"
+            :search-term="debouncedSearch"
+            @view="() => {}"
+            @edit="() => {}"
+            @delete="() => {}"
+          />
+        </div>
+      </ListPageShell>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+import { refDebounced } from '@vueuse/core';
 import { useRoute } from 'vue-router';
 import { useStudentEditForm } from '@/features/student/hooks/useStudentEditForm';
 import StudentForm from '@/features/student/components/StudentForm.vue';
+import CourseList from '@/features/course/components/CourseList.vue';
+import ListPageShell from '@/components/ListPageShell.vue';
+import AddButton from '@/components/AddButton.vue';
+import SearchInput from '@/components/SearchInput.vue';
 
 const route = useRoute();
 const id = (route.params as Record<string, string>).id;
@@ -48,4 +77,7 @@ const {
   isSubmitting,
   handlePendingFile,
 } = useStudentEditForm(id);
+
+const search = ref('');
+const debouncedSearch = refDebounced(search, 300);
 </script>

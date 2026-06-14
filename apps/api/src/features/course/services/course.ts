@@ -13,6 +13,7 @@ export const courseService = {
     const baseWhere: NonNullable<Parameters<typeof prisma.course.findMany>[0]>['where'] = {
       ...(query.name ? { name: { contains: query.name, mode: 'insensitive' } } : {}),
       ...(query.status ? { status: query.status } : {}),
+      ...(query.studentId ? { studentCourses: { some: { studentId: query.studentId } } } : {}),
     };
 
     // offset 分页

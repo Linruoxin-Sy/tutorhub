@@ -27,6 +27,7 @@ export async function fetchCourses(params: {
   limit?: number;
   name?: string;
   status?: string;
+  studentId?: string;
 }): Promise<CourseListResponse> {
   const { data } = await request.get<CourseListResponse>('/course/list', { params });
   return data;
