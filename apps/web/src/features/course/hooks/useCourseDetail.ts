@@ -1,24 +1,32 @@
+import { cloneDeep, isNil, mapValues, pick } from 'es-toolkit';
+import { toast } from 'vue-sonner';
+
 import { fetchCourseById } from '@/features/course/api/course-api';
+import {
+  DEFAULT_FORM_DATA,
+  FORM_DATA_KEYS,
+  type CourseFormData,
+} from '@/features/course/types/courseForm';
 
 export function useCourseDetail(id: string) {
   const router = useRouter();
-  const course = ref<{
-    id: string;
-    name: string;
-    description: string | null;
-    status: string;
-    createdAt: Date | string;
-    updatedAt: Date | string;
-  } | null>(null);
 
   const isInitialLoading = ref(true);
-  const error = ref('');
+
+  const formData = ref<CourseFormData>(cloneDeep(DEFAULT_FORM_DATA));
+  const createdAt = ref<Date | string | null>(null);
+  const updatedAt = ref<Date | string | null>(null);
 
   onMounted(async () => {
     try {
-      course.value = await fetchCourseById(id);
+      const course = await fetchCourseById(id);
+      formData.value = mapValues(pick(course, FORM_DATA_KEYS), (v) =>
+        isNil(v) ? '' : v,
+      ) as CourseFormData;
+      createdAt.value = course.createdAt;
+      updatedAt.value = course.updatedAt;
     } catch {
-      error.value = 'Failed to load course details';
+      toast.error('Failed to load course details');
       router.push({ name: 'course.list' });
     } finally {
       isInitialLoading.value = false;
@@ -26,8 +34,9 @@ export function useCourseDetail(id: string) {
   });
 
   return {
-    course,
+    data: formData,
+    createdAt,
+    updatedAt,
     isInitialLoading,
-    error,
   };
 }
