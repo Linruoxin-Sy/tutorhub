@@ -1,4 +1,4 @@
-import { ref, onUnmounted } from 'vue';
+import { onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 type TransitionName = 'slide-left' | 'slide-right' | 'fade-scale';
