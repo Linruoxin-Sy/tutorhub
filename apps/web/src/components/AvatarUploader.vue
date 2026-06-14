@@ -28,7 +28,7 @@
         <!-- 3) Gradient avatar (based on debounced name) -->
         <div
           v-else-if="debouncedName"
-          :key="'gradient'"
+          :key="'gradient-' + debouncedName"
           class="flex size-full items-center justify-center rounded-full text-xl font-bold shadow-inner"
           :style="{
             background: getAvatarGradient(debouncedName),
