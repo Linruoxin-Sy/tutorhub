@@ -3,7 +3,7 @@
     <div v-if="!route.meta.hideAppHeader" class="h-20 shrink-0">
       <AppHeader />
     </div>
-    <div class="flex-1 overflow-auto">
+    <div class="flex-1 overflow-x-hidden overflow-y-auto">
       <slot></slot>
     </div>
   </div>
