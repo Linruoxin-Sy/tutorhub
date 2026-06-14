@@ -58,7 +58,7 @@ import type { Student } from '@tutorhub/database';
 /** 从 API 列表接口返回的学生对象不包含 avatarKey，但包含 avatarUrl */
 type StudentListItemData = Omit<Student, 'avatarKey'> & { avatarUrl?: string | null };
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     student: StudentListItemData;
     actions?: ('edit' | 'delete')[];

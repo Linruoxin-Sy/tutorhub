@@ -64,6 +64,7 @@ const props = withDefaults(
     actions?: ('edit' | 'delete')[];
   }>(),
   {
+    searchTerm: '',
     actions: () => ['edit', 'delete'],
   },
 );
