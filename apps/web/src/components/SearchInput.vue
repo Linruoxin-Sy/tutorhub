@@ -15,13 +15,16 @@
 </template>
 
 <script setup lang="ts">
-const { size } = withDefaults(defineProps<{
-  placeholder?: string;
-  size?: 'sm' | 'md';
-}>(), {
-  placeholder: 'Search...',
-  size: 'sm',
-});
+withDefaults(
+  defineProps<{
+    placeholder?: string;
+    size?: 'sm' | 'md';
+  }>(),
+  {
+    placeholder: 'Search...',
+    size: 'sm',
+  },
+);
 
 const model = defineModel<string>({ required: true });
 </script>
