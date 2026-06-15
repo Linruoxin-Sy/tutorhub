@@ -91,15 +91,14 @@ import { useRoute } from 'vue-router';
 import { useCourseEditForm } from '@/features/course/hooks/useCourseEditForm';
 import CourseForm from '@/features/course/components/CourseForm.vue';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
-import { fetchStudents, type StudentListResponse } from '@/features/student/api/student-api';
+import { fetchCourseEnrollments } from '@/features/enrollment/api/enrollment-api';
 import StudentItem from '@/features/student/components/StudentItem.vue';
 import StudentItemSkeleton from '@/features/student/components/StudentItemSkeleton.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import AddButton from '@/components/AddButton.vue';
 import SearchInput from '@/components/SearchInput.vue';
-
-type StudentItemType = StudentListResponse['items'][number];
+import type { Student } from '@tutorhub/database';
 
 const route = useRoute();
 const id = (route.params as Record<string, string>).id;
@@ -112,11 +111,13 @@ const debouncedSearch = refDebounced(search, 300);
 const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
 
 const searchRef = computed(() => debouncedSearch.value ?? '');
-const courseIdRef = computed(() => id);
 
-const sparseQuery = useSparseQuery<StudentItemType>({
-  queryKeyPrefix: ['students'],
-  fetchFn: (params) => fetchStudents(params as Parameters<typeof fetchStudents>[0]),
-  filters: { name: searchRef, courseId: courseIdRef },
+const sparseQuery = useSparseQuery<Student>({
+  queryKeyPrefix: ['course-enrollments', id],
+  fetchFn: async (params) => {
+    const res = await fetchCourseEnrollments(id, params);
+    return { items: res.items.map((e) => e.student), total: res.total };
+  },
+  filters: { name: searchRef },
 });
 </script>

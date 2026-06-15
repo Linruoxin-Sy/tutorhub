@@ -1,4 +1,7 @@
-import type { StudentEnrollmentListResponse } from '@tutorhub/schema';
+import type {
+  CourseEnrollmentListResponse,
+  StudentEnrollmentListResponse,
+} from '@tutorhub/schema';
 
 import { request } from '@/utils/request';
 
@@ -9,10 +12,28 @@ export async function fetchStudentEnrollments(
     cursor?: string;
     offset?: number;
     limit?: number;
+    name?: string;
   },
 ): Promise<StudentEnrollmentListResponse> {
   const { data } = await request.get<StudentEnrollmentListResponse>(
     `/student/${studentId}/enrollment/list`,
+    { params },
+  );
+  return data;
+}
+
+/** 获取课程选课列表（返回 enrollment 数据，包含嵌套的 student 对象） */
+export async function fetchCourseEnrollments(
+  courseId: string,
+  params: {
+    cursor?: string;
+    offset?: number;
+    limit?: number;
+    name?: string;
+  },
+): Promise<CourseEnrollmentListResponse> {
+  const { data } = await request.get<CourseEnrollmentListResponse>(
+    `/course/${courseId}/enrollment/list`,
     { params },
   );
   return data;
