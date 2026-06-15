@@ -61,7 +61,7 @@ import { useRoute } from 'vue-router';
 import StudentForm from '@/features/student/components/StudentForm.vue';
 import { useStudentDetailForm } from '@/features/student/hooks/useStudentDetailForm';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
-import { fetchCourses } from '@/features/course/api/course-api';
+import { fetchStudentEnrollments } from '@/features/enrollment/api/enrollment-api';
 import CourseItem from '@/features/course/components/CourseItem.vue';
 import CourseItemSkeleton from '@/features/course/components/CourseItemSkeleton.vue';
 import VirtualList from '@/components/VirtualList.vue';
@@ -78,12 +78,13 @@ const search = ref('');
 const debouncedSearch = refDebounced(search, 300);
 
 const searchRef = computed(() => debouncedSearch.value ?? '');
-const statusRef = computed(() => '');
-const studentIdRef = computed(() => id);
 
 const sparseQuery = useSparseQuery<Course>({
-  queryKeyPrefix: ['courses'],
-  fetchFn: (params) => fetchCourses(params as Parameters<typeof fetchCourses>[0]),
-  filters: { name: searchRef, status: statusRef, studentId: studentIdRef },
+  queryKeyPrefix: ['student-enrollments', id],
+  fetchFn: async (params) => {
+    const res = await fetchStudentEnrollments(id, params);
+    return { items: res.items.map((e) => e.course), total: res.total };
+  },
+  filters: { name: searchRef },
 });
 </script>

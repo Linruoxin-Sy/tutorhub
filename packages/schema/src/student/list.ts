@@ -14,7 +14,6 @@ export const studentListSchema = z.object({
       return Math.min(parsed, 100);
     }),
   name: z.string().optional(),
-  courseId: z.string().optional(),
 });
 
 export type StudentListResponse = {

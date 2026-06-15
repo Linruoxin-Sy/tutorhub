@@ -15,7 +15,6 @@ export const courseListSchema = z.object({
     }),
   name: z.string().optional(),
   status: z.enum(['ACTIVE', 'DISABLED']).optional(),
-  studentId: z.string().optional(),
 });
 
 export type CourseListResponse = {
