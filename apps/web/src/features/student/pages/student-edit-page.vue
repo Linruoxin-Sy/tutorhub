@@ -31,7 +31,15 @@
       <!-- Enrolled courses -->
       <ListPageShell title="Enrolled Courses">
         <template #filters>
-          <SearchInput v-model="search" placeholder="Search courses..." />
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
+            <SearchInput v-model="search" placeholder="Search courses..." />
+
+            <SelectInput v-model="status">
+              <option value="">All status</option>
+              <option value="ACTIVE">Active</option>
+              <option value="DISABLED">Disabled</option>
+            </SelectInput>
+          </div>
         </template>
         <template #actions>
           <AddButton @click="() => {}">
@@ -90,6 +98,7 @@ import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import AddButton from '@/components/AddButton.vue';
 import SearchInput from '@/components/SearchInput.vue';
+import SelectInput from '@/components/SelectInput.vue';
 import type { StudentEnrollmentListResponse } from '@tutorhub/schema';
 
 type EnrollmentItem = StudentEnrollmentListResponse['items'][number];
@@ -108,13 +117,15 @@ const {
 } = useStudentEditForm(id);
 
 const search = ref('');
+const status = ref<'ACTIVE' | 'DISABLED' | ''>('');
 const debouncedSearch = refDebounced(search, 300);
 
 const searchRef = computed(() => debouncedSearch.value ?? '');
+const statusRef = computed(() => status.value ?? '');
 
 const sparseQuery = useSparseQuery<EnrollmentItem>({
   queryKeyPrefix: ['student-enrollments', id],
   fetchFn: (params) => fetchStudentEnrollments(id, params),
-  filters: { name: searchRef },
+  filters: { name: searchRef, status: statusRef },
 });
 </script>
