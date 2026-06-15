@@ -32,7 +32,7 @@
             </template>
 
             <template #item="{ item, isLoaded }">
-              <CourseItem v-if="isLoaded" :course="item.course" :actions="[]" />
+              <CourseItem v-if="isLoaded" :course="item!.course" :actions="[]" />
               <CourseItemSkeleton v-else />
             </template>
 

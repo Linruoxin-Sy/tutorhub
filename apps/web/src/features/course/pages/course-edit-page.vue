@@ -66,7 +66,7 @@
             </template>
 
             <template #item="{ item, isLoaded }">
-              <StudentItem v-if="isLoaded" :student="item.student" :actions="['edit', 'delete']" />
+              <StudentItem v-if="isLoaded" :student="item!.student" :actions="['edit', 'delete']" />
               <StudentItemSkeleton v-else />
             </template>
 

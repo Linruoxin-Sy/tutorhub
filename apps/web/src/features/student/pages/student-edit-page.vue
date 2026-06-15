@@ -54,7 +54,7 @@
             </template>
 
             <template #item="{ item, isLoaded }">
-              <CourseItem v-if="isLoaded" :course="item.course" :actions="['edit', 'delete']" />
+              <CourseItem v-if="isLoaded" :course="item!.course" :actions="['edit', 'delete']" />
               <CourseItemSkeleton v-else />
             </template>
 
