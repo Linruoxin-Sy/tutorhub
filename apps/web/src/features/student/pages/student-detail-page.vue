@@ -32,7 +32,7 @@
             </template>
 
             <template #item="{ item, isLoaded }">
-              <CourseItem v-if="isLoaded" :course="item!" :actions="[]" />
+              <CourseItem v-if="isLoaded" :course="item.course" :actions="[]" />
               <CourseItemSkeleton v-else />
             </template>
 
@@ -67,7 +67,9 @@ import CourseItemSkeleton from '@/features/course/components/CourseItemSkeleton.
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import SearchInput from '@/components/SearchInput.vue';
-import type { Course } from '@tutorhub/database';
+import type { StudentEnrollmentListResponse } from '@tutorhub/schema';
+
+type EnrollmentItem = StudentEnrollmentListResponse['items'][number];
 
 const route = useRoute();
 const id = (route.params as Record<string, string>).id;
@@ -79,12 +81,9 @@ const debouncedSearch = refDebounced(search, 300);
 
 const searchRef = computed(() => debouncedSearch.value ?? '');
 
-const sparseQuery = useSparseQuery<Course>({
+const sparseQuery = useSparseQuery<EnrollmentItem>({
   queryKeyPrefix: ['student-enrollments', id],
-  fetchFn: async (params) => {
-    const res = await fetchStudentEnrollments(id, params);
-    return { items: res.items.map((e) => e.course), total: res.total };
-  },
+  fetchFn: (params) => fetchStudentEnrollments(id, params),
   filters: { name: searchRef },
 });
 </script>

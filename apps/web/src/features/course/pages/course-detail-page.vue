@@ -48,7 +48,7 @@
             </template>
 
             <template #item="{ item, isLoaded }">
-              <StudentItem v-if="isLoaded" :student="item!" :actions="[]" />
+              <StudentItem v-if="isLoaded" :student="item.student" :actions="[]" />
               <StudentItemSkeleton v-else />
             </template>
 
@@ -78,7 +78,9 @@ import StudentItemSkeleton from '@/features/student/components/StudentItemSkelet
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import SearchInput from '@/components/SearchInput.vue';
-import type { Student } from '@tutorhub/database';
+import type { CourseEnrollmentListResponse } from '@tutorhub/schema';
+
+type EnrollmentItem = CourseEnrollmentListResponse['items'][number];
 
 const props = defineProps<{
   id: string;
@@ -93,12 +95,9 @@ const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
 
 const searchRef = computed(() => debouncedSearch.value ?? '');
 
-const sparseQuery = useSparseQuery<Student>({
+const sparseQuery = useSparseQuery<EnrollmentItem>({
   queryKeyPrefix: ['course-enrollments', props.id],
-  fetchFn: async (params) => {
-    const res = await fetchCourseEnrollments(props.id, params);
-    return { items: res.items.map((e) => e.student), total: res.total };
-  },
+  fetchFn: (params) => fetchCourseEnrollments(props.id, params),
   filters: { name: searchRef },
 });
 </script>
