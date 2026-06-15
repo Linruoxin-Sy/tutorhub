@@ -24,6 +24,8 @@ export const enrollmentService = {
 
     const baseWhere: NonNullable<Parameters<typeof prisma.studentCourse.findMany>[0]>['where'] = {
       studentId,
+      ...(query.name ? { course: { name: { contains: query.name, mode: 'insensitive' } } } : {}),
+      ...(query.status ? { course: { status: query.status } } : {}),
     };
 
     // offset 分页
@@ -78,7 +80,11 @@ export const enrollmentService = {
     // 只返回当前用户的学生的 enrollment
     const baseWhere: NonNullable<Parameters<typeof prisma.studentCourse.findMany>[0]>['where'] = {
       courseId,
-      student: { userId, deletedAt: null },
+      student: {
+        userId,
+        deletedAt: null,
+        ...(query.name ? { name: { contains: query.name, mode: 'insensitive' } } : {}),
+      },
     };
 
     // offset 分页

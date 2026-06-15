@@ -21,6 +21,8 @@ export const enrollmentListQuerySchema = z.object({
       if (!Number.isFinite(parsed) || parsed < 1) return 20;
       return Math.min(parsed, 100);
     }),
+  name: z.string().optional(),
+  status: z.enum(['ACTIVE', 'DISABLED']).optional(),
 });
 
 export type StudentEnrollmentListResponse = {
