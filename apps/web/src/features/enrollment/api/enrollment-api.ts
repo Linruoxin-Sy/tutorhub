@@ -1,7 +1,4 @@
-import type {
-  CourseEnrollmentListResponse,
-  StudentEnrollmentListResponse,
-} from '@tutorhub/schema';
+import type { CourseEnrollmentListResponse, StudentEnrollmentListResponse } from '@tutorhub/schema';
 
 import { request } from '@/utils/request';
 
