@@ -20,24 +20,57 @@
           </AddButton>
         </template>
 
-        <CourseList
-          :search-term="debouncedSearch"
-          :status-term="status"
-          @view="(item) => router.push({ name: 'course.detail', params: { id: item.id } })"
-          @edit="(item) => router.push({ name: 'course.edit', params: { id: item.id } })"
-          @delete="handleDelete"
-        />
+        <VirtualList
+          :query="sparseQuery"
+          :estimate-size="164"
+          :overscan="5"
+          scroll-class="flex-1 overflow-x-hidden overflow-y-auto p-5"
+        >
+          <template #loading>
+            <div class="flex flex-col gap-5">
+              <CourseListItemSkeleton v-for="index in 4" :key="index" />
+            </div>
+          </template>
+
+          <template #item="{ item, isLoaded }">
+            <CourseListItem
+              v-if="isLoaded"
+              :course="item!"
+              :actions="['edit', 'delete']"
+              @view="router.push({ name: 'course.detail', params: { id: item!.id } })"
+              @edit="router.push({ name: 'course.edit', params: { id: item!.id } })"
+              @delete="handleDelete(item!)"
+            />
+            <CourseListItemSkeleton v-else />
+          </template>
+
+          <template #empty>
+            <div
+              class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+            >
+              <div
+                class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
+              >
+                No courses found.
+              </div>
+            </div>
+          </template>
+        </VirtualList>
       </ListPageShell>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCourseDelete } from '@/features/course/hooks/useCourseDelete';
-import CourseList from '@/features/course/components/CourseList.vue';
+import { useSparseQuery } from '@/hooks/useSparseQuery';
+import { fetchCourses } from '@/features/course/api/course-api';
+import CourseListItem from '@/features/course/components/CourseListItem.vue';
+import CourseListItemSkeleton from '@/features/course/components/CourseListItemSkeleton.vue';
+import VirtualList from '@/components/VirtualList.vue';
 import type { Course } from '@tutorhub/database';
 
 const router = useRouter();
@@ -46,6 +79,15 @@ const { confirmAndDelete } = useCourseDelete();
 const search = ref('');
 const status = ref<'ACTIVE' | 'DISABLED' | ''>('');
 const debouncedSearch = refDebounced(search, 300);
+
+const searchRef = computed(() => debouncedSearch.value ?? '');
+const statusRef = computed(() => status.value ?? '');
+
+const sparseQuery = useSparseQuery<Course>({
+  queryKeyPrefix: ['courses'],
+  fetchFn: (params) => fetchCourses(params as Parameters<typeof fetchCourses>[0]),
+  filters: { name: searchRef, status: statusRef },
+});
 
 async function handleDelete(item: Course) {
   try {

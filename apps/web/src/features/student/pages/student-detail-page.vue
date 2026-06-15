@@ -19,14 +19,35 @@
         </template>
 
         <div class="flex h-125 flex-col">
-          <CourseList
-            :student-id="id"
-            :search-term="debouncedSearch"
-            :actions="[]"
-            @view="() => {}"
-            @edit="() => {}"
-            @delete="() => {}"
-          />
+          <VirtualList
+            :query="sparseQuery"
+            :estimate-size="164"
+            :overscan="5"
+            scroll-class="flex-1 overflow-x-hidden overflow-y-auto p-5"
+          >
+            <template #loading>
+              <div class="flex flex-col gap-5">
+                <CourseListItemSkeleton v-for="index in 4" :key="index" />
+              </div>
+            </template>
+
+            <template #item="{ item, isLoaded }">
+              <CourseListItem v-if="isLoaded" :course="item!" :actions="[]" />
+              <CourseListItemSkeleton v-else />
+            </template>
+
+            <template #empty>
+              <div
+                class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+              >
+                <div
+                  class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
+                >
+                  No courses found.
+                </div>
+              </div>
+            </template>
+          </VirtualList>
         </div>
       </ListPageShell>
     </div>
@@ -34,14 +55,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { useRoute } from 'vue-router';
 import StudentForm from '@/features/student/components/StudentForm.vue';
 import { useStudentDetailForm } from '@/features/student/hooks/useStudentDetailForm';
-import CourseList from '@/features/course/components/CourseList.vue';
+import { useSparseQuery } from '@/hooks/useSparseQuery';
+import { fetchCourses } from '@/features/course/api/course-api';
+import CourseListItem from '@/features/course/components/CourseListItem.vue';
+import CourseListItemSkeleton from '@/features/course/components/CourseListItemSkeleton.vue';
+import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import SearchInput from '@/components/SearchInput.vue';
+import type { Course } from '@tutorhub/database';
 
 const route = useRoute();
 const id = (route.params as Record<string, string>).id;
@@ -50,4 +76,14 @@ const { data: student, isInitialLoading, avatarUrl } = useStudentDetailForm(id);
 
 const search = ref('');
 const debouncedSearch = refDebounced(search, 300);
+
+const searchRef = computed(() => debouncedSearch.value ?? '');
+const statusRef = computed(() => '');
+const studentIdRef = computed(() => id);
+
+const sparseQuery = useSparseQuery<Course>({
+  queryKeyPrefix: ['courses'],
+  fetchFn: (params) => fetchCourses(params as Parameters<typeof fetchCourses>[0]),
+  filters: { name: searchRef, status: statusRef, studentId: studentIdRef },
+});
 </script>

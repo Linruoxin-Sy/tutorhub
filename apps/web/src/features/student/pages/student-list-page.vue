@@ -12,23 +12,69 @@
           </AddButton>
         </template>
 
-        <StudentList
-          :search-term="debouncedSearch"
-          @view="(item) => router.push({ name: 'student.detail', params: { id: item.id } })"
-          @edit="(item) => router.push({ name: 'student.edit', params: { id: item.id } })"
-          @delete="handleDelete"
-        />
+        <VirtualList
+          :query="sparseQuery"
+          :estimate-size="70"
+          :overscan="10"
+          row-class="border-b border-gray-200 transition hover:bg-gray-50 dark:border-[#343434] dark:hover:bg-[#202020]"
+          :row-style="{ display: 'flex' }"
+        >
+          <template #header>
+            <div
+              class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
+              style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr"
+            >
+              <div
+                v-for="column in columns"
+                :key="column"
+                class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
+              >
+                {{ column }}
+              </div>
+            </div>
+          </template>
+
+          <template #loading>
+            <div class="divide-y divide-gray-200 dark:divide-[#343434]">
+              <StudentListItemSkeleton v-for="index in 8" :key="index" />
+            </div>
+          </template>
+
+          <template #item="{ item, isLoaded }">
+            <StudentListItem
+              v-if="isLoaded"
+              :student="item!"
+              :actions="['edit', 'delete']"
+              @view="router.push({ name: 'student.detail', params: { id: item!.id } })"
+              @edit="router.push({ name: 'student.edit', params: { id: item!.id } })"
+              @delete="handleDelete(item!)"
+            />
+            <StudentListItemSkeleton v-else />
+          </template>
+
+          <template #empty>
+            <div
+              class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+            >
+              No students found.
+            </div>
+          </template>
+        </VirtualList>
       </ListPageShell>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { useRouter } from 'vue-router';
 import { useStudentDelete } from '@/features/student/hooks/useStudentDelete';
-import StudentList from '@/features/student/components/StudentList.vue';
-import type { StudentListResponse } from '@/features/student/api/student-api';
+import { useSparseQuery } from '@/hooks/useSparseQuery';
+import { fetchStudents, type StudentListResponse } from '@/features/student/api/student-api';
+import StudentListItem from '@/features/student/components/StudentListItem.vue';
+import StudentListItemSkeleton from '@/features/student/components/StudentListItemSkeleton.vue';
+import VirtualList from '@/components/VirtualList.vue';
 
 type StudentItem = StudentListResponse['items'][number];
 
@@ -37,6 +83,17 @@ const { confirmAndDelete } = useStudentDelete();
 
 const searchInput = ref('');
 const debouncedSearch = refDebounced(searchInput, 300);
+
+const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
+
+const searchRef = computed(() => debouncedSearch.value ?? '');
+const courseIdRef = computed(() => '');
+
+const sparseQuery = useSparseQuery<StudentItem>({
+  queryKeyPrefix: ['students'],
+  fetchFn: (params) => fetchStudents(params as Parameters<typeof fetchStudents>[0]),
+  filters: { name: searchRef, courseId: courseIdRef },
+});
 
 async function handleDelete(item: StudentItem) {
   try {
