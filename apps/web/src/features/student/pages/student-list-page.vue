@@ -36,12 +36,12 @@
 
           <template #loading>
             <div class="divide-y divide-gray-200 dark:divide-[#343434]">
-              <StudentListItemSkeleton v-for="index in 8" :key="index" />
+              <StudentItemSkeleton v-for="index in 8" :key="index" />
             </div>
           </template>
 
           <template #item="{ item, isLoaded }">
-            <StudentListItem
+            <StudentItem
               v-if="isLoaded"
               :student="item!"
               :actions="['edit', 'delete']"
@@ -49,7 +49,7 @@
               @edit="router.push({ name: 'student.edit', params: { id: item!.id } })"
               @delete="handleDelete(item!)"
             />
-            <StudentListItemSkeleton v-else />
+            <StudentItemSkeleton v-else />
           </template>
 
           <template #empty>
@@ -72,11 +72,11 @@ import { useRouter } from 'vue-router';
 import { useStudentDelete } from '@/features/student/hooks/useStudentDelete';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchStudents, type StudentListResponse } from '@/features/student/api/student-api';
-import StudentListItem from '@/features/student/components/StudentListItem.vue';
-import StudentListItemSkeleton from '@/features/student/components/StudentListItemSkeleton.vue';
+import StudentItem from '@/features/student/components/StudentItem.vue';
+import StudentItemSkeleton from '@/features/student/components/StudentItemSkeleton.vue';
 import VirtualList from '@/components/VirtualList.vue';
 
-type StudentItem = StudentListResponse['items'][number];
+type StudentItemType = StudentListResponse['items'][number];
 
 const router = useRouter();
 const { confirmAndDelete } = useStudentDelete();
@@ -89,13 +89,13 @@ const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
 const searchRef = computed(() => debouncedSearch.value ?? '');
 const courseIdRef = computed(() => '');
 
-const sparseQuery = useSparseQuery<StudentItem>({
+const sparseQuery = useSparseQuery<StudentItemType>({
   queryKeyPrefix: ['students'],
   fetchFn: (params) => fetchStudents(params as Parameters<typeof fetchStudents>[0]),
   filters: { name: searchRef, courseId: courseIdRef },
 });
 
-async function handleDelete(item: StudentItem) {
+async function handleDelete(item: StudentItemType) {
   try {
     await confirmAndDelete({ id: item.id, name: item.name });
   } catch {

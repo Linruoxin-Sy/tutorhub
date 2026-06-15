@@ -27,13 +27,13 @@
           >
             <template #loading>
               <div class="flex flex-col gap-5">
-                <CourseListItemSkeleton v-for="index in 4" :key="index" />
+                <CourseItemSkeleton v-for="index in 4" :key="index" />
               </div>
             </template>
 
             <template #item="{ item, isLoaded }">
-              <CourseListItem v-if="isLoaded" :course="item!" :actions="[]" />
-              <CourseListItemSkeleton v-else />
+              <CourseItem v-if="isLoaded" :course="item!" :actions="[]" />
+              <CourseItemSkeleton v-else />
             </template>
 
             <template #empty>
@@ -62,8 +62,8 @@ import StudentForm from '@/features/student/components/StudentForm.vue';
 import { useStudentDetailForm } from '@/features/student/hooks/useStudentDetailForm';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchCourses } from '@/features/course/api/course-api';
-import CourseListItem from '@/features/course/components/CourseListItem.vue';
-import CourseListItemSkeleton from '@/features/course/components/CourseListItemSkeleton.vue';
+import CourseItem from '@/features/course/components/CourseItem.vue';
+import CourseItemSkeleton from '@/features/course/components/CourseItemSkeleton.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import SearchInput from '@/components/SearchInput.vue';

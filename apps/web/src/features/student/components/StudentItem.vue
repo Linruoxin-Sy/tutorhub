@@ -56,11 +56,11 @@ import { useElementInView } from '@/hooks/useElementInView';
 import type { Student } from '@tutorhub/database';
 
 /** 从 API 列表接口返回的学生对象不包含 avatarKey，但包含 avatarUrl */
-type StudentListItemData = Omit<Student, 'avatarKey'> & { avatarUrl?: string | null };
+type StudentItemData = Omit<Student, 'avatarKey'> & { avatarUrl?: string | null };
 
 const props = withDefaults(
   defineProps<{
-    student: StudentListItemData;
+    student: StudentItemData;
     actions?: ('edit' | 'delete')[];
   }>(),
   {

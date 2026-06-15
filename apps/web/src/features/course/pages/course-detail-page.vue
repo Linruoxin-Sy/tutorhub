@@ -43,13 +43,13 @@
 
             <template #loading>
               <div class="divide-y divide-gray-200 dark:divide-[#343434]">
-                <StudentListItemSkeleton v-for="index in 8" :key="index" />
+                <StudentItemSkeleton v-for="index in 8" :key="index" />
               </div>
             </template>
 
             <template #item="{ item, isLoaded }">
-              <StudentListItem v-if="isLoaded" :student="item!" :actions="[]" />
-              <StudentListItemSkeleton v-else />
+              <StudentItem v-if="isLoaded" :student="item!" :actions="[]" />
+              <StudentItemSkeleton v-else />
             </template>
 
             <template #empty>
@@ -73,13 +73,13 @@ import { useCourseDetail } from '@/features/course/hooks/useCourseDetail';
 import CourseForm from '@/features/course/components/CourseForm.vue';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchStudents, type StudentListResponse } from '@/features/student/api/student-api';
-import StudentListItem from '@/features/student/components/StudentListItem.vue';
-import StudentListItemSkeleton from '@/features/student/components/StudentListItemSkeleton.vue';
+import StudentItem from '@/features/student/components/StudentItem.vue';
+import StudentItemSkeleton from '@/features/student/components/StudentItemSkeleton.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import SearchInput from '@/components/SearchInput.vue';
 
-type StudentItem = StudentListResponse['items'][number];
+type StudentItemType = StudentListResponse['items'][number];
 
 const props = defineProps<{
   id: string;
@@ -95,7 +95,7 @@ const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
 const searchRef = computed(() => debouncedSearch.value ?? '');
 const courseIdRef = computed(() => props.id);
 
-const sparseQuery = useSparseQuery<StudentItem>({
+const sparseQuery = useSparseQuery<StudentItemType>({
   queryKeyPrefix: ['students'],
   fetchFn: (params) => fetchStudents(params as Parameters<typeof fetchStudents>[0]),
   filters: { name: searchRef, courseId: courseIdRef },
