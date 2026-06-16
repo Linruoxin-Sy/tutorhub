@@ -1,4 +1,8 @@
-import type { CourseEnrollmentListResponse, StudentEnrollmentListResponse } from '@tutorhub/schema';
+import type {
+  CourseEnrollmentListResponse,
+  EnrollmentDeleteResponse,
+  StudentEnrollmentListResponse,
+} from '@tutorhub/schema';
 
 import { request } from '@/utils/request';
 
@@ -34,4 +38,12 @@ export async function fetchCourseEnrollments(
     { params },
   );
   return data;
+}
+
+/** 软删除选课关系 */
+export async function deleteEnrollment(id: string): Promise<EnrollmentDeleteResponse> {
+  const { data } = await request.delete<{ data: EnrollmentDeleteResponse }>(
+    `/enrollment/${id}`,
+  );
+  return data.data;
 }

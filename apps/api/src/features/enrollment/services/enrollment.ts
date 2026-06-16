@@ -4,6 +4,7 @@ import type { enrollmentListQuerySchema } from '@tutorhub/schema';
 
 import { ApiError } from '@/shared/api-error';
 import { prisma } from '@/shared/prisma';
+import { translatePrismaWriteError } from '@/shared/prisma-errors';
 
 export const enrollmentService = {
   async listByStudent(
@@ -24,6 +25,7 @@ export const enrollmentService = {
 
     const baseWhere: NonNullable<Parameters<typeof prisma.studentCourse.findMany>[0]>['where'] = {
       studentId,
+      deletedAt: null,
       ...(query.name ? { course: { name: { contains: query.name, mode: 'insensitive' } } } : {}),
       ...(query.status ? { course: { status: query.status } } : {}),
     };
@@ -79,6 +81,7 @@ export const enrollmentService = {
 
     // 只返回当前用户的学生的 enrollment
     const baseWhere: NonNullable<Parameters<typeof prisma.studentCourse.findMany>[0]>['where'] = {
+      deletedAt: null,
       courseId,
       student: {
         userId,
@@ -127,5 +130,29 @@ export const enrollmentService = {
     const nextCursor = hasMore ? result[result.length - 1].id : null;
 
     return { items: result, nextCursor, total };
+  },
+
+  async deleteById(id: string, userId: string) {
+    // 校验 enrollment 所属学生的 userId 匹配当前用户
+    const enrollment = await prisma.studentCourse.findFirst({
+      where: { id, deletedAt: null },
+      include: { student: { select: { userId: true } } },
+    });
+
+    if (!enrollment || enrollment.student.userId !== userId) {
+      throw new ApiError(404, 'ENROLLMENT_NOT_FOUND', 'Enrollment not found');
+    }
+
+    try {
+      // 软删除：更新 deletedAt 而非真正删除
+      const updated = await prisma.studentCourse.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+        include: { student: true, course: true },
+      });
+      return updated;
+    } catch (error) {
+      translatePrismaWriteError(error, 'ENROLLMENT');
+    }
   },
 };

@@ -66,7 +66,12 @@
             </template>
 
             <template #item="{ item, isLoaded }">
-              <StudentItem v-if="isLoaded" :student="item!.student" :actions="['edit', 'delete']" />
+              <StudentItem
+                v-if="isLoaded"
+                :student="item!.student"
+                :actions="['edit', 'delete']"
+                @delete="handleDeleteStudent(item!)"
+              />
               <StudentItemSkeleton v-else />
             </template>
 
@@ -87,13 +92,16 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
+import { useQueryClient } from '@tanstack/vue-query';
+import { toast } from 'vue-sonner';
 import { useRoute } from 'vue-router';
 import { useCourseEditForm } from '@/features/course/hooks/useCourseEditForm';
 import CourseForm from '@/features/course/components/CourseForm.vue';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
-import { fetchCourseEnrollments } from '@/features/enrollment/api/enrollment-api';
+import { fetchCourseEnrollments, deleteEnrollment } from '@/features/enrollment/api/enrollment-api';
 import StudentItem from '@/features/student/components/StudentItem.vue';
 import StudentItemSkeleton from '@/features/student/components/StudentItemSkeleton.vue';
+import { useDialog } from '@/hooks/useDialog';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import AddButton from '@/components/AddButton.vue';
@@ -119,4 +127,26 @@ const sparseQuery = useSparseQuery<EnrollmentItem>({
   fetchFn: (params) => fetchCourseEnrollments(id, params),
   filters: { name: searchRef },
 });
+
+const queryClient = useQueryClient();
+const { confirm } = useDialog();
+
+async function handleDeleteStudent(item: EnrollmentItem) {
+  const confirmed = await confirm({
+    title: 'Delete Enrollment',
+    message: `Are you sure you want to remove "${item.student.name}" from this course?`,
+    confirmText: 'Delete',
+    variant: 'danger',
+  });
+
+  if (!confirmed) return;
+
+  try {
+    await deleteEnrollment(item.id);
+    toast.success('Student removed from course successfully!');
+    queryClient.invalidateQueries({ queryKey: ['course-enrollments', id] });
+  } catch {
+    toast.error('Failed to remove student from course');
+  }
+}
 </script>
