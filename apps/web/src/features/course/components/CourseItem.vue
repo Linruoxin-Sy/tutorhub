@@ -91,11 +91,11 @@
 <script setup lang="ts">
 import { formatDateTime } from '@/utils/date';
 import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
-import { useTemplateRef } from 'vue';
+import { useTemplateRef, watch } from 'vue';
 import { useElementInView } from '@/hooks/useElementInView';
 import type { Course } from '@tutorhub/database';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     course?: Course;
     actions?: ('edit' | 'delete')[];
@@ -118,6 +118,18 @@ const emit = defineEmits<{
 
 const itemRef = useTemplateRef<HTMLElement>('itemRef');
 const { isVisible } = useElementInView(itemRef);
+
+// loading 从 true→false（或挂载时已为 false）时立即标记可见，
+// 避免外层滑入动画与内层 scale-fade 过渡重叠播放
+watch(
+  () => props.loading,
+  (loading) => {
+    if (!loading) {
+      isVisible.value = true;
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped>
