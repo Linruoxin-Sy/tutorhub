@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
-import type { enrollmentListQuerySchema } from '@tutorhub/schema';
+import type {
+  availableCoursesQuerySchema,
+  availableStudentsQuerySchema,
+  enrollmentCreateSchema,
+  enrollmentListQuerySchema,
+} from '@tutorhub/schema';
+import type { Prisma } from '@tutorhub/database';
 
 import { ApiError } from '@/shared/api-error';
 import { prisma } from '@/shared/prisma';
@@ -151,6 +157,199 @@ export const enrollmentService = {
         include: { student: true, course: true },
       });
       return updated;
+    } catch (error) {
+      translatePrismaWriteError(error, 'ENROLLMENT');
+    }
+  },
+
+  async listAvailableCourses(
+    studentId: string,
+    query: z.infer<typeof availableCoursesQuerySchema>,
+    userId: string,
+  ) {
+    // 校验学生归属
+    const student = await prisma.student.findFirst({
+      where: { id: studentId, userId, deletedAt: null },
+    });
+    if (!student) {
+      throw new ApiError(404, 'STUDENT_NOT_FOUND', 'Student not found');
+    }
+
+    const take = query.limit + 1;
+
+    // 查出该学生所有已选课程 ID（含软删除，避免重复添加）
+    const enrolledCourseIds = (
+      await prisma.studentCourse.findMany({
+        where: { studentId },
+        select: { courseId: true },
+      })
+    ).map((e) => e.courseId);
+
+    const baseWhere: Prisma.CourseWhereInput = {
+      deletedAt: null,
+      id: enrolledCourseIds.length > 0 ? { notIn: enrolledCourseIds } : undefined,
+      ...(query.name ? { name: { contains: query.name, mode: 'insensitive' } } : {}),
+      ...(query.status ? { status: query.status } : {}),
+    };
+
+    // offset 分页
+    if (query.offset !== undefined) {
+      const [dbItems, total] = await Promise.all([
+        prisma.course.findMany({
+          where: baseWhere,
+          orderBy: { createdAt: 'desc' },
+          take: query.limit,
+          skip: query.offset,
+        }),
+        prisma.course.count({ where: baseWhere }),
+      ]);
+
+      const lastItem = dbItems.at(-1);
+      const hasMore = query.offset + query.limit < total;
+
+      return {
+        items: dbItems,
+        nextCursor: hasMore && lastItem ? lastItem.id : null,
+        total,
+      };
+    }
+
+    // cursor 分页
+    const [dbItems, total] = await Promise.all([
+      prisma.course.findMany({
+        where: baseWhere,
+        orderBy: { createdAt: 'desc' },
+        take,
+        ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
+      }),
+      prisma.course.count({ where: baseWhere }),
+    ]);
+
+    const hasMore = dbItems.length > query.limit;
+    const result = hasMore ? dbItems.slice(0, query.limit) : dbItems;
+    const nextCursor = hasMore ? result[result.length - 1].id : null;
+
+    return { items: result, nextCursor, total };
+  },
+
+  async listAvailableStudents(
+    courseId: string,
+    query: z.infer<typeof availableStudentsQuerySchema>,
+    userId: string,
+  ) {
+    const take = query.limit + 1;
+
+    // 查出该课程所有已选学生 ID（含软删除）
+    const enrolledStudentIds = (
+      await prisma.studentCourse.findMany({
+        where: { courseId },
+        select: { studentId: true },
+      })
+    ).map((e) => e.studentId);
+
+    const baseWhere: Prisma.StudentWhereInput = {
+      userId,
+      deletedAt: null,
+      id: enrolledStudentIds.length > 0 ? { notIn: enrolledStudentIds } : undefined,
+      ...(query.name ? { name: { contains: query.name, mode: 'insensitive' } } : {}),
+    };
+
+    // offset 分页
+    if (query.offset !== undefined) {
+      const [dbItems, total] = await Promise.all([
+        prisma.student.findMany({
+          where: baseWhere,
+          orderBy: { createdAt: 'desc' },
+          take: query.limit,
+          skip: query.offset,
+        }),
+        prisma.student.count({ where: baseWhere }),
+      ]);
+
+      const lastItem = dbItems.at(-1);
+      const hasMore = query.offset + query.limit < total;
+
+      return {
+        items: dbItems,
+        nextCursor: hasMore && lastItem ? lastItem.id : null,
+        total,
+      };
+    }
+
+    // cursor 分页
+    const [dbItems, total] = await Promise.all([
+      prisma.student.findMany({
+        where: baseWhere,
+        orderBy: { createdAt: 'desc' },
+        take,
+        ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
+      }),
+      prisma.student.count({ where: baseWhere }),
+    ]);
+
+    const hasMore = dbItems.length > query.limit;
+    const result = hasMore ? dbItems.slice(0, query.limit) : dbItems;
+    const nextCursor = hasMore ? result[result.length - 1].id : null;
+
+    return { items: result, nextCursor, total };
+  },
+
+  async create(
+    input: z.infer<typeof enrollmentCreateSchema>,
+    userId: string,
+  ) {
+    // 校验学生归属
+    const student = await prisma.student.findFirst({
+      where: { id: input.studentId, userId, deletedAt: null },
+    });
+    if (!student) {
+      throw new ApiError(404, 'STUDENT_NOT_FOUND', 'Student not found');
+    }
+
+    // 校验课程存在
+    const course = await prisma.course.findFirst({
+      where: { id: input.courseId, deletedAt: null },
+    });
+    if (!course) {
+      throw new ApiError(404, 'COURSE_NOT_FOUND', 'Course not found');
+    }
+
+    // 检查是否已存在（含软删除）
+    const existing = await prisma.studentCourse.findUnique({
+      where: {
+        studentId_courseId: {
+          studentId: input.studentId,
+          courseId: input.courseId,
+        },
+      },
+    });
+
+    if (existing) {
+      if (existing.deletedAt) {
+        // 恢复软删除的记录
+        try {
+          const updated = await prisma.studentCourse.update({
+            where: { id: existing.id },
+            data: { deletedAt: null },
+            include: { student: true, course: true },
+          });
+          return updated;
+        } catch (error) {
+          translatePrismaWriteError(error, 'ENROLLMENT');
+        }
+      }
+      throw new ApiError(409, 'ALREADY_ENROLLED', 'Student already enrolled in this course');
+    }
+
+    try {
+      const enrollment = await prisma.studentCourse.create({
+        data: {
+          studentId: input.studentId,
+          courseId: input.courseId,
+        },
+        include: { student: true, course: true },
+      });
+      return enrollment;
     } catch (error) {
       translatePrismaWriteError(error, 'ENROLLMENT');
     }

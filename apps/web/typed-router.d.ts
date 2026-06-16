@@ -48,6 +48,13 @@ declare module 'vue-router/auto-routes' {
       { id: ParamValue<false> },
       | never
     >,
+    'course.add-student': RouteRecordInfo<
+      'course.add-student',
+      '/course/:id/add-student',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
     'course.edit': RouteRecordInfo<
       'course.edit',
       '/course/:id/edit',
@@ -86,6 +93,13 @@ declare module 'vue-router/auto-routes' {
     'student.detail': RouteRecordInfo<
       'student.detail',
       '/student/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
+    'student.add-course': RouteRecordInfo<
+      'student.add-course',
+      '/student/:id/add-course',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
       | never
@@ -142,6 +156,12 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/course/[id].add-student.vue': {
+      routes:
+        | 'course.add-student'
+      views:
+        | never
+    }
     'src/pages/course/[id].edit.vue': {
       routes:
         | 'course.edit'
@@ -175,6 +195,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/student/[id].vue': {
       routes:
         | 'student.detail'
+      views:
+        | never
+    }
+    'src/pages/student/[id].add-course.vue': {
+      routes:
+        | 'student.add-course'
       views:
         | never
     }

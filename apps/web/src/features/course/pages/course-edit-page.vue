@@ -30,7 +30,7 @@
           <SearchInput v-model="search" placeholder="Search students..." />
         </template>
         <template #actions>
-          <AddButton @click="() => {}">
+          <AddButton @click="router.push({ name: 'course.add-student', params: { id } })">
             <i class="i-lucide-plus size-4"></i>
             <span>Add Student</span>
           </AddButton>
@@ -94,7 +94,7 @@ import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { useQueryClient } from '@tanstack/vue-query';
 import { toast } from 'vue-sonner';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useCourseEditForm } from '@/features/course/hooks/useCourseEditForm';
 import CourseForm from '@/features/course/components/CourseForm.vue';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
@@ -111,6 +111,7 @@ import type { CourseEnrollmentListResponse } from '@tutorhub/schema';
 type EnrollmentItem = CourseEnrollmentListResponse['items'][number];
 
 const route = useRoute();
+const router = useRouter();
 const id = (route.params as Record<string, string>).id;
 
 const { formData, hasChanged, isInitialLoading, submit, isSubmitting } = useCourseEditForm(id);

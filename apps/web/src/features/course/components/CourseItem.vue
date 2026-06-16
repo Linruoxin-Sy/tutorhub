@@ -1,10 +1,17 @@
 <template>
   <article
     ref="cardRef"
-    class="flex h-36 origin-bottom-right cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm transition-all duration-700 hover:-translate-y-2 hover:shadow-lg dark:border-[#2f2f2f] dark:bg-[#202020]"
-    :class="isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-32 scale-80 opacity-0'"
+    class="relative flex h-36 origin-bottom-right cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm transition-all duration-700 hover:-translate-y-2 hover:shadow-lg dark:border-[#2f2f2f] dark:bg-[#202020]"
+    :class="[
+      isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-32 scale-80 opacity-0',
+      selected ? 'ring-2 ring-blue-500/60 ring-inset' : '',
+    ]"
     @click="emit('view')"
   >
+    <div
+      v-if="selected"
+      class="pointer-events-none absolute inset-0 z-10 rounded-2xl bg-blue-500/10"
+    />
     <div class="px-5 py-4" :style="{ background: getAvatarGradient(course.name) }">
       <div class="flex items-start justify-between gap-4">
         <div>
@@ -47,9 +54,11 @@ withDefaults(
   defineProps<{
     course: Course;
     actions?: ('edit' | 'delete')[];
+    selected?: boolean;
   }>(),
   {
     actions: () => ['edit', 'delete'],
+    selected: false,
   },
 );
 

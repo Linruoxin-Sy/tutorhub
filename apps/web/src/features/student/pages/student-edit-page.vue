@@ -42,7 +42,7 @@
           </div>
         </template>
         <template #actions>
-          <AddButton @click="() => {}">
+          <AddButton @click="router.push({ name: 'student.add-course', params: { id } })">
             <i class="i-lucide-plus size-4"></i>
             <span>Add Course</span>
           </AddButton>
@@ -94,7 +94,7 @@ import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { useQueryClient } from '@tanstack/vue-query';
 import { toast } from 'vue-sonner';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useStudentEditForm } from '@/features/student/hooks/useStudentEditForm';
 import StudentForm from '@/features/student/components/StudentForm.vue';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
@@ -115,6 +115,7 @@ import type { StudentEnrollmentListResponse } from '@tutorhub/schema';
 type EnrollmentItem = StudentEnrollmentListResponse['items'][number];
 
 const route = useRoute();
+const router = useRouter();
 const id = (route.params as Record<string, string>).id;
 
 const {

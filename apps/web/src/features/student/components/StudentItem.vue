@@ -1,8 +1,11 @@
 <template>
   <div
     ref="cardRef"
-    class="origin-bottom-right cursor-pointer transition-all duration-700"
-    :class="isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-16 scale-80 opacity-0'"
+    class="relative origin-bottom-right cursor-pointer transition-all duration-700"
+    :class="[
+      isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-16 scale-80 opacity-0',
+      selected ? 'bg-blue-500/10' : '',
+    ]"
     style="
       display: grid;
       grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr;
@@ -11,6 +14,10 @@
     "
     @click="emit('view')"
   >
+    <div
+      v-if="selected"
+      class="pointer-events-none absolute left-0 top-0 h-full w-1 rounded-r-sm bg-blue-500"
+    />
     <div class="flex min-w-0 items-center gap-3 px-6 whitespace-nowrap">
       <img
         v-if="studentAvatarUrl"
@@ -62,9 +69,11 @@ const props = withDefaults(
   defineProps<{
     student: StudentItemData;
     actions?: ('edit' | 'delete')[];
+    selected?: boolean;
   }>(),
   {
     actions: () => ['edit', 'delete'],
+    selected: false,
   },
 );
 
