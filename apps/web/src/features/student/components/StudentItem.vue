@@ -20,67 +20,100 @@
       class="pointer-events-none absolute top-0 left-0 h-full w-1 rounded-r-sm bg-blue-500"
     />
 
-    <!-- ===== Skeleton 状态 ===== -->
-    <template v-if="loading">
-      <div class="flex items-center gap-3 px-6 whitespace-nowrap">
-        <div class="size-9 shrink-0 animate-pulse rounded-full bg-gray-200 dark:bg-[#343434]" />
-        <div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
-      </div>
-      <div class="px-6">
-        <div class="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
-      </div>
-      <div class="px-6">
-        <div class="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
-      </div>
-      <div class="px-6">
-        <div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
-      </div>
-      <div class="flex items-center justify-end gap-1 px-6">
-        <div class="size-8 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
-        <div class="size-8 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
-      </div>
-    </template>
+    <!-- ===== 列 1：头像 + 姓名 ===== -->
+    <div class="flex items-center gap-3 px-6 whitespace-nowrap">
+      <Transition name="scale-fade" mode="out-in">
+        <div v-if="loading" key="sk-name" class="flex items-center gap-3">
+          <div class="size-9 shrink-0 animate-pulse rounded-full bg-gray-200 dark:bg-[#343434]" />
+          <div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
+        </div>
+        <div v-else key="ct-name" class="flex min-w-0 items-center gap-3">
+          <img
+            v-if="studentAvatarUrl"
+            :src="studentAvatarUrl"
+            class="size-9 shrink-0 rounded-full object-cover shadow-sm"
+            alt=""
+          />
+          <div
+            v-else
+            class="flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold shadow-sm"
+            :style="{
+              background: getAvatarGradient(student!.name),
+              color: getAvatarTextColor(student!.name),
+            }"
+          >
+            {{ student!.name.charAt(0) }}
+          </div>
+          <span class="truncate text-sm font-medium text-gray-900 dark:text-white">{{
+            student!.name
+          }}</span>
+        </div>
+      </Transition>
+    </div>
 
-    <!-- ===== 真实内容 ===== -->
-    <template v-else>
-      <div class="flex min-w-0 items-center gap-3 px-6 whitespace-nowrap">
-        <img
-          v-if="studentAvatarUrl"
-          :src="studentAvatarUrl"
-          class="size-9 shrink-0 rounded-full object-cover shadow-sm"
-          alt=""
-        />
+    <!-- ===== 列 2：邮箱 ===== -->
+    <div class="px-6">
+      <Transition name="scale-fade" mode="out-in">
+        <div v-if="loading" key="sk-email">
+          <div class="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
+        </div>
         <div
           v-else
-          class="flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold shadow-sm"
-          :style="{
-            background: getAvatarGradient(student!.name),
-            color: getAvatarTextColor(student!.name),
-          }"
+          key="ct-email"
+          class="truncate text-sm whitespace-nowrap text-gray-600 dark:text-gray-300"
         >
-          {{ student!.name.charAt(0) }}
+          {{ student!.email || '-' }}
         </div>
-        <span class="truncate text-sm font-medium text-gray-900 dark:text-white">{{
-          student!.name
-        }}</span>
-      </div>
-      <div class="truncate px-6 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
-        {{ student!.email || '-' }}
-      </div>
-      <div class="truncate px-6 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
-        {{ student!.phone || '-' }}
-      </div>
-      <div class="truncate px-6 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
-        {{ formatDateTime(student!.createdAt) }}
-      </div>
-      <div
-        v-if="actions.length"
-        class="flex items-center justify-start gap-1 px-6 whitespace-nowrap"
-      >
-        <EditButton v-if="actions.includes('edit')" @click.stop="emit('edit')" />
-        <DeleteButton v-if="actions.includes('delete')" @click.stop="emit('delete')" />
-      </div>
-    </template>
+      </Transition>
+    </div>
+
+    <!-- ===== 列 3：电话 ===== -->
+    <div class="px-6">
+      <Transition name="scale-fade" mode="out-in">
+        <div v-if="loading" key="sk-phone">
+          <div class="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
+        </div>
+        <div
+          v-else
+          key="ct-phone"
+          class="truncate text-sm whitespace-nowrap text-gray-600 dark:text-gray-300"
+        >
+          {{ student!.phone || '-' }}
+        </div>
+      </Transition>
+    </div>
+
+    <!-- ===== 列 4：创建时间 ===== -->
+    <div class="px-6">
+      <Transition name="scale-fade" mode="out-in">
+        <div v-if="loading" key="sk-date">
+          <div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
+        </div>
+        <div
+          v-else
+          key="ct-date"
+          class="truncate text-sm whitespace-nowrap text-gray-600 dark:text-gray-300"
+        >
+          {{ formatDateTime(student!.createdAt) }}
+        </div>
+      </Transition>
+    </div>
+
+    <!-- ===== 列 5：操作按钮 ===== -->
+    <div class="flex items-center justify-end gap-1 px-6">
+      <Transition name="scale-fade" mode="out-in">
+        <div v-if="loading" key="sk-actions" class="flex items-center gap-1">
+          <div class="size-8 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
+          <div class="size-8 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
+        </div>
+        <div v-else key="ct-actions" class="flex items-center gap-1">
+          <template v-if="actions.length">
+            <EditButton v-if="actions.includes('edit')" @click.stop="emit('edit')" />
+            <DeleteButton v-if="actions.includes('delete')" @click.stop="emit('delete')" />
+          </template>
+        </div>
+      </Transition>
+    </div>
   </div>
 </template>
 
@@ -122,3 +155,22 @@ const studentAvatarUrl = computed(
 const itemRef = useTemplateRef<HTMLElement>('itemRef');
 const { isVisible } = useElementInView(itemRef);
 </script>
+
+<style scoped>
+.scale-fade-enter-active,
+.scale-fade-leave-active {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.scale-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.85);
+}
+
+.scale-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.85);
+}
+</style>

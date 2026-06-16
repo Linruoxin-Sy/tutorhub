@@ -16,32 +16,25 @@
       class="pointer-events-none absolute inset-0 z-10 rounded-2xl bg-blue-500/15"
     />
 
-    <!-- ===== Skeleton 状态 ===== -->
-    <template v-if="loading">
-      <div class="bg-linear-to-r from-blue-500 to-indigo-600 px-5 py-4">
+    <!-- ===== 标题区域 ===== -->
+    <Transition name="scale-fade" mode="out-in">
+      <div
+        v-if="loading"
+        key="sk-header"
+        class="bg-linear-to-r from-blue-500 to-indigo-600 px-5 py-4"
+      >
         <div class="h-5 w-48 animate-pulse rounded bg-white/30" />
       </div>
-      <div class="flex flex-1 items-start justify-between gap-4 px-5 py-4">
-        <div class="min-w-0 flex-1 space-y-3">
-          <div class="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
-          <div class="h-3 w-1/3 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
-        </div>
-        <div class="flex shrink-0 gap-2 self-end">
-          <div class="h-8 w-16 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
-          <div class="h-8 w-18 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
-        </div>
-      </div>
-    </template>
-
-    <!-- ===== 真实内容 ===== -->
-    <template v-else>
-      <div class="px-5 py-4" :style="{ background: getAvatarGradient(course!.name) }">
+      <div
+        v-else
+        key="ct-header"
+        class="px-5 py-4"
+        :style="{ background: getAvatarGradient(course!.name) }"
+      >
         <div class="flex items-start justify-between gap-4">
-          <div>
-            <h3 class="text-lg font-bold" :style="{ color: getAvatarTextColor(course!.name) }">
-              {{ course!.name }}
-            </h3>
-          </div>
+          <h3 class="text-lg font-bold" :style="{ color: getAvatarTextColor(course!.name) }">
+            {{ course!.name }}
+          </h3>
           <span
             class="rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold"
             :style="{ color: getAvatarTextColor(course!.name) }"
@@ -50,21 +43,48 @@
           </span>
         </div>
       </div>
-      <div class="flex flex-1 items-start justify-between gap-4 px-5 py-4">
-        <div class="min-w-0 flex-1 space-y-2">
-          <p class="truncate text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+    </Transition>
+
+    <!-- ===== 主体区域 ===== -->
+    <div class="flex flex-1 items-start justify-between gap-4 px-5 py-4">
+      <div class="min-w-0 flex-1 space-y-2">
+        <!-- 描述 -->
+        <Transition name="scale-fade" mode="out-in">
+          <div v-if="loading" key="sk-desc">
+            <div class="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
+          </div>
+          <p
+            v-else
+            key="ct-desc"
+            class="truncate text-sm leading-relaxed text-gray-600 dark:text-gray-300"
+          >
             {{ course!.description || 'No description provided.' }}
           </p>
-          <span class="block text-xs text-gray-500 dark:text-gray-400">
+        </Transition>
+
+        <!-- 创建时间 -->
+        <Transition name="scale-fade" mode="out-in">
+          <div v-if="loading" key="sk-date">
+            <div class="h-3 w-1/3 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
+          </div>
+          <span v-else key="ct-date" class="block text-xs text-gray-500 dark:text-gray-400">
             Created {{ formatDateTime(course!.createdAt) }}
           </span>
+        </Transition>
+      </div>
+
+      <!-- 操作按钮 -->
+      <Transition name="scale-fade" mode="out-in">
+        <div v-if="loading" key="sk-actions" class="flex shrink-0 gap-2 self-end">
+          <div class="h-8 w-16 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
+          <div class="h-8 w-18 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
         </div>
-        <div v-if="actions.length" class="flex shrink-0 gap-2 self-end">
+        <div v-else-if="actions.length" key="ct-actions" class="flex shrink-0 gap-2 self-end">
           <EditButton v-if="actions.includes('edit')" @click.stop="emit('edit')" />
           <DeleteButton v-if="actions.includes('delete')" @click.stop="emit('delete')" />
         </div>
-      </div>
-    </template>
+      </Transition>
+    </div>
   </article>
 </template>
 
@@ -99,3 +119,22 @@ const emit = defineEmits<{
 const itemRef = useTemplateRef<HTMLElement>('itemRef');
 const { isVisible } = useElementInView(itemRef);
 </script>
+
+<style scoped>
+.scale-fade-enter-active,
+.scale-fade-leave-active {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.scale-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.85);
+}
+
+.scale-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.85);
+}
+</style>
