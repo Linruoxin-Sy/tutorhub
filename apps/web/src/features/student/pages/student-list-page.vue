@@ -6,10 +6,10 @@
           <SearchInput v-model="searchInput" placeholder="Search students..." />
         </template>
         <template #actions>
-          <AddButton @click="router.push({ name: 'student.create' })">
+          <AppButton @click="router.push({ name: 'student.create' })">
             <i class="i-lucide-plus size-4"></i>
             <span>Add Student</span>
-          </AddButton>
+          </AppButton>
         </template>
 
         <VirtualList

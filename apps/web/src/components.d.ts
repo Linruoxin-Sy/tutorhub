@@ -11,7 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AddButton: typeof import('./components/AddButton.vue')['default']
+    AppButton: typeof import('./components/AppButton.vue')['default']
     AvatarUploader: typeof import('./components/AvatarUploader.vue')['default']
     CardSection: typeof import('./components/CardSection.vue')['default']
     ConfirmDialog: typeof import('./components/ConfirmDialog.vue')['default']

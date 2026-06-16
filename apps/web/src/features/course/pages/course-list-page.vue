@@ -14,10 +14,10 @@
           </div>
         </template>
         <template #actions>
-          <AddButton @click="router.push({ name: 'course.create' })">
+          <AppButton @click="router.push({ name: 'course.create' })">
             <i class="i-lucide-plus size-4"></i>
             <span>Add Course</span>
-          </AddButton>
+          </AppButton>
         </template>
 
         <VirtualList

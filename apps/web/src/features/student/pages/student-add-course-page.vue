@@ -49,21 +49,18 @@
     </ListPageShell>
 
     <!-- 底部提交栏 -->
-    <div
-      class="flex items-center justify-end gap-4 rounded-2xl border border-gray-200 bg-white px-6 py-4 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-    >
+    <CardSection class="flex items-center justify-end gap-4 px-6 py-4">
       <span class="text-sm text-gray-500 dark:text-gray-400">
         {{ selectedIds.size }} course(s) selected
       </span>
-      <button
+      <AppButton
         :disabled="selectedIds.size === 0 || isSubmitting"
-        class="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
         @click="submit"
       >
         <span v-if="isSubmitting">Adding...</span>
         <span v-else>Add to Student</span>
-      </button>
-    </div>
+      </AppButton>
+    </CardSection>
   </main>
 </template>
 

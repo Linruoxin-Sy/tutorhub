@@ -42,10 +42,10 @@
           </div>
         </template>
         <template #actions>
-          <AddButton @click="router.push({ name: 'student.add-course', params: { id } })">
+          <AppButton @click="router.push({ name: 'student.add-course', params: { id } })">
             <i class="i-lucide-plus size-4"></i>
             <span>Add Course</span>
-          </AddButton>
+          </AppButton>
         </template>
 
         <div class="flex h-125 flex-col">
@@ -105,7 +105,7 @@ import CourseItem from '@/features/course/components/CourseItem.vue';
 import { useDialog } from '@/hooks/useDialog';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
-import AddButton from '@/components/AddButton.vue';
+import AppButton from '@/components/AppButton.vue';
 import SearchInput from '@/components/SearchInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import type { StudentEnrollmentListResponse } from '@tutorhub/schema';

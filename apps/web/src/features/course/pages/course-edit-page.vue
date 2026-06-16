@@ -30,10 +30,10 @@
           <SearchInput v-model="search" placeholder="Search students..." />
         </template>
         <template #actions>
-          <AddButton @click="router.push({ name: 'course.add-student', params: { id } })">
+          <AppButton @click="router.push({ name: 'course.add-student', params: { id } })">
             <i class="i-lucide-plus size-4"></i>
             <span>Add Student</span>
-          </AddButton>
+          </AppButton>
         </template>
 
         <div class="flex h-125 flex-col">
@@ -102,7 +102,7 @@ import StudentItem from '@/features/student/components/StudentItem.vue';
 import { useDialog } from '@/hooks/useDialog';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
-import AddButton from '@/components/AddButton.vue';
+import AppButton from '@/components/AppButton.vue';
 import SearchInput from '@/components/SearchInput.vue';
 import type { CourseEnrollmentListResponse } from '@tutorhub/schema';
 
