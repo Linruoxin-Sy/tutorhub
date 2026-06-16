@@ -12,18 +12,18 @@
       align-items: center;
       width: 100%;
     "
-    @click="!loading && emit('view')"
+    @click="!effectiveLoading && emit('view')"
   >
     <!-- 选中指示器（仅真实内容） -->
     <div
-      v-if="!loading && selected"
+      v-if="!effectiveLoading && selected"
       class="pointer-events-none absolute top-0 left-0 h-full w-1 rounded-r-sm bg-blue-500"
     />
 
     <!-- ===== 列 1：头像 + 姓名 ===== -->
     <div class="flex items-center gap-3 px-6 whitespace-nowrap">
       <Transition name="scale-fade" mode="out-in">
-        <div v-if="loading" key="sk-name" class="flex items-center gap-3">
+        <div v-if="effectiveLoading" key="sk-name" class="flex items-center gap-3">
           <div class="size-9 shrink-0 animate-pulse rounded-full bg-gray-200 dark:bg-[#343434]" />
           <div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
@@ -54,7 +54,7 @@
     <!-- ===== 列 2：邮箱 ===== -->
     <div class="px-6">
       <Transition name="scale-fade" mode="out-in">
-        <div v-if="loading" key="sk-email">
+        <div v-if="effectiveLoading" key="sk-email">
           <div class="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
         <div
@@ -70,7 +70,7 @@
     <!-- ===== 列 3：电话 ===== -->
     <div class="px-6">
       <Transition name="scale-fade" mode="out-in">
-        <div v-if="loading" key="sk-phone">
+        <div v-if="effectiveLoading" key="sk-phone">
           <div class="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
         <div
@@ -86,7 +86,7 @@
     <!-- ===== 列 4：创建时间 ===== -->
     <div class="px-6">
       <Transition name="scale-fade" mode="out-in">
-        <div v-if="loading" key="sk-date">
+        <div v-if="effectiveLoading" key="sk-date">
           <div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
         <div
@@ -102,7 +102,7 @@
     <!-- ===== 列 5：操作按钮 ===== -->
     <div class="flex items-center justify-end gap-1 px-6">
       <Transition name="scale-fade" mode="out-in">
-        <div v-if="loading" key="sk-actions" class="flex items-center gap-1">
+        <div v-if="effectiveLoading" key="sk-actions" class="flex items-center gap-1">
           <div class="size-8 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
           <div class="size-8 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
         </div>
@@ -118,7 +118,7 @@
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef } from 'vue';
+import { useTemplateRef, computed } from 'vue';
 import { formatDateTime } from '@/utils/date';
 import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
 import { useElementInView } from '@/hooks/useElementInView';
@@ -154,6 +154,8 @@ const studentAvatarUrl = computed(
 
 const itemRef = useTemplateRef<HTMLElement>('itemRef');
 const { isVisible } = useElementInView(itemRef);
+/** 数据未就绪或尚未进入视口时均显示 skeleton */
+const effectiveLoading = computed(() => props.loading || !isVisible.value);
 </script>
 
 <style scoped>

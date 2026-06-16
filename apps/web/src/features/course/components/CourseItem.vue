@@ -4,22 +4,22 @@
     class="relative flex h-36 origin-bottom-right cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm transition-all duration-700 hover:-translate-y-2 hover:shadow-lg dark:border-[#2f2f2f] dark:bg-[#202020]"
     :class="[
       isVisible ? 'translate-x-0 scale-100 opacity-100' : 'translate-x-32 scale-80 opacity-0',
-      !loading && selected
+      !effectiveLoading && selected
         ? 'shadow-[0_0_20px_-4px] ring-3 shadow-blue-500/40 ring-blue-500/50'
         : '',
     ]"
-    @click="!loading && emit('view')"
+    @click="!effectiveLoading && emit('view')"
   >
     <!-- 选中蒙层（仅真实内容） -->
     <div
-      v-if="!loading && selected"
+      v-if="!effectiveLoading && selected"
       class="pointer-events-none absolute inset-0 z-10 rounded-2xl bg-blue-500/15"
     />
 
     <!-- ===== 标题区域 ===== -->
     <Transition name="fade" mode="out-in">
       <div
-        v-if="loading"
+        v-if="effectiveLoading"
         key="sk-header"
         class="bg-linear-to-r from-blue-500 to-indigo-600 px-5 py-4"
       >
@@ -50,7 +50,7 @@
       <div class="min-w-0 flex-1 space-y-2">
         <!-- 描述 -->
         <Transition name="scale-fade" mode="out-in">
-          <div v-if="loading" key="sk-desc">
+          <div v-if="effectiveLoading" key="sk-desc">
             <div class="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
           </div>
           <p
@@ -64,7 +64,7 @@
 
         <!-- 创建时间 -->
         <Transition name="scale-fade" mode="out-in">
-          <div v-if="loading" key="sk-date">
+          <div v-if="effectiveLoading" key="sk-date">
             <div class="h-3 w-1/3 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
           </div>
           <span v-else key="ct-date" class="block text-xs text-gray-500 dark:text-gray-400">
@@ -75,7 +75,7 @@
 
       <!-- 操作按钮 -->
       <Transition name="scale-fade" mode="out-in">
-        <div v-if="loading" key="sk-actions" class="flex shrink-0 gap-2 self-end">
+        <div v-if="effectiveLoading" key="sk-actions" class="flex shrink-0 gap-2 self-end">
           <div class="h-8 w-16 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
           <div class="h-8 w-18 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
         </div>
@@ -91,7 +91,7 @@
 <script setup lang="ts">
 import { formatDateTime } from '@/utils/date';
 import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
-import { useTemplateRef, watch } from 'vue';
+import { useTemplateRef, computed } from 'vue';
 import { useElementInView } from '@/hooks/useElementInView';
 import type { Course } from '@tutorhub/database';
 
@@ -118,18 +118,8 @@ const emit = defineEmits<{
 
 const itemRef = useTemplateRef<HTMLElement>('itemRef');
 const { isVisible } = useElementInView(itemRef);
-
-// loading 从 true→false（或挂载时已为 false）时立即标记可见，
-// 避免外层滑入动画与内层 scale-fade 过渡重叠播放
-watch(
-  () => props.loading,
-  (loading) => {
-    if (!loading) {
-      isVisible.value = true;
-    }
-  },
-  { immediate: true },
-);
+/** 数据未就绪或尚未进入视口时均显示 skeleton */
+const effectiveLoading = computed(() => props.loading || !isVisible.value);
 </script>
 
 <style scoped>
