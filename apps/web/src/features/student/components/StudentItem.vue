@@ -24,8 +24,8 @@
     <div class="flex items-center gap-3 px-6 whitespace-nowrap">
       <Transition name="scale-fade" mode="out-in">
         <div v-if="effectiveLoading" key="sk-name" class="flex items-center gap-3">
-          <div class="size-9 shrink-0 animate-pulse rounded-full bg-gray-200 dark:bg-[#343434]" />
-          <div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
+          <div class="size-9 shrink-0 rounded-full bg-gray-200 dark:bg-[#343434]" />
+          <div class="h-4 w-32 rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
         <div v-else key="ct-name" class="flex min-w-0 items-center gap-3">
           <img
@@ -55,7 +55,7 @@
     <div class="px-6">
       <Transition name="scale-fade" mode="out-in">
         <div v-if="effectiveLoading" key="sk-email">
-          <div class="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
+          <div class="h-4 w-24 rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
         <div
           v-else
@@ -71,7 +71,7 @@
     <div class="px-6">
       <Transition name="scale-fade" mode="out-in">
         <div v-if="effectiveLoading" key="sk-phone">
-          <div class="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
+          <div class="h-4 w-24 rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
         <div
           v-else
@@ -87,7 +87,7 @@
     <div class="px-6">
       <Transition name="scale-fade" mode="out-in">
         <div v-if="effectiveLoading" key="sk-date">
-          <div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
+          <div class="h-4 w-32 rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
         <div
           v-else
@@ -103,8 +103,8 @@
     <div class="flex items-center justify-end gap-1 px-6">
       <Transition name="scale-fade" mode="out-in">
         <div v-if="effectiveLoading" key="sk-actions" class="flex items-center gap-1">
-          <div class="size-8 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
-          <div class="size-8 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
+          <div class="size-8 rounded-lg bg-gray-200 dark:bg-[#343434]" />
+          <div class="size-8 rounded-lg bg-gray-200 dark:bg-[#343434]" />
         </div>
         <div v-else key="ct-actions" class="flex items-center gap-1">
           <template v-if="actions.length">
