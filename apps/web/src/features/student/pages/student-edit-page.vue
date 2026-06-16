@@ -98,7 +98,10 @@ import { useRoute } from 'vue-router';
 import { useStudentEditForm } from '@/features/student/hooks/useStudentEditForm';
 import StudentForm from '@/features/student/components/StudentForm.vue';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
-import { fetchStudentEnrollments, deleteEnrollment } from '@/features/enrollment/api/enrollment-api';
+import {
+  fetchStudentEnrollments,
+  deleteEnrollment,
+} from '@/features/enrollment/api/enrollment-api';
 import CourseItem from '@/features/course/components/CourseItem.vue';
 import CourseItemSkeleton from '@/features/course/components/CourseItemSkeleton.vue';
 import { useDialog } from '@/hooks/useDialog';

@@ -42,8 +42,6 @@ export async function fetchCourseEnrollments(
 
 /** 软删除选课关系 */
 export async function deleteEnrollment(id: string): Promise<EnrollmentDeleteResponse> {
-  const { data } = await request.delete<{ data: EnrollmentDeleteResponse }>(
-    `/enrollment/${id}`,
-  );
+  const { data } = await request.delete<{ data: EnrollmentDeleteResponse }>(`/enrollment/${id}`);
   return data.data;
 }
