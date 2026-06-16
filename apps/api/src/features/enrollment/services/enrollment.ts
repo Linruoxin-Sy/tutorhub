@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
+import type { Prisma } from '@tutorhub/database';
 import type {
   availableCoursesQuerySchema,
   availableStudentsQuerySchema,
   enrollmentCreateSchema,
   enrollmentListQuerySchema,
 } from '@tutorhub/schema';
-import type { Prisma } from '@tutorhub/database';
 
 import { ApiError } from '@/shared/api-error';
 import { prisma } from '@/shared/prisma';
@@ -294,10 +294,7 @@ export const enrollmentService = {
     return { items: result, nextCursor, total };
   },
 
-  async create(
-    input: z.infer<typeof enrollmentCreateSchema>,
-    userId: string,
-  ) {
+  async create(input: z.infer<typeof enrollmentCreateSchema>, userId: string) {
     // 校验学生归属
     const student = await prisma.student.findFirst({
       where: { id: input.studentId, userId, deletedAt: null },

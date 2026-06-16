@@ -16,7 +16,7 @@
   >
     <div
       v-if="selected"
-      class="pointer-events-none absolute left-0 top-0 h-full w-1 rounded-r-sm bg-blue-500"
+      class="pointer-events-none absolute top-0 left-0 h-full w-1 rounded-r-sm bg-blue-500"
     />
     <div class="flex min-w-0 items-center gap-3 px-6 whitespace-nowrap">
       <img
