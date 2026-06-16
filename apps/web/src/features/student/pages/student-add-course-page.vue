@@ -10,42 +10,40 @@
         </SelectInput>
       </template>
 
-      <div class="flex h-0 flex-1">
-        <VirtualList
-          :query="sparseQuery"
-          :estimate-size="164"
-          :overscan="5"
-          scroll-class="flex-1 overflow-x-hidden overflow-y-auto p-5"
-        >
-          <template #loading>
-            <div class="flex flex-col gap-5">
-              <CourseItem v-for="index in 4" :key="index" loading />
-            </div>
-          </template>
+      <VirtualList
+        :query="sparseQuery"
+        :estimate-size="164"
+        :overscan="5"
+        scroll-class="flex-1 overflow-x-hidden overflow-y-auto p-5"
+      >
+        <template #loading>
+          <div class="flex flex-col gap-5">
+            <CourseItem v-for="index in 4" :key="index" loading />
+          </div>
+        </template>
 
-          <template #item="{ item, isLoaded }">
-            <CourseItem
-              :course="item!"
-              :loading="!isLoaded"
-              :actions="[]"
-              :selected="selectedIds.has(item!.id)"
-              @view="toggleItem(item!.id)"
-            />
-          </template>
+        <template #item="{ item, isLoaded }">
+          <CourseItem
+            :course="item!"
+            :loading="!isLoaded"
+            :actions="[]"
+            :selected="!!item && selectedIds.has(item.id)"
+            @view="item && toggleItem(item.id)"
+          />
+        </template>
 
-          <template #empty>
+        <template #empty>
+          <div
+            class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+          >
             <div
-              class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+              class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
             >
-              <div
-                class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
-              >
-                No available courses found.
-              </div>
+              No available courses found.
             </div>
-          </template>
-        </VirtualList>
-      </div>
+          </div>
+        </template>
+      </VirtualList>
     </ListPageShell>
 
     <!-- 底部提交栏 -->

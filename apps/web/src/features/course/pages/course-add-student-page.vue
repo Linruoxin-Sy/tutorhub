@@ -5,55 +5,52 @@
         <SearchInput v-model="search" placeholder="Search students..." />
       </template>
 
-      <div class="flex h-0 flex-1">
-        <VirtualList
-          :query="sparseQuery"
-          :estimate-size="70"
-          :overscan="10"
-          scroll-class="flex-1 overflow-x-hidden overflow-y-auto"
-          row-class="border-b border-gray-200 transition hover:bg-gray-50 dark:border-[#343434] dark:hover:bg-[#202020]"
-          :row-style="{ display: 'flex' }"
-        >
-          <template #header>
+      <VirtualList
+        :query="sparseQuery"
+        :estimate-size="70"
+        :overscan="10"
+        row-class="border-b border-gray-200 transition hover:bg-gray-50 dark:border-[#343434] dark:hover:bg-[#202020]"
+        :row-style="{ display: 'flex' }"
+      >
+        <template #header>
+          <div
+            class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
+            style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr"
+          >
             <div
-              class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
-              style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr"
+              v-for="column in columns"
+              :key="column"
+              class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
             >
-              <div
-                v-for="column in columns"
-                :key="column"
-                class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
-              >
-                {{ column }}
-              </div>
+              {{ column }}
             </div>
-          </template>
+          </div>
+        </template>
 
-          <template #loading>
-            <div class="divide-y divide-gray-200 dark:divide-[#343434]">
-              <StudentItem v-for="index in 8" :key="index" loading :student="undefined as any" />
-            </div>
-          </template>
+        <template #loading>
+          <div class="divide-y divide-gray-200 dark:divide-[#343434]">
+            <StudentItem v-for="index in 8" :key="index" loading :student="undefined as any" />
+          </div>
+        </template>
 
-          <template #item="{ item, isLoaded }">
-            <StudentItem
-              :student="item!"
-              :loading="!isLoaded"
-              :actions="[]"
-              :selected="selectedIds.has(item!.id)"
-              @view="toggleItem(item!.id)"
-            />
-          </template>
+        <template #item="{ item, isLoaded }">
+          <StudentItem
+            :student="item!"
+            :loading="!isLoaded"
+            :actions="[]"
+            :selected="!!item && selectedIds.has(item.id)"
+            @view="item && toggleItem(item.id)"
+          />
+        </template>
 
-          <template #empty>
-            <div
-              class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
-            >
-              No available students found.
-            </div>
-          </template>
-        </VirtualList>
-      </div>
+        <template #empty>
+          <div
+            class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+          >
+            No available students found.
+          </div>
+        </template>
+      </VirtualList>
     </ListPageShell>
 
     <!-- 底部提交栏 -->
