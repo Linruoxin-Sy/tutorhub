@@ -36,20 +36,19 @@
 
           <template #loading>
             <div class="divide-y divide-gray-200 dark:divide-[#343434]">
-              <StudentItemSkeleton v-for="index in 8" :key="index" />
+              <StudentItem v-for="index in 8" :key="index" loading :student="undefined as any" />
             </div>
           </template>
 
           <template #item="{ item, isLoaded }">
             <StudentItem
-              v-if="isLoaded"
               :student="item!"
+              :loading="!isLoaded"
               :actions="['edit', 'delete']"
               @view="router.push({ name: 'student.detail', params: { id: item!.id } })"
               @edit="router.push({ name: 'student.edit', params: { id: item!.id } })"
               @delete="handleDelete(item!)"
             />
-            <StudentItemSkeleton v-else />
           </template>
 
           <template #empty>
@@ -73,7 +72,6 @@ import { useStudentDelete } from '@/features/student/hooks/useStudentDelete';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchStudents, type StudentListResponse } from '@/features/student/api/student-api';
 import StudentItem from '@/features/student/components/StudentItem.vue';
-import StudentItemSkeleton from '@/features/student/components/StudentItemSkeleton.vue';
 import VirtualList from '@/components/VirtualList.vue';
 
 type StudentItemType = StudentListResponse['items'][number];

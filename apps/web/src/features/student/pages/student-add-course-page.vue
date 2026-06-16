@@ -25,19 +25,18 @@
         >
           <template #loading>
             <div class="flex flex-col gap-5">
-              <CourseItemSkeleton v-for="index in 4" :key="index" />
+              <CourseItem v-for="index in 4" :key="index" loading />
             </div>
           </template>
 
           <template #item="{ item, isLoaded }">
             <CourseItem
-              v-if="isLoaded"
               :course="item!"
+              :loading="!isLoaded"
               :actions="[]"
               :selected="selectedIds.has(item!.id)"
               @view="toggleItem(item!.id)"
             />
-            <CourseItemSkeleton v-else />
           </template>
 
           <template #empty>
@@ -82,7 +81,6 @@ import { useRouter, useRoute } from 'vue-router';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchAvailableCourses, createEnrollment } from '@/features/enrollment/api/enrollment-api';
 import CourseItem from '@/features/course/components/CourseItem.vue';
-import CourseItemSkeleton from '@/features/course/components/CourseItemSkeleton.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import CardSection from '@/components/CardSection.vue';
 import PageHeader from '@/components/PageHeader.vue';

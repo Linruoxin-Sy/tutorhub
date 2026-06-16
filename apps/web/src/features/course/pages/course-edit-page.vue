@@ -61,18 +61,17 @@
 
             <template #loading>
               <div class="divide-y divide-gray-200 dark:divide-[#343434]">
-                <StudentItemSkeleton v-for="index in 8" :key="index" />
+                <StudentItem v-for="index in 8" :key="index" loading :student="undefined as any" />
               </div>
             </template>
 
             <template #item="{ item, isLoaded }">
               <StudentItem
-                v-if="isLoaded"
                 :student="item!.student"
+                :loading="!isLoaded"
                 :actions="['edit', 'delete']"
                 @delete="handleDeleteStudent(item!)"
               />
-              <StudentItemSkeleton v-else />
             </template>
 
             <template #empty>
@@ -100,7 +99,6 @@ import CourseForm from '@/features/course/components/CourseForm.vue';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchCourseEnrollments, deleteEnrollment } from '@/features/enrollment/api/enrollment-api';
 import StudentItem from '@/features/student/components/StudentItem.vue';
-import StudentItemSkeleton from '@/features/student/components/StudentItemSkeleton.vue';
 import { useDialog } from '@/hooks/useDialog';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';

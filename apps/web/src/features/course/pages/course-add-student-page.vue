@@ -35,19 +35,18 @@
 
           <template #loading>
             <div class="divide-y divide-gray-200 dark:divide-[#343434]">
-              <StudentItemSkeleton v-for="index in 8" :key="index" />
+              <StudentItem v-for="index in 8" :key="index" loading :student="undefined as any" />
             </div>
           </template>
 
           <template #item="{ item, isLoaded }">
             <StudentItem
-              v-if="isLoaded"
               :student="item!"
+              :loading="!isLoaded"
               :actions="[]"
               :selected="selectedIds.has(item!.id)"
               @view="toggleItem(item!.id)"
             />
-            <StudentItemSkeleton v-else />
           </template>
 
           <template #empty>
@@ -88,7 +87,6 @@ import { useRouter, useRoute } from 'vue-router';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchAvailableStudents, createEnrollment } from '@/features/enrollment/api/enrollment-api';
 import StudentItem from '@/features/student/components/StudentItem.vue';
-import StudentItemSkeleton from '@/features/student/components/StudentItemSkeleton.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import CardSection from '@/components/CardSection.vue';
 import PageHeader from '@/components/PageHeader.vue';

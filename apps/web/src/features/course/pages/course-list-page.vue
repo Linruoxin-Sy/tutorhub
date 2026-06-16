@@ -28,20 +28,19 @@
         >
           <template #loading>
             <div class="flex flex-col gap-5">
-              <CourseItemSkeleton v-for="index in 4" :key="index" />
+              <CourseItem v-for="index in 4" :key="index" loading />
             </div>
           </template>
 
           <template #item="{ item, isLoaded }">
             <CourseItem
-              v-if="isLoaded"
               :course="item!"
+              :loading="!isLoaded"
               :actions="['edit', 'delete']"
               @view="router.push({ name: 'course.detail', params: { id: item!.id } })"
               @edit="router.push({ name: 'course.edit', params: { id: item!.id } })"
               @delete="handleDelete(item!)"
             />
-            <CourseItemSkeleton v-else />
           </template>
 
           <template #empty>
@@ -69,7 +68,6 @@ import { useCourseDelete } from '@/features/course/hooks/useCourseDelete';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchCourses } from '@/features/course/api/course-api';
 import CourseItem from '@/features/course/components/CourseItem.vue';
-import CourseItemSkeleton from '@/features/course/components/CourseItemSkeleton.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import type { Course } from '@tutorhub/database';
 
