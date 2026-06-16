@@ -2,7 +2,7 @@
   <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <PageHeader title="Add Students" description="Select students to enroll in this course." />
 
-    <ListPageShell title="">
+    <ListPageShell title="Available Students">
       <template #filters>
         <SearchInput v-model="search" placeholder="Search students..." />
       </template>
