@@ -6,9 +6,6 @@
       <!-- 筛选栏 -->
       <div class="flex items-center gap-3 border-b border-gray-200 px-5 py-4 dark:border-[#343434]">
         <SearchInput v-model="search" placeholder="Search students..." />
-        <span class="ml-auto text-sm text-gray-500 dark:text-gray-400">
-          {{ selectedIds.size }} selected
-        </span>
       </div>
 
       <!-- 虚拟列表（表格行布局） -->

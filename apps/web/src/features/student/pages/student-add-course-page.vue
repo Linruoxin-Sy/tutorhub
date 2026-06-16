@@ -13,9 +13,6 @@
           <option value="ACTIVE">Active</option>
           <option value="DISABLED">Disabled</option>
         </SelectInput>
-        <span class="text-sm text-gray-500 sm:ml-auto dark:text-gray-400">
-          {{ selectedIds.size }} selected
-        </span>
       </div>
 
       <!-- 虚拟列表 -->
