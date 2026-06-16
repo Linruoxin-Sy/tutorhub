@@ -162,8 +162,8 @@ const effectiveLoading = computed(() => props.loading || !isVisible.value);
 .scale-fade-enter-active,
 .scale-fade-leave-active {
   transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+    opacity 0.1s ease,
+    transform 0.1s ease;
 }
 
 .scale-fade-enter-from {
