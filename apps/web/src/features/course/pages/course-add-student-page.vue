@@ -60,10 +60,7 @@
       <span class="text-sm text-gray-500 dark:text-gray-400">
         {{ selectedIds.size }} student(s) selected
       </span>
-      <AppButton
-        :disabled="selectedIds.size === 0 || isSubmitting"
-        @click="submit"
-      >
+      <AppButton :disabled="selectedIds.size === 0 || isSubmitting" @click="submit">
         <span v-if="isSubmitting">Adding...</span>
         <span v-else>Add to Course</span>
       </AppButton>
