@@ -1,6 +1,8 @@
 <template>
   <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <ListPageShell title="Add Students" description="Select students to enroll in this course.">
+    <PageHeader title="Add Students" description="Select students to enroll in this course." />
+
+    <ListPageShell title="">
       <template #filters>
         <SearchInput v-model="search" placeholder="Search students..." />
       </template>
@@ -82,6 +84,7 @@ import { fetchAvailableStudents, createEnrollment } from '@/features/enrollment/
 import StudentItem from '@/features/student/components/StudentItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
+import PageHeader from '@/components/PageHeader.vue';
 import SearchInput from '@/components/SearchInput.vue';
 import type { Student } from '@tutorhub/database';
 

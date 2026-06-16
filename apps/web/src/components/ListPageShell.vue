@@ -3,7 +3,7 @@
     <div class="shrink-0 border-b border-gray-200 px-5 py-4 dark:border-[#343434]">
       <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ title }}</h1>
+          <h1 v-if="title" class="text-2xl font-bold text-gray-900 dark:text-white">{{ title }}</h1>
           <p v-if="description" class="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {{ description }}
           </p>
