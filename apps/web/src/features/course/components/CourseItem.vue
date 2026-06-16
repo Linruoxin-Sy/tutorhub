@@ -17,7 +17,7 @@
     />
 
     <!-- ===== 标题区域 ===== -->
-    <Transition name="scale-fade" mode="out-in">
+    <Transition name="fade" mode="out-in">
       <div
         v-if="loading"
         key="sk-header"
@@ -148,5 +148,15 @@ watch(
 .scale-fade-leave-to {
   opacity: 0;
   transform: scale(0.85);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
