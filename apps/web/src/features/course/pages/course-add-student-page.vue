@@ -1,14 +1,10 @@
 <template>
   <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <PageHeader title="Add Students" description="Select students to enroll in this course." />
-
-    <CardSection class="flex flex-1 flex-col overflow-hidden p-0">
-      <!-- 筛选栏 -->
-      <div class="flex items-center gap-3 border-b border-gray-200 px-5 py-4 dark:border-[#343434]">
+    <ListPageShell title="Add Students" description="Select students to enroll in this course.">
+      <template #filters>
         <SearchInput v-model="search" placeholder="Search students..." />
-      </div>
+      </template>
 
-      <!-- 虚拟列表（表格行布局） -->
       <div class="flex h-0 flex-1">
         <VirtualList
           :query="sparseQuery"
@@ -58,7 +54,7 @@
           </template>
         </VirtualList>
       </div>
-    </CardSection>
+    </ListPageShell>
 
     <!-- 底部提交栏 -->
     <div
@@ -88,8 +84,7 @@ import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchAvailableStudents, createEnrollment } from '@/features/enrollment/api/enrollment-api';
 import StudentItem from '@/features/student/components/StudentItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
-import CardSection from '@/components/CardSection.vue';
-import PageHeader from '@/components/PageHeader.vue';
+import ListPageShell from '@/components/ListPageShell.vue';
 import SearchInput from '@/components/SearchInput.vue';
 import type { Student } from '@tutorhub/database';
 

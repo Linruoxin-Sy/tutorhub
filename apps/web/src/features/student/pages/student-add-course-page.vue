@@ -1,21 +1,15 @@
 <template>
   <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <PageHeader title="Add Courses" description="Select courses to enroll the student in." />
-
-    <CardSection class="flex flex-1 flex-col overflow-hidden p-0">
-      <!-- 筛选栏 -->
-      <div
-        class="flex flex-col gap-3 border-b border-gray-200 px-5 py-4 sm:flex-row sm:items-center dark:border-[#343434]"
-      >
+    <ListPageShell title="Add Courses" description="Select courses to enroll the student in.">
+      <template #filters>
         <SearchInput v-model="search" placeholder="Search courses..." />
         <SelectInput v-model="status">
           <option value="">All status</option>
           <option value="ACTIVE">Active</option>
           <option value="DISABLED">Disabled</option>
         </SelectInput>
-      </div>
+      </template>
 
-      <!-- 虚拟列表 -->
       <div class="flex h-0 flex-1">
         <VirtualList
           :query="sparseQuery"
@@ -52,7 +46,7 @@
           </template>
         </VirtualList>
       </div>
-    </CardSection>
+    </ListPageShell>
 
     <!-- 底部提交栏 -->
     <div
@@ -82,8 +76,7 @@ import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchAvailableCourses, createEnrollment } from '@/features/enrollment/api/enrollment-api';
 import CourseItem from '@/features/course/components/CourseItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
-import CardSection from '@/components/CardSection.vue';
-import PageHeader from '@/components/PageHeader.vue';
+import ListPageShell from '@/components/ListPageShell.vue';
 import SearchInput from '@/components/SearchInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import type { Course } from '@tutorhub/database';
