@@ -34,7 +34,7 @@
               <span class="text-base font-bold text-white">
                 {{ formatDate(rule!.startDate) }}
               </span>
-              <span v-if="rule!.endDate" class="text-white/60">→</span>
+              <i v-if="rule!.endDate" class="i-lucide-arrow-right size-4 text-white/60" />
               <span v-if="rule!.endDate" class="text-base font-bold text-white">
                 {{ formatDate(rule!.endDate) }}
               </span>
@@ -61,7 +61,7 @@
               <span class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                 {{ formatTime(rule!.startTime) }}
               </span>
-              <span class="text-lg text-gray-400 dark:text-gray-500">—</span>
+              <i class="i-lucide-arrow-right size-5 text-gray-400 dark:text-gray-500" />
               <span class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                 {{ formatTime(rule!.endTime) }}
               </span>
