@@ -32,5 +32,8 @@ model User {
   /// 用户拥有的学生
   students Student[]
 
+  /// 用户拥有的课程
+  courses Course[]
+
   @@map("user")
 }

@@ -19,17 +19,20 @@ import { zValidator } from '@/shared/validator';
 export const courseRoute = new Hono()
   .get('/list', zValidator('query', courseListSchema), async (c) => {
     const query = c.req.valid('query');
-    const res: CourseListResponse = await courseService.list(query);
+    const userId = c.get('userId');
+    const res: CourseListResponse = await courseService.list(query, userId);
     return c.json(res);
   })
   .post('/', zValidator('json', courseCreateSchema), async (c) => {
     const input = c.req.valid('json');
-    const res: CourseCreateResponse = await courseService.create(input);
+    const userId = c.get('userId');
+    const res: CourseCreateResponse = await courseService.create(input, userId);
     return c.json({ data: res }, 201);
   })
   .get('/:id', zValidator('param', courseDetailParamsSchema), async (c) => {
     const { id } = c.req.valid('param');
-    const res: CourseDetailResponse = await courseService.getById(id);
+    const userId = c.get('userId');
+    const res: CourseDetailResponse = await courseService.getById(id, userId);
     return c.json({ data: res });
   })
   .put(
@@ -39,12 +42,14 @@ export const courseRoute = new Hono()
     async (c) => {
       const { id } = c.req.valid('param');
       const input = c.req.valid('json');
-      const res: CourseUpdateResponse = await courseService.update(id, input);
+      const userId = c.get('userId');
+      const res: CourseUpdateResponse = await courseService.update(id, input, userId);
       return c.json({ data: res });
     },
   )
   .delete('/:id', zValidator('param', courseDeleteParamsSchema), async (c) => {
     const { id } = c.req.valid('param');
-    const res: CourseDeleteResponse = await courseService.delete(id);
+    const userId = c.get('userId');
+    const res: CourseDeleteResponse = await courseService.delete(id, userId);
     return c.json({ data: res });
   });

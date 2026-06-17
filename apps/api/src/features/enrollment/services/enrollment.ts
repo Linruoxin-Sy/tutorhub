@@ -186,6 +186,7 @@ export const enrollmentService = {
     ).map((e) => e.courseId);
 
     const baseWhere: Prisma.CourseWhereInput = {
+      userId,
       deletedAt: null,
       id: enrolledCourseIds.length > 0 ? { notIn: enrolledCourseIds } : undefined,
       ...(query.name ? { name: { contains: query.name, mode: 'insensitive' } } : {}),
@@ -303,9 +304,9 @@ export const enrollmentService = {
       throw new ApiError(404, 'STUDENT_NOT_FOUND', 'Student not found');
     }
 
-    // 校验课程存在
+    // 校验课程存在且属于当前用户
     const course = await prisma.course.findFirst({
-      where: { id: input.courseId, deletedAt: null },
+      where: { id: input.courseId, userId, deletedAt: null },
     });
     if (!course) {
       throw new ApiError(404, 'COURSE_NOT_FOUND', 'Course not found');
