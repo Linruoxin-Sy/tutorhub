@@ -64,7 +64,12 @@
           <span
             class="self-center text-xl font-bold tracking-tight text-gray-500 dark:text-gray-400"
           >
-            <template v-if="rule!.intervalDays"> Every {{ rule!.intervalDays }} day(s) </template>
+            <template v-if="rule!.intervalDays && !rule!.endDate">
+              ∞ Every {{ rule!.intervalDays }} day(s)
+            </template>
+            <template v-else-if="rule!.intervalDays">
+              Every {{ rule!.intervalDays }} day(s)
+            </template>
             <template v-else>Single session</template>
           </span>
         </div>
