@@ -5,6 +5,7 @@ import type { ContentfulStatusCode } from 'hono/utils/http-status';
 
 import { authMiddleware } from '@/features/auth/middlewares/auth';
 import { authRoute } from '@/features/auth/routes';
+import { classRuleRoute } from '@/features/class-rule/routes';
 import { courseRoute } from '@/features/course/routes';
 import { enrollmentRoute } from '@/features/enrollment/routes';
 import { storageRoute } from '@/features/storage/routes';
@@ -21,6 +22,7 @@ const protectedApi = new Hono()
   .route('/storage', storageRoute)
   .route('/course', courseRoute)
   .route('/student', studentRoute)
+  .route('/class-rule', classRuleRoute)
   .route('/', enrollmentRoute);
 
 const app = new Hono()
