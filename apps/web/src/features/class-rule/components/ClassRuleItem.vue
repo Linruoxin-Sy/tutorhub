@@ -45,22 +45,10 @@
               <template v-else>Single session</template>
             </div>
           </div>
-          <div v-if="actions.length" class="flex shrink-0 gap-1">
-            <EditButton
-              v-if="actions.includes('edit')"
-              class="text-white/80! hover:bg-white/15! hover:text-white!"
-              @click.stop="emit('edit')"
-            />
-            <DeleteButton
-              v-if="actions.includes('delete')"
-              class="text-white/80! hover:bg-white/15! hover:text-red-300!"
-              @click.stop="emit('delete')"
-            />
-          </div>
         </div>
       </div>
 
-      <!-- 主体：时间展示 -->
+      <!-- 主体：时间展示 + 操作按钮 -->
       <div class="flex flex-1 items-center gap-4 px-5 py-5">
         <div class="flex min-w-0 flex-1 items-center gap-3">
           <div
@@ -86,6 +74,10 @@
               }}
             </span>
           </div>
+        </div>
+        <div v-if="actions.length" class="flex shrink-0 gap-1 self-end">
+          <EditButton v-if="actions.includes('edit')" @click.stop="emit('edit')" />
+          <DeleteButton v-if="actions.includes('delete')" @click.stop="emit('delete')" />
         </div>
       </div>
     </template>
