@@ -11,8 +11,6 @@ import {
   type AvailableCoursesResponse,
   type AvailableStudentsResponse,
   type CourseEnrollmentListResponse,
-  type EnrollmentCreateResponse,
-  type EnrollmentDeleteResponse,
   type StudentEnrollmentListResponse,
 } from '@tutorhub/schema';
 
@@ -23,7 +21,7 @@ export const enrollmentRoute = new Hono()
   .delete('/enrollment/:id', zValidator('param', enrollmentDeleteParamsSchema), async (c) => {
     const { id } = c.req.valid('param');
     const userId = c.get('userId');
-    const res: EnrollmentDeleteResponse = await enrollmentService.deleteById(id, userId);
+    const res = await enrollmentService.deleteById(id, userId);
     return c.json({ data: res });
   })
   .get(
@@ -93,6 +91,6 @@ export const enrollmentRoute = new Hono()
   .post('/enrollment', zValidator('json', enrollmentCreateSchema), async (c) => {
     const input = c.req.valid('json');
     const userId = c.get('userId');
-    const res: EnrollmentCreateResponse = await enrollmentService.create(input, userId);
+    const res = await enrollmentService.create(input, userId);
     return c.json({ data: res }, 201);
   });
