@@ -13,7 +13,7 @@
       <div class="flex min-h-0 flex-1 flex-col">
         <VirtualList
           :query="sparseQuery"
-          :estimate-size="180"
+          :estimate-size="160"
           :overscan="10"
           scroll-class="flex-1 overflow-x-hidden overflow-y-auto p-5"
         >
