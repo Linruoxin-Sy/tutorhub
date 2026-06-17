@@ -37,14 +37,14 @@ function pseudoRandom(seed: number): number {
   return x - Math.floor(x);
 }
 
-function buildCourse(index: number) {
+function buildCourse(index: number, userId: string) {
   const adj = pick(COURSE_ADJECTIVES, index);
   const subject = pick(COURSE_SUBJECTS, Math.floor(index / COURSE_ADJECTIVES.length));
   const descIdx = Math.floor(pseudoRandom(index) * COURSE_DESCRIPTIONS.length);
   const description = COURSE_DESCRIPTIONS[descIdx];
   const status = pseudoRandom(index + 1000) > 0.15 ? 'ACTIVE' : 'DISABLED';
 
-  return { name: `${adj} ${subject}`, description, status } as const;
+  return { name: `${adj} ${subject}`, description, status, userId } as const;
 }
 
 // ---------------------------------------------------------------------------
@@ -333,7 +333,7 @@ async function main() {
   console.log(`  ✓ Created ${students.length} students`);
 
   // 4. Create 10,000 courses
-  const courses = Array.from({ length: 10_000 }, (_, i) => buildCourse(i));
+  const courses = Array.from({ length: 10_000 }, (_, i) => buildCourse(i, user.id));
 
   // Batch insert in chunks to avoid overwhelming the database
   const CHUNK_SIZE = 500;
