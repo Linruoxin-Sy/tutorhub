@@ -10,12 +10,12 @@
         </AppButton>
       </template>
 
-      <div class="flex flex-1 flex-col">
+      <div class="flex min-h-0 flex-1 flex-col">
         <VirtualList
           :query="sparseQuery"
-          :estimate-size="100"
+          :estimate-size="180"
           :overscan="10"
-          scroll-class="flex-1 overflow-x-hidden overflow-y-auto"
+          scroll-class="flex-1 overflow-x-hidden overflow-y-auto p-5"
         >
           <template #loading>
             <div class="divide-y divide-gray-200 dark:divide-[#343434]">
