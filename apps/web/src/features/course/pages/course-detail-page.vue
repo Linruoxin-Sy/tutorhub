@@ -48,7 +48,12 @@
             </template>
 
             <template #item="{ item, isLoaded }">
-              <StudentItem :student="item!.student" :loading="!isLoaded" :actions="[]" />
+              <StudentItem
+                :student="item!.student"
+                :loading="!isLoaded"
+                :actions="[]"
+                @view="router.push({ name: 'enrollment.detail', params: { id: item!.id } })"
+              />
             </template>
 
             <template #empty>
@@ -68,6 +73,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
+import { useRouter } from 'vue-router';
 import { useCourseDetail } from '@/features/course/hooks/useCourseDetail';
 import CourseForm from '@/features/course/components/CourseForm.vue';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
@@ -84,6 +90,7 @@ const props = defineProps<{
   id: string;
 }>();
 
+const router = useRouter();
 const { data, isInitialLoading } = useCourseDetail(props.id);
 
 const search = ref('');

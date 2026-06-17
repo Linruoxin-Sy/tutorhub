@@ -83,6 +83,20 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    'enrollment.detail': RouteRecordInfo<
+      'enrollment.detail',
+      '/enrollment/:id',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
+    'enrollment.edit': RouteRecordInfo<
+      'enrollment.edit',
+      '/enrollment/:id/edit',
+      { id: ParamValue<true> },
+      { id: ParamValue<false> },
+      | never
+    >,
     'session': RouteRecordInfo<
       'session',
       '/session',
@@ -183,6 +197,18 @@ declare module 'vue-router/auto-routes' {
     'src/pages/dashboard.vue': {
       routes:
         | 'dashboard'
+      views:
+        | never
+    }
+    'src/pages/enrollment/[id].vue': {
+      routes:
+        | 'enrollment.detail'
+      views:
+        | never
+    }
+    'src/pages/enrollment/[id].edit.vue': {
+      routes:
+        | 'enrollment.edit'
       views:
         | never
     }

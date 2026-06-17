@@ -40,7 +40,12 @@
             </template>
 
             <template #item="{ item, isLoaded }">
-              <CourseItem :course="item!.course" :loading="!isLoaded" :actions="[]" />
+              <CourseItem
+                :course="item!.course"
+                :loading="!isLoaded"
+                :actions="[]"
+                @view="router.push({ name: 'enrollment.detail', params: { id: item!.id } })"
+              />
             </template>
 
             <template #empty>
@@ -64,7 +69,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import StudentForm from '@/features/student/components/StudentForm.vue';
 import { useStudentDetailForm } from '@/features/student/hooks/useStudentDetailForm';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
@@ -79,6 +84,7 @@ import type { StudentEnrollmentListResponse } from '@tutorhub/schema';
 type EnrollmentItem = StudentEnrollmentListResponse['items'][number];
 
 const route = useRoute();
+const router = useRouter();
 const id = (route.params as Record<string, string>).id;
 
 const { data: student, isInitialLoading, avatarUrl } = useStudentDetailForm(id);
