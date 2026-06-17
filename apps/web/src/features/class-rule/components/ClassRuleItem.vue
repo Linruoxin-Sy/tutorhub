@@ -39,41 +39,34 @@
                 {{ formatDate(rule!.endDate) }}
               </span>
             </div>
-            <div class="mt-1 flex items-center gap-1.5 text-xs text-white/70">
-              <i class="i-lucide-repeat-2 size-3" />
-              <template v-if="rule!.intervalDays"> Every {{ rule!.intervalDays }} day(s) </template>
-              <template v-else>Single session</template>
-            </div>
           </div>
         </div>
       </div>
 
       <!-- 主体：时间展示 + 操作按钮 -->
       <div class="flex flex-1 items-center gap-4 px-5 py-5">
-        <div class="flex min-w-0 flex-1 items-center gap-3">
-          <div
-            class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-teal-50 dark:bg-teal-500/10"
+        <div
+          class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-teal-50 dark:bg-teal-500/10"
+        >
+          <i class="i-lucide-clock size-6 text-teal-600 dark:text-teal-400" />
+        </div>
+        <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-3">
+          <span class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {{ formatTime(rule!.startTime) }}
+          </span>
+          <i class="i-lucide-arrow-right size-5 shrink-0 text-gray-400 dark:text-gray-500" />
+          <span class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {{ formatTime(rule!.endTime) }}
+          </span>
+          <i
+            class="i-mdi-circle size-2 shrink-0 self-center px-2 text-gray-400 dark:text-gray-500"
+          />
+          <span
+            class="self-center text-xl font-bold tracking-tight text-gray-500 dark:text-gray-400"
           >
-            <i class="i-lucide-clock size-6 text-teal-600 dark:text-teal-400" />
-          </div>
-          <div class="flex flex-col">
-            <div class="flex items-baseline gap-2">
-              <span class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                {{ formatTime(rule!.startTime) }}
-              </span>
-              <i class="i-lucide-arrow-right size-5 text-gray-400 dark:text-gray-500" />
-              <span class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                {{ formatTime(rule!.endTime) }}
-              </span>
-            </div>
-            <span class="text-xs text-gray-500 dark:text-gray-400">
-              {{
-                rule!.intervalDays
-                  ? `Repeats every ${rule!.intervalDays} day(s)`
-                  : 'One-time session'
-              }}
-            </span>
-          </div>
+            <template v-if="rule!.intervalDays"> Every {{ rule!.intervalDays }} day(s) </template>
+            <template v-else>Single session</template>
+          </span>
         </div>
         <div v-if="actions.length" class="flex shrink-0 gap-1 self-end">
           <EditButton v-if="actions.includes('edit')" @click.stop="emit('edit')" />
