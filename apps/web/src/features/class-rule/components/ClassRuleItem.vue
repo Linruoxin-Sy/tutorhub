@@ -7,14 +7,16 @@
   >
     <!-- ===== Loading skeleton (card shape) ===== -->
     <div v-if="effectiveLoading" class="flex flex-col">
-      <div class="bg-linear-to-r from-teal-500 to-emerald-600 px-5 py-4">
-        <div class="h-5 w-56 animate-pulse rounded bg-white/30" />
-        <div class="mt-2 h-4 w-40 animate-pulse rounded bg-white/20" />
+      <div
+        class="border-b border-gray-200 bg-gray-50 px-5 py-4 dark:border-[#343434] dark:bg-[#252525]"
+      >
+        <div class="h-4 w-56 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
       </div>
       <div class="flex flex-1 items-center gap-4 px-5 py-5">
+        <div class="size-12 animate-pulse rounded-xl bg-gray-200 dark:bg-[#343434]" />
         <div class="flex flex-1 flex-col gap-3">
-          <div class="h-8 w-36 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
-          <div class="h-4 w-44 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
+          <div class="h-8 w-48 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
+          <div class="h-4 w-36 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
         <div class="flex shrink-0 gap-2">
           <div class="h-8 w-16 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
@@ -25,30 +27,41 @@
 
     <!-- ===== 真实内容 ===== -->
     <template v-else>
-      <!-- 头部：日期区间 + 操作按钮 -->
-      <div class="bg-linear-to-r from-teal-500 to-emerald-600 px-5 py-4">
-        <div class="flex items-start justify-between gap-4">
-          <div class="min-w-0">
-            <div class="flex items-center gap-2 text-white/90">
-              <i class="i-lucide-calendar size-4 shrink-0" />
-              <span class="text-base font-bold text-white">
-                {{ formatDate(rule!.startDate) }}
-              </span>
-              <i v-if="rule!.endDate" class="i-lucide-arrow-right size-4 text-white/60" />
-              <span v-if="rule!.endDate" class="text-base font-bold text-white">
-                {{ formatDate(rule!.endDate) }}
-              </span>
-            </div>
-          </div>
+      <!-- 头部：日期描述 -->
+      <div
+        class="border-b border-gray-200 bg-gray-50 px-5 py-4 dark:border-[#343434] dark:bg-[#252525]"
+      >
+        <div class="flex items-center gap-2">
+          <i class="i-lucide-calendar size-4 shrink-0 text-gray-500 dark:text-gray-400" />
+          <template v-if="rule!.intervalDays && !rule!.endDate">
+            <span class="text-sm font-medium text-gray-900 dark:text-white">
+              From {{ formatDate(rule!.startDate) }}
+            </span>
+          </template>
+          <template v-else-if="rule!.intervalDays">
+            <span class="text-sm font-medium text-gray-900 dark:text-white">
+              From {{ formatDate(rule!.startDate) }}
+            </span>
+            <i class="i-lucide-arrow-right size-3.5 shrink-0 text-gray-400 dark:text-gray-500" />
+            <span class="text-sm font-medium text-gray-900 dark:text-white">
+              {{ formatDate(rule!.endDate) }}
+            </span>
+          </template>
+          <template v-else>
+            <span class="text-sm font-medium text-gray-900 dark:text-white">
+              {{ formatDate(rule!.startDate) }}
+            </span>
+            <span class="text-sm font-medium text-gray-900 dark:text-white">Single day</span>
+          </template>
         </div>
       </div>
 
       <!-- 主体：时间展示 + 操作按钮 -->
       <div class="flex flex-1 items-center gap-4 px-5 py-5">
         <div
-          class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-teal-50 dark:bg-teal-500/10"
+          class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gray-100 dark:bg-[#2c2c2c]"
         >
-          <i class="i-lucide-clock size-6 text-teal-600 dark:text-teal-400" />
+          <i class="i-lucide-clock size-6 text-gray-500 dark:text-gray-400" />
         </div>
         <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-3">
           <span class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
