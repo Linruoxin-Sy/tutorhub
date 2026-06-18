@@ -32,8 +32,8 @@ model ClassRule {
   /// 所属选课关系
   studentCourse StudentCourse @relation(fields: [studentCourseId], references: [id], onDelete: Cascade)
 
-  /// 课程异常记录
-  classExceptions ClassException[]
+  /// 课程状态覆盖记录
+  classSessionOverrides ClassSessionOverride[]
 
   @@index([studentCourseId])
   @@map("class_rule")

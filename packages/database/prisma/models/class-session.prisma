@@ -1,17 +1,17 @@
-/// 课程异常类型
-enum ClassExceptionType {
-  /// 请假
-  LEAVE
-  /// 调课（原课取消）
-  RESCHEDULED
-  /// 课程取消
-  CANCELLED
-  /// 已完成
+/// 课程上课状态（与规则默认生成的差异记录）
+enum ClassSessionState {
+  /// 已完成（正常上完）
   COMPLETED
+  /// 学生请假
+  LEAVE
+  /// 该次取消（不补课）
+  CANCELLED
+  /// 调课（时间或日期变更）
+  RESCHEDULED
 }
 
-model ClassException {
-  /// 异常记录主键 ID（ULID）
+model ClassSessionOverride {
+  /// 主键 ID（ULID）
   id String @id @default(ulid())
 
   /// 创建时间
@@ -26,11 +26,20 @@ model ClassException {
   /// 所属规则 ID
   classRuleId String @map("class_rule_id")
 
-  /// 发生日期
+  /// 该次上课的原始日期（规则生成的日期）
   occurrenceDate DateTime @map("occurrence_date") @db.Date
 
-  /// 异常类型
-  type ClassExceptionType
+  /// 当前状态
+  state ClassSessionState
+
+  /// 调课后的新日期（为空表示日期不变，仅时间调整）
+  rescheduledDate DateTime? @map("rescheduled_date") @db.Date
+
+  /// 调课后的新开始时间
+  rescheduledStartTime DateTime? @map("rescheduled_start_time") @db.Time()
+
+  /// 调课后的新结束时间
+  rescheduledEndTime DateTime? @map("rescheduled_end_time") @db.Time()
 
   /// 原因说明
   reason String?
@@ -41,5 +50,5 @@ model ClassException {
   @@unique([classRuleId, occurrenceDate])
   @@index([classRuleId])
   @@index([occurrenceDate])
-  @@map("class_exception")
+  @@map("class_session_override")
 }

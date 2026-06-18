@@ -1,7 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
 
-import { Pool } from 'pg';
-
 import { prisma } from '../src/client';
 import {
   COURSE_ADJECTIVES,
@@ -108,96 +106,11 @@ function addDays(date: Date, days: number): Date {
 // COPY helpers for batch-inserting class rules
 // ---------------------------------------------------------------------------
 
-function fmtDate(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
+// ---------------------------------------------------------------------------
+// Class rule batch insert helpers
+// ---------------------------------------------------------------------------
 
-function fmtTime(d: Date): string {
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
-}
-
-// Minimal ULID generator (10-char timestamp + 16-char random, Crockford Base32)
-const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
-function ulid(): string {
-  const now = Date.now();
-  // Timestamp part (10 chars): encode 48-bit timestamp in Crockford Base32
-  let ts = '';
-  let t = now;
-  for (let i = 0; i < 10; i++) {
-    ts = CROCKFORD[t & 0x1f] + ts;
-    t = Math.floor(t / 32);
-  }
-  // Random part (16 chars = 80 bits): use a bit buffer over 10 random bytes
-  const bytes = randomBytes(10);
-  let rand = '';
-  let bits = 0;
-  let buffer = 0;
-  let byteIdx = 0;
-  for (let i = 0; i < 16; i++) {
-    if (bits < 5) {
-      buffer = (buffer << 8) | bytes[byteIdx++];
-      bits += 8;
-    }
-    bits -= 5;
-    rand += CROCKFORD[(buffer >>> bits) & 0x1f];
-  }
-  return ts + rand;
-}
-
-async function bulkInsertRules(pool: Pool, rules: ClassRuleInput[]): Promise<void> {
-  const client = await pool.connect();
-  try {
-    const BATCH = 1_000;
-    const COLS = [
-      'id',
-      'student_course_id',
-      'start_date',
-      'interval_days',
-      'end_date',
-      'start_time',
-      'end_time',
-      'created_at',
-      'updated_at',
-    ];
-    const COL_NAMES = COLS.join(', ');
-    const PARAMS_PER_ROW = 9;
-    const now = new Date().toISOString();
-
-    for (let i = 0; i < rules.length; i += BATCH) {
-      const batch = rules.slice(i, i + BATCH);
-
-      const rowsSql = batch
-        .map((_, ri) => {
-          const base = ri * PARAMS_PER_ROW;
-          return `($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7}, $${base + 8}, $${base + 9})`;
-        })
-        .join(', ');
-
-      const params: (string | number | null)[] = [];
-      for (const r of batch) {
-        params.push(
-          ulid(), // id
-          r.studentCourseId, // student_course_id
-          fmtDate(r.startDate), // start_date
-          r.intervalDays, // interval_days
-          r.endDate ? fmtDate(r.endDate) : null, // end_date
-          fmtTime(r.startTime), // start_time
-          fmtTime(r.endTime), // end_time
-          now, // created_at
-          now, // updated_at
-        );
-      }
-
-      const sql = `INSERT INTO class_rule (${COL_NAMES}) VALUES ${rowsSql}`;
-      await client.query(sql, params);
-    }
-  } finally {
-    client.release();
-  }
-}
+const RULE_CHUNK_SIZE = 500;
 
 /**
  * Generate 4–5 ClassRule inputs for a given enrollment.
@@ -301,15 +214,23 @@ function buildRules(studentCourseId: string, seed: number): ClassRuleInput[] {
 // Main seed function
 // ---------------------------------------------------------------------------
 
+const log = (msg: string) => console.log(`[${new Date().toLocaleTimeString()}] ${msg}`);
+
 async function main() {
-  console.log('🌱 Seeding database …');
+  log('Seeding database...');
 
   // 1. Clean existing data
+  log('Cleaning existing data...');
+  await prisma.classSessionOverride.deleteMany();
+  await prisma.classRule.deleteMany();
+  await prisma.studentCourse.deleteMany();
   await prisma.course.deleteMany();
-  await prisma.user.deleteMany(); // CASCADE will remove related students
-  console.log('  ✓ Cleared existing data');
+  await prisma.student.deleteMany();
+  await prisma.user.deleteMany();
+  log('Existing data cleaned');
 
   // 2. Create admin user
+  log('Creating admin user...');
   const salt = await generateSalt();
   const passwordHash = await hash('123456', salt);
 
@@ -321,32 +242,36 @@ async function main() {
       passwordSalt: salt,
     },
   });
-  console.log(`  ✓ Created user`);
+  log('Admin user created');
 
-  // 3. Create 10,000 students
-  const students = Array.from({ length: 10_000 }, (_, i) => buildStudent(i, user.id));
+  // 3. Create 1,000 students
+  log('Generating student data...');
+  const students = Array.from({ length: 1_000 }, (_, i) => buildStudent(i, user.id));
+  log('Student data generated');
 
-  await prisma.student.createMany({
-    data: students,
-    skipDuplicates: true,
-  });
-  console.log(`  ✓ Created ${students.length} students`);
-
-  // 4. Create 10,000 courses
-  const courses = Array.from({ length: 10_000 }, (_, i) => buildCourse(i, user.id));
-
-  // Batch insert in chunks to avoid overwhelming the database
-  const CHUNK_SIZE = 500;
-  for (let i = 0; i < courses.length; i += CHUNK_SIZE) {
-    const chunk = courses.slice(i, i + CHUNK_SIZE);
-    await prisma.course.createMany({
-      data: chunk,
-      skipDuplicates: true,
-    });
+  log('Writing to database...');
+  const STUDENT_CHUNK_SIZE = 200;
+  for (let i = 0; i < students.length; i += STUDENT_CHUNK_SIZE) {
+    const chunk = students.slice(i, i + STUDENT_CHUNK_SIZE);
+    await prisma.student.createMany({ data: chunk, skipDuplicates: true });
   }
-  console.log(`  ✓ Created ${courses.length} courses`);
+  log(`Created ${students.length} students`);
+
+  // 4. Create 1,000 courses
+  log('Generating course data...');
+  const courses = Array.from({ length: 1_000 }, (_, i) => buildCourse(i, user.id));
+  log('Course data generated');
+
+  log('Writing to database...');
+  const COURSE_CHUNK_SIZE = 200;
+  for (let i = 0; i < courses.length; i += COURSE_CHUNK_SIZE) {
+    const chunk = courses.slice(i, i + COURSE_CHUNK_SIZE);
+    await prisma.course.createMany({ data: chunk, skipDuplicates: true });
+  }
+  log(`Created ${courses.length} courses`);
 
   // 5. Assign random courses to each student
+  log('Assigning courses to students...');
   await prisma.studentCourse.deleteMany();
   const allStudents = await prisma.student.findMany({ select: { id: true } });
   const allCourseIds = (
@@ -355,8 +280,6 @@ async function main() {
       select: { id: true },
     })
   ).map((c) => c.id);
-  console.log(`  ✓ Found ${allStudents.length} students, ${allCourseIds.length} active courses`);
-
   const enrollments: { studentId: string; courseId: string }[] = [];
 
   for (let si = 0; si < allStudents.length; si++) {
@@ -373,43 +296,158 @@ async function main() {
       enrollments.push({ studentId: allStudents[si].id, courseId: allCourseIds[ci] });
     }
   }
+  log('Enrollment data generated');
 
+  log('Writing to database...');
   // Batch insert in chunks
-  const ENROLLMENT_CHUNK_SIZE = 1_000;
+  const ENROLLMENT_CHUNK_SIZE = 500;
   for (let i = 0; i < enrollments.length; i += ENROLLMENT_CHUNK_SIZE) {
     const chunk = enrollments.slice(i, i + ENROLLMENT_CHUNK_SIZE);
     await prisma.studentCourse.createMany({ data: chunk, skipDuplicates: true });
   }
-  console.log(`  ✓ Created ${enrollments.length} course enrollments`);
+  log(`Created ${enrollments.length} enrollments`);
 
-  // 6. Create class rules for each enrollment
-  console.log('  Generating class rules …');
-  await prisma.classException.deleteMany();
-  await prisma.classRule.deleteMany();
-  console.log('  ✓ Cleared existing class rules and exceptions');
+  // 6. Create class rules for each enrollment (generate + insert in batches)
+  log('Generating class rules...');
 
   const allEnrollments = await prisma.studentCourse.findMany({ select: { id: true } });
-  console.log(`  ✓ Found ${allEnrollments.length} enrollments for rule generation`);
-
-  const allRules: ClassRuleInput[] = [];
+  let totalRules = 0;
+  let ruleBatch: ClassRuleInput[] = [];
   for (let ei = 0; ei < allEnrollments.length; ei++) {
     const enrollmentRules = buildRules(allEnrollments[ei].id, ei);
-    allRules.push(...enrollmentRules);
+    ruleBatch.push(...enrollmentRules);
+
+    // Flush batch when it reaches chunk size
+    if (ruleBatch.length >= RULE_CHUNK_SIZE) {
+      await prisma.classRule.createMany({ data: ruleBatch, skipDuplicates: true });
+      totalRules += ruleBatch.length;
+      ruleBatch = [];
+    }
   }
-  console.log(`  ✓ Generated ${allRules.length} class rules`);
+  // Flush remaining
+  if (ruleBatch.length > 0) {
+    await prisma.classRule.createMany({ data: ruleBatch, skipDuplicates: true });
+    totalRules += ruleBatch.length;
+  }
+  log(`Created ${totalRules} class rules`);
 
-  // Batch insert rules via PostgreSQL COPY (much faster than createMany)
-  const pgPool = new Pool({ connectionString: process.env.DIRECT_URL });
-  await bulkInsertRules(pgPool, allRules);
-  await pgPool.end();
-  console.log(`  ✓ Created ${allRules.length} class rules`);
+  // 7. Add ClassSessionOverride for roughly half of the rules (batch pagination)
+  log('Generating session overrides...');
 
-  console.log('✅ Seed complete');
+  const STATES: ('COMPLETED' | 'LEAVE' | 'CANCELLED' | 'RESCHEDULED')[] = [
+    'COMPLETED',
+    'LEAVE',
+    'CANCELLED',
+    'RESCHEDULED',
+  ];
+
+  const PAGE_SIZE = 500;
+  const MAX_END = new Date('2027-01-01');
+  let processedRules = 0;
+  let totalOverrides = 0;
+  let cursor: string | undefined;
+
+  while (true) {
+    const page = await prisma.classRule.findMany({
+      select: { id: true, startDate: true, endDate: true, intervalDays: true },
+      take: PAGE_SIZE,
+      orderBy: { id: 'asc' },
+      ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+    });
+
+    if (page.length === 0) break;
+
+    const batchOverrides: {
+      classRuleId: string;
+      occurrenceDate: Date;
+      state: 'COMPLETED' | 'LEAVE' | 'CANCELLED' | 'RESCHEDULED';
+      rescheduledDate?: Date;
+      rescheduledStartTime?: Date;
+      rescheduledEndTime?: Date;
+      reason?: string;
+    }[] = [];
+    for (let ri = 0; ri < page.length; ri++) {
+      const globalIndex = processedRules + ri;
+      if (pseudoRandom(globalIndex + 20000) < 0.5) continue;
+
+      const rule = page[ri];
+      const count = 1 + Math.floor(pseudoRandom(globalIndex + 21000) * 2);
+
+      const maxEnd = rule.endDate ?? MAX_END;
+      let totalDates: number;
+      if (rule.intervalDays === null) {
+        totalDates = 1;
+      } else {
+        const diffMs = maxEnd.getTime() - rule.startDate.getTime();
+        totalDates = Math.floor(diffMs / (86_400_000 * rule.intervalDays)) + 1;
+      }
+      if (totalDates <= 0) continue;
+
+      const usedIndices = new Set<number>();
+      for (let c = 0; c < count && usedIndices.size < totalDates; c++) {
+        let idx: number;
+        let attempts = 0;
+        do {
+          idx = Math.floor(pseudoRandom(globalIndex * 10007 + c * 13 + 22000) * totalDates);
+          attempts++;
+          if (attempts > 100) break; // safety valve
+        } while (usedIndices.has(idx));
+        usedIndices.add(idx);
+
+        const selectedDate =
+          rule.intervalDays === null
+            ? new Date(rule.startDate)
+            : new Date(rule.startDate.getTime() + idx * rule.intervalDays * 86_400_000);
+
+        const state =
+          STATES[Math.floor(pseudoRandom(globalIndex + 23000 + c * 100) * STATES.length)];
+
+        const override: Record<string, unknown> = {
+          classRuleId: rule.id,
+          occurrenceDate: selectedDate,
+          state,
+          reason: `Seed: ${state.toLowerCase()}`,
+        };
+
+        if (state === 'RESCHEDULED') {
+          const slotIdx = Math.floor(
+            pseudoRandom(globalIndex + 24000 + c * 100) * TIME_SLOTS.length,
+          );
+          const slot = TIME_SLOTS[slotIdx];
+          override.rescheduledDate = addDays(selectedDate, 1);
+          override.rescheduledStartTime = makeTime(slot.startHour, slot.startMin);
+          override.rescheduledEndTime = makeTime(slot.endHour, slot.endMin);
+        }
+
+        batchOverrides.push(override as (typeof batchOverrides)[number]);
+      }
+    }
+
+    // 立即插入这一批的 override
+    if (batchOverrides.length > 0) {
+      const CHUNK = 2_000;
+      for (let i = 0; i < batchOverrides.length; i += CHUNK) {
+        await prisma.classSessionOverride.createMany({
+          data: batchOverrides.slice(i, i + CHUNK),
+          skipDuplicates: true,
+        });
+      }
+      totalOverrides += batchOverrides.length;
+    }
+
+    processedRules += page.length;
+
+    cursor = page[page.length - 1].id;
+  }
+
+  log(`Created ${totalOverrides} session overrides`);
+
+  log('Seed complete');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Seed failed:', e);
+    console.error('Seed failed:', e);
     process.exit(1);
   })
   .finally(async () => {
