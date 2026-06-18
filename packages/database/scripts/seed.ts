@@ -31,8 +31,12 @@ function pick<T>(arr: readonly T[], index: number): T {
 }
 
 function pseudoRandom(seed: number): number {
-  const x = Math.sin(seed * 9301 + 49297) * 49297;
-  return x - Math.floor(x);
+  // MurmurHash3 finalizer — fast integer hash, no Math.sin
+  let h = seed | 0;
+  h = ((h ^ (h >>> 16)) * 0x85ebca6b) | 0;
+  h = ((h ^ (h >>> 13)) * 0xc2b2ae35) | 0;
+  h = (h ^ (h >>> 16)) >>> 0;
+  return h / 4294967296;
 }
 
 function buildCourse(index: number, userId: string) {
@@ -87,6 +91,8 @@ const TIME_SLOTS: { startHour: number; startMin: number; endHour: number; endMin
 ];
 
 const INTERVAL_OPTIONS = [7, 14, 30] as const;
+const MS_PER_DAY = 86_400_000;
+const SEED_BASE_DATE = new Date('2026-01-05T00:00:00');
 
 // ---------------------------------------------------------------------------
 // Class rule generators
@@ -110,7 +116,7 @@ function addDays(date: Date, days: number): Date {
 // Class rule batch insert helpers
 // ---------------------------------------------------------------------------
 
-const RULE_CHUNK_SIZE = 500;
+const RULE_CHUNK_SIZE = 3000;
 
 /**
  * Generate 4–5 ClassRule inputs for a given enrollment.
@@ -125,9 +131,8 @@ function buildRules(studentCourseId: string, seed: number): ClassRuleInput[] {
   const rules: ClassRuleInput[] = [];
 
   // Pick a random base date in 2026
-  const baseDate = new Date('2026-01-05T00:00:00');
   const dayOffset = Math.floor(pseudoRandom(seed + 6000) * 365);
-  const enrollmentStart = addDays(baseDate, dayOffset);
+  const enrollmentStart = addDays(SEED_BASE_DATE, dayOffset);
 
   // --- Rule 1: 固定上课 (single) ---
   {
@@ -341,7 +346,7 @@ async function main() {
     'RESCHEDULED',
   ];
 
-  const PAGE_SIZE = 500;
+  const PAGE_SIZE = 3000;
   const MAX_END = new Date('2027-01-01');
   let processedRules = 0;
   let totalOverrides = 0;
@@ -379,7 +384,7 @@ async function main() {
         totalDates = 1;
       } else {
         const diffMs = maxEnd.getTime() - rule.startDate.getTime();
-        totalDates = Math.floor(diffMs / (86_400_000 * rule.intervalDays)) + 1;
+        totalDates = Math.floor(diffMs / (MS_PER_DAY * rule.intervalDays)) + 1;
       }
       if (totalDates <= 0) continue;
 
@@ -397,7 +402,7 @@ async function main() {
         const selectedDate =
           rule.intervalDays === null
             ? new Date(rule.startDate)
-            : new Date(rule.startDate.getTime() + idx * rule.intervalDays * 86_400_000);
+            : new Date(rule.startDate.getTime() + idx * rule.intervalDays * MS_PER_DAY);
 
         const state =
           STATES[Math.floor(pseudoRandom(globalIndex + 23000 + c * 100) * STATES.length)];
@@ -425,7 +430,7 @@ async function main() {
 
     // 立即插入这一批的 override
     if (batchOverrides.length > 0) {
-      const CHUNK = 2_000;
+      const CHUNK = 5_000;
       for (let i = 0; i < batchOverrides.length; i += CHUNK) {
         await prisma.classSessionOverride.createMany({
           data: batchOverrides.slice(i, i + CHUNK),
