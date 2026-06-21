@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/vue-query';
 import dayjs from 'dayjs';
 import { cloneDeep, merge } from 'es-toolkit';
 import { RRule } from 'rrule';
+import type { Options as RRuleOptions } from 'rrule';
 import { toast } from 'vue-sonner';
 
 import { classRuleUpdateSchema, type ConflictItem, type GeneratedSession } from '@tutorhub/schema';
@@ -111,9 +112,9 @@ export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
   const checkConflicts = async (): Promise<boolean> => {
     const payload = {
       excludeId: ruleId,
-      startDate: formData.value.startDate,
+      startDate: new Date(formData.value.startDate),
       intervalDays: formData.value.intervalDays,
-      endDate: formData.value.endDate || null,
+      endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
       startTime: formData.value.startTime,
       endTime: formData.value.endTime,
     };
@@ -142,7 +143,7 @@ export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
     if (!intervalDays) {
       dates = [startDate];
     } else {
-      const rruleOptions: Partial<RRule.Options> = {
+      const rruleOptions: Partial<RRuleOptions> = {
         freq: RRule.DAILY,
         interval: intervalDays,
         dtstart: new Date(

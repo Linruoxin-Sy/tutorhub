@@ -44,8 +44,8 @@
             :date="session.occurrenceDate"
             :start-time="session.startTime"
             :end-time="session.endTime"
-            :overridden-start-time="session.overriddenStartTime"
-            :overridden-end-time="session.overriddenEndTime"
+            :overridden-start-time="session.rescheduledStartTime"
+            :overridden-end-time="session.rescheduledEndTime"
             :conflict="false"
           />
           <div
@@ -69,6 +69,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { RRule } from 'rrule';
+import type { Options as RRuleOptions } from 'rrule';
 import dayjs from 'dayjs';
 import type { GeneratedSession } from '@tutorhub/schema';
 import {
@@ -134,7 +135,7 @@ onMounted(async () => {
     if (!intervalDays) {
       dates = [startDate];
     } else {
-      const rruleOptions: Partial<RRule.Options> = {
+      const rruleOptions: Partial<RRuleOptions> = {
         freq: RRule.DAILY,
         interval: intervalDays,
         dtstart: new Date(
