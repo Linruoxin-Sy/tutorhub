@@ -39,6 +39,14 @@ export const classRuleService = {
         orderBy: { createdAt: 'desc' },
         take,
         skip,
+        include: {
+          studentCourse: {
+            include: {
+              student: { select: { name: true } },
+              course: { select: { name: true } },
+            },
+          },
+        },
       }),
       prisma.classRule.count({ where: baseWhere }),
     ]);

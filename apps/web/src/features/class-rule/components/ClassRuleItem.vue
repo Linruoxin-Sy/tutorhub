@@ -10,6 +10,7 @@
       <div
         class="border-b border-gray-200 bg-gray-50 px-5 py-4 dark:border-[#343434] dark:bg-[#252525]"
       >
+        <div class="mb-2 h-3 w-36 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
         <div class="h-4 w-56 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
       </div>
       <div class="flex flex-1 items-center gap-4 px-5 py-5">
@@ -27,10 +28,24 @@
 
     <!-- ===== 真实内容 ===== -->
     <template v-else>
-      <!-- 头部：日期描述 -->
+      <!-- 头部：学生 → 课程 + 日期描述 -->
       <div
         class="border-b border-gray-200 bg-gray-50 px-5 py-4 dark:border-[#343434] dark:bg-[#252525]"
       >
+        <!-- 学生 → 课程 -->
+        <div
+          v-if="rule!.studentCourse"
+          class="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400"
+        >
+          <i class="i-lucide-user size-3.5 shrink-0" />
+          <span class="text-gray-900 dark:text-white">
+            {{ rule!.studentCourse.student?.name }}
+          </span>
+          <i class="i-lucide-arrow-right size-3 shrink-0 text-gray-400 dark:text-gray-500" />
+          <span class="font-medium text-gray-500 dark:text-gray-400">
+            {{ rule!.studentCourse.course?.name }}
+          </span>
+        </div>
         <div class="flex items-center gap-2">
           <i class="i-lucide-calendar size-4 shrink-0 text-gray-500 dark:text-gray-400" />
           <template v-if="rule!.intervalDays && !rule!.endDate">
