@@ -5,9 +5,35 @@ import type {
   classRuleListQuerySchema,
   classRuleUpdateSchema,
 } from '@tutorhub/schema';
+import type { ClassRuleListItem } from '@tutorhub/schema';
+import type { ClassRule } from '@tutorhub/database';
 
 import { ApiError } from '@/shared/api-error';
+import { getEnv } from '@/shared/getEnv';
 import { prisma } from '@/shared/prisma';
+
+const AVATAR_BASE_URL = getEnv('AVATAR_BASE_URL', 'http://localhost:9000/tutorhub');
+
+function addAvatarUrlToStudent(
+  item: ClassRule & {
+    studentCourse: {
+      student: { avatarKey: string | null };
+      course: unknown;
+    };
+  },
+): ClassRuleListItem {
+  const { avatarKey, ...rest } = item.studentCourse.student;
+  return {
+    ...item,
+    studentCourse: {
+      ...item.studentCourse,
+      student: {
+        ...rest,
+        avatarUrl: avatarKey ? `${AVATAR_BASE_URL}/${avatarKey}` : null,
+      },
+    },
+  } as ClassRuleListItem;
+}
 
 export const classRuleService = {
   async list(
@@ -42,8 +68,8 @@ export const classRuleService = {
         include: {
           studentCourse: {
             include: {
-              student: { select: { name: true } },
-              course: { select: { name: true } },
+              student: true,
+              course: true,
             },
           },
         },
@@ -51,11 +77,13 @@ export const classRuleService = {
       prisma.classRule.count({ where: baseWhere }),
     ]);
 
+    const items = dbItems.map(addAvatarUrlToStudent);
+
     const lastItem = dbItems.at(-1);
     const hasMore = skip + take < total;
 
     return {
-      items: dbItems,
+      items,
       nextCursor: hasMore && lastItem ? lastItem.id : null,
       total,
     };

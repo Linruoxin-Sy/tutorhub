@@ -111,13 +111,13 @@
 
 <script setup lang="ts">
 import { useTemplateRef, computed } from 'vue';
-import type { ClassRule } from '@tutorhub/database';
+import type { ClassRuleListItem } from '@tutorhub/schema';
 import { formatDate, formatTime } from '@/utils/date';
 import { useElementInView } from '@/hooks/useElementInView';
 
 const props = withDefaults(
   defineProps<{
-    rule?: ClassRule;
+    rule?: ClassRuleListItem;
     actions?: ('edit' | 'delete')[];
     loading?: boolean;
   }>(),

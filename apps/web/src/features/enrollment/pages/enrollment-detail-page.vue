@@ -45,12 +45,12 @@ import ClassRuleItem from '@/features/class-rule/components/ClassRuleItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import PageHeader from '@/components/PageHeader.vue';
-import type { ClassRule } from '@tutorhub/database';
+import type { ClassRuleListItem } from '@tutorhub/schema';
 
 const route = useRoute();
 const id = (route.params as Record<string, string>).id;
 
-const sparseQuery = useSparseQuery<ClassRule>({
+const sparseQuery = useSparseQuery<ClassRuleListItem>({
   queryKeyPrefix: ['class-rules', id],
   fetchFn: (params) => fetchClassRules(id, params),
 });

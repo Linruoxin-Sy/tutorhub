@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { ClassRule } from '@tutorhub/database';
+import type { ClassRule, Course, Student } from '@tutorhub/database';
 
 export const classRuleListQuerySchema = z.object({
   studentCourseId: z.string().min(1, 'studentCourseId is required'),
@@ -15,8 +15,19 @@ export const classRuleListQuerySchema = z.object({
     }),
 });
 
+/** 与 student list 单个 item 相同接口 */
+type ClassRuleStudentItem = Omit<Student, 'avatarKey'> & { avatarUrl: string | null };
+
+/** class-rule 列表项：包含学生和课程信息 */
+export type ClassRuleListItem = ClassRule & {
+  studentCourse: {
+    student: ClassRuleStudentItem;
+    course: Course;
+  };
+};
+
 export type ClassRuleListResponse = {
-  items: ClassRule[];
+  items: ClassRuleListItem[];
   nextCursor: string | null;
   total: number;
 };
