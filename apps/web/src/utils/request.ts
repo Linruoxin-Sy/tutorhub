@@ -1,9 +1,9 @@
 import axios from 'axios';
+import { toast } from 'vue-sonner';
 
 import router from '@/router';
 
 import { getEnv } from './env';
-import { toast } from 'vue-sonner';
 
 export const request = axios.create({
   baseURL: getEnv('BASE_URL'),
