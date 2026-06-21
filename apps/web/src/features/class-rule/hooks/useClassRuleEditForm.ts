@@ -1,8 +1,7 @@
 import { useQueryClient } from '@tanstack/vue-query';
 import dayjs from 'dayjs';
 import { cloneDeep, merge } from 'es-toolkit';
-import { RRule } from 'rrule';
-import type { Options as RRuleOptions } from 'rrule';
+import { RRule, type Options as RRuleOptions } from 'rrule';
 import { toast } from 'vue-sonner';
 
 import { classRuleUpdateSchema, type ConflictItem, type GeneratedSession } from '@tutorhub/schema';
