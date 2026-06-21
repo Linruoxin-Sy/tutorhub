@@ -68,8 +68,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
-import rrulePkg from 'rrule';
-const { RRule } = rrulePkg;
+import { RRule } from 'rrule';
 import dayjs from 'dayjs';
 import type { GeneratedSession } from '@tutorhub/schema';
 import {

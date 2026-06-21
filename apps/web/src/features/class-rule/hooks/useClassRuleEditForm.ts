@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/vue-query';
 import dayjs from 'dayjs';
 import { cloneDeep, merge } from 'es-toolkit';
-import rrulePkg from 'rrule';
+import { RRule } from 'rrule';
 import { toast } from 'vue-sonner';
 
 import { classRuleUpdateSchema, type ConflictItem, type GeneratedSession } from '@tutorhub/schema';
@@ -14,8 +14,6 @@ import {
 import { useLoading } from '@/hooks/useLoading';
 
 import type { ClassRuleFormData } from './useClassRuleCreateForm';
-
-const { RRule } = rrulePkg;
 
 export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
   const router = useRouter();
