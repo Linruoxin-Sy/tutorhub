@@ -3,6 +3,7 @@ import axios from 'axios';
 import router from '@/router';
 
 import { getEnv } from './env';
+import { toast } from 'vue-sonner';
 
 export const request = axios.create({
   baseURL: getEnv('BASE_URL'),
@@ -22,6 +23,7 @@ request.interceptors.response.use(
   (error) => {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
       localStorage.removeItem('token');
+      toast.error('Unauthorized. Please log in again.');
       router.push({ name: 'auth.login' });
     }
     return Promise.reject(error);
