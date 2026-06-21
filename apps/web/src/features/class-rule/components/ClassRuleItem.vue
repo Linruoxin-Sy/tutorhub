@@ -51,7 +51,6 @@
             <span class="text-sm font-medium text-gray-900 dark:text-white">
               {{ formatDate(rule!.startDate) }}
             </span>
-            <span class="text-sm font-medium text-gray-900 dark:text-white">Single day</span>
           </template>
         </div>
       </div>
@@ -78,7 +77,7 @@
             class="self-center text-xl font-bold tracking-tight text-gray-500 dark:text-gray-400"
           >
             <template v-if="rule!.intervalDays && !rule!.endDate">
-              ∞ Every {{ rule!.intervalDays }} day(s)
+              Every {{ rule!.intervalDays }} day(s)
             </template>
             <template v-else-if="rule!.intervalDays">
               Every {{ rule!.intervalDays }} day(s)
