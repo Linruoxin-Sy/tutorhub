@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
+import type { ClassRule } from '@tutorhub/database';
 import type {
   classRuleCreateSchema,
+  ClassRuleListItem,
   classRuleListQuerySchema,
   classRuleUpdateSchema,
 } from '@tutorhub/schema';
-import type { ClassRuleListItem } from '@tutorhub/schema';
-import type { ClassRule } from '@tutorhub/database';
 
 import { ApiError } from '@/shared/api-error';
 import { getEnv } from '@/shared/getEnv';
