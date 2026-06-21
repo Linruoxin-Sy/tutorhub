@@ -17,7 +17,12 @@
           </template>
 
           <template #item="{ item, isLoaded }">
-            <ClassRuleItem :rule="item!" :loading="!isLoaded" :actions="[]" />
+            <ClassRuleItem
+              :rule="item!"
+              :loading="!isLoaded"
+              :actions="[]"
+              @view="handleViewRule(item!)"
+            />
           </template>
 
           <template #empty>
@@ -38,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchClassRules } from '@/features/class-rule/api/class-rule-api';
 import ClassRuleItem from '@/features/class-rule/components/ClassRuleItem.vue';
@@ -48,10 +53,18 @@ import PageHeader from '@/components/PageHeader.vue';
 import type { ClassRuleListItem } from '@tutorhub/schema';
 
 const route = useRoute();
+const router = useRouter();
 const id = (route.params as Record<string, string>).id;
 
 const sparseQuery = useSparseQuery<ClassRuleListItem>({
   queryKeyPrefix: ['class-rules', id],
   fetchFn: (params) => fetchClassRules(id, params),
 });
+
+function handleViewRule(rule: ClassRuleListItem) {
+  router.push({
+    name: 'enrollment.class-rule.detail',
+    params: { id, ruleId: rule.id },
+  });
+}
 </script>

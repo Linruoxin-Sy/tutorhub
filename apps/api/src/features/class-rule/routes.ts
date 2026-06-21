@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 
 import {
+  classRuleConflictCheckSchema,
   classRuleCreateSchema,
   classRuleDeleteParamsSchema,
   classRuleDetailParamsSchema,
@@ -49,6 +50,23 @@ export const classRuleRoute = new Hono()
       return c.json({ data: res });
     },
   )
+  .post(
+    '/check-conflicts/:studentCourseId',
+    zValidator('json', classRuleConflictCheckSchema),
+    async (c) => {
+      const studentCourseId = c.req.param('studentCourseId');
+      const input = c.req.valid('json');
+      const userId = c.get('userId');
+      const res = await classRuleService.checkConflicts(studentCourseId, input, userId);
+      return c.json(res);
+    },
+  )
+  .get('/:id/overrides', zValidator('param', classRuleDetailParamsSchema), async (c) => {
+    const { id } = c.req.valid('param');
+    const userId = c.get('userId');
+    const res = await classRuleService.getOverrides(id, userId);
+    return c.json({ data: res });
+  })
   .delete('/:id', zValidator('param', classRuleDeleteParamsSchema), async (c) => {
     const { id } = c.req.valid('param');
     const userId = c.get('userId');

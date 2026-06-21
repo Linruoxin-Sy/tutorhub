@@ -28,6 +28,7 @@
               :rule="item!"
               :loading="!isLoaded"
               :actions="['edit', 'delete']"
+              @edit="handleEditRule(item!)"
               @delete="handleDeleteRule(item!)"
             />
           </template>
@@ -50,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useQueryClient } from '@tanstack/vue-query';
 import { toast } from 'vue-sonner';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
@@ -61,25 +62,32 @@ import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import AppButton from '@/components/AppButton.vue';
-import type { ClassRule } from '@tutorhub/database';
+import type { ClassRuleListItem } from '@tutorhub/schema';
 
 const route = useRoute();
+const router = useRouter();
 const id = (route.params as Record<string, string>).id;
 
 const queryClient = useQueryClient();
 const { confirm } = useDialog();
 
-const sparseQuery = useSparseQuery<ClassRule>({
+const sparseQuery = useSparseQuery<ClassRuleListItem>({
   queryKeyPrefix: ['class-rules', id],
   fetchFn: (params) => fetchClassRules(id, params),
 });
 
 function handleCreateRule() {
-  // TODO: navigate to class-rule create page or open dialog
-  toast.info('Creating class rules is not yet implemented');
+  router.push({ name: 'enrollment.class-rule.create', params: { id } });
 }
 
-async function handleDeleteRule(rule: ClassRule) {
+function handleEditRule(rule: ClassRuleListItem) {
+  router.push({
+    name: 'enrollment.class-rule.edit',
+    params: { id, ruleId: rule.id },
+  });
+}
+
+async function handleDeleteRule(rule: ClassRuleListItem) {
   const confirmed = await confirm({
     title: 'Delete Class Rule',
     message: 'Are you sure you want to delete this class rule?',
