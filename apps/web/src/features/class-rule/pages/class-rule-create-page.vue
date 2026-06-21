@@ -120,7 +120,7 @@
         </h3>
         <div
           ref="sessionListRef"
-          class="flex max-h-96 flex-col gap-3 overflow-y-hidden"
+          class="flex max-h-96 flex-col gap-3 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           @scroll="handleScroll"
         >
           <SessionItem

@@ -28,6 +28,7 @@
               :rule="item!"
               :loading="!isLoaded"
               :actions="['edit', 'delete']"
+              @view="handleViewRule(item!)"
               @edit="handleEditRule(item!)"
               @delete="handleDeleteRule(item!)"
             />
@@ -78,6 +79,13 @@ const sparseQuery = useSparseQuery<ClassRuleListItem>({
 
 function handleCreateRule() {
   router.push({ name: 'enrollment.class-rule.create', params: { id } });
+}
+
+function handleViewRule(rule: ClassRuleListItem) {
+  router.push({
+    name: 'enrollment.class-rule.detail',
+    params: { id, ruleId: rule.id },
+  });
 }
 
 function handleEditRule(rule: ClassRuleListItem) {
