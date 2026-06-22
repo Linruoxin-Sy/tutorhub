@@ -107,10 +107,7 @@
     <!-- 生成的具体课程 -->
     <ListPageShell
       v-if="
-        isValidated &&
-        generatedSessions.length > 0 &&
-        conflictResult &&
-        !conflictResult.hasConflict
+        isValidated && generatedSessions.length > 0 && conflictResult && !conflictResult.hasConflict
       "
       title="Generated Sessions"
     >
