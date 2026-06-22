@@ -64,6 +64,10 @@ export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
     return true;
   });
 
+  /** 学生和课程名称 */
+  const studentName = ref('Student');
+  const courseName = ref('Course');
+
   // 加载已有数据
   onMounted(async () => {
     try {
@@ -76,6 +80,11 @@ export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
         intervalDays: (rule.intervalDays as number | null) ?? null,
         endDate: rule.endDate ? dayjs(rule.endDate as string).format('YYYY-MM-DD') : '',
       };
+      const sc = rule.studentCourse as Record<string, unknown> | undefined;
+      const s = sc?.student as Record<string, unknown> | undefined;
+      const c = sc?.course as Record<string, unknown> | undefined;
+      studentName.value = (s?.name as string) ?? 'Student';
+      courseName.value = (c?.name as string) ?? 'Course';
     } catch {
       toast.error('Failed to load class rule data');
       router.push({ name: 'enrollment.detail', params: { id: enrollmentId } });
@@ -219,6 +228,8 @@ export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
     isFormComplete,
     isInfinite,
     isSubmitting,
+    studentName,
+    courseName,
     verify,
     checkConflicts,
     generateSessions,

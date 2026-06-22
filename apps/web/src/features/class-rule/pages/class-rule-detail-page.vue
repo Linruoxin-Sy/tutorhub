@@ -80,15 +80,13 @@ import SessionItem from '@/features/session/components/SessionItem.vue';
 
 const props = defineProps<{
   ruleId: string;
-  studentName?: string;
-  courseName?: string;
 }>();
 
 const isLoading = ref(true);
 const loadError = ref<string | null>(null);
 
-const studentName = computed(() => props.studentName ?? 'Student');
-const courseName = computed(() => props.courseName ?? 'Course');
+const studentName = ref('Student');
+const courseName = ref('Course');
 
 /** 规则数据 */
 const ruleData = ref<Record<string, unknown> | null>(null);
@@ -118,6 +116,13 @@ onMounted(async () => {
   try {
     const rule = await fetchClassRuleById(props.ruleId);
     ruleData.value = rule;
+
+    // 提取学生和课程名称
+    const sc = rule.studentCourse as Record<string, unknown> | undefined;
+    const s = sc?.student as Record<string, unknown> | undefined;
+    const c = sc?.course as Record<string, unknown> | undefined;
+    studentName.value = (s?.name as string) ?? 'Student';
+    courseName.value = (c?.name as string) ?? 'Course';
 
     // 获取 overrides
     const overridesData = await fetchClassRuleOverrides(props.ruleId);

@@ -138,6 +138,22 @@ export const enrollmentService = {
     return { items: result, nextCursor, total };
   },
 
+  async getById(id: string, userId: string) {
+    const enrollment = await prisma.studentCourse.findFirst({
+      where: { id, deletedAt: null },
+      include: {
+        student: true,
+        course: true,
+      },
+    });
+
+    if (!enrollment || enrollment.student.userId !== userId) {
+      throw new ApiError(404, 'ENROLLMENT_NOT_FOUND', 'Enrollment not found');
+    }
+
+    return enrollment;
+  },
+
   async deleteById(id: string, userId: string) {
     // 校验 enrollment 所属学生的 userId 匹配当前用户
     const enrollment = await prisma.studentCourse.findFirst({

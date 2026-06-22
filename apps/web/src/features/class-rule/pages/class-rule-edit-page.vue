@@ -183,8 +183,6 @@ import { useClassRuleEditForm } from '@/features/class-rule/hooks/useClassRuleEd
 const props = defineProps<{
   enrollmentId: string;
   ruleId: string;
-  studentName?: string;
-  courseName?: string;
 }>();
 
 const {
@@ -197,12 +195,11 @@ const {
   hasMoreSessions,
   isInfinite,
   isSubmitting,
+  studentName,
+  courseName,
   loadMoreSessions,
   submit,
 } = useClassRuleEditForm(props.enrollmentId, props.ruleId);
-
-const studentName = computed(() => props.studentName ?? 'Student');
-const courseName = computed(() => props.courseName ?? 'Course');
 
 // ---- VueDatePicker 双向绑定辅助 ----
 

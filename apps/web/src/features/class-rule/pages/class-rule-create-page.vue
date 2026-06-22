@@ -173,18 +173,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import dayjs from 'dayjs';
 import type { GeneratedSession } from '@tutorhub/schema';
+import { fetchEnrollmentById } from '@/features/enrollment/api/enrollment-api';
 import SessionItem from '@/features/session/components/SessionItem.vue';
 import { useClassRuleCreateForm } from '@/features/class-rule/hooks/useClassRuleCreateForm';
 
 const props = defineProps<{
   enrollmentId: string;
-  studentName?: string;
-  courseName?: string;
 }>();
 
 const {
@@ -200,8 +199,18 @@ const {
   submit,
 } = useClassRuleCreateForm(props.enrollmentId);
 
-const studentName = computed(() => props.studentName ?? 'Student');
-const courseName = computed(() => props.courseName ?? 'Course');
+const studentName = ref('Student');
+const courseName = ref('Course');
+
+onMounted(async () => {
+  try {
+    const enrollment = await fetchEnrollmentById(props.enrollmentId);
+    studentName.value = enrollment.student?.name ?? 'Student';
+    courseName.value = enrollment.course?.name ?? 'Course';
+  } catch {
+    // fallback to defaults
+  }
+});
 
 // ---- VueDatePicker 双向绑定辅助 ----
 

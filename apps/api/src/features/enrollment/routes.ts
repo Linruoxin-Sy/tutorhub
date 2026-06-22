@@ -6,11 +6,13 @@ import {
   courseEnrollmentListParamsSchema,
   enrollmentCreateSchema,
   enrollmentDeleteParamsSchema,
+  enrollmentDetailParamsSchema,
   enrollmentListQuerySchema,
   studentEnrollmentListParamsSchema,
   type AvailableCoursesResponse,
   type AvailableStudentsResponse,
   type CourseEnrollmentListResponse,
+  type EnrollmentDetailResponse,
   type StudentEnrollmentListResponse,
 } from '@tutorhub/schema';
 
@@ -18,6 +20,12 @@ import { enrollmentService } from '@/features/enrollment/services/enrollment';
 import { zValidator } from '@/shared/validator';
 
 export const enrollmentRoute = new Hono()
+  .get('/enrollment/:id', zValidator('param', enrollmentDetailParamsSchema), async (c) => {
+    const { id } = c.req.valid('param');
+    const userId = c.get('userId');
+    const res: EnrollmentDetailResponse = await enrollmentService.getById(id, userId);
+    return c.json({ data: res });
+  })
   .delete('/enrollment/:id', zValidator('param', enrollmentDeleteParamsSchema), async (c) => {
     const { id } = c.req.valid('param');
     const userId = c.get('userId');

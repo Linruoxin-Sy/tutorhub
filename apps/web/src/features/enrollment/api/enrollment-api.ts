@@ -4,6 +4,7 @@ import type {
   CourseEnrollmentListResponse,
   EnrollmentCreateResponse,
   EnrollmentDeleteResponse,
+  EnrollmentDetailResponse,
   StudentEnrollmentListResponse,
 } from '@tutorhub/schema';
 
@@ -46,6 +47,14 @@ export async function fetchCourseEnrollments(
 /** 软删除选课关系 */
 export async function deleteEnrollment(id: string): Promise<EnrollmentDeleteResponse> {
   const { data } = await request.delete<{ data: EnrollmentDeleteResponse }>(`/enrollment/${id}`);
+  return data.data;
+}
+
+/** 按 ID 获取单条选课关系详情（包含学生和课程信息） */
+export async function fetchEnrollmentById(
+  id: string,
+): Promise<EnrollmentDetailResponse> {
+  const { data } = await request.get<{ data: EnrollmentDetailResponse }>(`/enrollment/${id}`);
   return data.data;
 }
 
