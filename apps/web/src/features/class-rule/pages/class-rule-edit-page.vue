@@ -215,32 +215,18 @@ function timeFormat(date: Date): string {
   return dayjs(date).format('HH:mm');
 }
 
-function syncDate(val: unknown): string {
-  if (!val) return '';
-  if (typeof val === 'string') return val;
-  if (val instanceof Date) return dayjs(val).format('YYYY-MM-DD');
-  return '';
-}
-
 const startDateModel = computed({
   get: () => (formData.value.startDate ? dayjs(formData.value.startDate).toDate() : null),
   set: (val: unknown) => {
-    formData.value.startDate = syncDate(val);
+    formData.value.startDate = val instanceof Date ? dayjs(val).format('YYYY-MM-DD') : '';
   },
 });
-
-function syncTime(val: unknown): string {
-  if (!val) return '';
-  if (typeof val === 'string') return val;
-  if (val instanceof Date) return dayjs(val).format('HH:mm');
-  return '';
-}
 
 const startTimeModel = computed({
   get: () =>
     formData.value.startTime ? dayjs(`2000-01-01 ${formData.value.startTime}`).toDate() : null,
   set: (val: unknown) => {
-    formData.value.startTime = syncTime(val);
+    formData.value.startTime = val instanceof Date ? dayjs(val).format('HH:mm') : '';
   },
 });
 
@@ -248,14 +234,14 @@ const endTimeModel = computed({
   get: () =>
     formData.value.endTime ? dayjs(`2000-01-01 ${formData.value.endTime}`).toDate() : null,
   set: (val: unknown) => {
-    formData.value.endTime = syncTime(val);
+    formData.value.endTime = val instanceof Date ? dayjs(val).format('HH:mm') : '';
   },
 });
 
 const endDateModel = computed({
   get: () => (formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null),
   set: (val: unknown) => {
-    formData.value.endDate = syncDate(val);
+    formData.value.endDate = val instanceof Date ? dayjs(val).format('YYYY-MM-DD') : '';
   },
 });
 
