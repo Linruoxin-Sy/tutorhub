@@ -19,6 +19,7 @@
         </label>
         <VueDatePicker
           v-model="startDateModel"
+          :dark="isDark"
           :format="dateFormat"
           :enable-time-picker="false"
           :clearable="false"
@@ -34,6 +35,7 @@
         </label>
         <VueDatePicker
           v-model="startTimeModel"
+          :dark="isDark"
           time-picker
           :format="timeFormat"
           placeholder="Select start time"
@@ -48,6 +50,7 @@
         </label>
         <VueDatePicker
           v-model="endTimeModel"
+          :dark="isDark"
           time-picker
           :format="timeFormat"
           placeholder="Select end time"
@@ -81,6 +84,7 @@
         </label>
         <VueDatePicker
           v-model="endDateModel"
+          :dark="isDark"
           :format="dateFormat"
           :enable-time-picker="false"
           :clearable="true"
@@ -169,6 +173,7 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import dayjs from 'dayjs';
 import type { GeneratedSession } from '@tutorhub/schema';
 import { useLocalQuery } from '@/hooks/useLocalQuery';
+import { useThemeToggle } from '@/hooks/useThemeToggle';
 import SessionItem from '@/features/session/components/SessionItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
@@ -192,6 +197,7 @@ const {
   submit,
 } = useClassRuleEditForm(props.enrollmentId, props.ruleId);
 
+const { isDark } = useThemeToggle();
 const sessionQuery = useLocalQuery(generatedSessions);
 
 // ---- VueDatePicker 双向绑定辅助 ----
