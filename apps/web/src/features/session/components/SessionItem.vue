@@ -22,9 +22,11 @@
           <i class="i-lucide-calendar inline size-3.5 align-text-top" />
           {{ date }}
         </span>
-        <span class="text-gray-500 dark:text-gray-400">
+        <span class="inline-flex items-center gap-1 text-gray-500 dark:text-gray-400">
           <i class="i-lucide-clock inline size-3.5 align-text-top" />
-          {{ startTime }} – {{ endTime }}
+          {{ startTime }}
+          <i class="i-lucide-arrow-right inline size-3.5 text-gray-400 dark:text-gray-500" />
+          {{ endTime }}
         </span>
         <!-- 调课变更标记 -->
         <span
