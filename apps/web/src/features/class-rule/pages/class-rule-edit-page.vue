@@ -215,41 +215,56 @@ function timeFormat(date: Date): string {
   return dayjs(date).format('HH:mm');
 }
 
+function syncDate(val: unknown): string {
+  if (!val) return '';
+  if (typeof val === 'string') return val;
+  if (val instanceof Date) return dayjs(val).format('YYYY-MM-DD');
+  return '';
+}
+
 const startDateModel = computed({
   get: () => (formData.value.startDate ? dayjs(formData.value.startDate).toDate() : null),
-  set: (val: Date | null) => {
-    formData.value.startDate = val ? dayjs(val).format('YYYY-MM-DD') : '';
+  set: (val: unknown) => {
+    formData.value.startDate = syncDate(val);
   },
 });
+
+function syncTime(val: unknown): string {
+  if (!val) return '';
+  if (typeof val === 'string') return val;
+  if (val instanceof Date) return dayjs(val).format('HH:mm');
+  return '';
+}
 
 const startTimeModel = computed({
   get: () =>
     formData.value.startTime ? dayjs(`2000-01-01 ${formData.value.startTime}`).toDate() : null,
-  set: (val: Date | null) => {
-    formData.value.startTime = val ? dayjs(val).format('HH:mm') : '';
+  set: (val: unknown) => {
+    formData.value.startTime = syncTime(val);
   },
 });
 
 const endTimeModel = computed({
   get: () =>
     formData.value.endTime ? dayjs(`2000-01-01 ${formData.value.endTime}`).toDate() : null,
-  set: (val: Date | null) => {
-    formData.value.endTime = val ? dayjs(val).format('HH:mm') : '';
+  set: (val: unknown) => {
+    formData.value.endTime = syncTime(val);
   },
 });
 
 const endDateModel = computed({
   get: () => (formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null),
-  set: (val: Date | null) => {
-    formData.value.endDate = val ? dayjs(val).format('YYYY-MM-DD') : '';
+  set: (val: unknown) => {
+    formData.value.endDate = syncDate(val);
   },
 });
 
 const intervalDaysModel = computed({
   get: () => formData.value.intervalDays,
-  set: (val: number | null) => {
-    formData.value.intervalDays = val;
-    if (val === null) {
+  set: (val: unknown) => {
+    const num = typeof val === 'number' ? val : Number(val);
+    formData.value.intervalDays = Number.isFinite(num) ? num : null;
+    if (formData.value.intervalDays === null) {
       formData.value.endDate = '';
     }
   },
