@@ -1,73 +1,67 @@
 <template>
-  <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <div class="space-y-6">
-      <PageHeader
-        title="Class Rule Details"
-        description="View generated sessions and overrides for this class rule."
-      />
+  <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+    <PageHeader
+      title="Class Rule Details"
+      description="View generated sessions and overrides for this class rule."
+    />
 
-      <!-- 加载中 -->
-      <CardSection v-if="isLoading" class="p-6">
-        <LoadingIndicator text="Loading class rule data..." />
-      </CardSection>
-
-      <!-- 加载失败 -->
-      <CardSection v-else-if="loadError" class="p-6">
-        <div class="text-center text-sm text-red-500">{{ loadError }}</div>
-      </CardSection>
-
-      <!-- 底部卡片：生成的具体课程（含调课覆盖） -->
-      <CardSection v-else-if="mergedSessions.length > 0" class="p-5">
-        <div class="mb-4 flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Sessions ({{ mergedSessions.length }})
-          </h3>
-          <span
-            v-if="overrides.length > 0"
-            class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-          >
-            <i class="i-lucide-rotate-ccw size-3" />
-            {{ overrides.length }} rescheduled
-          </span>
-        </div>
-
-        <div
-          ref="sessionListRef"
-          class="flex max-h-96 scrollbar-none flex-col gap-3 overflow-y-auto [&::-webkit-scrollbar]:hidden"
-          @scroll="handleScroll"
+    <ListPageShell title="Sessions">
+      <template #actions>
+        <span
+          v-if="overrides.length > 0"
+          class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
         >
-          <SessionItem
-            v-for="session in displayedMergedSessions"
-            :key="session.occurrenceDate"
-            :student-name="studentName"
-            :course-name="courseName"
-            :date="session.occurrenceDate"
-            :start-time="session.startTime"
-            :end-time="session.endTime"
-            :overridden-start-time="session.rescheduledStartTime"
-            :overridden-end-time="session.rescheduledEndTime"
-            :conflict="false"
-          />
-          <div
-            v-if="hasMoreSessions"
-            class="py-4 text-center text-sm text-gray-400 dark:text-gray-500"
-          >
-            Scroll down to load more sessions...
-          </div>
-        </div>
-      </CardSection>
+          <i class="i-lucide-rotate-ccw size-3" />
+          {{ overrides.length }} rescheduled
+        </span>
+      </template>
 
-      <CardSection v-else class="p-6">
-        <div class="text-center text-sm text-gray-500 dark:text-gray-400">
-          No sessions to display.
-        </div>
-      </CardSection>
-    </div>
+      <div class="flex min-h-0 flex-1 flex-col">
+        <VirtualList
+          :query="sessionQuery"
+          :estimate-size="80"
+          :overscan="10"
+          scroll-class="flex-1 overflow-x-hidden overflow-y-auto scrollbar-none p-5"
+        >
+          <template #loading>
+            <div class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
+              <LoadingIndicator text="Loading sessions..." />
+            </div>
+          </template>
+
+          <template #item="{ item }">
+            <SessionItem
+              v-if="item"
+              :student-name="studentName"
+              :course-name="courseName"
+              :date="item.occurrenceDate"
+              :start-time="item.startTime"
+              :end-time="item.endTime"
+              :overridden-start-time="item.rescheduledStartTime"
+              :overridden-end-time="item.rescheduledEndTime"
+              :conflict="false"
+            />
+          </template>
+
+          <template #empty>
+            <div
+              class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+            >
+              <div
+                class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
+              >
+                No sessions to display.
+              </div>
+            </div>
+          </template>
+        </VirtualList>
+      </div>
+    </ListPageShell>
   </main>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref } from 'vue';
 import { RRule } from 'rrule';
 import type { Options as RRuleOptions } from 'rrule';
 import dayjs from 'dayjs';
@@ -76,7 +70,11 @@ import {
   fetchClassRuleById,
   fetchClassRuleOverrides,
 } from '@/features/class-rule/api/class-rule-api';
+import { useLocalQuery } from '@/hooks/useLocalQuery';
 import SessionItem from '@/features/session/components/SessionItem.vue';
+import VirtualList from '@/components/VirtualList.vue';
+import ListPageShell from '@/components/ListPageShell.vue';
+import LoadingIndicator from '@/components/LoadingIndicator.vue';
 
 const props = defineProps<{
   ruleId: string;
@@ -88,34 +86,17 @@ const loadError = ref<string | null>(null);
 const studentName = ref('Student');
 const courseName = ref('Course');
 
-/** 规则数据 */
-const ruleData = ref<Record<string, unknown> | null>(null);
-
 /** 调课覆盖记录 */
 const overrides = ref<Record<string, unknown>[]>([]);
-
-/** 生成的所有 sessions */
-const generatedSessions = ref<GeneratedSession[]>([]);
 
 /** 合并 overrides 后的 sessions */
 const mergedSessions = ref<GeneratedSession[]>([]);
 
-/** 当前显示的批次 */
-const sessionBatchIndex = ref(0);
-const BATCH_SIZE = 50;
-
-const displayedMergedSessions = computed(() =>
-  mergedSessions.value.slice(0, (sessionBatchIndex.value + 1) * BATCH_SIZE),
-);
-
-const hasMoreSessions = computed(
-  () => displayedMergedSessions.value.length < mergedSessions.value.length,
-);
+const sessionQuery = useLocalQuery(mergedSessions);
 
 onMounted(async () => {
   try {
     const rule = await fetchClassRuleById(props.ruleId);
-    ruleData.value = rule;
 
     // 提取学生和课程名称
     const sc = rule.studentCourse as Record<string, unknown> | undefined;
@@ -171,7 +152,7 @@ onMounted(async () => {
       overrideMap.set(occDate, ov);
     }
 
-    generatedSessions.value = dates.map((d) => {
+    mergedSessions.value = dates.map((d) => {
       const dateStr = dayjs(d).format('YYYY-MM-DD');
       const ov = overrideMap.get(dateStr);
 
@@ -199,24 +180,10 @@ onMounted(async () => {
         endTime,
       };
     });
-
-    mergedSessions.value = generatedSessions.value;
   } catch {
     loadError.value = 'Failed to load class rule data';
   } finally {
     isLoading.value = false;
   }
 });
-
-// 虚拟滚动
-const sessionListRef = ref<HTMLElement | null>(null);
-
-function handleScroll(event: Event) {
-  const el = event.target as HTMLElement;
-  if (el.scrollHeight - el.scrollTop - el.clientHeight < 100) {
-    if (hasMoreSessions.value) {
-      sessionBatchIndex.value++;
-    }
-  }
-}
 </script>
