@@ -120,7 +120,7 @@
       <div class="flex min-h-0 flex-1 flex-col">
         <VirtualList
           :query="sessionQuery"
-          :estimate-size="80"
+          :estimate-size="120"
           :overscan="10"
           scroll-class="flex-1 overflow-x-hidden overflow-y-auto scrollbar-none p-5"
         >
