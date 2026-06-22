@@ -21,7 +21,7 @@
           v-model="startDateModel"
           :dark="isDark"
           :ui="datePickerUi"
-          :format="dateFormat"
+          :formats="{ input: dateFormat }"
           :enable-time-picker="false"
           :clearable="false"
           placeholder="Select start date"
@@ -39,7 +39,7 @@
           :dark="isDark"
           :ui="datePickerUi"
           time-picker
-          :format="timeFormat"
+          :formats="{ input: timeFormat }"
           placeholder="Select start time"
           class="w-full"
         />
@@ -55,7 +55,7 @@
           :dark="isDark"
           :ui="datePickerUi"
           time-picker
-          :format="timeFormat"
+          :formats="{ input: timeFormat }"
           placeholder="Select end time"
           class="w-full"
         />
@@ -89,7 +89,7 @@
           v-model="endDateModel"
           :dark="isDark"
           :ui="datePickerUi"
-          :format="dateFormat"
+          :formats="{ input: dateFormat }"
           :enable-time-picker="false"
           :clearable="true"
           placeholder="Leave empty for infinite recurring"
