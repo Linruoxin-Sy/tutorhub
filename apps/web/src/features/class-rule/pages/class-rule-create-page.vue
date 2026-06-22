@@ -226,6 +226,18 @@ function timeFormat(date: Date): string {
   return dayjs(date).format('HH:mm');
 }
 
+/** 将 VueDatePicker 的 TimeModel 转为 HH:mm 字符串 */
+function toTimeString(val: unknown): string {
+  if (!val) return '';
+  if (typeof val === 'string') return val;
+  if (val instanceof Date) return dayjs(val).format('HH:mm');
+  if (typeof val === 'object' && 'hours' in (val as Record<string, unknown>) && 'minutes' in (val as Record<string, unknown>)) {
+    const t = val as { hours: number | string; minutes: number | string; seconds?: number | string };
+    return `${String(t.hours).padStart(2, '0')}:${String(t.minutes).padStart(2, '0')}`;
+  }
+  return '';
+}
+
 const startDateModel = computed({
   get: () => (formData.value.startDate ? dayjs(formData.value.startDate).toDate() : null),
   set: (val: unknown) => {
@@ -237,7 +249,7 @@ const startTimeModel = computed({
   get: () =>
     formData.value.startTime ? dayjs(`2000-01-01 ${formData.value.startTime}`).toDate() : null,
   set: (val: unknown) => {
-    formData.value.startTime = val instanceof Date ? dayjs(val).format('HH:mm') : '';
+    formData.value.startTime = toTimeString(val);
   },
 });
 
@@ -245,7 +257,7 @@ const endTimeModel = computed({
   get: () =>
     formData.value.endTime ? dayjs(`2000-01-01 ${formData.value.endTime}`).toDate() : null,
   set: (val: unknown) => {
-    formData.value.endTime = val instanceof Date ? dayjs(val).format('HH:mm') : '';
+    formData.value.endTime = toTimeString(val);
   },
 });
 
