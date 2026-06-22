@@ -16,7 +16,7 @@
           v-model="startDateModel"
           :dark="isDark"
           :ui="datePickerUi"
-          :formats="{ input: dateFormat }"
+          :formats="{ input: 'yyyy-MM-dd' }"
           :enable-time-picker="false"
           :clearable="false"
           placeholder="Select start date"
@@ -34,7 +34,7 @@
           :dark="isDark"
           :ui="datePickerUi"
           time-picker
-          :formats="{ input: timeFormat }"
+          :formats="{ input: 'HH:mm' }"
           placeholder="Select start time"
           class="w-full"
         />
@@ -50,7 +50,7 @@
           :dark="isDark"
           :ui="datePickerUi"
           time-picker
-          :formats="{ input: timeFormat }"
+          :formats="{ input: 'HH:mm' }"
           placeholder="Select end time"
           class="w-full"
         />
@@ -87,7 +87,7 @@
           v-model="endDateModel"
           :dark="isDark"
           :ui="datePickerUi"
-          :formats="{ input: dateFormat }"
+          :formats="{ input: 'yyyy-MM-dd' }"
           :enable-time-picker="false"
           :clearable="true"
           placeholder="Leave empty for infinite recurring"
@@ -217,18 +217,6 @@ onMounted(async () => {
 });
 
 // ---- VueDatePicker 双向绑定辅助 ----
-
-function dateFormat(date: Date): string {
-  return dayjs(date).format('YYYY-MM-DD');
-}
-
-function timeFormat(date: unknown): string {
-  if (typeof date === 'object' && date && 'hours' in (date as Record<string, unknown>)) {
-    const t = date as { hours: number | string; minutes: number | string };
-    return `${String(t.hours).padStart(2, '0')}:${String(t.minutes).padStart(2, '0')}`;
-  }
-  return dayjs(date as Date).format('HH:mm');
-}
 
 /** 将 VueDatePicker 的 TimeModel 转为 HH:mm 字符串 */
 function toTimeString(val: unknown): string {
