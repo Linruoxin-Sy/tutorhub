@@ -3,3 +3,15 @@
 @plugin '@egoist/tailwindcss-icons';
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* ── VueDatePicker 图标颜色 ── */
+.dp--input-icon,
+.dp--clear-btn svg {
+  color: #6b7280;
+}
+
+.dark .dp--input-icon,
+.dark .dp--clear-btn svg {
+  color: #9ca3af;
+}
+
