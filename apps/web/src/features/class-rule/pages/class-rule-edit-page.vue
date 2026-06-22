@@ -36,7 +36,9 @@
         </label>
         <VueDatePicker
           v-model="startTimeModel"
-          :dark="isDark"          :ui="datePickerUi"          time-picker
+          :dark="isDark"
+          :ui="datePickerUi"
+          time-picker
           :format="timeFormat"
           placeholder="Select start time"
           class="w-full"
