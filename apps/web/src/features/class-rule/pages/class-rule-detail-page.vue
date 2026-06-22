@@ -33,7 +33,7 @@
 
         <div
           ref="sessionListRef"
-          class="flex max-h-96 [scrollbar-width:none] flex-col gap-3 overflow-y-auto [&::-webkit-scrollbar]:hidden"
+          class="flex max-h-96 scrollbar-none flex-col gap-3 overflow-y-auto [&::-webkit-scrollbar]:hidden"
           @scroll="handleScroll"
         >
           <SessionItem
