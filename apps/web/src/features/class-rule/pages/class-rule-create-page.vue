@@ -1,5 +1,5 @@
 <template>
-  <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+  <main class="mx-auto max-w-7xl gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <PageHeader
       title="Create Class Rule"
       description="Define a new class schedule rule for this enrollment."
@@ -127,12 +127,12 @@
         </span>
       </template>
 
-      <div class="flex min-h-0 flex-1 flex-col">
+      <div class="flex flex-col">
         <VirtualList
           :query="sessionQuery"
           :estimate-size="90"
           :overscan="10"
-          scroll-class="flex-1 overflow-x-hidden overflow-y-auto scrollbar-none p-5"
+          scroll-class="max-h-80 overflow-x-hidden overflow-y-auto scrollbar-none p-5"
         >
           <template #item="{ item }">
             <SessionItem
@@ -155,8 +155,8 @@
       v-if="conflictResult && conflictResult.hasConflict"
       title="Schedule Conflicts Detected"
     >
-      <div class="flex min-h-0 flex-1 flex-col">
-        <div class="flex max-h-96 flex-col gap-3 overflow-y-auto p-5">
+      <div class="flex flex-col">
+        <div class="flex max-h-80 flex-col gap-3 overflow-y-auto p-5">
           <SessionItem
             v-for="conflict in conflictResult.conflicts"
             :key="conflict.date + conflict.startTime"

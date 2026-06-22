@@ -1,5 +1,5 @@
 <template>
-  <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+  <main class="mx-auto max-w-7xl gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <PageHeader
       title="Class Rule Details"
       description="View generated sessions and overrides for this class rule."
@@ -16,12 +16,12 @@
         </span>
       </template>
 
-      <div class="flex min-h-0 flex-1 flex-col">
+      <div class="flex flex-col">
         <VirtualList
           :query="sessionQuery"
           :estimate-size="90"
           :overscan="10"
-          scroll-class="flex-1 overflow-x-hidden overflow-y-auto scrollbar-none p-5"
+          scroll-class="max-h-80 overflow-x-hidden overflow-y-auto scrollbar-none p-5"
         >
           <template #loading>
             <div class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
