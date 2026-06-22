@@ -20,6 +20,7 @@
         <VueDatePicker
           v-model="startDateModel"
           :dark="isDark"
+          :ui="datePickerUi"
           :format="dateFormat"
           :enable-time-picker="false"
           :clearable="false"
@@ -35,8 +36,7 @@
         </label>
         <VueDatePicker
           v-model="startTimeModel"
-          :dark="isDark"
-          time-picker
+          :dark="isDark"          :ui="datePickerUi"          time-picker
           :format="timeFormat"
           placeholder="Select start time"
           class="w-full"
@@ -51,6 +51,7 @@
         <VueDatePicker
           v-model="endTimeModel"
           :dark="isDark"
+          :ui="datePickerUi"
           time-picker
           :format="timeFormat"
           placeholder="Select end time"
@@ -85,6 +86,7 @@
         <VueDatePicker
           v-model="endDateModel"
           :dark="isDark"
+          :ui="datePickerUi"
           :format="dateFormat"
           :enable-time-picker="false"
           :clearable="true"
@@ -174,6 +176,7 @@ import dayjs from 'dayjs';
 import type { GeneratedSession } from '@tutorhub/schema';
 import { useLocalQuery } from '@/hooks/useLocalQuery';
 import { useThemeToggle } from '@/hooks/useThemeToggle';
+import { datePickerUi } from '@/features/class-rule/constants/datePickerUi';
 import SessionItem from '@/features/session/components/SessionItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
