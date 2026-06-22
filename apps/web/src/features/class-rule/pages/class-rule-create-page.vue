@@ -13,10 +13,10 @@
           Start Date <span class="text-red-500">*</span>
         </label>
         <VueDatePicker
-          v-model="startDateModel"
+          v-model="formData.startDate"
+          model-type="yyyy-MM-dd"
           :dark="isDark"
           :ui="datePickerUi"
-          :formats="{ input: 'yyyy-MM-dd' }"
           :enable-time-picker="false"
           :clearable="false"
           placeholder="Select start date"
@@ -30,11 +30,11 @@
           Start Time <span class="text-red-500">*</span>
         </label>
         <VueDatePicker
-          v-model="startTimeModel"
+          v-model="formData.startTime"
+          model-type="HH:mm"
           :dark="isDark"
           :ui="datePickerUi"
           time-picker
-          :formats="{ input: 'HH:mm' }"
           placeholder="Select start time"
           class="w-full"
         />
@@ -46,11 +46,11 @@
           End Time <span class="text-red-500">*</span>
         </label>
         <VueDatePicker
-          v-model="endTimeModel"
+          v-model="formData.endTime"
+          model-type="HH:mm"
           :dark="isDark"
           :ui="datePickerUi"
           time-picker
-          :formats="{ input: 'HH:mm' }"
           placeholder="Select end time"
           class="w-full"
         />
@@ -84,10 +84,10 @@
           <span class="text-xs font-normal text-gray-400 dark:text-gray-500">(optional)</span>
         </label>
         <VueDatePicker
-          v-model="endDateModel"
+          v-model="formData.endDate"
+          model-type="yyyy-MM-dd"
           :dark="isDark"
           :ui="datePickerUi"
-          :formats="{ input: 'yyyy-MM-dd' }"
           :enable-time-picker="false"
           :clearable="true"
           placeholder="Leave empty for infinite recurring"
@@ -175,7 +175,6 @@
 import { computed, ref, onMounted } from 'vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-import dayjs from 'dayjs';
 import type { GeneratedSession } from '@tutorhub/schema';
 import { fetchEnrollmentById } from '@/features/enrollment/api/enrollment-api';
 import { useLocalQuery } from '@/hooks/useLocalQuery';
@@ -217,63 +216,6 @@ onMounted(async () => {
 });
 
 // ---- VueDatePicker 双向绑定辅助 ----
-
-/** 将 VueDatePicker 的 TimeModel 转为 HH:mm 字符串 */
-function toTimeString(val: unknown): string {
-  if (!val) return '';
-  if (typeof val === 'string') return val;
-  if (val instanceof Date) return dayjs(val).format('HH:mm');
-  if (
-    typeof val === 'object' &&
-    'hours' in (val as Record<string, unknown>) &&
-    'minutes' in (val as Record<string, unknown>)
-  ) {
-    const t = val as {
-      hours: number | string;
-      minutes: number | string;
-      seconds?: number | string;
-    };
-    return `${String(t.hours).padStart(2, '0')}:${String(t.minutes).padStart(2, '0')}`;
-  }
-  return '';
-}
-
-const startDateModel = computed({
-  get: () => (formData.value.startDate ? dayjs(formData.value.startDate).toDate() : null),
-  set: (val: unknown) => {
-    formData.value.startDate = val instanceof Date ? dayjs(val).format('YYYY-MM-DD') : '';
-  },
-});
-
-function timeToDate(time: string): Date | null {
-  if (!time) return null;
-  const [h, m] = time.split(':').map(Number);
-  if (isNaN(h) || isNaN(m)) return null;
-  const d = new Date();
-  d.setHours(h, m, 0, 0);
-  return d;
-}
-
-const startTimeModel = computed({
-  get: () => timeToDate(formData.value.startTime),
-  set: (val: unknown) => {
-    formData.value.startTime = toTimeString(val);
-  },
-});
-
-const endTimeModel = computed({
-  get: () => timeToDate(formData.value.endTime),
-  set: (val: unknown) => {
-    formData.value.endTime = toTimeString(val);
-  },
-});
-
-const endDateModel = computed({
-  get: () => (formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null),
-  set: (val: unknown) => {
-    formData.value.endDate = val instanceof Date ? dayjs(val).format('YYYY-MM-DD') : '';
-  },
-});
 
 const intervalDaysModel = computed({
   get: () => formData.value.intervalDays,
