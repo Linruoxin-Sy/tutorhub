@@ -39,12 +39,14 @@
           </p>
         </div>
       </div>
-      <div class="mt-6 flex flex-wrap gap-3 border-t border-gray-200 pt-6 dark:border-[#343434]">
+      <div
+        class="mt-6 flex flex-wrap justify-end gap-3 border-t border-gray-200 pt-6 dark:border-[#343434]"
+      >
         <AppButton @click="goToCourse">
           <i class="i-lucide-book-open size-4" />
           View Course
         </AppButton>
-        <AppButton variant="secondary" @click="goToStudent">
+        <AppButton @click="goToStudent">
           <i class="i-lucide-user size-4" />
           View Student
         </AppButton>
