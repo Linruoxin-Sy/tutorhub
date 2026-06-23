@@ -14,12 +14,13 @@ import {
 // ---------------------------------------------------------------------------
 
 interface ClassRuleInput {
-  studentCourseId: string;
+  courseId: string;
   startDate: Date;
   intervalDays: number | null;
   endDate: Date | null;
   startTime: Date;
   endTime: Date;
+  room?: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -109,8 +110,30 @@ function addDays(date: Date, days: number): Date {
 }
 
 // ---------------------------------------------------------------------------
-// COPY helpers for batch-inserting class rules
+// Date generation helper (used for creating ClassSession records)
 // ---------------------------------------------------------------------------
+
+function generateDates(
+  startDate: Date,
+  intervalDays: number | null,
+  endDate: Date | null,
+  maxDays: number,
+): Date[] {
+  if (!intervalDays) {
+    return [new Date(startDate)];
+  }
+
+  const dates: Date[] = [];
+  const maxEnd = endDate ?? new Date(startDate.getTime() + maxDays * MS_PER_DAY);
+  let current = new Date(startDate);
+
+  while (current <= maxEnd) {
+    dates.push(new Date(current));
+    current = new Date(current.getTime() + intervalDays * MS_PER_DAY);
+  }
+
+  return dates;
+}
 
 // ---------------------------------------------------------------------------
 // Class rule batch insert helpers
@@ -119,28 +142,28 @@ function addDays(date: Date, days: number): Date {
 const RULE_CHUNK_SIZE = 3000;
 
 /**
- * Generate 4–5 ClassRule inputs for a given enrollment.
+ * Generate 2–3 ClassRule inputs for a given course.
  *
- * Rule type breakdown (per enrollment):
+ * Rule type breakdown (per course):
  * - 1 固定上课 (single): intervalDays=null, endDate=null
- * - 1–2 循环上课 (cyclic with end): intervalDays=7|14, endDate set
- * - 2  无限循环上课 (infinite cyclic): intervalDays=7|14|30, endDate=null
+ * - 1 循环上课 (cyclic): intervalDays=7, endDate set
+ * - 1 无限循环上课 (infinite cyclic): intervalDays=7|14, endDate=null (optional)
  */
-function buildRules(studentCourseId: string, seed: number): ClassRuleInput[] {
-  const count = 4 + Math.floor(pseudoRandom(seed + 5000) * 2); // 4 or 5
+function buildRules(courseId: string, seed: number): ClassRuleInput[] {
+  const count = 2 + Math.floor(pseudoRandom(seed + 5000) * 1); // 2 or 3
   const rules: ClassRuleInput[] = [];
 
   // Pick a random base date in 2026
   const dayOffset = Math.floor(pseudoRandom(seed + 6000) * 365);
-  const enrollmentStart = addDays(SEED_BASE_DATE, dayOffset);
+  const courseStart = addDays(SEED_BASE_DATE, dayOffset);
 
   // --- Rule 1: 固定上课 (single) ---
   {
     const slotIdx = Math.floor(pseudoRandom(seed + 7000) * TIME_SLOTS.length);
     const slot = TIME_SLOTS[slotIdx];
     rules.push({
-      studentCourseId,
-      startDate: enrollmentStart,
+      courseId,
+      startDate: courseStart,
       intervalDays: null,
       endDate: null,
       startTime: makeTime(slot.startHour, slot.startMin),
@@ -152,10 +175,10 @@ function buildRules(studentCourseId: string, seed: number): ClassRuleInput[] {
   {
     const slotIdx = Math.floor(pseudoRandom(seed + 8000) * TIME_SLOTS.length);
     const slot = TIME_SLOTS[slotIdx];
-    const ruleStart = addDays(enrollmentStart, 7);
-    const ruleEnd = addDays(ruleStart, 60 + Math.floor(pseudoRandom(seed + 9000) * 31)); // 60–90 days
+    const ruleStart = addDays(courseStart, 7);
+    const ruleEnd = addDays(ruleStart, 60 + Math.floor(pseudoRandom(seed + 9000) * 31));
     rules.push({
-      studentCourseId,
+      courseId,
       startDate: ruleStart,
       intervalDays: 7,
       endDate: ruleEnd,
@@ -164,49 +187,18 @@ function buildRules(studentCourseId: string, seed: number): ClassRuleInput[] {
     });
   }
 
-  // --- Rule 3: 无限循环上课 (infinite cyclic, weekly) ---
-  {
+  // --- Optional Rule 3: 无限循环上课 (infinite cyclic) ---
+  if (count === 3) {
     const slotIdx = Math.floor(pseudoRandom(seed + 10000) * TIME_SLOTS.length);
-    const slot = TIME_SLOTS[slotIdx];
-    const ruleStart = addDays(enrollmentStart, 14);
-    rules.push({
-      studentCourseId,
-      startDate: ruleStart,
-      intervalDays: 7,
-      endDate: null,
-      startTime: makeTime(slot.startHour, slot.startMin),
-      endTime: makeTime(slot.endHour, slot.endMin),
-    });
-  }
-
-  // --- Rule 4: 无限循环上课 (infinite cyclic, bi-weekly or monthly) ---
-  {
-    const slotIdx = Math.floor(pseudoRandom(seed + 11000) * TIME_SLOTS.length);
     const slot = TIME_SLOTS[slotIdx];
     const interval =
       INTERVAL_OPTIONS[Math.floor(pseudoRandom(seed + 12000) * INTERVAL_OPTIONS.length)];
-    const ruleStart = addDays(enrollmentStart, 21);
+    const ruleStart = addDays(courseStart, 14);
     rules.push({
-      studentCourseId,
+      courseId,
       startDate: ruleStart,
       intervalDays: interval,
       endDate: null,
-      startTime: makeTime(slot.startHour, slot.startMin),
-      endTime: makeTime(slot.endHour, slot.endMin),
-    });
-  }
-
-  // --- Optional 5th rule: 循环上课 (cyclic with end, bi-weekly) ---
-  if (count === 5) {
-    const slotIdx = Math.floor(pseudoRandom(seed + 13000) * TIME_SLOTS.length);
-    const slot = TIME_SLOTS[slotIdx];
-    const ruleStart = addDays(enrollmentStart, 28);
-    const ruleEnd = addDays(ruleStart, 30 + Math.floor(pseudoRandom(seed + 14000) * 61)); // 30–90 days
-    rules.push({
-      studentCourseId,
-      startDate: ruleStart,
-      intervalDays: 14,
-      endDate: ruleEnd,
       startTime: makeTime(slot.startHour, slot.startMin),
       endTime: makeTime(slot.endHour, slot.endMin),
     });
@@ -226,7 +218,8 @@ async function main() {
 
   // 1. Clean existing data
   log('Cleaning existing data...');
-  await prisma.classSessionOverride.deleteMany();
+  await prisma.sessionParticipant.deleteMany();
+  await prisma.classSession.deleteMany();
   await prisma.classRule.deleteMany();
   await prisma.studentCourse.deleteMany();
   await prisma.course.deleteMany();
@@ -312,140 +305,142 @@ async function main() {
   }
   log(`Created ${enrollments.length} enrollments`);
 
-  // 6. Create class rules for each enrollment (generate + insert in batches)
+  // 6. Create class rules for each course (generate + insert in batches)
   log('Generating class rules...');
 
-  const allEnrollments = await prisma.studentCourse.findMany({ select: { id: true } });
+  const allCourses = await prisma.course.findMany({ select: { id: true } });
   let totalRules = 0;
   let ruleBatch: ClassRuleInput[] = [];
-  for (let ei = 0; ei < allEnrollments.length; ei++) {
-    const enrollmentRules = buildRules(allEnrollments[ei].id, ei);
-    ruleBatch.push(...enrollmentRules);
+  for (let ci = 0; ci < allCourses.length; ci++) {
+    const courseRules = buildRules(allCourses[ci].id, ci);
+    ruleBatch.push(...courseRules);
 
-    // Flush batch when it reaches chunk size
     if (ruleBatch.length >= RULE_CHUNK_SIZE) {
       await prisma.classRule.createMany({ data: ruleBatch, skipDuplicates: true });
       totalRules += ruleBatch.length;
       ruleBatch = [];
     }
   }
-  // Flush remaining
   if (ruleBatch.length > 0) {
     await prisma.classRule.createMany({ data: ruleBatch, skipDuplicates: true });
     totalRules += ruleBatch.length;
   }
   log(`Created ${totalRules} class rules`);
 
-  // 7. Add ClassSessionOverride for roughly half of the rules (batch pagination)
-  log('Generating session overrides...');
+  // 7. Generate ClassSessions from rules (180 days worth)
+  log('Generating class sessions...');
 
-  const STATES: ('COMPLETED' | 'LEAVE' | 'CANCELLED' | 'RESCHEDULED')[] = [
-    'COMPLETED',
-    'LEAVE',
-    'CANCELLED',
-    'RESCHEDULED',
-  ];
+  const SESSION_DAYS = 180;
+  let totalSessions = 0;
+  let sessionBatch: {
+    classRuleId: string;
+    courseId: string;
+    occurrenceDate: Date;
+    startTime: Date;
+    endTime: Date;
+    state: string;
+  }[] = [];
 
+  let ruleCursor: string | undefined;
   const PAGE_SIZE = 3000;
-  const MAX_END = new Date('2027-01-01');
-  let processedRules = 0;
-  let totalOverrides = 0;
-  let cursor: string | undefined;
 
   while (true) {
     const page = await prisma.classRule.findMany({
-      select: { id: true, startDate: true, endDate: true, intervalDays: true },
+      select: {
+        id: true,
+        courseId: true,
+        startDate: true,
+        endDate: true,
+        intervalDays: true,
+        startTime: true,
+        endTime: true,
+      },
       take: PAGE_SIZE,
       orderBy: { id: 'asc' },
-      ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+      ...(ruleCursor ? { skip: 1, cursor: { id: ruleCursor } } : {}),
     });
 
     if (page.length === 0) break;
 
-    const batchOverrides: {
-      classRuleId: string;
-      occurrenceDate: Date;
-      state: 'COMPLETED' | 'LEAVE' | 'CANCELLED' | 'RESCHEDULED';
-      rescheduledDate?: Date;
-      rescheduledStartTime?: Date;
-      rescheduledEndTime?: Date;
-      reason?: string;
-    }[] = [];
-    for (let ri = 0; ri < page.length; ri++) {
-      const globalIndex = processedRules + ri;
-      if (pseudoRandom(globalIndex + 20000) < 0.5) continue;
-
-      const rule = page[ri];
-      const count = 1 + Math.floor(pseudoRandom(globalIndex + 21000) * 2);
-
-      const maxEnd = rule.endDate ?? MAX_END;
-      let totalDates: number;
-      if (rule.intervalDays === null) {
-        totalDates = 1;
-      } else {
-        const diffMs = maxEnd.getTime() - rule.startDate.getTime();
-        totalDates = Math.floor(diffMs / (MS_PER_DAY * rule.intervalDays)) + 1;
-      }
-      if (totalDates <= 0) continue;
-
-      const usedIndices = new Set<number>();
-      for (let c = 0; c < count && usedIndices.size < totalDates; c++) {
-        let idx: number;
-        let attempts = 0;
-        do {
-          idx = Math.floor(pseudoRandom(globalIndex * 10007 + c * 13 + 22000) * totalDates);
-          attempts++;
-          if (attempts > 100) break; // safety valve
-        } while (usedIndices.has(idx));
-        usedIndices.add(idx);
-
-        const selectedDate =
-          rule.intervalDays === null
-            ? new Date(rule.startDate)
-            : new Date(rule.startDate.getTime() + idx * rule.intervalDays * MS_PER_DAY);
-
-        const state =
-          STATES[Math.floor(pseudoRandom(globalIndex + 23000 + c * 100) * STATES.length)];
-
-        const override: Record<string, unknown> = {
+    for (const rule of page) {
+      const dates = generateDates(rule.startDate, rule.intervalDays, rule.endDate, SESSION_DAYS);
+      for (const d of dates) {
+        sessionBatch.push({
           classRuleId: rule.id,
-          occurrenceDate: selectedDate,
-          state,
-          reason: `Seed: ${state.toLowerCase()}`,
-        };
-
-        if (state === 'RESCHEDULED') {
-          const slotIdx = Math.floor(
-            pseudoRandom(globalIndex + 24000 + c * 100) * TIME_SLOTS.length,
-          );
-          const slot = TIME_SLOTS[slotIdx];
-          override.rescheduledDate = addDays(selectedDate, 1);
-          override.rescheduledStartTime = makeTime(slot.startHour, slot.startMin);
-          override.rescheduledEndTime = makeTime(slot.endHour, slot.endMin);
-        }
-
-        batchOverrides.push(override as (typeof batchOverrides)[number]);
-      }
-    }
-
-    // 立即插入这一批的 override
-    if (batchOverrides.length > 0) {
-      const CHUNK = 5_000;
-      for (let i = 0; i < batchOverrides.length; i += CHUNK) {
-        await prisma.classSessionOverride.createMany({
-          data: batchOverrides.slice(i, i + CHUNK),
-          skipDuplicates: true,
+          courseId: rule.courseId,
+          occurrenceDate: d,
+          startTime: rule.startTime,
+          endTime: rule.endTime,
+          state: 'SCHEDULED',
         });
       }
-      totalOverrides += batchOverrides.length;
     }
 
-    processedRules += page.length;
+    if (sessionBatch.length >= RULE_CHUNK_SIZE) {
+      await prisma.classSession.createMany({ data: sessionBatch, skipDuplicates: true });
+      totalSessions += sessionBatch.length;
+      sessionBatch = [];
+    }
 
-    cursor = page[page.length - 1].id;
+    ruleCursor = page[page.length - 1].id;
   }
 
-  log(`Created ${totalOverrides} session overrides`);
+  if (sessionBatch.length > 0) {
+    await prisma.classSession.createMany({ data: sessionBatch, skipDuplicates: true });
+    totalSessions += sessionBatch.length;
+  }
+  log(`Created ${totalSessions} class sessions`);
+
+  // 8. Create SessionParticipants linking students to sessions
+  log('Generating session participants...');
+
+  let totalParticipants = 0;
+  let participantBatch: {
+    classSessionId: string;
+    studentId: string;
+  }[] = [];
+  const SESSION_PAGE_SIZE = 2000;
+
+  let sessionCursor: string | undefined;
+  while (true) {
+    const sessionPage = await prisma.classSession.findMany({
+      select: { id: true, courseId: true },
+      take: SESSION_PAGE_SIZE,
+      orderBy: { id: 'asc' },
+      ...(sessionCursor ? { skip: 1, cursor: { id: sessionCursor } } : {}),
+    });
+
+    if (sessionPage.length === 0) break;
+
+    for (const sess of sessionPage) {
+      // Find all enrolled students for this course
+      const enrolled = await prisma.studentCourse.findMany({
+        where: { courseId: sess.courseId, deletedAt: null },
+        select: { studentId: true },
+      });
+
+      for (const enr of enrolled) {
+        participantBatch.push({
+          classSessionId: sess.id,
+          studentId: enr.studentId,
+        });
+      }
+    }
+
+    if (participantBatch.length >= 5000) {
+      await prisma.sessionParticipant.createMany({ data: participantBatch, skipDuplicates: true });
+      totalParticipants += participantBatch.length;
+      participantBatch = [];
+    }
+
+    sessionCursor = sessionPage[sessionPage.length - 1].id;
+  }
+
+  if (participantBatch.length > 0) {
+    await prisma.sessionParticipant.createMany({ data: participantBatch, skipDuplicates: true });
+    totalParticipants += participantBatch.length;
+  }
+  log(`Created ${totalParticipants} session participants`);
 
   log('Seed complete');
 }

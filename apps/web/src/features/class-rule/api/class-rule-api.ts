@@ -6,16 +6,16 @@ import type {
 
 import { request } from '@/utils/request';
 
-/** 根据选课关系 ID 查询上课规则列表（offset 分页） */
+/** 根据课程 ID 查询上课规则列表（offset 分页） */
 export async function fetchClassRules(
-  studentCourseId: string,
+  courseId: string,
   params: {
     offset?: number;
     limit?: number;
   },
 ): Promise<ClassRuleListResponse> {
   const { data } = await request.get<ClassRuleListResponse>('/class-rule/list', {
-    params: { studentCourseId, ...params },
+    params: { courseId, ...params },
   });
   return data;
 }
@@ -48,20 +48,36 @@ export async function updateClassRule(
 
 /** 冲突检测 */
 export async function checkClassRuleConflicts(
-  studentCourseId: string,
   payload: ClassRuleConflictCheckRequest,
 ): Promise<ClassRuleConflictCheckResponse> {
   const { data } = await request.post<ClassRuleConflictCheckResponse>(
-    `/class-rule/check-conflicts/${studentCourseId}`,
+    '/class-rule/check-conflicts',
     payload,
   );
   return data;
 }
 
-/** 获取上课规则的所有调课覆盖记录 */
-export async function fetchClassRuleOverrides(id: string): Promise<Record<string, unknown>[]> {
-  const { data } = await request.get<{ data: Record<string, unknown>[] }>(
-    `/class-rule/${id}/overrides`,
+/** 预览规则变更 */
+export async function previewClassRuleChanges(
+  id: string,
+): Promise<{ toDelete: number; toCreate: number; hasConflict: boolean; conflicts: unknown[] }> {
+  const res = await request.get<{
+    toDelete: number;
+    toCreate: number;
+    hasConflict: boolean;
+    conflicts: unknown[];
+  }>(`/class-rule/${id}/preview`);
+  return res.data;
+}
+
+/** 应用规则变更（删除未来 Session 并重新生成） */
+export async function applyClassRuleChanges(
+  id: string,
+  payload: Record<string, unknown>,
+): Promise<Record<string, unknown>> {
+  const { data } = await request.post<{ data: Record<string, unknown> }>(
+    `/class-rule/${id}/apply-changes`,
+    payload,
   );
   return data.data;
 }

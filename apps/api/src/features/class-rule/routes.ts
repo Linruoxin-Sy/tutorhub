@@ -22,8 +22,8 @@ export const classRuleRoute = new Hono()
   .get('/list', zValidator('query', classRuleListQuerySchema), async (c) => {
     const query = c.req.valid('query');
     const userId = c.get('userId');
-    const { studentCourseId, ...rest } = query;
-    const res: ClassRuleListResponse = await classRuleService.list(studentCourseId, rest, userId);
+    const { courseId, ...rest } = query;
+    const res: ClassRuleListResponse = await classRuleService.list(courseId, rest, userId);
     return c.json(res);
   })
   .get('/:id', zValidator('param', classRuleDetailParamsSchema), async (c) => {
@@ -50,23 +50,40 @@ export const classRuleRoute = new Hono()
       return c.json({ data: res });
     },
   )
-  .post(
-    '/check-conflicts/:studentCourseId',
-    zValidator('json', classRuleConflictCheckSchema),
-    async (c) => {
-      const studentCourseId = c.req.param('studentCourseId');
-      const input = c.req.valid('json');
-      const userId = c.get('userId');
-      const res = await classRuleService.checkConflicts(studentCourseId, input, userId);
-      return c.json(res);
-    },
-  )
-  .get('/:id/overrides', zValidator('param', classRuleDetailParamsSchema), async (c) => {
+  .post('/check-conflicts', zValidator('json', classRuleConflictCheckSchema), async (c) => {
+    const input = c.req.valid('json');
+    const userId = c.get('userId');
+    const res = await classRuleService.checkConflicts(input.courseId, input, userId);
+    return c.json(res);
+  })
+  .get('/:id/preview', zValidator('param', classRuleDetailParamsSchema), async (c) => {
     const { id } = c.req.valid('param');
     const userId = c.get('userId');
-    const res = await classRuleService.getOverrides(id, userId);
-    return c.json({ data: res });
+    // 用当前规则数据做预览（无变更时）
+    const existing = await classRuleService.getById(id, userId);
+    const res = await classRuleService.previewChanges(
+      id,
+      {
+        startDate: existing.startDate,
+        startTime: existing.startTime.toISOString?.()?.slice(11, 16) ?? '',
+        endTime: existing.endTime.toISOString?.()?.slice(11, 16) ?? '',
+      },
+      userId,
+    );
+    return c.json(res);
   })
+  .post(
+    '/:id/apply-changes',
+    zValidator('param', classRuleDetailParamsSchema),
+    zValidator('json', classRuleUpdateSchema),
+    async (c) => {
+      const { id } = c.req.valid('param');
+      const input = c.req.valid('json');
+      const userId = c.get('userId');
+      const res: ClassRuleUpdateResponse = await classRuleService.applyChanges(id, input, userId);
+      return c.json({ data: res });
+    },
+  )
   .delete('/:id', zValidator('param', classRuleDeleteParamsSchema), async (c) => {
     const { id } = c.req.valid('param');
     const userId = c.get('userId');

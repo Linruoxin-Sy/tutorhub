@@ -2,7 +2,7 @@
   <main class="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <PageHeader
       title="Create Class Rule"
-      description="Define a new class schedule rule for this enrollment."
+      description="Define a new class schedule rule for this course."
     />
 
     <!-- 表单卡片 -->
@@ -137,8 +137,8 @@
           <template #item="{ item }">
             <SessionItem
               v-if="item"
-              :student-name="studentName"
-              :course-name="courseName"
+              student-name=""
+              course-name="Course"
               :date="item.occurrenceDate"
               :start-time="item.startTime"
               :end-time="item.endTime"
@@ -160,8 +160,8 @@
           <SessionItem
             v-for="conflict in conflictResult.conflicts"
             :key="conflict.date + conflict.startTime"
-            :student-name="studentName"
-            :course-name="courseName"
+            student-name=""
+            course-name="Conflict"
             :date="conflict.date"
             :start-time="conflict.startTime"
             :end-time="conflict.endTime"
@@ -174,11 +174,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue';
+import { computed } from 'vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import type { GeneratedSession } from '@tutorhub/schema';
-import { fetchEnrollmentById } from '@/features/enrollment/api/enrollment-api';
 import { useLocalQuery } from '@/hooks/useLocalQuery';
 import { useThemeToggle } from '@/hooks/useThemeToggle';
 import { datePickerUi } from '@/features/class-rule/constants/datePickerUi';
@@ -188,7 +187,7 @@ import ListPageShell from '@/components/ListPageShell.vue';
 import { useClassRuleCreateForm } from '@/features/class-rule/hooks/useClassRuleCreateForm';
 
 const props = defineProps<{
-  enrollmentId: string;
+  courseId: string;
 }>();
 
 const {
@@ -199,23 +198,10 @@ const {
   isInfinite,
   isSubmitting,
   submit,
-} = useClassRuleCreateForm(props.enrollmentId);
+} = useClassRuleCreateForm(props.courseId);
 
 const { isDark } = useThemeToggle();
 const sessionQuery = useLocalQuery(generatedSessions);
-
-const studentName = ref('Student');
-const courseName = ref('Course');
-
-onMounted(async () => {
-  try {
-    const enrollment = await fetchEnrollmentById(props.enrollmentId);
-    studentName.value = enrollment.student?.name ?? 'Student';
-    courseName.value = enrollment.course?.name ?? 'Course';
-  } catch {
-    // fallback to defaults
-  }
-});
 
 // ---- VueDatePicker 双向绑定辅助 ----
 

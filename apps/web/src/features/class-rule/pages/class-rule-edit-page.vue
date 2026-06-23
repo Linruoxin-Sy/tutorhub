@@ -136,8 +136,8 @@
           <template #item="{ item }">
             <SessionItem
               v-if="item"
-              :student-name="studentName"
-              :course-name="courseName"
+              student-name=""
+              course-name="Course"
               :date="item.occurrenceDate"
               :start-time="item.startTime"
               :end-time="item.endTime"
@@ -159,8 +159,8 @@
           <SessionItem
             v-for="conflict in conflictResult.conflicts"
             :key="conflict.date + conflict.startTime"
-            :student-name="studentName"
-            :course-name="courseName"
+            student-name=""
+            course-name="Conflict"
             :date="conflict.date"
             :start-time="conflict.startTime"
             :end-time="conflict.endTime"
@@ -186,7 +186,7 @@ import ListPageShell from '@/components/ListPageShell.vue';
 import { useClassRuleEditForm } from '@/features/class-rule/hooks/useClassRuleEditForm';
 
 const props = defineProps<{
-  enrollmentId: string;
+  courseId: string;
   ruleId: string;
 }>();
 
@@ -198,10 +198,8 @@ const {
   generatedSessions,
   isInfinite,
   isSubmitting,
-  studentName,
-  courseName,
   submit,
-} = useClassRuleEditForm(props.enrollmentId, props.ruleId);
+} = useClassRuleEditForm(props.courseId, props.ruleId);
 
 const { isDark } = useThemeToggle();
 const sessionQuery = useLocalQuery(generatedSessions);

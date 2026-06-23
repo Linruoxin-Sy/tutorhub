@@ -221,6 +221,7 @@ export type StudentWhereInput = {
   description?: Prisma.StringNullableFilter<'Student'> | string | null;
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
   studentCourses?: Prisma.StudentCourseListRelationFilter;
+  sessionParticipants?: Prisma.SessionParticipantListRelationFilter;
 };
 
 export type StudentOrderByWithRelationInput = {
@@ -236,6 +237,7 @@ export type StudentOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder;
   user?: Prisma.UserOrderByWithRelationInput;
   studentCourses?: Prisma.StudentCourseOrderByRelationAggregateInput;
+  sessionParticipants?: Prisma.SessionParticipantOrderByRelationAggregateInput;
 };
 
 export type StudentWhereUniqueInput = Prisma.AtLeast<
@@ -255,6 +257,7 @@ export type StudentWhereUniqueInput = Prisma.AtLeast<
     description?: Prisma.StringNullableFilter<'Student'> | string | null;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
     studentCourses?: Prisma.StudentCourseListRelationFilter;
+    sessionParticipants?: Prisma.SessionParticipantListRelationFilter;
   },
   'id'
 >;
@@ -307,6 +310,7 @@ export type StudentCreateInput = {
   description?: string | null;
   user: Prisma.UserCreateNestedOneWithoutStudentsInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutStudentInput;
+  sessionParticipants?: Prisma.SessionParticipantCreateNestedManyWithoutStudentInput;
 };
 
 export type StudentUncheckedCreateInput = {
@@ -321,6 +325,7 @@ export type StudentUncheckedCreateInput = {
   phone?: string | null;
   description?: string | null;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutStudentInput;
+  sessionParticipants?: Prisma.SessionParticipantUncheckedCreateNestedManyWithoutStudentInput;
 };
 
 export type StudentUpdateInput = {
@@ -335,6 +340,7 @@ export type StudentUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   user?: Prisma.UserUpdateOneRequiredWithoutStudentsNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutStudentNestedInput;
+  sessionParticipants?: Prisma.SessionParticipantUpdateManyWithoutStudentNestedInput;
 };
 
 export type StudentUncheckedUpdateInput = {
@@ -349,6 +355,7 @@ export type StudentUncheckedUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutStudentNestedInput;
+  sessionParticipants?: Prisma.SessionParticipantUncheckedUpdateManyWithoutStudentNestedInput;
 };
 
 export type StudentCreateManyInput = {
@@ -387,6 +394,11 @@ export type StudentUncheckedUpdateManyInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+};
+
+export type StudentScalarRelationFilter = {
+  is?: Prisma.StudentWhereInput;
+  isNot?: Prisma.StudentWhereInput;
 };
 
 export type StudentCountOrderByAggregateInput = {
@@ -428,11 +440,6 @@ export type StudentMinOrderByAggregateInput = {
   description?: Prisma.SortOrder;
 };
 
-export type StudentScalarRelationFilter = {
-  is?: Prisma.StudentWhereInput;
-  isNot?: Prisma.StudentWhereInput;
-};
-
 export type StudentListRelationFilter = {
   every?: Prisma.StudentWhereInput;
   some?: Prisma.StudentWhereInput;
@@ -441,6 +448,32 @@ export type StudentListRelationFilter = {
 
 export type StudentOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder;
+};
+
+export type StudentCreateNestedOneWithoutSessionParticipantsInput = {
+  create?: Prisma.XOR<
+    Prisma.StudentCreateWithoutSessionParticipantsInput,
+    Prisma.StudentUncheckedCreateWithoutSessionParticipantsInput
+  >;
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutSessionParticipantsInput;
+  connect?: Prisma.StudentWhereUniqueInput;
+};
+
+export type StudentUpdateOneRequiredWithoutSessionParticipantsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.StudentCreateWithoutSessionParticipantsInput,
+    Prisma.StudentUncheckedCreateWithoutSessionParticipantsInput
+  >;
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutSessionParticipantsInput;
+  upsert?: Prisma.StudentUpsertWithoutSessionParticipantsInput;
+  connect?: Prisma.StudentWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.StudentUpdateToOneWithWhereWithoutSessionParticipantsInput,
+      Prisma.StudentUpdateWithoutSessionParticipantsInput
+    >,
+    Prisma.StudentUncheckedUpdateWithoutSessionParticipantsInput
+  >;
 };
 
 export type StudentCreateNestedOneWithoutStudentCoursesInput = {
@@ -555,6 +588,90 @@ export type StudentUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.StudentScalarWhereInput | Prisma.StudentScalarWhereInput[];
 };
 
+export type StudentCreateWithoutSessionParticipantsInput = {
+  id?: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  name: string;
+  avatarKey?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  description?: string | null;
+  user: Prisma.UserCreateNestedOneWithoutStudentsInput;
+  studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutStudentInput;
+};
+
+export type StudentUncheckedCreateWithoutSessionParticipantsInput = {
+  id?: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  userId: string;
+  name: string;
+  avatarKey?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  description?: string | null;
+  studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutStudentInput;
+};
+
+export type StudentCreateOrConnectWithoutSessionParticipantsInput = {
+  where: Prisma.StudentWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.StudentCreateWithoutSessionParticipantsInput,
+    Prisma.StudentUncheckedCreateWithoutSessionParticipantsInput
+  >;
+};
+
+export type StudentUpsertWithoutSessionParticipantsInput = {
+  update: Prisma.XOR<
+    Prisma.StudentUpdateWithoutSessionParticipantsInput,
+    Prisma.StudentUncheckedUpdateWithoutSessionParticipantsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.StudentCreateWithoutSessionParticipantsInput,
+    Prisma.StudentUncheckedCreateWithoutSessionParticipantsInput
+  >;
+  where?: Prisma.StudentWhereInput;
+};
+
+export type StudentUpdateToOneWithWhereWithoutSessionParticipantsInput = {
+  where?: Prisma.StudentWhereInput;
+  data: Prisma.XOR<
+    Prisma.StudentUpdateWithoutSessionParticipantsInput,
+    Prisma.StudentUncheckedUpdateWithoutSessionParticipantsInput
+  >;
+};
+
+export type StudentUpdateWithoutSessionParticipantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  avatarKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  user?: Prisma.UserUpdateOneRequiredWithoutStudentsNestedInput;
+  studentCourses?: Prisma.StudentCourseUpdateManyWithoutStudentNestedInput;
+};
+
+export type StudentUncheckedUpdateWithoutSessionParticipantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  userId?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  avatarKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutStudentNestedInput;
+};
+
 export type StudentCreateWithoutStudentCoursesInput = {
   id?: string;
   createdAt?: Date | string;
@@ -566,6 +683,7 @@ export type StudentCreateWithoutStudentCoursesInput = {
   phone?: string | null;
   description?: string | null;
   user: Prisma.UserCreateNestedOneWithoutStudentsInput;
+  sessionParticipants?: Prisma.SessionParticipantCreateNestedManyWithoutStudentInput;
 };
 
 export type StudentUncheckedCreateWithoutStudentCoursesInput = {
@@ -579,6 +697,7 @@ export type StudentUncheckedCreateWithoutStudentCoursesInput = {
   email?: string | null;
   phone?: string | null;
   description?: string | null;
+  sessionParticipants?: Prisma.SessionParticipantUncheckedCreateNestedManyWithoutStudentInput;
 };
 
 export type StudentCreateOrConnectWithoutStudentCoursesInput = {
@@ -620,6 +739,7 @@ export type StudentUpdateWithoutStudentCoursesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   user?: Prisma.UserUpdateOneRequiredWithoutStudentsNestedInput;
+  sessionParticipants?: Prisma.SessionParticipantUpdateManyWithoutStudentNestedInput;
 };
 
 export type StudentUncheckedUpdateWithoutStudentCoursesInput = {
@@ -633,6 +753,7 @@ export type StudentUncheckedUpdateWithoutStudentCoursesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  sessionParticipants?: Prisma.SessionParticipantUncheckedUpdateManyWithoutStudentNestedInput;
 };
 
 export type StudentCreateWithoutUserInput = {
@@ -646,6 +767,7 @@ export type StudentCreateWithoutUserInput = {
   phone?: string | null;
   description?: string | null;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutStudentInput;
+  sessionParticipants?: Prisma.SessionParticipantCreateNestedManyWithoutStudentInput;
 };
 
 export type StudentUncheckedCreateWithoutUserInput = {
@@ -659,6 +781,7 @@ export type StudentUncheckedCreateWithoutUserInput = {
   phone?: string | null;
   description?: string | null;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutStudentInput;
+  sessionParticipants?: Prisma.SessionParticipantUncheckedCreateNestedManyWithoutStudentInput;
 };
 
 export type StudentCreateOrConnectWithoutUserInput = {
@@ -741,6 +864,7 @@ export type StudentUpdateWithoutUserInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutStudentNestedInput;
+  sessionParticipants?: Prisma.SessionParticipantUpdateManyWithoutStudentNestedInput;
 };
 
 export type StudentUncheckedUpdateWithoutUserInput = {
@@ -754,6 +878,7 @@ export type StudentUncheckedUpdateWithoutUserInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutStudentNestedInput;
+  sessionParticipants?: Prisma.SessionParticipantUncheckedUpdateManyWithoutStudentNestedInput;
 };
 
 export type StudentUncheckedUpdateManyWithoutUserInput = {
@@ -774,12 +899,14 @@ export type StudentUncheckedUpdateManyWithoutUserInput = {
 
 export type StudentCountOutputType = {
   studentCourses: number;
+  sessionParticipants: number;
 };
 
 export type StudentCountOutputTypeSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   studentCourses?: boolean | StudentCountOutputTypeCountStudentCoursesArgs;
+  sessionParticipants?: boolean | StudentCountOutputTypeCountSessionParticipantsArgs;
 };
 
 /**
@@ -803,6 +930,15 @@ export type StudentCountOutputTypeCountStudentCoursesArgs<
   where?: Prisma.StudentCourseWhereInput;
 };
 
+/**
+ * StudentCountOutputType without action
+ */
+export type StudentCountOutputTypeCountSessionParticipantsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.SessionParticipantWhereInput;
+};
+
 export type StudentSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -819,6 +955,7 @@ export type StudentSelect<
     description?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
     studentCourses?: boolean | Prisma.Student$studentCoursesArgs<ExtArgs>;
+    sessionParticipants?: boolean | Prisma.Student$sessionParticipantsArgs<ExtArgs>;
     _count?: boolean | Prisma.StudentCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['student']
@@ -895,6 +1032,7 @@ export type StudentInclude<
 > = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   studentCourses?: boolean | Prisma.Student$studentCoursesArgs<ExtArgs>;
+  sessionParticipants?: boolean | Prisma.Student$sessionParticipantsArgs<ExtArgs>;
   _count?: boolean | Prisma.StudentCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type StudentIncludeCreateManyAndReturn<
@@ -921,6 +1059,10 @@ export type $StudentPayload<
      * 学生的选课关系
      */
     studentCourses: Prisma.$StudentCoursePayload<ExtArgs>[];
+    /**
+     * 学生参与的课程实例
+     */
+    sessionParticipants: Prisma.$SessionParticipantPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1504,6 +1646,17 @@ export interface Prisma__StudentClient<
       >
     | Null
   >;
+  sessionParticipants<T extends Prisma.Student$sessionParticipantsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Student$sessionParticipantsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$SessionParticipantPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1998,6 +2151,34 @@ export type Student$studentCoursesArgs<
   take?: number;
   skip?: number;
   distinct?: Prisma.StudentCourseScalarFieldEnum | Prisma.StudentCourseScalarFieldEnum[];
+};
+
+/**
+ * Student.sessionParticipants
+ */
+export type Student$sessionParticipantsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the SessionParticipant
+   */
+  select?: Prisma.SessionParticipantSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the SessionParticipant
+   */
+  omit?: Prisma.SessionParticipantOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SessionParticipantInclude<ExtArgs> | null;
+  where?: Prisma.SessionParticipantWhereInput;
+  orderBy?:
+    | Prisma.SessionParticipantOrderByWithRelationInput
+    | Prisma.SessionParticipantOrderByWithRelationInput[];
+  cursor?: Prisma.SessionParticipantWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.SessionParticipantScalarFieldEnum | Prisma.SessionParticipantScalarFieldEnum[];
 };
 
 /**

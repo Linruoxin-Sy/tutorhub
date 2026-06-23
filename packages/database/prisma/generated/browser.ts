@@ -18,10 +18,10 @@ export { Prisma };
 export * as $Enums from './enums';
 export * from './enums';
 /**
- * Model ClassSessionOverride
- *
+ * Model ClassSession
+ * 课程实例 — 由 ClassRule 生成，存储在数据库中
  */
-export type ClassSessionOverride = Prisma.ClassSessionOverrideModel;
+export type ClassSession = Prisma.ClassSessionModel;
 /**
  * Model Course
  *
@@ -32,6 +32,11 @@ export type Course = Prisma.CourseModel;
  *
  */
 export type ClassRule = Prisma.ClassRuleModel;
+/**
+ * Model SessionParticipant
+ * 课程参与学生 — 表示某个学生参与了某次课程实例
+ */
+export type SessionParticipant = Prisma.SessionParticipantModel;
 /**
  * Model Student
  *

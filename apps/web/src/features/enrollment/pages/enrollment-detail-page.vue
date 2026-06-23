@@ -1,70 +1,91 @@
 <template>
-  <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <PageHeader title="Enrollment Details" description="View class rules for this enrollment." />
+  <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+    <PageHeader title="Enrollment Details" description="Student course enrollment information." />
 
-    <ListPageShell title="Class Rules">
-      <div class="flex min-h-0 flex-1 flex-col">
-        <VirtualList
-          :query="sparseQuery"
-          :estimate-size="160"
-          :overscan="10"
-          scroll-class="flex-1 overflow-x-hidden overflow-y-auto p-5"
-        >
-          <template #loading>
-            <div class="divide-y divide-gray-200 dark:divide-[#343434]">
-              <ClassRuleItem v-for="index in 6" :key="index" loading />
-            </div>
-          </template>
+    <CardSection v-if="isLoading" class="p-6">
+      <LoadingIndicator text="Loading enrollment..." />
+    </CardSection>
 
-          <template #item="{ item, isLoaded }">
-            <ClassRuleItem
-              :rule="item!"
-              :loading="!isLoaded"
-              :actions="[]"
-              @view="handleViewRule(item!)"
-            />
-          </template>
-
-          <template #empty>
-            <div
-              class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
-            >
-              <div
-                class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
-              >
-                No class rules found.
-              </div>
-            </div>
-          </template>
-        </VirtualList>
+    <CardSection v-else-if="enrollment" class="p-6">
+      <div class="grid gap-6 sm:grid-cols-2">
+        <div class="space-y-1">
+          <label
+            class="text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400"
+          >
+            Student
+          </label>
+          <p class="text-sm font-medium text-gray-900 dark:text-white">
+            {{ enrollment.student.name }}
+          </p>
+        </div>
+        <div class="space-y-1">
+          <label
+            class="text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400"
+          >
+            Course
+          </label>
+          <p class="text-sm font-medium text-gray-900 dark:text-white">
+            {{ enrollment.course.name }}
+          </p>
+        </div>
+        <div class="space-y-1">
+          <label
+            class="text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400"
+          >
+            Enrolled At
+          </label>
+          <p class="text-sm font-medium text-gray-900 dark:text-white">
+            {{ formatDate(enrollment.createdAt) }}
+          </p>
+        </div>
       </div>
-    </ListPageShell>
+      <div class="mt-6 flex flex-wrap gap-3 border-t border-gray-200 pt-6 dark:border-[#343434]">
+        <AppButton @click="goToCourse">
+          <i class="i-lucide-book-open size-4" />
+          View Course
+        </AppButton>
+        <AppButton variant="secondary" @click="goToStudent">
+          <i class="i-lucide-user size-4" />
+          View Student
+        </AppButton>
+      </div>
+    </CardSection>
   </main>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useSparseQuery } from '@/hooks/useSparseQuery';
-import { fetchClassRules } from '@/features/class-rule/api/class-rule-api';
-import ClassRuleItem from '@/features/class-rule/components/ClassRuleItem.vue';
-import VirtualList from '@/components/VirtualList.vue';
-import ListPageShell from '@/components/ListPageShell.vue';
-import PageHeader from '@/components/PageHeader.vue';
-import type { ClassRuleListItem } from '@tutorhub/schema';
+import { fetchEnrollmentById } from '@/features/enrollment/api/enrollment-api';
+import { formatDate } from '@/utils/date';
+import type { EnrollmentDetailResponse } from '@tutorhub/schema';
 
 const route = useRoute();
 const router = useRouter();
 const id = (route.params as Record<string, string>).id;
 
-const sparseQuery = useSparseQuery<ClassRuleListItem>({
-  queryKeyPrefix: ['class-rules', id],
-  fetchFn: (params) => fetchClassRules(id, params),
+const isLoading = ref(true);
+const enrollment = ref<EnrollmentDetailResponse | null>(null);
+
+onMounted(async () => {
+  try {
+    enrollment.value = await fetchEnrollmentById(id);
+  } catch {
+    // handled by toast
+  } finally {
+    isLoading.value = false;
+  }
 });
 
-function handleViewRule(rule: ClassRuleListItem) {
-  router.push({
-    name: 'enrollment.class-rule.detail',
-    params: { id, ruleId: rule.id },
-  });
+function goToCourse() {
+  if (enrollment.value) {
+    router.push({ name: 'course.detail', params: { id: enrollment.value.courseId } });
+  }
+}
+
+function goToStudent() {
+  if (enrollment.value) {
+    router.push({ name: 'student.detail', params: { id: enrollment.value.studentId } });
+  }
 }
 </script>

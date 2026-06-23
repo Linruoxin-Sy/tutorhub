@@ -1,17 +1,7 @@
 <template>
   <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div class="space-y-6">
-      <PageHeader title="Sessions" description="Review session records and exception history." />
-
-      <div class="flex justify-end">
-        <button
-          type="button"
-          class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-        >
-          <i class="i-lucide-plus size-4"></i>
-          Log Session
-        </button>
-      </div>
+      <PageHeader title="Sessions" description="Review class session records." />
 
       <CardSection class="overflow-hidden">
         <div class="border-b border-gray-200 px-5 py-4 dark:border-[#343434]">
@@ -19,18 +9,19 @@
             <div>
               <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Class sessions</h2>
               <p class="text-sm text-gray-500 dark:text-gray-400">
-                Directly connected to the class-session endpoint.
+                All class sessions across your courses.
               </p>
             </div>
             <div class="grid gap-3 sm:grid-cols-2 lg:min-w-136 lg:grid-cols-[1fr_12rem]">
+              <select
+                v-model="selectedCourseId"
+                class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 transition outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
+              >
+                <option value="">All courses</option>
+                <option v-for="c in courses" :key="c.id" :value="c.id">{{ c.name }}</option>
+              </select>
               <input
-                v-model="studentCourseId"
-                type="text"
-                placeholder="Filter by student course ID"
-                class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
-              />
-              <input
-                v-model="classDate"
+                v-model="dateFilter"
                 type="date"
                 class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 transition outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
               />
@@ -78,37 +69,30 @@
                     >
                       <i class="i-lucide-book-open size-4"></i>
                     </div>
-                    <span class="text-sm font-medium text-gray-900 dark:text-white">{{
-                      sessionLookup.get(session.studentCourseId) ?? session.studentCourseId
-                    }}</span>
+                    <span class="text-sm font-medium text-gray-900 dark:text-white">
+                      {{ session.course?.name ?? '-' }}
+                    </span>
                   </div>
                 </td>
                 <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
-                  {{ formatDate(session.classDate) }}
+                  {{ formatDate(session.occurrenceDate) }}
                 </td>
                 <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
-                  {{ formatTime(session.startTime) }} - {{ formatTime(session.endTime) }}
-                </td>
-                <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
-                  {{ formatDateTime(session.createdAt) }}
-                </td>
-                <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
-                  {{ session.studentCourseId }}
+                  {{ formatTime(session.startTime) }} – {{ formatTime(session.endTime) }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center justify-end gap-1">
-                    <button
-                      type="button"
-                      class="rounded-lg p-1.5 text-blue-600 transition hover:bg-blue-50 dark:text-blue-300 dark:hover:bg-blue-500/10"
-                    >
-                      <i class="i-lucide-square-pen size-4"></i></button
-                    ><button
-                      type="button"
-                      class="rounded-lg p-1.5 text-red-600 transition hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-500/10"
-                    >
-                      <i class="i-lucide-trash-2 size-4"></i>
-                    </button>
-                  </div>
+                  <span
+                    :class="stateBadgeClass(session.state)"
+                    class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  >
+                    {{ stateLabel(session.state) }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <AppButton variant="secondary" @click="viewSession(session.id)">
+                    <i class="i-lucide-eye size-3.5" />
+                    View
+                  </AppButton>
                 </td>
               </tr>
             </tbody>
@@ -123,81 +107,20 @@
             <button
               type="button"
               class="rounded-lg border border-gray-200 px-3 py-1.5 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#3a3a3a] dark:hover:bg-[#202020]"
-              :disabled="page <= 1"
-              @click="page -= 1"
+              :disabled="offset <= 0"
+              @click="prevPage"
             >
               Previous
             </button>
             <button
               type="button"
               class="rounded-lg border border-gray-200 px-3 py-1.5 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#3a3a3a] dark:hover:bg-[#202020]"
-              :disabled="page * pageSize >= total"
-              @click="page += 1"
+              :disabled="offset + limit >= total"
+              @click="nextPage"
             >
               Next
             </button>
           </div>
-        </div>
-      </CardSection>
-
-      <CardSection class="p-5">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Leave records</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Attendance exceptions linked to sessions.
-            </p>
-          </div>
-          <span
-            class="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-600 dark:bg-[#202020] dark:text-gray-300"
-            >{{ leaveRecords.length }} records</span
-          >
-        </div>
-        <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          <article
-            v-for="record in leaveRecords"
-            :key="record.id"
-            class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-[#3a3a3a] dark:bg-[#202020]"
-          >
-            <p class="text-sm font-semibold text-gray-900 dark:text-white">
-              {{ sessionLookup.get(record.classSessionId) ?? record.classSessionId }}
-            </p>
-            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              {{ record.reason || 'No reason provided.' }}
-            </p>
-          </article>
-        </div>
-      </CardSection>
-
-      <CardSection class="p-5">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Reschedule records</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              History of original and replacement sessions.
-            </p>
-          </div>
-          <span
-            class="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-600 dark:bg-[#202020] dark:text-gray-300"
-            >{{ reschedules.length }} records</span
-          >
-        </div>
-        <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          <article
-            v-for="record in reschedules"
-            :key="record.id"
-            class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-[#3a3a3a] dark:bg-[#202020]"
-          >
-            <p class="text-sm font-semibold text-gray-900 dark:text-white">
-              {{ sessionLookup.get(record.originalSessionId) ?? record.originalSessionId }}
-            </p>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              → {{ sessionLookup.get(record.newSessionId) ?? record.newSessionId }}
-            </p>
-            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              {{ record.reason || 'No reason provided.' }}
-            </p>
-          </article>
         </div>
       </CardSection>
     </div>
@@ -205,94 +128,97 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { formatDate, formatDateTime, formatTime } from '@/utils/date';
+import { ref, watch, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { fetchClassSessions } from '@/features/class-session/api/class-session-api';
+import { fetchCourses } from '@/features/course/api/course-api';
+import { formatDate, formatTime } from '@/utils/date';
+import type { ClassSessionListItem } from '@tutorhub/schema';
 
-const columns = ['Session', 'Date', 'Duration', 'Created At', 'Student Course', 'Actions'];
+const router = useRouter();
 
-const page = ref(1);
-const pageSize = ref(8);
-const studentCourseId = ref('');
-const classDate = ref('');
+const columns = ['Course', 'Date', 'Time', 'Status', 'Actions'];
 
-watch([studentCourseId, classDate], () => {
-  page.value = 1;
-});
-
-const sessions = ref([
-  {
-    id: 'ses1',
-    studentCourseId: 'sc1',
-    classDate: '2026-04-02',
-    startTime: '09:00',
-    endTime: '10:30',
-    createdAt: '2026-04-02T08:00:00Z',
-  },
-  {
-    id: 'ses2',
-    studentCourseId: 'sc3',
-    classDate: '2026-04-02',
-    startTime: '10:30',
-    endTime: '12:00',
-    createdAt: '2026-04-02T08:00:00Z',
-  },
-  {
-    id: 'ses3',
-    studentCourseId: 'sc1',
-    classDate: '2026-03-31',
-    startTime: '09:00',
-    endTime: '10:30',
-    createdAt: '2026-03-31T08:00:00Z',
-  },
-  {
-    id: 'ses4',
-    studentCourseId: 'sc5',
-    classDate: '2026-03-31',
-    startTime: '14:00',
-    endTime: '15:30',
-    createdAt: '2026-03-31T08:00:00Z',
-  },
-  {
-    id: 'ses5',
-    studentCourseId: 'sc7',
-    classDate: '2026-03-30',
-    startTime: '09:00',
-    endTime: '09:45',
-    createdAt: '2026-03-30T08:00:00Z',
-  },
-  {
-    id: 'ses6',
-    studentCourseId: 'sc1',
-    classDate: '2026-03-28',
-    startTime: '09:00',
-    endTime: '10:00',
-    createdAt: '2026-03-28T08:00:00Z',
-  },
-]);
-const total = ref(6);
+const limit = 20;
+const offset = ref(0);
+const total = ref(0);
+const selectedCourseId = ref('');
+const dateFilter = ref('');
+const sessions = ref<ClassSessionListItem[]>([]);
+const courses = ref<{ id: string; name: string }[]>([]);
 const isLoading = ref(false);
 const error = ref('');
 
-const sessionLookup = new Map<string, string>([
-  ['ses1', 'Alice Johnson · Advanced Mathematics'],
-  ['ses2', 'Alice Johnson · Physics Fundamentals'],
-  ['ses3', 'Alice Johnson · Advanced Mathematics'],
-  ['ses4', 'Bob Smith · Chemistry Lab'],
-  ['ses5', 'Alice Johnson · English Literature'],
-  ['ses6', 'Alice Johnson · Advanced Mathematics'],
-]);
+watch([selectedCourseId, dateFilter, offset], () => {
+  loadSessions();
+});
 
-const leaveRecords = ref([
-  { id: 'lr1', classSessionId: 'ses3', reason: 'Sick leave' },
-  { id: 'lr2', classSessionId: 'ses5', reason: 'Family emergency' },
-]);
+function stateLabel(state: string): string {
+  const map: Record<string, string> = {
+    SCHEDULED: 'Scheduled',
+    COMPLETED: 'Completed',
+    LEAVE: 'Leave',
+    CANCELLED: 'Cancelled',
+    RESCHEDULED: 'Rescheduled',
+  };
+  return map[state] ?? state;
+}
 
-const reschedules = ref([
-  {
-    id: 'rr1',
-    originalSessionId: 'ses3',
-    newSessionId: 'ses6',
-    reason: 'Student requested reschedule',
-  },
-]);
+function stateBadgeClass(state: string): string {
+  const map: Record<string, string> = {
+    SCHEDULED: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    COMPLETED: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    LEAVE: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+    CANCELLED: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    RESCHEDULED: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+  };
+  return map[state] ?? 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400';
+}
+
+function prevPage() {
+  offset.value = Math.max(0, offset.value - limit);
+}
+
+function nextPage() {
+  offset.value += limit;
+}
+
+function viewSession(sessionId: string) {
+  const session = sessions.value.find((s) => s.id === sessionId);
+  if (session) {
+    router.push(`/course/${session.courseId}/session/${sessionId}`);
+  }
+}
+
+async function loadSessions() {
+  isLoading.value = true;
+  error.value = '';
+  try {
+    const result = await fetchClassSessions({
+      courseId: selectedCourseId.value || undefined,
+      dateFrom: dateFilter.value || undefined,
+      offset: offset.value,
+      limit,
+    });
+    sessions.value = result.items;
+    total.value = result.total;
+  } catch {
+    error.value = 'Failed to load sessions';
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+onMounted(async () => {
+  try {
+    const result = await fetchCourses({ limit: 100 });
+    courses.value = result.items.map((c: { id: string; name: string }) => ({
+      id: c.id,
+      name: c.name,
+    }));
+  } catch {
+    // courses optional
+  }
+  await loadSessions();
+});
 </script>

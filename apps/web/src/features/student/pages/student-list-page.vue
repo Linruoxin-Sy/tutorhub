@@ -36,7 +36,7 @@
 
           <template #loading>
             <div class="divide-y divide-gray-200 dark:divide-[#343434]">
-              <StudentItem v-for="index in 8" :key="index" loading :student="undefined as any" />
+              <StudentItem v-for="index in 8" :key="index" loading />
             </div>
           </template>
 

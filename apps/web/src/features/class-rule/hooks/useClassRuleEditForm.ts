@@ -1,47 +1,43 @@
 import { useQueryClient } from '@tanstack/vue-query';
 import dayjs from 'dayjs';
-import { cloneDeep, merge } from 'es-toolkit';
-import { RRule, type Options as RRuleOptions } from 'rrule';
 import { toast } from 'vue-sonner';
 
 import { classRuleUpdateSchema, type ConflictItem, type GeneratedSession } from '@tutorhub/schema';
 
 import {
+  applyClassRuleChanges,
   checkClassRuleConflicts,
   fetchClassRuleById,
-  updateClassRule,
+  previewClassRuleChanges,
 } from '@/features/class-rule/api/class-rule-api';
 import { useLoading } from '@/hooks/useLoading';
 
 import type { ClassRuleFormData } from './useClassRuleCreateForm';
 
-export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
+export function useClassRuleEditForm(courseId: string, ruleId: string) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const isInitialLoading = ref(true);
 
   const formData = ref<ClassRuleFormData>({
-    studentCourseId: enrollmentId,
+    courseId,
     startDate: '',
     startTime: '',
     endTime: '',
     intervalDays: null,
     endDate: '',
+    room: '',
   });
 
-  /** 表单校验状态 */
   const isValidated = ref(false);
-
-  /** 冲突检测结果 */
   const conflictResult = ref<{ hasConflict: boolean; conflicts: ConflictItem[] } | null>(null);
-
-  /** 生成的课程列表 */
   const generatedSessions = ref<GeneratedSession[]>([]);
-
-  /** 当前显示的课程批次索引 */
   const sessionBatchIndex = ref(0);
   const BATCH_SIZE = 50;
+
+  /** 预览数据（编辑场景：即将删除/创建的 session 数量） */
+  const previewData = ref<{ toDelete: number; toCreate: number } | null>(null);
 
   const displayedSessions = computed(() =>
     generatedSessions.value.slice(0, (sessionBatchIndex.value + 1) * BATCH_SIZE),
@@ -51,12 +47,10 @@ export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
     () => displayedSessions.value.length < generatedSessions.value.length,
   );
 
-  /** 是否无限循环 */
   const isInfinite = computed(
     () => formData.value.intervalDays !== null && !formData.value.endDate,
   );
 
-  /** 表单填写是否完成 */
   const isFormComplete = computed(() => {
     if (!formData.value.startDate || !formData.value.startTime || !formData.value.endTime) {
       return false;
@@ -64,36 +58,31 @@ export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
     return true;
   });
 
-  /** 学生和课程名称 */
-  const studentName = ref('Student');
-  const courseName = ref('Course');
+  // 声明空函数以满足返回类型
+  const generateSessions = () => {};
+  const loadMoreSessions = () => {};
 
   // 加载已有数据
   onMounted(async () => {
     try {
       const rule = await fetchClassRuleById(ruleId);
       formData.value = {
-        studentCourseId: enrollmentId,
+        courseId,
         startDate: dayjs(rule.startDate as string).format('YYYY-MM-DD'),
         startTime: dayjs(rule.startTime as string).format('HH:mm'),
         endTime: dayjs(rule.endTime as string).format('HH:mm'),
         intervalDays: (rule.intervalDays as number | null) ?? null,
         endDate: rule.endDate ? dayjs(rule.endDate as string).format('YYYY-MM-DD') : '',
+        room: (rule.room as string) ?? '',
       };
-      const sc = rule.studentCourse as Record<string, unknown> | undefined;
-      const s = sc?.student as Record<string, unknown> | undefined;
-      const c = sc?.course as Record<string, unknown> | undefined;
-      studentName.value = (s?.name as string) ?? 'Student';
-      courseName.value = (c?.name as string) ?? 'Course';
     } catch {
       toast.error('Failed to load class rule data');
-      router.push({ name: 'enrollment.detail', params: { id: enrollmentId } });
+      router.push({ name: 'course.edit', params: { id: courseId } });
     } finally {
       isInitialLoading.value = false;
     }
   });
 
-  /** 表单校验 */
   const verify = (): boolean => {
     const payload = {
       startDate: formData.value.startDate,
@@ -101,6 +90,7 @@ export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
       endTime: formData.value.endTime,
       intervalDays: formData.value.intervalDays,
       endDate: formData.value.endDate || null,
+      room: formData.value.room || null,
     };
 
     const result = classRuleUpdateSchema.safeParse(payload);
@@ -116,19 +106,20 @@ export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
     return true;
   };
 
-  /** 冲突检测 */
   const checkConflicts = async (): Promise<boolean> => {
     const payload = {
       excludeId: ruleId,
+      courseId,
       startDate: new Date(formData.value.startDate),
       intervalDays: formData.value.intervalDays,
       endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
       startTime: formData.value.startTime,
       endTime: formData.value.endTime,
+      room: formData.value.room || null,
     };
 
     try {
-      const res = await checkClassRuleConflicts(formData.value.studentCourseId, payload);
+      const res = await checkClassRuleConflicts(payload);
       conflictResult.value = res;
       return !res.hasConflict;
     } catch {
@@ -137,84 +128,45 @@ export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
     }
   };
 
-  /** 生成 session 列表 */
-  const generateSessions = () => {
-    generatedSessions.value = [];
-    sessionBatchIndex.value = 0;
-
-    const startDate = dayjs(formData.value.startDate).toDate();
-    const intervalDays = formData.value.intervalDays;
-    const endDate = formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null;
-
-    let dates: Date[];
-
-    if (!intervalDays) {
-      dates = [startDate];
-    } else {
-      const rruleOptions: Partial<RRuleOptions> = {
-        freq: RRule.DAILY,
-        interval: intervalDays,
-        dtstart: new Date(
-          Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()),
-        ),
-      };
-
-      if (endDate) {
-        rruleOptions.until = new Date(
-          Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()),
-        );
-      }
-
-      const rule = new RRule(rruleOptions);
-
-      if (endDate) {
-        dates = rule.between(startDate, endDate, true);
-      } else {
-        const maxDate = new Date(startDate.getTime() + 365 * 24 * 60 * 60 * 1000);
-        dates = rule.between(startDate, maxDate, true);
-      }
-    }
-
-    generatedSessions.value = dates.map((d) => ({
-      occurrenceDate: dayjs(d).format('YYYY-MM-DD'),
-      startTime: formData.value.startTime,
-      endTime: formData.value.endTime,
-    }));
-  };
-
-  /** 加载更多 session */
-  const loadMoreSessions = () => {
-    if (hasMoreSessions.value) {
-      sessionBatchIndex.value++;
-    }
-  };
-
-  /** 提交 */
   const { withLoading, isLoadingRef: isSubmitting } = useLoading();
   const submit = withLoading(async () => {
     if (!verify()) return;
 
+    // 预览变更
+    try {
+      const preview = await previewClassRuleChanges(ruleId);
+      previewData.value = { toDelete: preview.toDelete, toCreate: preview.toCreate };
+    } catch {
+      // preview not critical
+    }
+
     const hasNoConflict = await checkConflicts();
     if (!hasNoConflict) {
-      generateSessions();
       return;
     }
 
-    generateSessions();
+    // 确认后应用变更
+    const confirmed = window.confirm?.(
+      previewData.value
+        ? `This will delete ${previewData.value.toDelete} future session(s) and create ${previewData.value.toCreate} new session(s). Continue?`
+        : 'Apply changes to this rule?',
+    );
 
-    const payload = merge(cloneDeep(formData.value), {});
-    const apiPayload = {
-      startDate: payload.startDate,
-      startTime: payload.startTime,
-      endTime: payload.endTime,
-      intervalDays: payload.intervalDays || null,
-      endDate: payload.endDate || null,
+    if (confirmed === false) return;
+
+    const payload = {
+      startDate: dayjs(formData.value.startDate).toDate(),
+      startTime: formData.value.startTime,
+      endTime: formData.value.endTime,
+      intervalDays: formData.value.intervalDays || null,
+      endDate: formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null,
+      room: formData.value.room || null,
     };
 
-    await updateClassRule(ruleId, apiPayload);
-    toast.success('Class rule updated successfully!');
-    queryClient.invalidateQueries({ queryKey: ['class-rules', enrollmentId] });
-    router.push({ name: 'enrollment.detail', params: { id: enrollmentId } });
+    await applyClassRuleChanges(ruleId, payload);
+    toast.success('Class rule updated and sessions regenerated!');
+    queryClient.invalidateQueries({ queryKey: ['course-class-rules', courseId] });
+    router.push({ name: 'course.edit', params: { id: courseId } });
   });
 
   return {
@@ -228,8 +180,6 @@ export function useClassRuleEditForm(enrollmentId: string, ruleId: string) {
     isFormComplete,
     isInfinite,
     isSubmitting,
-    studentName,
-    courseName,
     verify,
     checkConflicts,
     generateSessions,

@@ -195,7 +195,6 @@ export type StudentCourseWhereInput = {
   courseId?: Prisma.StringFilter<'StudentCourse'> | string;
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>;
   course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>;
-  classRules?: Prisma.ClassRuleListRelationFilter;
 };
 
 export type StudentCourseOrderByWithRelationInput = {
@@ -207,7 +206,6 @@ export type StudentCourseOrderByWithRelationInput = {
   courseId?: Prisma.SortOrder;
   student?: Prisma.StudentOrderByWithRelationInput;
   course?: Prisma.CourseOrderByWithRelationInput;
-  classRules?: Prisma.ClassRuleOrderByRelationAggregateInput;
 };
 
 export type StudentCourseWhereUniqueInput = Prisma.AtLeast<
@@ -224,7 +222,6 @@ export type StudentCourseWhereUniqueInput = Prisma.AtLeast<
     courseId?: Prisma.StringFilter<'StudentCourse'> | string;
     student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>;
     course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>;
-    classRules?: Prisma.ClassRuleListRelationFilter;
   },
   'id' | 'studentId_courseId'
 >;
@@ -264,7 +261,6 @@ export type StudentCourseCreateInput = {
   deletedAt?: Date | string | null;
   student: Prisma.StudentCreateNestedOneWithoutStudentCoursesInput;
   course: Prisma.CourseCreateNestedOneWithoutStudentCoursesInput;
-  classRules?: Prisma.ClassRuleCreateNestedManyWithoutStudentCourseInput;
 };
 
 export type StudentCourseUncheckedCreateInput = {
@@ -274,7 +270,6 @@ export type StudentCourseUncheckedCreateInput = {
   deletedAt?: Date | string | null;
   studentId: string;
   courseId: string;
-  classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutStudentCourseInput;
 };
 
 export type StudentCourseUpdateInput = {
@@ -284,7 +279,6 @@ export type StudentCourseUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   student?: Prisma.StudentUpdateOneRequiredWithoutStudentCoursesNestedInput;
   course?: Prisma.CourseUpdateOneRequiredWithoutStudentCoursesNestedInput;
-  classRules?: Prisma.ClassRuleUpdateManyWithoutStudentCourseNestedInput;
 };
 
 export type StudentCourseUncheckedUpdateInput = {
@@ -294,7 +288,6 @@ export type StudentCourseUncheckedUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   studentId?: Prisma.StringFieldUpdateOperationsInput | string;
   courseId?: Prisma.StringFieldUpdateOperationsInput | string;
-  classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutStudentCourseNestedInput;
 };
 
 export type StudentCourseCreateManyInput = {
@@ -330,11 +323,6 @@ export type StudentCourseListRelationFilter = {
 
 export type StudentCourseOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder;
-};
-
-export type StudentCourseScalarRelationFilter = {
-  is?: Prisma.StudentCourseWhereInput;
-  isNot?: Prisma.StudentCourseWhereInput;
 };
 
 export type StudentCourseStudentIdCourseIdCompoundUniqueInput = {
@@ -455,32 +443,6 @@ export type StudentCourseUncheckedUpdateManyWithoutCourseNestedInput = {
   deleteMany?: Prisma.StudentCourseScalarWhereInput | Prisma.StudentCourseScalarWhereInput[];
 };
 
-export type StudentCourseCreateNestedOneWithoutClassRulesInput = {
-  create?: Prisma.XOR<
-    Prisma.StudentCourseCreateWithoutClassRulesInput,
-    Prisma.StudentCourseUncheckedCreateWithoutClassRulesInput
-  >;
-  connectOrCreate?: Prisma.StudentCourseCreateOrConnectWithoutClassRulesInput;
-  connect?: Prisma.StudentCourseWhereUniqueInput;
-};
-
-export type StudentCourseUpdateOneRequiredWithoutClassRulesNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.StudentCourseCreateWithoutClassRulesInput,
-    Prisma.StudentCourseUncheckedCreateWithoutClassRulesInput
-  >;
-  connectOrCreate?: Prisma.StudentCourseCreateOrConnectWithoutClassRulesInput;
-  upsert?: Prisma.StudentCourseUpsertWithoutClassRulesInput;
-  connect?: Prisma.StudentCourseWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.StudentCourseUpdateToOneWithWhereWithoutClassRulesInput,
-      Prisma.StudentCourseUpdateWithoutClassRulesInput
-    >,
-    Prisma.StudentCourseUncheckedUpdateWithoutClassRulesInput
-  >;
-};
-
 export type StudentCourseCreateNestedManyWithoutStudentInput = {
   create?:
     | Prisma.XOR<
@@ -573,7 +535,6 @@ export type StudentCourseCreateWithoutCourseInput = {
   updatedAt?: Date | string;
   deletedAt?: Date | string | null;
   student: Prisma.StudentCreateNestedOneWithoutStudentCoursesInput;
-  classRules?: Prisma.ClassRuleCreateNestedManyWithoutStudentCourseInput;
 };
 
 export type StudentCourseUncheckedCreateWithoutCourseInput = {
@@ -582,7 +543,6 @@ export type StudentCourseUncheckedCreateWithoutCourseInput = {
   updatedAt?: Date | string;
   deletedAt?: Date | string | null;
   studentId: string;
-  classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutStudentCourseInput;
 };
 
 export type StudentCourseCreateOrConnectWithoutCourseInput = {
@@ -638,77 +598,12 @@ export type StudentCourseScalarWhereInput = {
   courseId?: Prisma.StringFilter<'StudentCourse'> | string;
 };
 
-export type StudentCourseCreateWithoutClassRulesInput = {
-  id?: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  deletedAt?: Date | string | null;
-  student: Prisma.StudentCreateNestedOneWithoutStudentCoursesInput;
-  course: Prisma.CourseCreateNestedOneWithoutStudentCoursesInput;
-};
-
-export type StudentCourseUncheckedCreateWithoutClassRulesInput = {
-  id?: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  deletedAt?: Date | string | null;
-  studentId: string;
-  courseId: string;
-};
-
-export type StudentCourseCreateOrConnectWithoutClassRulesInput = {
-  where: Prisma.StudentCourseWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.StudentCourseCreateWithoutClassRulesInput,
-    Prisma.StudentCourseUncheckedCreateWithoutClassRulesInput
-  >;
-};
-
-export type StudentCourseUpsertWithoutClassRulesInput = {
-  update: Prisma.XOR<
-    Prisma.StudentCourseUpdateWithoutClassRulesInput,
-    Prisma.StudentCourseUncheckedUpdateWithoutClassRulesInput
-  >;
-  create: Prisma.XOR<
-    Prisma.StudentCourseCreateWithoutClassRulesInput,
-    Prisma.StudentCourseUncheckedCreateWithoutClassRulesInput
-  >;
-  where?: Prisma.StudentCourseWhereInput;
-};
-
-export type StudentCourseUpdateToOneWithWhereWithoutClassRulesInput = {
-  where?: Prisma.StudentCourseWhereInput;
-  data: Prisma.XOR<
-    Prisma.StudentCourseUpdateWithoutClassRulesInput,
-    Prisma.StudentCourseUncheckedUpdateWithoutClassRulesInput
-  >;
-};
-
-export type StudentCourseUpdateWithoutClassRulesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-  student?: Prisma.StudentUpdateOneRequiredWithoutStudentCoursesNestedInput;
-  course?: Prisma.CourseUpdateOneRequiredWithoutStudentCoursesNestedInput;
-};
-
-export type StudentCourseUncheckedUpdateWithoutClassRulesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-  studentId?: Prisma.StringFieldUpdateOperationsInput | string;
-  courseId?: Prisma.StringFieldUpdateOperationsInput | string;
-};
-
 export type StudentCourseCreateWithoutStudentInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   deletedAt?: Date | string | null;
   course: Prisma.CourseCreateNestedOneWithoutStudentCoursesInput;
-  classRules?: Prisma.ClassRuleCreateNestedManyWithoutStudentCourseInput;
 };
 
 export type StudentCourseUncheckedCreateWithoutStudentInput = {
@@ -717,7 +612,6 @@ export type StudentCourseUncheckedCreateWithoutStudentInput = {
   updatedAt?: Date | string;
   deletedAt?: Date | string | null;
   courseId: string;
-  classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutStudentCourseInput;
 };
 
 export type StudentCourseCreateOrConnectWithoutStudentInput = {
@@ -775,7 +669,6 @@ export type StudentCourseUpdateWithoutCourseInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   student?: Prisma.StudentUpdateOneRequiredWithoutStudentCoursesNestedInput;
-  classRules?: Prisma.ClassRuleUpdateManyWithoutStudentCourseNestedInput;
 };
 
 export type StudentCourseUncheckedUpdateWithoutCourseInput = {
@@ -784,7 +677,6 @@ export type StudentCourseUncheckedUpdateWithoutCourseInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   studentId?: Prisma.StringFieldUpdateOperationsInput | string;
-  classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutStudentCourseNestedInput;
 };
 
 export type StudentCourseUncheckedUpdateManyWithoutCourseInput = {
@@ -809,7 +701,6 @@ export type StudentCourseUpdateWithoutStudentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   course?: Prisma.CourseUpdateOneRequiredWithoutStudentCoursesNestedInput;
-  classRules?: Prisma.ClassRuleUpdateManyWithoutStudentCourseNestedInput;
 };
 
 export type StudentCourseUncheckedUpdateWithoutStudentInput = {
@@ -818,7 +709,6 @@ export type StudentCourseUncheckedUpdateWithoutStudentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   courseId?: Prisma.StringFieldUpdateOperationsInput | string;
-  classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutStudentCourseNestedInput;
 };
 
 export type StudentCourseUncheckedUpdateManyWithoutStudentInput = {
@@ -827,41 +717,6 @@ export type StudentCourseUncheckedUpdateManyWithoutStudentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   courseId?: Prisma.StringFieldUpdateOperationsInput | string;
-};
-
-/**
- * Count Type StudentCourseCountOutputType
- */
-
-export type StudentCourseCountOutputType = {
-  classRules: number;
-};
-
-export type StudentCourseCountOutputTypeSelect<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
-> = {
-  classRules?: boolean | StudentCourseCountOutputTypeCountClassRulesArgs;
-};
-
-/**
- * StudentCourseCountOutputType without action
- */
-export type StudentCourseCountOutputTypeDefaultArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the StudentCourseCountOutputType
-   */
-  select?: Prisma.StudentCourseCountOutputTypeSelect<ExtArgs> | null;
-};
-
-/**
- * StudentCourseCountOutputType without action
- */
-export type StudentCourseCountOutputTypeCountClassRulesArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.ClassRuleWhereInput;
 };
 
 export type StudentCourseSelect<
@@ -876,8 +731,6 @@ export type StudentCourseSelect<
     courseId?: boolean;
     student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>;
     course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>;
-    classRules?: boolean | Prisma.StudentCourse$classRulesArgs<ExtArgs>;
-    _count?: boolean | Prisma.StudentCourseCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['studentCourse']
 >;
@@ -934,8 +787,6 @@ export type StudentCourseInclude<
 > = {
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>;
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>;
-  classRules?: boolean | Prisma.StudentCourse$classRulesArgs<ExtArgs>;
-  _count?: boolean | Prisma.StudentCourseCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type StudentCourseIncludeCreateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
@@ -963,10 +814,6 @@ export type $StudentCoursePayload<
      * 课程
      */
     course: Prisma.$CoursePayload<ExtArgs>;
-    /**
-     * 课程规则
-     */
-    classRules: Prisma.$ClassRulePayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1561,17 +1408,6 @@ export interface Prisma__StudentCourseClient<
     ExtArgs,
     GlobalOmitOptions
   >;
-  classRules<T extends Prisma.StudentCourse$classRulesArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.StudentCourse$classRulesArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$ClassRulePayload<ExtArgs>,
-        T,
-        'findMany',
-        GlobalOmitOptions
-      >
-    | Null
-  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2046,32 +1882,6 @@ export type StudentCourseDeleteManyArgs<
    * Limit how many StudentCourses to delete.
    */
   limit?: number;
-};
-
-/**
- * StudentCourse.classRules
- */
-export type StudentCourse$classRulesArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the ClassRule
-   */
-  select?: Prisma.ClassRuleSelect<ExtArgs> | null;
-  /**
-   * Omit specific fields from the ClassRule
-   */
-  omit?: Prisma.ClassRuleOmit<ExtArgs> | null;
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ClassRuleInclude<ExtArgs> | null;
-  where?: Prisma.ClassRuleWhereInput;
-  orderBy?: Prisma.ClassRuleOrderByWithRelationInput | Prisma.ClassRuleOrderByWithRelationInput[];
-  cursor?: Prisma.ClassRuleWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?: Prisma.ClassRuleScalarFieldEnum | Prisma.ClassRuleScalarFieldEnum[];
 };
 
 /**

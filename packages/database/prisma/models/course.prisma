@@ -29,6 +29,12 @@ model Course {
   /// 被学生选择
   studentCourses StudentCourse[]
 
+  /// 课程排课规则
+  classRules ClassRule[]
+
+  /// 课程实例
+  classSessions ClassSession[]
+
   @@index([userId])
   @@map("course")
 }

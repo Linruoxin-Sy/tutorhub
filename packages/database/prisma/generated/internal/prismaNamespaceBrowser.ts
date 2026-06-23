@@ -48,9 +48,10 @@ export const JsonNull = runtime.JsonNull;
 export const AnyNull = runtime.AnyNull;
 
 export const ModelName = {
-  ClassSessionOverride: 'ClassSessionOverride',
+  ClassSession: 'ClassSession',
   Course: 'Course',
   ClassRule: 'ClassRule',
+  SessionParticipant: 'SessionParticipant',
   Student: 'Student',
   StudentCourse: 'StudentCourse',
   User: 'User',
@@ -72,22 +73,26 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel =
   (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
 
-export const ClassSessionOverrideScalarFieldEnum = {
+export const ClassSessionScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
   classRuleId: 'classRuleId',
+  courseId: 'courseId',
   occurrenceDate: 'occurrenceDate',
+  startTime: 'startTime',
+  endTime: 'endTime',
   state: 'state',
   rescheduledDate: 'rescheduledDate',
   rescheduledStartTime: 'rescheduledStartTime',
   rescheduledEndTime: 'rescheduledEndTime',
   reason: 'reason',
+  room: 'room',
 } as const;
 
-export type ClassSessionOverrideScalarFieldEnum =
-  (typeof ClassSessionOverrideScalarFieldEnum)[keyof typeof ClassSessionOverrideScalarFieldEnum];
+export type ClassSessionScalarFieldEnum =
+  (typeof ClassSessionScalarFieldEnum)[keyof typeof ClassSessionScalarFieldEnum];
 
 export const CourseScalarFieldEnum = {
   id: 'id',
@@ -108,16 +113,29 @@ export const ClassRuleScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
-  studentCourseId: 'studentCourseId',
+  courseId: 'courseId',
   startDate: 'startDate',
   intervalDays: 'intervalDays',
   endDate: 'endDate',
   startTime: 'startTime',
   endTime: 'endTime',
+  room: 'room',
 } as const;
 
 export type ClassRuleScalarFieldEnum =
   (typeof ClassRuleScalarFieldEnum)[keyof typeof ClassRuleScalarFieldEnum];
+
+export const SessionParticipantScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  classSessionId: 'classSessionId',
+  studentId: 'studentId',
+} as const;
+
+export type SessionParticipantScalarFieldEnum =
+  (typeof SessionParticipantScalarFieldEnum)[keyof typeof SessionParticipantScalarFieldEnum];
 
 export const StudentScalarFieldEnum = {
   id: 'id',

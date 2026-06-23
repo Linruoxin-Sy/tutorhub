@@ -41,11 +41,39 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    'class-rule.detail': RouteRecordInfo<
+      'class-rule.detail',
+      '/class-rule/:ruleId',
+      { ruleId: ParamValue<true> },
+      { ruleId: ParamValue<false> },
+      | never
+    >,
+    'class-rule.edit': RouteRecordInfo<
+      'class-rule.edit',
+      '/class-rule/:ruleId/edit',
+      { ruleId: ParamValue<true> },
+      { ruleId: ParamValue<false> },
+      | never
+    >,
+    'class-rule.create': RouteRecordInfo<
+      'class-rule.create',
+      '/class-rule/create',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     'course.detail': RouteRecordInfo<
       'course.detail',
       '/course/:id',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
+      | 'course.session.detail'
+    >,
+    'course.session.detail': RouteRecordInfo<
+      'course.session.detail',
+      '/course/:id/session/:sessionId',
+      { id: ParamValue<true>, sessionId: ParamValue<true> },
+      { id: ParamValue<false>, sessionId: ParamValue<false> },
       | never
     >,
     'course.add-student': RouteRecordInfo<
@@ -86,27 +114,6 @@ declare module 'vue-router/auto-routes' {
     'enrollment.detail': RouteRecordInfo<
       'enrollment.detail',
       '/enrollment/:id',
-      { id: ParamValue<true> },
-      { id: ParamValue<false> },
-      | never
-    >,
-    'enrollment.class-rule.detail': RouteRecordInfo<
-      'enrollment.class-rule.detail',
-      '/enrollment/:id/class-rule/:ruleId',
-      { id: ParamValue<true>, ruleId: ParamValue<true> },
-      { id: ParamValue<false>, ruleId: ParamValue<false> },
-      | never
-    >,
-    'enrollment.class-rule.edit': RouteRecordInfo<
-      'enrollment.class-rule.edit',
-      '/enrollment/:id/class-rule/:ruleId/edit',
-      { id: ParamValue<true>, ruleId: ParamValue<true> },
-      { id: ParamValue<false>, ruleId: ParamValue<false> },
-      | never
-    >,
-    'enrollment.class-rule.create': RouteRecordInfo<
-      'enrollment.class-rule.create',
-      '/enrollment/:id/class-rule/create',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
       | never
@@ -185,9 +192,34 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/class-rule/[ruleId].vue': {
+      routes:
+        | 'class-rule.detail'
+      views:
+        | never
+    }
+    'src/pages/class-rule/[ruleId].edit.vue': {
+      routes:
+        | 'class-rule.edit'
+      views:
+        | never
+    }
+    'src/pages/class-rule/create.vue': {
+      routes:
+        | 'class-rule.create'
+      views:
+        | never
+    }
     'src/pages/course/[id].vue': {
       routes:
         | 'course.detail'
+        | 'course.session.detail'
+      views:
+        | 'default'
+    }
+    'src/pages/course/[id]/session/[sessionId].vue': {
+      routes:
+        | 'course.session.detail'
       views:
         | never
     }
@@ -224,24 +256,6 @@ declare module 'vue-router/auto-routes' {
     'src/pages/enrollment/[id].vue': {
       routes:
         | 'enrollment.detail'
-      views:
-        | never
-    }
-    'src/pages/enrollment/[id].class-rule/[ruleId].vue': {
-      routes:
-        | 'enrollment.class-rule.detail'
-      views:
-        | never
-    }
-    'src/pages/enrollment/[id].class-rule/[ruleId].edit.vue': {
-      routes:
-        | 'enrollment.class-rule.edit'
-      views:
-        | never
-    }
-    'src/pages/enrollment/[id].class-rule/create.vue': {
-      routes:
-        | 'enrollment.class-rule.create'
       views:
         | never
     }

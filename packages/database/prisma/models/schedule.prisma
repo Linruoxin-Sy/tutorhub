@@ -11,8 +11,8 @@ model ClassRule {
   /// 删除时间
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
 
-  /// 选课关系 ID
-  studentCourseId String @map("student_course_id")
+  /// 所属课程 ID
+  courseId String @map("course_id")
 
   /// 规则开始日期
   startDate DateTime @map("start_date") @db.Date
@@ -29,12 +29,15 @@ model ClassRule {
   /// 结束时间
   endTime DateTime @map("end_time") @db.Time()
 
-  /// 所属选课关系
-  studentCourse StudentCourse @relation(fields: [studentCourseId], references: [id], onDelete: Cascade)
+  /// 默认教室/场地
+  room String?
 
-  /// 课程状态覆盖记录
-  classSessionOverrides ClassSessionOverride[]
+  /// 所属课程
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-  @@index([studentCourseId])
+  /// 生成的课程实例
+  classSessions ClassSession[]
+
+  @@index([courseId])
   @@map("class_rule")
 }

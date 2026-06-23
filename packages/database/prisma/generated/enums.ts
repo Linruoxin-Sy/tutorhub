@@ -9,6 +9,7 @@
  */
 
 export const ClassSessionState = {
+  SCHEDULED: 'SCHEDULED',
   COMPLETED: 'COMPLETED',
   LEAVE: 'LEAVE',
   CANCELLED: 'CANCELLED',
