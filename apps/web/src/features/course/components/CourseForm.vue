@@ -22,11 +22,17 @@
     </div>
 
     <!-- Status -->
-    <div class="space-y-2">
+    <div class="flex flex-col gap-2">
       <label :for="field.id('status')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
         Status
       </label>
-      <SelectInput v-if="!readonly" :id="field.id('status')" v-model="model.status" size="md">
+      <SelectInput
+        v-if="!readonly"
+        :id="field.id('status')"
+        v-model="model.status"
+        size="md"
+        class="w-full"
+      >
         <option value="ACTIVE">Active</option>
         <option value="DISABLED">Disabled</option>
       </SelectInput>
