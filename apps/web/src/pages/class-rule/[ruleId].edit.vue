@@ -1,11 +1,11 @@
 <route lang="json">
 {
-  "name": "enrollment.class-rule.edit"
+  "name": "class-rule.edit"
 }
 </route>
 
 <template>
-  <ClassRuleEditPage :enrollment-id="id" :rule-id="ruleId" />
+  <ClassRuleEditPage :course-id="courseId" :rule-id="ruleId" />
 </template>
 
 <script setup lang="ts">
@@ -14,6 +14,6 @@ import ClassRuleEditPage from '@/features/class-rule/pages/class-rule-edit-page.
 
 const route = useRoute();
 const params = route.params as Record<string, string>;
-const id = params.id;
 const ruleId = params.ruleId;
+const courseId = (route.query as Record<string, string>).courseId;
 </script>

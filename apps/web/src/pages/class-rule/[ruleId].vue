@@ -1,6 +1,6 @@
 <route lang="json">
 {
-  "name": "enrollment.class-rule.detail"
+  "name": "class-rule.detail"
 }
 </route>
 

@@ -61,7 +61,7 @@
 
             <template #loading>
               <div class="divide-y divide-gray-200 dark:divide-[#343434]">
-                <StudentItem v-for="index in 8" :key="index" loading :student="undefined as any" />
+                <StudentItem v-for="index in 8" :key="index" loading />
               </div>
             </template>
 
@@ -69,9 +69,8 @@
               <StudentItem
                 :student="item!.student"
                 :loading="!isLoaded"
-                :actions="['edit', 'delete']"
+                :actions="['delete']"
                 @view="router.push({ name: 'enrollment.detail', params: { id: item!.id } })"
-                @edit="router.push({ name: 'enrollment.edit', params: { id: item!.id } })"
                 @delete="handleDeleteStudent(item!)"
               />
             </template>
@@ -81,6 +80,54 @@
                 class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
               >
                 No students found.
+              </div>
+            </template>
+          </VirtualList>
+        </div>
+      </ListPageShell>
+
+      <!-- Class Rules -->
+      <ListPageShell title="Class Rules">
+        <template #actions>
+          <AppButton @click="router.push('/class-rule/create?courseId=' + id)">
+            <i class="i-lucide-plus size-4"></i>
+            <span>Add Rule</span>
+          </AppButton>
+        </template>
+
+        <div class="flex h-80 flex-col">
+          <VirtualList
+            :query="classRuleQuery"
+            :estimate-size="160"
+            :overscan="10"
+            scroll-class="flex-1 overflow-x-hidden overflow-y-auto p-5"
+          >
+            <template #loading>
+              <div class="divide-y divide-gray-200 dark:divide-[#343434]">
+                <ClassRuleItem v-for="index in 3" :key="index" loading />
+              </div>
+            </template>
+
+            <template #item="{ item, isLoaded }">
+              <ClassRuleItem
+                :rule="item!"
+                :loading="!isLoaded"
+                :actions="['edit', 'delete']"
+                @view="handleViewRule(item!)"
+                @edit="handleEditRule(item!)"
+                @delete="handleDeleteRule(item!)"
+              />
+            </template>
+
+            <template #empty>
+              <div
+                class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+              >
+                <div
+                  class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
+                >
+                  No class rules found. Add a rule to start scheduling.
+                </div>
               </div>
             </template>
           </VirtualList>
@@ -100,13 +147,15 @@ import { useCourseEditForm } from '@/features/course/hooks/useCourseEditForm';
 import CourseForm from '@/features/course/components/CourseForm.vue';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchCourseEnrollments, deleteEnrollment } from '@/features/enrollment/api/enrollment-api';
+import { fetchClassRules, deleteClassRule } from '@/features/class-rule/api/class-rule-api';
+import ClassRuleItem from '@/features/class-rule/components/ClassRuleItem.vue';
 import StudentItem from '@/features/student/components/StudentItem.vue';
 import { useDialog } from '@/hooks/useDialog';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import AppButton from '@/components/AppButton.vue';
 import SearchInput from '@/components/SearchInput.vue';
-import type { CourseEnrollmentListResponse } from '@tutorhub/schema';
+import type { CourseEnrollmentListResponse, ClassRuleListItem } from '@tutorhub/schema';
 
 type EnrollmentItem = CourseEnrollmentListResponse['items'][number];
 
@@ -129,6 +178,12 @@ const sparseQuery = useSparseQuery<EnrollmentItem>({
   filters: { name: searchRef },
 });
 
+// Class Rules
+const classRuleQuery = useSparseQuery<ClassRuleListItem>({
+  queryKeyPrefix: ['course-class-rules', id],
+  fetchFn: (params) => fetchClassRules(id, params),
+});
+
 const queryClient = useQueryClient();
 const { confirm } = useDialog();
 
@@ -148,6 +203,34 @@ async function handleDeleteStudent(item: EnrollmentItem) {
     queryClient.invalidateQueries({ queryKey: ['course-enrollments', id] });
   } catch {
     toast.error('Failed to remove student from course');
+  }
+}
+
+function handleViewRule(rule: ClassRuleListItem) {
+  router.push('/class-rule/' + rule.id);
+}
+
+function handleEditRule(rule: ClassRuleListItem) {
+  router.push('/class-rule/' + rule.id + '/edit?courseId=' + id);
+}
+
+async function handleDeleteRule(rule: ClassRuleListItem) {
+  const confirmed = await confirm({
+    title: 'Delete Class Rule',
+    message:
+      'Are you sure you want to delete this class rule? All future sessions will be removed.',
+    confirmText: 'Delete',
+    variant: 'danger',
+  });
+
+  if (!confirmed) return;
+
+  try {
+    await deleteClassRule(rule.id);
+    toast.success('Class rule deleted successfully!');
+    queryClient.invalidateQueries({ queryKey: ['course-class-rules', id] });
+  } catch {
+    toast.error('Failed to delete class rule');
   }
 }
 </script>
