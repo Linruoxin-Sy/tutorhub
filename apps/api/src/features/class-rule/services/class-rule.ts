@@ -106,17 +106,12 @@ export const classRuleService = {
     // 生成未来 SESSION_GENERATION_DAYS 天的 Session
     const sessions = await this._generateSessionsForRule(classRule.id, input);
 
-    // 为每个 Session 添加参与者（该课程所有已选课学生）
-    const enrolledStudents = await prisma.studentCourse.findMany({
-      where: { courseId: input.courseId, deletedAt: null },
-      select: { studentId: true },
-    });
-
-    if (enrolledStudents.length > 0 && sessions.length > 0) {
+    // 为每个 Session 添加参与者（使用选中的学生）
+    if (input.studentIds && input.studentIds.length > 0 && sessions.length > 0) {
       const participantData = sessions.flatMap((session) =>
-        enrolledStudents.map((es) => ({
+        input.studentIds!.map((studentId: string) => ({
           classSessionId: session.id,
-          studentId: es.studentId,
+          studentId,
         })),
       );
       await prisma.sessionParticipant.createMany({ data: participantData });
@@ -370,17 +365,21 @@ export const classRuleService = {
 
     const sessions = await this._generateSessionsForRule(id, createPayload);
 
-    // 为每个 Session 添加参与者
-    const enrolledStudents = await prisma.studentCourse.findMany({
-      where: { courseId: rule.courseId, deletedAt: null },
-      select: { studentId: true },
-    });
+    // 为每个 Session 添加参与者（优先使用传入的 studentIds，否则使用课程已选课学生）
+    const studentIds = input.studentIds?.length
+      ? input.studentIds
+      : (
+          await prisma.studentCourse.findMany({
+            where: { courseId: rule.courseId, deletedAt: null },
+            select: { studentId: true },
+          })
+        ).map((es) => es.studentId);
 
-    if (enrolledStudents.length > 0 && sessions.length > 0) {
+    if (studentIds.length > 0 && sessions.length > 0) {
       const participantData = sessions.flatMap((session) =>
-        enrolledStudents.map((es) => ({
+        studentIds.map((studentId: string) => ({
           classSessionId: session.id,
-          studentId: es.studentId,
+          studentId,
         })),
       );
       await prisma.sessionParticipant.createMany({ data: participantData });

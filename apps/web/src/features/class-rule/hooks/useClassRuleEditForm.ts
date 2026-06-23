@@ -30,6 +30,18 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     room: '',
   });
 
+  const selectedStudentIds = ref(new Set<string>());
+
+  function toggleStudent(studentId: string) {
+    const next = new Set(selectedStudentIds.value);
+    if (next.has(studentId)) {
+      next.delete(studentId);
+    } else {
+      next.add(studentId);
+    }
+    selectedStudentIds.value = next;
+  }
+
   const isValidated = ref(false);
   const conflictResult = ref<{ hasConflict: boolean; conflicts: ConflictItem[] } | null>(null);
   const generatedSessions = ref<GeneratedSession[]>([]);
@@ -154,6 +166,11 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
 
     if (confirmed === false) return;
 
+    if (selectedStudentIds.value.size === 0) {
+      toast.warning('Please select at least one student');
+      return;
+    }
+
     const payload = {
       startDate: dayjs(formData.value.startDate).toDate(),
       startTime: formData.value.startTime,
@@ -161,6 +178,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       intervalDays: formData.value.intervalDays || null,
       endDate: formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null,
       room: formData.value.room || null,
+      studentIds: Array.from(selectedStudentIds.value),
     };
 
     await applyClassRuleChanges(ruleId, payload);
@@ -171,6 +189,8 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
 
   return {
     formData,
+    selectedStudentIds,
+    toggleStudent,
     isInitialLoading,
     isValidated,
     conflictResult,

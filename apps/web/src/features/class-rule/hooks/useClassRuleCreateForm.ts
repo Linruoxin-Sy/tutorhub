@@ -38,6 +38,18 @@ export function useClassRuleCreateForm(courseId: string) {
     courseId,
   });
 
+  const selectedStudentIds = ref(new Set<string>());
+
+  function toggleStudent(studentId: string) {
+    const next = new Set(selectedStudentIds.value);
+    if (next.has(studentId)) {
+      next.delete(studentId);
+    } else {
+      next.add(studentId);
+    }
+    selectedStudentIds.value = next;
+  }
+
   const isValidated = ref(false);
   const conflictResult = ref<{ hasConflict: boolean; conflicts: ConflictItem[] } | null>(null);
   const generatedSessions = ref<GeneratedSession[]>([]);
@@ -173,6 +185,11 @@ export function useClassRuleCreateForm(courseId: string) {
 
     generateSessions();
 
+    if (selectedStudentIds.value.size === 0) {
+      toast.warning('Please select at least one student');
+      return;
+    }
+
     const apiPayload = {
       courseId: formData.value.courseId,
       startDate: dayjs(formData.value.startDate).toDate(),
@@ -181,6 +198,7 @@ export function useClassRuleCreateForm(courseId: string) {
       intervalDays: formData.value.intervalDays || null,
       endDate: formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null,
       room: formData.value.room || null,
+      studentIds: Array.from(selectedStudentIds.value),
     };
 
     await createClassRule(apiPayload);
@@ -191,6 +209,8 @@ export function useClassRuleCreateForm(courseId: string) {
 
   return {
     formData,
+    selectedStudentIds,
+    toggleStudent,
     isValidated,
     conflictResult,
     generatedSessions,

@@ -23,7 +23,6 @@
           <template #item="{ item }">
             <SessionItem
               v-if="item"
-              student-name=""
               :course-name="item.course?.name ?? 'Course'"
               :date="formatDate(item.occurrenceDate)"
               :start-time="formatTime(item.startTime)"

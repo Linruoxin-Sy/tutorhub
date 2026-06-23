@@ -16,6 +16,7 @@ export const classRuleUpdateSchema = z
     startTime: classRuleFields.startTime.optional(),
     endTime: classRuleFields.endTime.optional(),
     room: classRuleFields.room,
+    studentIds: z.array(z.string().min(1)).optional(),
   })
   .refine((data) => Object.values(data).some((val) => val !== undefined), {
     message: 'Request body cannot be empty',

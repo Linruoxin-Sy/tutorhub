@@ -12,6 +12,7 @@ export const classRuleCreateSchema = z.object({
   startTime: classRuleFields.startTime,
   endTime: classRuleFields.endTime,
   room: classRuleFields.room,
+  studentIds: z.array(z.string().min(1)).min(1, 'At least one student is required'),
 });
 
 export type ClassRuleCreateResponse = ClassRule;

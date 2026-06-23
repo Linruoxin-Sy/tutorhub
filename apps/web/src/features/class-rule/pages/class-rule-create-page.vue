@@ -114,6 +114,67 @@
       </button>
     </CardSection>
 
+    <!-- 选择学生 -->
+    <ListPageShell title="Select Students">
+      <template #filters>
+        <SearchInput v-model="search" placeholder="Search enrolled students..." />
+      </template>
+
+      <template #actions>
+        <span class="text-sm text-gray-500 dark:text-gray-400">
+          {{ selectedStudentIds.size }} student(s) selected
+        </span>
+      </template>
+
+      <VirtualList
+        :query="enrolledQuery"
+        :estimate-size="70"
+        :overscan="10"
+        scroll-class="max-h-96 overflow-x-hidden overflow-y-auto"
+        row-class="border-b border-gray-200 transition hover:bg-gray-50 dark:border-[#343434] dark:hover:bg-[#202020]"
+        :row-style="{ display: 'flex' }"
+      >
+        <template #header>
+          <div
+            class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
+            style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr"
+          >
+            <div
+              v-for="column in columns"
+              :key="column"
+              class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
+            >
+              {{ column }}
+            </div>
+          </div>
+        </template>
+
+        <template #loading>
+          <div class="divide-y divide-gray-200 dark:divide-[#343434]">
+            <StudentItem v-for="index in 8" :key="index" loading />
+          </div>
+        </template>
+
+        <template #item="{ item, isLoaded }">
+          <StudentItem
+            :student="item!.student"
+            :loading="!isLoaded"
+            :actions="[]"
+            :selected="!!item && selectedStudentIds.has(item.student.id)"
+            @view="item && toggleStudent(item.student.id)"
+          />
+        </template>
+
+        <template #empty>
+          <div
+            class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+          >
+            No enrolled students found.
+          </div>
+        </template>
+      </VirtualList>
+    </ListPageShell>
+
     <!-- 生成的具体课程 -->
     <ListPageShell
       v-if="
@@ -137,7 +198,6 @@
           <template #item="{ item }">
             <SessionItem
               v-if="item"
-              student-name=""
               course-name="Course"
               :date="item.occurrenceDate"
               :start-time="item.startTime"
@@ -160,7 +220,6 @@
           <SessionItem
             v-for="conflict in conflictResult.conflicts"
             :key="conflict.date + conflict.startTime"
-            student-name=""
             course-name="Conflict"
             :date="conflict.date"
             :start-time="conflict.startTime"
@@ -174,17 +233,25 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { refDebounced } from '@vueuse/core';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import type { GeneratedSession } from '@tutorhub/schema';
 import { useLocalQuery } from '@/hooks/useLocalQuery';
+import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { useThemeToggle } from '@/hooks/useThemeToggle';
 import { datePickerUi } from '@/features/class-rule/constants/datePickerUi';
+import { fetchCourseEnrollments } from '@/features/enrollment/api/enrollment-api';
 import SessionItem from '@/features/session/components/SessionItem.vue';
+import StudentItem from '@/features/student/components/StudentItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
+import SearchInput from '@/components/SearchInput.vue';
 import { useClassRuleCreateForm } from '@/features/class-rule/hooks/useClassRuleCreateForm';
+import type { CourseEnrollmentListResponse } from '@tutorhub/schema';
+
+type EnrollmentItem = CourseEnrollmentListResponse['items'][number];
 
 const props = defineProps<{
   courseId: string;
@@ -192,6 +259,8 @@ const props = defineProps<{
 
 const {
   formData,
+  selectedStudentIds,
+  toggleStudent,
   isValidated,
   conflictResult,
   generatedSessions,
@@ -199,6 +268,18 @@ const {
   isSubmitting,
   submit,
 } = useClassRuleCreateForm(props.courseId);
+
+const columns = ['Name', 'Email', 'Phone', 'Created At', 'Status'];
+
+const search = ref('');
+const debouncedSearch = refDebounced(search, 300);
+const searchRef = computed(() => debouncedSearch.value ?? '');
+
+const enrolledQuery = useSparseQuery<EnrollmentItem>({
+  queryKeyPrefix: ['course-enrollments', props.courseId],
+  fetchFn: (params) => fetchCourseEnrollments(props.courseId, params),
+  filters: { name: searchRef },
+});
 
 const { isDark } = useThemeToggle();
 const sessionQuery = useLocalQuery(generatedSessions);

@@ -12,10 +12,8 @@
 
     <!-- 主信息 -->
     <div class="flex min-w-0 flex-1 flex-col gap-1">
-      <div class="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
-        <span>{{ studentName }}</span>
-        <i class="i-lucide-arrow-right size-3 shrink-0 text-gray-400 dark:text-gray-500" />
-        <span class="font-medium text-gray-500 dark:text-gray-400">{{ courseName }}</span>
+      <div class="text-sm font-semibold text-gray-900 dark:text-white">
+        {{ courseName }}
       </div>
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
         <span class="text-gray-700 dark:text-gray-300">
@@ -78,7 +76,6 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    studentName: string;
     courseName: string;
     date: string;
     startTime: string;
