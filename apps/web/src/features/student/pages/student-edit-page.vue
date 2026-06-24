@@ -65,9 +65,8 @@
               <CourseItem
                 :course="item!.course"
                 :loading="!isLoaded"
-                :actions="['edit', 'delete']"
+                :actions="['delete']"
                 @view="router.push({ name: 'enrollment.detail', params: { id: item!.id } })"
-                @edit="router.push({ name: 'enrollment.detail', params: { id: item!.id } })"
                 @delete="handleDeleteCourse(item!)"
               />
             </template>
