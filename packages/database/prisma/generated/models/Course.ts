@@ -206,7 +206,6 @@ export type CourseWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
   studentCourses?: Prisma.StudentCourseListRelationFilter;
   classRules?: Prisma.ClassRuleListRelationFilter;
-  classSessions?: Prisma.ClassSessionListRelationFilter;
 };
 
 export type CourseOrderByWithRelationInput = {
@@ -221,7 +220,6 @@ export type CourseOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput;
   studentCourses?: Prisma.StudentCourseOrderByRelationAggregateInput;
   classRules?: Prisma.ClassRuleOrderByRelationAggregateInput;
-  classSessions?: Prisma.ClassSessionOrderByRelationAggregateInput;
 };
 
 export type CourseWhereUniqueInput = Prisma.AtLeast<
@@ -240,7 +238,6 @@ export type CourseWhereUniqueInput = Prisma.AtLeast<
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
     studentCourses?: Prisma.StudentCourseListRelationFilter;
     classRules?: Prisma.ClassRuleListRelationFilter;
-    classSessions?: Prisma.ClassSessionListRelationFilter;
   },
   'id'
 >;
@@ -284,7 +281,6 @@ export type CourseCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutCoursesInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutCourseInput;
   classRules?: Prisma.ClassRuleCreateNestedManyWithoutCourseInput;
-  classSessions?: Prisma.ClassSessionCreateNestedManyWithoutCourseInput;
 };
 
 export type CourseUncheckedCreateInput = {
@@ -298,7 +294,6 @@ export type CourseUncheckedCreateInput = {
   status?: $Enums.CourseStatus;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutCourseInput;
   classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutCourseInput;
-  classSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCourseInput;
 };
 
 export type CourseUpdateInput = {
@@ -312,7 +307,6 @@ export type CourseUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutCoursesNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutCourseNestedInput;
   classRules?: Prisma.ClassRuleUpdateManyWithoutCourseNestedInput;
-  classSessions?: Prisma.ClassSessionUpdateManyWithoutCourseNestedInput;
 };
 
 export type CourseUncheckedUpdateInput = {
@@ -326,7 +320,6 @@ export type CourseUncheckedUpdateInput = {
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutCourseNestedInput;
   classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutCourseNestedInput;
-  classSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCourseNestedInput;
 };
 
 export type CourseCreateManyInput = {
@@ -359,11 +352,6 @@ export type CourseUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
-};
-
-export type CourseScalarRelationFilter = {
-  is?: Prisma.CourseWhereInput;
-  isNot?: Prisma.CourseWhereInput;
 };
 
 export type CourseCountOrderByAggregateInput = {
@@ -399,6 +387,11 @@ export type CourseMinOrderByAggregateInput = {
   status?: Prisma.SortOrder;
 };
 
+export type CourseScalarRelationFilter = {
+  is?: Prisma.CourseWhereInput;
+  isNot?: Prisma.CourseWhereInput;
+};
+
 export type CourseListRelationFilter = {
   every?: Prisma.CourseWhereInput;
   some?: Prisma.CourseWhereInput;
@@ -407,32 +400,6 @@ export type CourseListRelationFilter = {
 
 export type CourseOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder;
-};
-
-export type CourseCreateNestedOneWithoutClassSessionsInput = {
-  create?: Prisma.XOR<
-    Prisma.CourseCreateWithoutClassSessionsInput,
-    Prisma.CourseUncheckedCreateWithoutClassSessionsInput
-  >;
-  connectOrCreate?: Prisma.CourseCreateOrConnectWithoutClassSessionsInput;
-  connect?: Prisma.CourseWhereUniqueInput;
-};
-
-export type CourseUpdateOneRequiredWithoutClassSessionsNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.CourseCreateWithoutClassSessionsInput,
-    Prisma.CourseUncheckedCreateWithoutClassSessionsInput
-  >;
-  connectOrCreate?: Prisma.CourseCreateOrConnectWithoutClassSessionsInput;
-  upsert?: Prisma.CourseUpsertWithoutClassSessionsInput;
-  connect?: Prisma.CourseWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.CourseUpdateToOneWithWhereWithoutClassSessionsInput,
-      Prisma.CourseUpdateWithoutClassSessionsInput
-    >,
-    Prisma.CourseUncheckedUpdateWithoutClassSessionsInput
-  >;
 };
 
 export type EnumCourseStatusFieldUpdateOperationsInput = {
@@ -565,86 +532,6 @@ export type CourseUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.CourseScalarWhereInput | Prisma.CourseScalarWhereInput[];
 };
 
-export type CourseCreateWithoutClassSessionsInput = {
-  id?: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  deletedAt?: Date | string | null;
-  name: string;
-  description?: string | null;
-  status?: $Enums.CourseStatus;
-  user: Prisma.UserCreateNestedOneWithoutCoursesInput;
-  studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutCourseInput;
-  classRules?: Prisma.ClassRuleCreateNestedManyWithoutCourseInput;
-};
-
-export type CourseUncheckedCreateWithoutClassSessionsInput = {
-  id?: string;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  deletedAt?: Date | string | null;
-  name: string;
-  description?: string | null;
-  userId: string;
-  status?: $Enums.CourseStatus;
-  studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutCourseInput;
-  classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutCourseInput;
-};
-
-export type CourseCreateOrConnectWithoutClassSessionsInput = {
-  where: Prisma.CourseWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.CourseCreateWithoutClassSessionsInput,
-    Prisma.CourseUncheckedCreateWithoutClassSessionsInput
-  >;
-};
-
-export type CourseUpsertWithoutClassSessionsInput = {
-  update: Prisma.XOR<
-    Prisma.CourseUpdateWithoutClassSessionsInput,
-    Prisma.CourseUncheckedUpdateWithoutClassSessionsInput
-  >;
-  create: Prisma.XOR<
-    Prisma.CourseCreateWithoutClassSessionsInput,
-    Prisma.CourseUncheckedCreateWithoutClassSessionsInput
-  >;
-  where?: Prisma.CourseWhereInput;
-};
-
-export type CourseUpdateToOneWithWhereWithoutClassSessionsInput = {
-  where?: Prisma.CourseWhereInput;
-  data: Prisma.XOR<
-    Prisma.CourseUpdateWithoutClassSessionsInput,
-    Prisma.CourseUncheckedUpdateWithoutClassSessionsInput
-  >;
-};
-
-export type CourseUpdateWithoutClassSessionsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
-  user?: Prisma.UserUpdateOneRequiredWithoutCoursesNestedInput;
-  studentCourses?: Prisma.StudentCourseUpdateManyWithoutCourseNestedInput;
-  classRules?: Prisma.ClassRuleUpdateManyWithoutCourseNestedInput;
-};
-
-export type CourseUncheckedUpdateWithoutClassSessionsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  userId?: Prisma.StringFieldUpdateOperationsInput | string;
-  status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
-  studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutCourseNestedInput;
-  classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutCourseNestedInput;
-};
-
 export type CourseCreateWithoutClassRulesInput = {
   id?: string;
   createdAt?: Date | string;
@@ -655,7 +542,6 @@ export type CourseCreateWithoutClassRulesInput = {
   status?: $Enums.CourseStatus;
   user: Prisma.UserCreateNestedOneWithoutCoursesInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutCourseInput;
-  classSessions?: Prisma.ClassSessionCreateNestedManyWithoutCourseInput;
 };
 
 export type CourseUncheckedCreateWithoutClassRulesInput = {
@@ -668,7 +554,6 @@ export type CourseUncheckedCreateWithoutClassRulesInput = {
   userId: string;
   status?: $Enums.CourseStatus;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutCourseInput;
-  classSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCourseInput;
 };
 
 export type CourseCreateOrConnectWithoutClassRulesInput = {
@@ -709,7 +594,6 @@ export type CourseUpdateWithoutClassRulesInput = {
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
   user?: Prisma.UserUpdateOneRequiredWithoutCoursesNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutCourseNestedInput;
-  classSessions?: Prisma.ClassSessionUpdateManyWithoutCourseNestedInput;
 };
 
 export type CourseUncheckedUpdateWithoutClassRulesInput = {
@@ -722,7 +606,6 @@ export type CourseUncheckedUpdateWithoutClassRulesInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutCourseNestedInput;
-  classSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCourseNestedInput;
 };
 
 export type CourseCreateWithoutStudentCoursesInput = {
@@ -735,7 +618,6 @@ export type CourseCreateWithoutStudentCoursesInput = {
   status?: $Enums.CourseStatus;
   user: Prisma.UserCreateNestedOneWithoutCoursesInput;
   classRules?: Prisma.ClassRuleCreateNestedManyWithoutCourseInput;
-  classSessions?: Prisma.ClassSessionCreateNestedManyWithoutCourseInput;
 };
 
 export type CourseUncheckedCreateWithoutStudentCoursesInput = {
@@ -748,7 +630,6 @@ export type CourseUncheckedCreateWithoutStudentCoursesInput = {
   userId: string;
   status?: $Enums.CourseStatus;
   classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutCourseInput;
-  classSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCourseInput;
 };
 
 export type CourseCreateOrConnectWithoutStudentCoursesInput = {
@@ -789,7 +670,6 @@ export type CourseUpdateWithoutStudentCoursesInput = {
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
   user?: Prisma.UserUpdateOneRequiredWithoutCoursesNestedInput;
   classRules?: Prisma.ClassRuleUpdateManyWithoutCourseNestedInput;
-  classSessions?: Prisma.ClassSessionUpdateManyWithoutCourseNestedInput;
 };
 
 export type CourseUncheckedUpdateWithoutStudentCoursesInput = {
@@ -802,7 +682,6 @@ export type CourseUncheckedUpdateWithoutStudentCoursesInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
   classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutCourseNestedInput;
-  classSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCourseNestedInput;
 };
 
 export type CourseCreateWithoutUserInput = {
@@ -815,7 +694,6 @@ export type CourseCreateWithoutUserInput = {
   status?: $Enums.CourseStatus;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutCourseInput;
   classRules?: Prisma.ClassRuleCreateNestedManyWithoutCourseInput;
-  classSessions?: Prisma.ClassSessionCreateNestedManyWithoutCourseInput;
 };
 
 export type CourseUncheckedCreateWithoutUserInput = {
@@ -828,7 +706,6 @@ export type CourseUncheckedCreateWithoutUserInput = {
   status?: $Enums.CourseStatus;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutCourseInput;
   classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutCourseInput;
-  classSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutCourseInput;
 };
 
 export type CourseCreateOrConnectWithoutUserInput = {
@@ -906,7 +783,6 @@ export type CourseUpdateWithoutUserInput = {
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutCourseNestedInput;
   classRules?: Prisma.ClassRuleUpdateManyWithoutCourseNestedInput;
-  classSessions?: Prisma.ClassSessionUpdateManyWithoutCourseNestedInput;
 };
 
 export type CourseUncheckedUpdateWithoutUserInput = {
@@ -919,7 +795,6 @@ export type CourseUncheckedUpdateWithoutUserInput = {
   status?: Prisma.EnumCourseStatusFieldUpdateOperationsInput | $Enums.CourseStatus;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutCourseNestedInput;
   classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutCourseNestedInput;
-  classSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutCourseNestedInput;
 };
 
 export type CourseUncheckedUpdateManyWithoutUserInput = {
@@ -939,7 +814,6 @@ export type CourseUncheckedUpdateManyWithoutUserInput = {
 export type CourseCountOutputType = {
   studentCourses: number;
   classRules: number;
-  classSessions: number;
 };
 
 export type CourseCountOutputTypeSelect<
@@ -947,7 +821,6 @@ export type CourseCountOutputTypeSelect<
 > = {
   studentCourses?: boolean | CourseCountOutputTypeCountStudentCoursesArgs;
   classRules?: boolean | CourseCountOutputTypeCountClassRulesArgs;
-  classSessions?: boolean | CourseCountOutputTypeCountClassSessionsArgs;
 };
 
 /**
@@ -980,15 +853,6 @@ export type CourseCountOutputTypeCountClassRulesArgs<
   where?: Prisma.ClassRuleWhereInput;
 };
 
-/**
- * CourseCountOutputType without action
- */
-export type CourseCountOutputTypeCountClassSessionsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.ClassSessionWhereInput;
-};
-
 export type CourseSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -1004,7 +868,6 @@ export type CourseSelect<
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
     studentCourses?: boolean | Prisma.Course$studentCoursesArgs<ExtArgs>;
     classRules?: boolean | Prisma.Course$classRulesArgs<ExtArgs>;
-    classSessions?: boolean | Prisma.Course$classSessionsArgs<ExtArgs>;
     _count?: boolean | Prisma.CourseCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['course']
@@ -1067,7 +930,6 @@ export type CourseInclude<
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   studentCourses?: boolean | Prisma.Course$studentCoursesArgs<ExtArgs>;
   classRules?: boolean | Prisma.Course$classRulesArgs<ExtArgs>;
-  classSessions?: boolean | Prisma.Course$classSessionsArgs<ExtArgs>;
   _count?: boolean | Prisma.CourseCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type CourseIncludeCreateManyAndReturn<
@@ -1098,10 +960,6 @@ export type $CoursePayload<
      * 课程排课规则
      */
     classRules: Prisma.$ClassRulePayload<ExtArgs>[];
-    /**
-     * 课程实例
-     */
-    classSessions: Prisma.$ClassSessionPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1683,17 +1541,6 @@ export interface Prisma__CourseClient<
       >
     | Null
   >;
-  classSessions<T extends Prisma.Course$classSessionsArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Course$classSessionsArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$ClassSessionPayload<ExtArgs>,
-        T,
-        'findMany',
-        GlobalOmitOptions
-      >
-    | Null
-  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2212,34 +2059,6 @@ export type Course$classRulesArgs<
   take?: number;
   skip?: number;
   distinct?: Prisma.ClassRuleScalarFieldEnum | Prisma.ClassRuleScalarFieldEnum[];
-};
-
-/**
- * Course.classSessions
- */
-export type Course$classSessionsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the ClassSession
-   */
-  select?: Prisma.ClassSessionSelect<ExtArgs> | null;
-  /**
-   * Omit specific fields from the ClassSession
-   */
-  omit?: Prisma.ClassSessionOmit<ExtArgs> | null;
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ClassSessionInclude<ExtArgs> | null;
-  where?: Prisma.ClassSessionWhereInput;
-  orderBy?:
-    | Prisma.ClassSessionOrderByWithRelationInput
-    | Prisma.ClassSessionOrderByWithRelationInput[];
-  cursor?: Prisma.ClassSessionWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?: Prisma.ClassSessionScalarFieldEnum | Prisma.ClassSessionScalarFieldEnum[];
 };
 
 /**

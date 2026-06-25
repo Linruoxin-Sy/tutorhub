@@ -264,7 +264,7 @@ export type ClassRuleWhereInput = {
   endTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
   room?: Prisma.StringNullableFilter<'ClassRule'> | string | null;
   course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>;
-  classSessions?: Prisma.ClassSessionListRelationFilter;
+  classSessionOverrides?: Prisma.ClassSessionOverrideListRelationFilter;
 };
 
 export type ClassRuleOrderByWithRelationInput = {
@@ -280,7 +280,7 @@ export type ClassRuleOrderByWithRelationInput = {
   endTime?: Prisma.SortOrder;
   room?: Prisma.SortOrderInput | Prisma.SortOrder;
   course?: Prisma.CourseOrderByWithRelationInput;
-  classSessions?: Prisma.ClassSessionOrderByRelationAggregateInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideOrderByRelationAggregateInput;
 };
 
 export type ClassRuleWhereUniqueInput = Prisma.AtLeast<
@@ -300,7 +300,7 @@ export type ClassRuleWhereUniqueInput = Prisma.AtLeast<
     endTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
     room?: Prisma.StringNullableFilter<'ClassRule'> | string | null;
     course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>;
-    classSessions?: Prisma.ClassSessionListRelationFilter;
+    classSessionOverrides?: Prisma.ClassSessionOverrideListRelationFilter;
   },
   'id'
 >;
@@ -357,7 +357,7 @@ export type ClassRuleCreateInput = {
   endTime: Date | string;
   room?: string | null;
   course: Prisma.CourseCreateNestedOneWithoutClassRulesInput;
-  classSessions?: Prisma.ClassSessionCreateNestedManyWithoutClassRuleInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutClassRuleInput;
 };
 
 export type ClassRuleUncheckedCreateInput = {
@@ -372,7 +372,7 @@ export type ClassRuleUncheckedCreateInput = {
   startTime: Date | string;
   endTime: Date | string;
   room?: string | null;
-  classSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassRuleInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutClassRuleInput;
 };
 
 export type ClassRuleUpdateInput = {
@@ -387,7 +387,7 @@ export type ClassRuleUpdateInput = {
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   course?: Prisma.CourseUpdateOneRequiredWithoutClassRulesNestedInput;
-  classSessions?: Prisma.ClassSessionUpdateManyWithoutClassRuleNestedInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutClassRuleNestedInput;
 };
 
 export type ClassRuleUncheckedUpdateInput = {
@@ -402,7 +402,7 @@ export type ClassRuleUncheckedUpdateInput = {
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  classSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassRuleNestedInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleNestedInput;
 };
 
 export type ClassRuleCreateManyInput = {
@@ -511,29 +511,29 @@ export type ClassRuleSumOrderByAggregateInput = {
   intervalDays?: Prisma.SortOrder;
 };
 
-export type ClassRuleCreateNestedOneWithoutClassSessionsInput = {
+export type ClassRuleCreateNestedOneWithoutClassSessionOverridesInput = {
   create?: Prisma.XOR<
-    Prisma.ClassRuleCreateWithoutClassSessionsInput,
-    Prisma.ClassRuleUncheckedCreateWithoutClassSessionsInput
+    Prisma.ClassRuleCreateWithoutClassSessionOverridesInput,
+    Prisma.ClassRuleUncheckedCreateWithoutClassSessionOverridesInput
   >;
-  connectOrCreate?: Prisma.ClassRuleCreateOrConnectWithoutClassSessionsInput;
+  connectOrCreate?: Prisma.ClassRuleCreateOrConnectWithoutClassSessionOverridesInput;
   connect?: Prisma.ClassRuleWhereUniqueInput;
 };
 
-export type ClassRuleUpdateOneRequiredWithoutClassSessionsNestedInput = {
+export type ClassRuleUpdateOneRequiredWithoutClassSessionOverridesNestedInput = {
   create?: Prisma.XOR<
-    Prisma.ClassRuleCreateWithoutClassSessionsInput,
-    Prisma.ClassRuleUncheckedCreateWithoutClassSessionsInput
+    Prisma.ClassRuleCreateWithoutClassSessionOverridesInput,
+    Prisma.ClassRuleUncheckedCreateWithoutClassSessionOverridesInput
   >;
-  connectOrCreate?: Prisma.ClassRuleCreateOrConnectWithoutClassSessionsInput;
-  upsert?: Prisma.ClassRuleUpsertWithoutClassSessionsInput;
+  connectOrCreate?: Prisma.ClassRuleCreateOrConnectWithoutClassSessionOverridesInput;
+  upsert?: Prisma.ClassRuleUpsertWithoutClassSessionOverridesInput;
   connect?: Prisma.ClassRuleWhereUniqueInput;
   update?: Prisma.XOR<
     Prisma.XOR<
-      Prisma.ClassRuleUpdateToOneWithWhereWithoutClassSessionsInput,
-      Prisma.ClassRuleUpdateWithoutClassSessionsInput
+      Prisma.ClassRuleUpdateToOneWithWhereWithoutClassSessionOverridesInput,
+      Prisma.ClassRuleUpdateWithoutClassSessionOverridesInput
     >,
-    Prisma.ClassRuleUncheckedUpdateWithoutClassSessionsInput
+    Prisma.ClassRuleUncheckedUpdateWithoutClassSessionOverridesInput
   >;
 };
 
@@ -631,7 +631,7 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number;
 };
 
-export type ClassRuleCreateWithoutClassSessionsInput = {
+export type ClassRuleCreateWithoutClassSessionOverridesInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -645,7 +645,7 @@ export type ClassRuleCreateWithoutClassSessionsInput = {
   course: Prisma.CourseCreateNestedOneWithoutClassRulesInput;
 };
 
-export type ClassRuleUncheckedCreateWithoutClassSessionsInput = {
+export type ClassRuleUncheckedCreateWithoutClassSessionOverridesInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -659,35 +659,35 @@ export type ClassRuleUncheckedCreateWithoutClassSessionsInput = {
   room?: string | null;
 };
 
-export type ClassRuleCreateOrConnectWithoutClassSessionsInput = {
+export type ClassRuleCreateOrConnectWithoutClassSessionOverridesInput = {
   where: Prisma.ClassRuleWhereUniqueInput;
   create: Prisma.XOR<
-    Prisma.ClassRuleCreateWithoutClassSessionsInput,
-    Prisma.ClassRuleUncheckedCreateWithoutClassSessionsInput
+    Prisma.ClassRuleCreateWithoutClassSessionOverridesInput,
+    Prisma.ClassRuleUncheckedCreateWithoutClassSessionOverridesInput
   >;
 };
 
-export type ClassRuleUpsertWithoutClassSessionsInput = {
+export type ClassRuleUpsertWithoutClassSessionOverridesInput = {
   update: Prisma.XOR<
-    Prisma.ClassRuleUpdateWithoutClassSessionsInput,
-    Prisma.ClassRuleUncheckedUpdateWithoutClassSessionsInput
+    Prisma.ClassRuleUpdateWithoutClassSessionOverridesInput,
+    Prisma.ClassRuleUncheckedUpdateWithoutClassSessionOverridesInput
   >;
   create: Prisma.XOR<
-    Prisma.ClassRuleCreateWithoutClassSessionsInput,
-    Prisma.ClassRuleUncheckedCreateWithoutClassSessionsInput
+    Prisma.ClassRuleCreateWithoutClassSessionOverridesInput,
+    Prisma.ClassRuleUncheckedCreateWithoutClassSessionOverridesInput
   >;
   where?: Prisma.ClassRuleWhereInput;
 };
 
-export type ClassRuleUpdateToOneWithWhereWithoutClassSessionsInput = {
+export type ClassRuleUpdateToOneWithWhereWithoutClassSessionOverridesInput = {
   where?: Prisma.ClassRuleWhereInput;
   data: Prisma.XOR<
-    Prisma.ClassRuleUpdateWithoutClassSessionsInput,
-    Prisma.ClassRuleUncheckedUpdateWithoutClassSessionsInput
+    Prisma.ClassRuleUpdateWithoutClassSessionOverridesInput,
+    Prisma.ClassRuleUncheckedUpdateWithoutClassSessionOverridesInput
   >;
 };
 
-export type ClassRuleUpdateWithoutClassSessionsInput = {
+export type ClassRuleUpdateWithoutClassSessionOverridesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -701,7 +701,7 @@ export type ClassRuleUpdateWithoutClassSessionsInput = {
   course?: Prisma.CourseUpdateOneRequiredWithoutClassRulesNestedInput;
 };
 
-export type ClassRuleUncheckedUpdateWithoutClassSessionsInput = {
+export type ClassRuleUncheckedUpdateWithoutClassSessionOverridesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -726,7 +726,7 @@ export type ClassRuleCreateWithoutCourseInput = {
   startTime: Date | string;
   endTime: Date | string;
   room?: string | null;
-  classSessions?: Prisma.ClassSessionCreateNestedManyWithoutClassRuleInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutClassRuleInput;
 };
 
 export type ClassRuleUncheckedCreateWithoutCourseInput = {
@@ -740,7 +740,7 @@ export type ClassRuleUncheckedCreateWithoutCourseInput = {
   startTime: Date | string;
   endTime: Date | string;
   room?: string | null;
-  classSessions?: Prisma.ClassSessionUncheckedCreateNestedManyWithoutClassRuleInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutClassRuleInput;
 };
 
 export type ClassRuleCreateOrConnectWithoutCourseInput = {
@@ -825,7 +825,7 @@ export type ClassRuleUpdateWithoutCourseInput = {
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  classSessions?: Prisma.ClassSessionUpdateManyWithoutClassRuleNestedInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutClassRuleNestedInput;
 };
 
 export type ClassRuleUncheckedUpdateWithoutCourseInput = {
@@ -839,7 +839,7 @@ export type ClassRuleUncheckedUpdateWithoutCourseInput = {
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  classSessions?: Prisma.ClassSessionUncheckedUpdateManyWithoutClassRuleNestedInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleNestedInput;
 };
 
 export type ClassRuleUncheckedUpdateManyWithoutCourseInput = {
@@ -860,13 +860,13 @@ export type ClassRuleUncheckedUpdateManyWithoutCourseInput = {
  */
 
 export type ClassRuleCountOutputType = {
-  classSessions: number;
+  classSessionOverrides: number;
 };
 
 export type ClassRuleCountOutputTypeSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
-  classSessions?: boolean | ClassRuleCountOutputTypeCountClassSessionsArgs;
+  classSessionOverrides?: boolean | ClassRuleCountOutputTypeCountClassSessionOverridesArgs;
 };
 
 /**
@@ -884,10 +884,10 @@ export type ClassRuleCountOutputTypeDefaultArgs<
 /**
  * ClassRuleCountOutputType without action
  */
-export type ClassRuleCountOutputTypeCountClassSessionsArgs<
+export type ClassRuleCountOutputTypeCountClassSessionOverridesArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
-  where?: Prisma.ClassSessionWhereInput;
+  where?: Prisma.ClassSessionOverrideWhereInput;
 };
 
 export type ClassRuleSelect<
@@ -906,7 +906,7 @@ export type ClassRuleSelect<
     endTime?: boolean;
     room?: boolean;
     course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>;
-    classSessions?: boolean | Prisma.ClassRule$classSessionsArgs<ExtArgs>;
+    classSessionOverrides?: boolean | Prisma.ClassRule$classSessionOverridesArgs<ExtArgs>;
     _count?: boolean | Prisma.ClassRuleCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['classRule']
@@ -986,7 +986,7 @@ export type ClassRuleInclude<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>;
-  classSessions?: boolean | Prisma.ClassRule$classSessionsArgs<ExtArgs>;
+  classSessionOverrides?: boolean | Prisma.ClassRule$classSessionOverridesArgs<ExtArgs>;
   _count?: boolean | Prisma.ClassRuleCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type ClassRuleIncludeCreateManyAndReturn<
@@ -1010,9 +1010,9 @@ export type $ClassRulePayload<
      */
     course: Prisma.$CoursePayload<ExtArgs>;
     /**
-     * 生成的课程实例
+     * 课程实例变更记录
      */
-    classSessions: Prisma.$ClassSessionPayload<ExtArgs>[];
+    classSessionOverrides: Prisma.$ClassSessionOverridePayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1612,11 +1612,11 @@ export interface Prisma__ClassRuleClient<
     ExtArgs,
     GlobalOmitOptions
   >;
-  classSessions<T extends Prisma.ClassRule$classSessionsArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.ClassRule$classSessionsArgs<ExtArgs>>,
+  classSessionOverrides<T extends Prisma.ClassRule$classSessionOverridesArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.ClassRule$classSessionOverridesArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
-        Prisma.$ClassSessionPayload<ExtArgs>,
+        Prisma.$ClassSessionOverridePayload<ExtArgs>,
         T,
         'findMany',
         GlobalOmitOptions
@@ -2099,31 +2099,33 @@ export type ClassRuleDeleteManyArgs<
 };
 
 /**
- * ClassRule.classSessions
+ * ClassRule.classSessionOverrides
  */
-export type ClassRule$classSessionsArgs<
+export type ClassRule$classSessionOverridesArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the ClassSession
+   * Select specific fields to fetch from the ClassSessionOverride
    */
-  select?: Prisma.ClassSessionSelect<ExtArgs> | null;
+  select?: Prisma.ClassSessionOverrideSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the ClassSession
+   * Omit specific fields from the ClassSessionOverride
    */
-  omit?: Prisma.ClassSessionOmit<ExtArgs> | null;
+  omit?: Prisma.ClassSessionOverrideOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.ClassSessionInclude<ExtArgs> | null;
-  where?: Prisma.ClassSessionWhereInput;
+  include?: Prisma.ClassSessionOverrideInclude<ExtArgs> | null;
+  where?: Prisma.ClassSessionOverrideWhereInput;
   orderBy?:
-    | Prisma.ClassSessionOrderByWithRelationInput
-    | Prisma.ClassSessionOrderByWithRelationInput[];
-  cursor?: Prisma.ClassSessionWhereUniqueInput;
+    | Prisma.ClassSessionOverrideOrderByWithRelationInput
+    | Prisma.ClassSessionOverrideOrderByWithRelationInput[];
+  cursor?: Prisma.ClassSessionOverrideWhereUniqueInput;
   take?: number;
   skip?: number;
-  distinct?: Prisma.ClassSessionScalarFieldEnum | Prisma.ClassSessionScalarFieldEnum[];
+  distinct?:
+    | Prisma.ClassSessionOverrideScalarFieldEnum
+    | Prisma.ClassSessionOverrideScalarFieldEnum[];
 };
 
 /**

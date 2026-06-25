@@ -1,26 +1,23 @@
 import { z } from 'zod';
 
-import type { ClassSession } from '@tutorhub/database';
+import type { ClassSessionOverride } from '@tutorhub/database';
 
-import { classSessionFields } from './class-session';
+import { classSessionOverrideFields } from './class-session';
 
-export const classSessionUpdateParamsSchema = z.object({
+export const classSessionOverrideUpdateParamsSchema = z.object({
   id: z.string().min(1, 'id is required'),
 });
 
-export const classSessionUpdateSchema = z
+export const classSessionOverrideUpdateSchema = z
   .object({
-    startTime: classSessionFields.startTime.optional(),
-    endTime: classSessionFields.endTime.optional(),
-    state: classSessionFields.state.optional(),
-    rescheduledDate: classSessionFields.rescheduledDate.optional(),
-    rescheduledStartTime: classSessionFields.rescheduledStartTime.optional(),
-    rescheduledEndTime: classSessionFields.rescheduledEndTime.optional(),
-    reason: classSessionFields.reason.optional(),
-    room: classSessionFields.room.optional(),
+    state: classSessionOverrideFields.state.optional(),
+    rescheduledDate: classSessionOverrideFields.rescheduledDate.optional(),
+    rescheduledStartTime: classSessionOverrideFields.rescheduledStartTime.optional(),
+    rescheduledEndTime: classSessionOverrideFields.rescheduledEndTime.optional(),
+    reason: classSessionOverrideFields.reason.optional(),
   })
   .refine((data) => Object.values(data).some((val) => val !== undefined), {
     message: 'Request body cannot be empty',
   });
 
-export type ClassSessionUpdateResponse = ClassSession;
+export type ClassSessionOverrideUpdateResponse = ClassSessionOverride;

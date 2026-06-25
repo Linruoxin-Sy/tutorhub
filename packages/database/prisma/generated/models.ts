@@ -7,10 +7,9 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/ClassSession';
+export type * from './models/ClassSessionOverride';
 export type * from './models/Course';
 export type * from './models/ClassRule';
-export type * from './models/SessionParticipant';
 export type * from './models/Student';
 export type * from './models/StudentCourse';
 export type * from './models/User';

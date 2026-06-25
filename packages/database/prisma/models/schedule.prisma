@@ -35,8 +35,8 @@ model ClassRule {
   /// 所属课程
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-  /// 生成的课程实例
-  classSessions ClassSession[]
+  /// 课程实例变更记录
+  classSessionOverrides ClassSessionOverride[]
 
   @@index([courseId])
   @@map("class_rule")

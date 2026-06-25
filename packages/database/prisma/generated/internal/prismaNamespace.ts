@@ -376,10 +376,9 @@ export type FieldRef<Model, FieldType> = runtime.FieldRef<Model, FieldType>;
 type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>;
 
 export const ModelName = {
-  ClassSession: 'ClassSession',
+  ClassSessionOverride: 'ClassSessionOverride',
   Course: 'Course',
   ClassRule: 'ClassRule',
-  SessionParticipant: 'SessionParticipant',
   Student: 'Student',
   StudentCourse: 'StudentCourse',
   User: 'User',
@@ -403,88 +402,87 @@ export type TypeMap<
   };
   meta: {
     modelProps:
-      | 'classSession'
+      | 'classSessionOverride'
       | 'course'
       | 'classRule'
-      | 'sessionParticipant'
       | 'student'
       | 'studentCourse'
       | 'user';
     txIsolationLevel: TransactionIsolationLevel;
   };
   model: {
-    ClassSession: {
-      payload: Prisma.$ClassSessionPayload<ExtArgs>;
-      fields: Prisma.ClassSessionFieldRefs;
+    ClassSessionOverride: {
+      payload: Prisma.$ClassSessionOverridePayload<ExtArgs>;
+      fields: Prisma.ClassSessionOverrideFieldRefs;
       operations: {
         findUnique: {
-          args: Prisma.ClassSessionFindUniqueArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload> | null;
+          args: Prisma.ClassSessionOverrideFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionOverridePayload> | null;
         };
         findUniqueOrThrow: {
-          args: Prisma.ClassSessionFindUniqueOrThrowArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassSessionOverrideFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionOverridePayload>;
         };
         findFirst: {
-          args: Prisma.ClassSessionFindFirstArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload> | null;
+          args: Prisma.ClassSessionOverrideFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionOverridePayload> | null;
         };
         findFirstOrThrow: {
-          args: Prisma.ClassSessionFindFirstOrThrowArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassSessionOverrideFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionOverridePayload>;
         };
         findMany: {
-          args: Prisma.ClassSessionFindManyArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>[];
+          args: Prisma.ClassSessionOverrideFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionOverridePayload>[];
         };
         create: {
-          args: Prisma.ClassSessionCreateArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassSessionOverrideCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionOverridePayload>;
         };
         createMany: {
-          args: Prisma.ClassSessionCreateManyArgs<ExtArgs>;
+          args: Prisma.ClassSessionOverrideCreateManyArgs<ExtArgs>;
           result: BatchPayload;
         };
         createManyAndReturn: {
-          args: Prisma.ClassSessionCreateManyAndReturnArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>[];
+          args: Prisma.ClassSessionOverrideCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionOverridePayload>[];
         };
         delete: {
-          args: Prisma.ClassSessionDeleteArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassSessionOverrideDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionOverridePayload>;
         };
         update: {
-          args: Prisma.ClassSessionUpdateArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassSessionOverrideUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionOverridePayload>;
         };
         deleteMany: {
-          args: Prisma.ClassSessionDeleteManyArgs<ExtArgs>;
+          args: Prisma.ClassSessionOverrideDeleteManyArgs<ExtArgs>;
           result: BatchPayload;
         };
         updateMany: {
-          args: Prisma.ClassSessionUpdateManyArgs<ExtArgs>;
+          args: Prisma.ClassSessionOverrideUpdateManyArgs<ExtArgs>;
           result: BatchPayload;
         };
         updateManyAndReturn: {
-          args: Prisma.ClassSessionUpdateManyAndReturnArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>[];
+          args: Prisma.ClassSessionOverrideUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionOverridePayload>[];
         };
         upsert: {
-          args: Prisma.ClassSessionUpsertArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionPayload>;
+          args: Prisma.ClassSessionOverrideUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassSessionOverridePayload>;
         };
         aggregate: {
-          args: Prisma.ClassSessionAggregateArgs<ExtArgs>;
-          result: runtime.Types.Utils.Optional<Prisma.AggregateClassSession>;
+          args: Prisma.ClassSessionOverrideAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClassSessionOverride>;
         };
         groupBy: {
-          args: Prisma.ClassSessionGroupByArgs<ExtArgs>;
-          result: runtime.Types.Utils.Optional<Prisma.ClassSessionGroupByOutputType>[];
+          args: Prisma.ClassSessionOverrideGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.ClassSessionOverrideGroupByOutputType>[];
         };
         count: {
-          args: Prisma.ClassSessionCountArgs<ExtArgs>;
+          args: Prisma.ClassSessionOverrideCountArgs<ExtArgs>;
           result:
-            | runtime.Types.Utils.Optional<Prisma.ClassSessionCountAggregateOutputType>
+            | runtime.Types.Utils.Optional<Prisma.ClassSessionOverrideCountAggregateOutputType>
             | number;
         };
       };
@@ -634,82 +632,6 @@ export type TypeMap<
         count: {
           args: Prisma.ClassRuleCountArgs<ExtArgs>;
           result: runtime.Types.Utils.Optional<Prisma.ClassRuleCountAggregateOutputType> | number;
-        };
-      };
-    };
-    SessionParticipant: {
-      payload: Prisma.$SessionParticipantPayload<ExtArgs>;
-      fields: Prisma.SessionParticipantFieldRefs;
-      operations: {
-        findUnique: {
-          args: Prisma.SessionParticipantFindUniqueArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionParticipantPayload> | null;
-        };
-        findUniqueOrThrow: {
-          args: Prisma.SessionParticipantFindUniqueOrThrowArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionParticipantPayload>;
-        };
-        findFirst: {
-          args: Prisma.SessionParticipantFindFirstArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionParticipantPayload> | null;
-        };
-        findFirstOrThrow: {
-          args: Prisma.SessionParticipantFindFirstOrThrowArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionParticipantPayload>;
-        };
-        findMany: {
-          args: Prisma.SessionParticipantFindManyArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionParticipantPayload>[];
-        };
-        create: {
-          args: Prisma.SessionParticipantCreateArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionParticipantPayload>;
-        };
-        createMany: {
-          args: Prisma.SessionParticipantCreateManyArgs<ExtArgs>;
-          result: BatchPayload;
-        };
-        createManyAndReturn: {
-          args: Prisma.SessionParticipantCreateManyAndReturnArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionParticipantPayload>[];
-        };
-        delete: {
-          args: Prisma.SessionParticipantDeleteArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionParticipantPayload>;
-        };
-        update: {
-          args: Prisma.SessionParticipantUpdateArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionParticipantPayload>;
-        };
-        deleteMany: {
-          args: Prisma.SessionParticipantDeleteManyArgs<ExtArgs>;
-          result: BatchPayload;
-        };
-        updateMany: {
-          args: Prisma.SessionParticipantUpdateManyArgs<ExtArgs>;
-          result: BatchPayload;
-        };
-        updateManyAndReturn: {
-          args: Prisma.SessionParticipantUpdateManyAndReturnArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionParticipantPayload>[];
-        };
-        upsert: {
-          args: Prisma.SessionParticipantUpsertArgs<ExtArgs>;
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionParticipantPayload>;
-        };
-        aggregate: {
-          args: Prisma.SessionParticipantAggregateArgs<ExtArgs>;
-          result: runtime.Types.Utils.Optional<Prisma.AggregateSessionParticipant>;
-        };
-        groupBy: {
-          args: Prisma.SessionParticipantGroupByArgs<ExtArgs>;
-          result: runtime.Types.Utils.Optional<Prisma.SessionParticipantGroupByOutputType>[];
-        };
-        count: {
-          args: Prisma.SessionParticipantCountArgs<ExtArgs>;
-          result:
-            | runtime.Types.Utils.Optional<Prisma.SessionParticipantCountAggregateOutputType>
-            | number;
         };
       };
     };
@@ -976,26 +898,22 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel =
   (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
 
-export const ClassSessionScalarFieldEnum = {
+export const ClassSessionOverrideScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
   classRuleId: 'classRuleId',
-  courseId: 'courseId',
-  occurrenceDate: 'occurrenceDate',
-  startTime: 'startTime',
-  endTime: 'endTime',
+  originalDate: 'originalDate',
   state: 'state',
   rescheduledDate: 'rescheduledDate',
   rescheduledStartTime: 'rescheduledStartTime',
   rescheduledEndTime: 'rescheduledEndTime',
   reason: 'reason',
-  room: 'room',
 } as const;
 
-export type ClassSessionScalarFieldEnum =
-  (typeof ClassSessionScalarFieldEnum)[keyof typeof ClassSessionScalarFieldEnum];
+export type ClassSessionOverrideScalarFieldEnum =
+  (typeof ClassSessionOverrideScalarFieldEnum)[keyof typeof ClassSessionOverrideScalarFieldEnum];
 
 export const CourseScalarFieldEnum = {
   id: 'id',
@@ -1027,18 +945,6 @@ export const ClassRuleScalarFieldEnum = {
 
 export type ClassRuleScalarFieldEnum =
   (typeof ClassRuleScalarFieldEnum)[keyof typeof ClassRuleScalarFieldEnum];
-
-export const SessionParticipantScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt',
-  classSessionId: 'classSessionId',
-  studentId: 'studentId',
-} as const;
-
-export type SessionParticipantScalarFieldEnum =
-  (typeof SessionParticipantScalarFieldEnum)[keyof typeof SessionParticipantScalarFieldEnum];
 
 export const StudentScalarFieldEnum = {
   id: 'id',
@@ -1129,19 +1035,19 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>;
 
 /**
- * Reference to a field of type 'ClassSessionState'
+ * Reference to a field of type 'ClassSessionOverrideState'
  */
-export type EnumClassSessionStateFieldRefInput<$PrismaModel> = FieldRefInputType<
+export type EnumClassSessionOverrideStateFieldRefInput<$PrismaModel> = FieldRefInputType<
   $PrismaModel,
-  'ClassSessionState'
+  'ClassSessionOverrideState'
 >;
 
 /**
- * Reference to a field of type 'ClassSessionState[]'
+ * Reference to a field of type 'ClassSessionOverrideState[]'
  */
-export type ListEnumClassSessionStateFieldRefInput<$PrismaModel> = FieldRefInputType<
+export type ListEnumClassSessionOverrideStateFieldRefInput<$PrismaModel> = FieldRefInputType<
   $PrismaModel,
-  'ClassSessionState[]'
+  'ClassSessionOverrideState[]'
 >;
 
 /**
@@ -1283,10 +1189,9 @@ export type PrismaClientOptions = (
   comments?: runtime.SqlCommenterPlugin[];
 };
 export type GlobalOmitConfig = {
-  classSession?: Prisma.ClassSessionOmit;
+  classSessionOverride?: Prisma.ClassSessionOverrideOmit;
   course?: Prisma.CourseOmit;
   classRule?: Prisma.ClassRuleOmit;
-  sessionParticipant?: Prisma.SessionParticipantOmit;
   student?: Prisma.StudentOmit;
   studentCourse?: Prisma.StudentCourseOmit;
   user?: Prisma.UserOmit;

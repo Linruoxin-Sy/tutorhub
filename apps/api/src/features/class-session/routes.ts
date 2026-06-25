@@ -1,73 +1,67 @@
 import { Hono } from 'hono';
 
 import {
-  classSessionCreateSchema,
-  classSessionDetailParamsSchema,
-  classSessionListQuerySchema,
-  classSessionUpdateParamsSchema,
-  classSessionUpdateSchema,
-  participantCreateSchema,
-  participantDeleteParamsSchema,
-  type ClassSessionCreateResponse,
-  type ClassSessionDetailResponse,
-  type ClassSessionListResponse,
-  type ClassSessionUpdateResponse,
+  classSessionOverrideCreateSchema,
+  classSessionOverrideDetailParamsSchema,
+  classSessionOverrideListQuerySchema,
+  classSessionOverrideUpdateParamsSchema,
+  classSessionOverrideUpdateSchema,
+  type ClassSessionOverrideCreateResponse,
+  type ClassSessionOverrideDetailResponse,
+  type ClassSessionOverrideListResponse,
+  type ClassSessionOverrideUpdateResponse,
 } from '@tutorhub/schema';
 
-import { classSessionService } from '@/features/class-session/services/class-session';
+import { classSessionOverrideService } from '@/features/class-session/services/class-session';
 import { zValidator } from '@/shared/validator';
 
 export const classSessionRoute = new Hono()
-  .get('/list', zValidator('query', classSessionListQuerySchema), async (c) => {
+  .get('/list', zValidator('query', classSessionOverrideListQuerySchema), async (c) => {
     const query = c.req.valid('query');
     const userId = c.get('userId');
-    const res: ClassSessionListResponse = await classSessionService.list(query, userId);
+    const res: ClassSessionOverrideListResponse = await classSessionOverrideService.list(
+      query,
+      userId,
+    );
     return c.json(res);
   })
-  .get('/:id', zValidator('param', classSessionDetailParamsSchema), async (c) => {
+  .get('/:id', zValidator('param', classSessionOverrideDetailParamsSchema), async (c) => {
     const { id } = c.req.valid('param');
     const userId = c.get('userId');
-    const res: ClassSessionDetailResponse = await classSessionService.getById(id, userId);
+    const res: ClassSessionOverrideDetailResponse = await classSessionOverrideService.getById(
+      id,
+      userId,
+    );
     return c.json({ data: res });
   })
-  .post('/', zValidator('json', classSessionCreateSchema), async (c) => {
+  .post('/', zValidator('json', classSessionOverrideCreateSchema), async (c) => {
     const input = c.req.valid('json');
     const userId = c.get('userId');
-    const res: ClassSessionCreateResponse = await classSessionService.create(input, userId);
+    const res: ClassSessionOverrideCreateResponse = await classSessionOverrideService.create(
+      input,
+      userId,
+    );
     return c.json({ data: res }, 201);
   })
   .put(
     '/:id',
-    zValidator('param', classSessionUpdateParamsSchema),
-    zValidator('json', classSessionUpdateSchema),
+    zValidator('param', classSessionOverrideUpdateParamsSchema),
+    zValidator('json', classSessionOverrideUpdateSchema),
     async (c) => {
       const { id } = c.req.valid('param');
       const input = c.req.valid('json');
       const userId = c.get('userId');
-      const res: ClassSessionUpdateResponse = await classSessionService.update(id, input, userId);
+      const res: ClassSessionOverrideUpdateResponse = await classSessionOverrideService.update(
+        id,
+        input,
+        userId,
+      );
       return c.json({ data: res });
     },
   )
-  .delete('/:id', zValidator('param', classSessionDetailParamsSchema), async (c) => {
+  .delete('/:id', zValidator('param', classSessionOverrideDetailParamsSchema), async (c) => {
     const { id } = c.req.valid('param');
     const userId = c.get('userId');
-    const res = await classSessionService.delete(id, userId);
+    const res = await classSessionOverrideService.delete(id, userId);
     return c.json({ data: res });
-  })
-  // 参与者管理
-  .post('/:sessionId/participants', zValidator('json', participantCreateSchema), async (c) => {
-    const { classSessionId, studentId } = c.req.valid('json');
-    const userId = c.get('userId');
-    const res = await classSessionService.addParticipant(classSessionId, studentId, userId);
-    return c.json({ data: res }, 201);
-  })
-  .delete(
-    '/:sessionId/participants/:participantId',
-    zValidator('param', participantDeleteParamsSchema),
-    async (c) => {
-      const { sessionId, participantId } = c.req.valid('param');
-      const userId = c.get('userId');
-      await classSessionService.removeParticipant(sessionId, participantId, userId);
-      return c.json({ data: { success: true } });
-    },
-  );
+  });

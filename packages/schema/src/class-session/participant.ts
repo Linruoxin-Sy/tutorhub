@@ -13,3 +13,6 @@ export const participantDeleteParamsSchema = z.object({
   sessionId: z.string().min(1, 'sessionId is required'),
   participantId: z.string().min(1, 'participantId is required'),
 });
+
+// Deprecated: SessionParticipant model has been removed.
+// These schemas are kept for reference but should not be used.

@@ -1,14 +1,10 @@
 import { z } from 'zod';
 
-import type { ClassSession } from '@tutorhub/database';
+import type { ClassSessionOverride } from '@tutorhub/database';
 
-export const classSessionListQuerySchema = z.object({
-  courseId: z.string().optional(),
+export const classSessionOverrideListQuerySchema = z.object({
   classRuleId: z.string().optional(),
-  /** 按日期范围筛选 */
-  dateFrom: z.string().optional(),
-  dateTo: z.string().optional(),
-  state: z.enum(['SCHEDULED', 'COMPLETED', 'LEAVE', 'CANCELLED', 'RESCHEDULED']).optional(),
+  state: z.enum(['CANCELLED', 'RESCHEDULED']).optional(),
   offset: z.coerce.number().int().min(0).optional(),
   limit: z
     .string()
@@ -20,13 +16,10 @@ export const classSessionListQuerySchema = z.object({
     }),
 });
 
-export type ClassSessionListItem = ClassSession & {
-  classRule: { startTime: Date; endTime: Date; room?: string | null };
-  course: { name: string };
-};
+export type ClassSessionOverrideListItem = ClassSessionOverride;
 
-export type ClassSessionListResponse = {
-  items: ClassSessionListItem[];
+export type ClassSessionOverrideListResponse = {
+  items: ClassSessionOverrideListItem[];
   nextCursor: string | null;
   total: number;
 };

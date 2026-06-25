@@ -1,19 +1,13 @@
-/// 课程上课状态
-enum ClassSessionState {
-  /// 已排期（默认正常状态）
-  SCHEDULED
-  /// 已完成（正常上完）
-  COMPLETED
-  /// 学生请假
-  LEAVE
+/// 课程上课状态（仅记录用户对 session 的变更）
+enum ClassSessionOverrideState {
   /// 该次取消（不补课）
   CANCELLED
   /// 调课（时间或日期变更）
   RESCHEDULED
 }
 
-/// 课程实例 — 由 ClassRule 生成，存储在数据库中
-model ClassSession {
+/// 课程实例变更记录 — 由 ClassRule 生成 session 后，用户对某个具体 session 的手动变更
+model ClassSessionOverride {
   /// 主键 ID（ULID）
   id String @id @default(ulid())
 
@@ -29,20 +23,11 @@ model ClassSession {
   /// 所属规则 ID
   classRuleId String @map("class_rule_id")
 
-  /// 所属课程 ID（冗余便于直接查询）
-  courseId String @map("course_id")
+  /// 原始上课日期（规则生成的日期，用于定位哪个 session 被修改）
+  originalDate DateTime @map("original_date") @db.Date
 
-  /// 该次上课的日期（规则生成的日期）
-  occurrenceDate DateTime @map("occurrence_date") @db.Date
-
-  /// 开始时间
-  startTime DateTime @map("start_time") @db.Time()
-
-  /// 结束时间
-  endTime DateTime @map("end_time") @db.Time()
-
-  /// 当前状态
-  state ClassSessionState @default(SCHEDULED)
+  /// 变更类型
+  state ClassSessionOverrideState
 
   /// 调课后的新日期（为空表示日期不变，仅时间调整）
   rescheduledDate DateTime? @map("rescheduled_date") @db.Date
@@ -56,21 +41,11 @@ model ClassSession {
   /// 原因说明
   reason String?
 
-  /// 教室/场地
-  room String?
-
   /// 所属规则
   classRule ClassRule @relation(fields: [classRuleId], references: [id], onDelete: Cascade)
 
-  /// 所属课程
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  /// 参与该课程的学生
-  participants SessionParticipant[]
-
-  @@unique([classRuleId, occurrenceDate])
+  @@unique([classRuleId, originalDate])
   @@index([classRuleId])
-  @@index([courseId])
-  @@index([occurrenceDate])
-  @@map("class_session")
+  @@index([originalDate])
+  @@map("class_session_override")
 }

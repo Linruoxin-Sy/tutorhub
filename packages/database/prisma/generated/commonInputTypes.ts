@@ -50,11 +50,19 @@ export type DateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
 };
 
-export type EnumClassSessionStateFilter<$PrismaModel = never> = {
-  equals?: $Enums.ClassSessionState | Prisma.EnumClassSessionStateFieldRefInput<$PrismaModel>;
-  in?: $Enums.ClassSessionState[] | Prisma.ListEnumClassSessionStateFieldRefInput<$PrismaModel>;
-  notIn?: $Enums.ClassSessionState[] | Prisma.ListEnumClassSessionStateFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedEnumClassSessionStateFilter<$PrismaModel> | $Enums.ClassSessionState;
+export type EnumClassSessionOverrideStateFilter<$PrismaModel = never> = {
+  equals?:
+    | $Enums.ClassSessionOverrideState
+    | Prisma.EnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
+  in?:
+    | $Enums.ClassSessionOverrideState[]
+    | Prisma.ListEnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
+  notIn?:
+    | $Enums.ClassSessionOverrideState[]
+    | Prisma.ListEnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
+  not?:
+    | Prisma.NestedEnumClassSessionOverrideStateFilter<$PrismaModel>
+    | $Enums.ClassSessionOverrideState;
 };
 
 export type StringNullableFilter<$PrismaModel = never> = {
@@ -123,16 +131,22 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>;
 };
 
-export type EnumClassSessionStateWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.ClassSessionState | Prisma.EnumClassSessionStateFieldRefInput<$PrismaModel>;
-  in?: $Enums.ClassSessionState[] | Prisma.ListEnumClassSessionStateFieldRefInput<$PrismaModel>;
-  notIn?: $Enums.ClassSessionState[] | Prisma.ListEnumClassSessionStateFieldRefInput<$PrismaModel>;
+export type EnumClassSessionOverrideStateWithAggregatesFilter<$PrismaModel = never> = {
+  equals?:
+    | $Enums.ClassSessionOverrideState
+    | Prisma.EnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
+  in?:
+    | $Enums.ClassSessionOverrideState[]
+    | Prisma.ListEnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
+  notIn?:
+    | $Enums.ClassSessionOverrideState[]
+    | Prisma.ListEnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
   not?:
-    | Prisma.NestedEnumClassSessionStateWithAggregatesFilter<$PrismaModel>
-    | $Enums.ClassSessionState;
+    | Prisma.NestedEnumClassSessionOverrideStateWithAggregatesFilter<$PrismaModel>
+    | $Enums.ClassSessionOverrideState;
   _count?: Prisma.NestedIntFilter<$PrismaModel>;
-  _min?: Prisma.NestedEnumClassSessionStateFilter<$PrismaModel>;
-  _max?: Prisma.NestedEnumClassSessionStateFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumClassSessionOverrideStateFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumClassSessionOverrideStateFilter<$PrismaModel>;
 };
 
 export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -233,11 +247,19 @@ export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null;
 };
 
-export type NestedEnumClassSessionStateFilter<$PrismaModel = never> = {
-  equals?: $Enums.ClassSessionState | Prisma.EnumClassSessionStateFieldRefInput<$PrismaModel>;
-  in?: $Enums.ClassSessionState[] | Prisma.ListEnumClassSessionStateFieldRefInput<$PrismaModel>;
-  notIn?: $Enums.ClassSessionState[] | Prisma.ListEnumClassSessionStateFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedEnumClassSessionStateFilter<$PrismaModel> | $Enums.ClassSessionState;
+export type NestedEnumClassSessionOverrideStateFilter<$PrismaModel = never> = {
+  equals?:
+    | $Enums.ClassSessionOverrideState
+    | Prisma.EnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
+  in?:
+    | $Enums.ClassSessionOverrideState[]
+    | Prisma.ListEnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
+  notIn?:
+    | $Enums.ClassSessionOverrideState[]
+    | Prisma.ListEnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
+  not?:
+    | Prisma.NestedEnumClassSessionOverrideStateFilter<$PrismaModel>
+    | $Enums.ClassSessionOverrideState;
 };
 
 export type NestedStringNullableFilter<$PrismaModel = never> = {
@@ -321,16 +343,22 @@ export type NestedIntNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null;
 };
 
-export type NestedEnumClassSessionStateWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.ClassSessionState | Prisma.EnumClassSessionStateFieldRefInput<$PrismaModel>;
-  in?: $Enums.ClassSessionState[] | Prisma.ListEnumClassSessionStateFieldRefInput<$PrismaModel>;
-  notIn?: $Enums.ClassSessionState[] | Prisma.ListEnumClassSessionStateFieldRefInput<$PrismaModel>;
+export type NestedEnumClassSessionOverrideStateWithAggregatesFilter<$PrismaModel = never> = {
+  equals?:
+    | $Enums.ClassSessionOverrideState
+    | Prisma.EnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
+  in?:
+    | $Enums.ClassSessionOverrideState[]
+    | Prisma.ListEnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
+  notIn?:
+    | $Enums.ClassSessionOverrideState[]
+    | Prisma.ListEnumClassSessionOverrideStateFieldRefInput<$PrismaModel>;
   not?:
-    | Prisma.NestedEnumClassSessionStateWithAggregatesFilter<$PrismaModel>
-    | $Enums.ClassSessionState;
+    | Prisma.NestedEnumClassSessionOverrideStateWithAggregatesFilter<$PrismaModel>
+    | $Enums.ClassSessionOverrideState;
   _count?: Prisma.NestedIntFilter<$PrismaModel>;
-  _min?: Prisma.NestedEnumClassSessionStateFilter<$PrismaModel>;
-  _max?: Prisma.NestedEnumClassSessionStateFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumClassSessionOverrideStateFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumClassSessionOverrideStateFilter<$PrismaModel>;
 };
 
 export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {

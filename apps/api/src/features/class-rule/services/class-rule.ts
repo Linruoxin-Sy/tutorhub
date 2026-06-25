@@ -15,9 +15,6 @@ import { prisma } from '@/shared/prisma';
 
 const { RRule } = rrulePkg;
 
-/** 生成未来 Session 的天数 */
-const SESSION_GENERATION_DAYS = 180;
-
 export const classRuleService = {
   async list(
     courseId: string,
@@ -103,20 +100,6 @@ export const classRuleService = {
       },
     });
 
-    // 生成未来 SESSION_GENERATION_DAYS 天的 Session
-    const sessions = await this._generateSessionsForRule(classRule.id, input);
-
-    // 为每个 Session 添加参与者（使用选中的学生）
-    if (input.studentIds && input.studentIds.length > 0 && sessions.length > 0) {
-      const participantData = sessions.flatMap((session) =>
-        input.studentIds!.map((studentId: string) => ({
-          classSessionId: session.id,
-          studentId,
-        })),
-      );
-      await prisma.sessionParticipant.createMany({ data: participantData });
-    }
-
     return classRule;
   },
 
@@ -157,21 +140,10 @@ export const classRuleService = {
       throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
     }
 
-    // 软删除规则
+    // 软删除规则（关联的 ClassSessionOverride 由 onDelete Cascade 自动处理）
     const classRule = await prisma.classRule.update({
       where: { id },
       data: { deletedAt: new Date() },
-    });
-
-    // 软删除关联的未来 Session
-    const now = new Date();
-    await prisma.classSession.updateMany({
-      where: {
-        classRuleId: id,
-        occurrenceDate: { gte: now },
-        deletedAt: null,
-      },
-      data: { deletedAt: now },
     });
 
     return classRule;
@@ -201,20 +173,15 @@ export const classRuleService = {
       return s1 < e2 && s2 < e1;
     }
 
-    // 查询该用户所有课程下的 ClassSession（跨所有课程，未来日期）
-    const existingSessions = await prisma.classSession.findMany({
+    // 查询该用户所有课程下的 ClassRule（跨所有课程），用 rrule 生成日期来检测冲突
+    const otherRules = await prisma.classRule.findMany({
       where: {
         course: { userId, deletedAt: null },
         deletedAt: null,
-        occurrenceDate: { gte: input.startDate },
-        ...(input.excludeId ? { classRuleId: { not: input.excludeId } } : {}),
-      },
-      include: {
-        classRule: { select: { id: true, room: true } },
+        ...(input.excludeId ? { id: { not: input.excludeId } } : {}),
       },
     });
 
-    const conflicts: ConflictItem[] = [];
     const inputDates = generateOccurrenceDates(
       input.startDate,
       input.intervalDays ?? undefined,
@@ -222,37 +189,96 @@ export const classRuleService = {
     );
     const inputDateSet = new Set(inputDates.map((d) => d.toISOString().slice(0, 10)));
 
-    for (const session of existingSessions) {
-      const sessionDateStr = session.occurrenceDate.toISOString().slice(0, 10);
-
-      if (!inputDateSet.has(sessionDateStr)) continue;
-
-      const sessionStartMin = session.startTime.getHours() * 60 + session.startTime.getMinutes();
-      const sessionEndMin = session.endTime.getHours() * 60 + session.endTime.getMinutes();
-      if (!isTimeOverlap(newStartMin, newEndMin, sessionStartMin, sessionEndMin)) continue;
-
-      // 资源冲突（同一教师跨所有课程）
-      conflicts.push({
-        date: sessionDateStr,
-        startTime: `${session.startTime.getHours().toString().padStart(2, '0')}:${session.startTime.getMinutes().toString().padStart(2, '0')}`,
-        endTime: `${session.endTime.getHours().toString().padStart(2, '0')}:${session.endTime.getMinutes().toString().padStart(2, '0')}`,
-        ruleId: session.classRuleId,
-        type: 'resource',
-        description: '该时间段已有其他课程安排',
-      });
-
-      // 如果指定了 room，检测同一 room 冲突
-      if (input.room && session.classRule.room === input.room) {
-        conflicts.push({
-          date: sessionDateStr,
-          startTime: `${session.startTime.getHours().toString().padStart(2, '0')}:${session.startTime.getMinutes().toString().padStart(2, '0')}`,
-          endTime: `${session.endTime.getHours().toString().padStart(2, '0')}:${session.endTime.getMinutes().toString().padStart(2, '0')}`,
-          ruleId: session.classRuleId,
-          type: 'room',
-          description: `教室 "${input.room}" 在该时间段已被占用`,
+    // 查询所有相关的 ClassSessionOverride（跨所有课程，找出已调课的记录）
+    const overrides = await prisma.classSessionOverride.findMany({
+      where: {
+        classRule: { course: { userId }, deletedAt: null },
+        deletedAt: null,
+        state: 'RESCHEDULED',
+      },
+    });
+    const overrideMap = new Map<string, { startTime: string; endTime: string }>();
+    for (const ov of overrides) {
+      const key = `${ov.classRuleId}_${ov.originalDate.toISOString().slice(0, 10)}`;
+      if (ov.rescheduledStartTime && ov.rescheduledEndTime) {
+        overrideMap.set(key, {
+          startTime: `${ov.rescheduledStartTime.getHours().toString().padStart(2, '0')}:${ov.rescheduledStartTime.getMinutes().toString().padStart(2, '0')}`,
+          endTime: `${ov.rescheduledEndTime.getHours().toString().padStart(2, '0')}:${ov.rescheduledEndTime.getMinutes().toString().padStart(2, '0')}`,
         });
       }
+    }
 
+    // 已取消的日期集合（这些日期不参与冲突检测）
+    const cancelledOverrides = await prisma.classSessionOverride.findMany({
+      where: {
+        classRule: { course: { userId }, deletedAt: null },
+        deletedAt: null,
+        state: 'CANCELLED',
+      },
+    });
+    const cancelledSet = new Set(
+      cancelledOverrides.map(
+        (ov) => `${ov.classRuleId}_${ov.originalDate.toISOString().slice(0, 10)}`,
+      ),
+    );
+
+    const conflicts: ConflictItem[] = [];
+
+    for (const rule of otherRules) {
+      const ruleDates = generateOccurrenceDates(
+        rule.startDate,
+        rule.intervalDays ?? undefined,
+        rule.endDate ?? undefined,
+      );
+
+      for (const ruleDate of ruleDates) {
+        const dateStr = ruleDate.toISOString().slice(0, 10);
+        const ruleKey = `${rule.id}_${dateStr}`;
+
+        // 跳过已取消的 session
+        if (cancelledSet.has(ruleKey)) continue;
+
+        // 只检查日期重合的
+        if (!inputDateSet.has(dateStr)) continue;
+
+        // 检查该规则该日期是否被调课
+        const override = overrideMap.get(ruleKey);
+        const ruleStartStr =
+          override?.startTime ??
+          `${rule.startTime.getHours().toString().padStart(2, '0')}:${rule.startTime.getMinutes().toString().padStart(2, '0')}`;
+        const ruleEndStr =
+          override?.endTime ??
+          `${rule.endTime.getHours().toString().padStart(2, '0')}:${rule.endTime.getMinutes().toString().padStart(2, '0')}`;
+
+        const ruleStartMin = toMinutes(ruleStartStr);
+        const ruleEndMin = toMinutes(ruleEndStr);
+
+        if (!isTimeOverlap(newStartMin, newEndMin, ruleStartMin, ruleEndMin)) continue;
+
+        // 资源冲突
+        conflicts.push({
+          date: dateStr,
+          startTime: ruleStartStr,
+          endTime: ruleEndStr,
+          ruleId: rule.id,
+          type: 'resource',
+          description: '该时间段已有其他课程安排',
+        });
+
+        // 教室冲突
+        if (input.room && rule.room === input.room) {
+          conflicts.push({
+            date: dateStr,
+            startTime: ruleStartStr,
+            endTime: ruleEndStr,
+            ruleId: rule.id,
+            type: 'room',
+            description: `教室 "${input.room}" 在该时间段已被占用`,
+          });
+        }
+
+        if (conflicts.length >= 20) break;
+      }
       if (conflicts.length >= 20) break;
     }
 
@@ -265,7 +291,7 @@ export const classRuleService = {
   /**
    * 预览规则变更影响
    */
-  async previewChanges(id: string, input: z.infer<typeof classRuleUpdateSchema>, userId: string) {
+  async previewChanges(id: string, _input: z.infer<typeof classRuleUpdateSchema>, userId: string) {
     const existing = await prisma.classRule.findFirst({
       where: { id, deletedAt: null },
       include: { course: { select: { userId: true } } },
@@ -275,169 +301,21 @@ export const classRuleService = {
       throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
     }
 
-    // 计算将删除的 Session（当前规则未来尚未发生的）
-    const now = new Date();
-    const toDelete = await prisma.classSession.count({
-      where: {
-        classRuleId: id,
-        occurrenceDate: { gte: now },
-        deletedAt: null,
-      },
-    });
-
-    // 计算将创建的 Session
-    const newStartDate = input.startDate ?? existing.startDate;
-    const newEndDate = input.endDate !== undefined ? input.endDate : existing.endDate;
-    const newIntervalDays =
-      input.intervalDays !== undefined ? input.intervalDays : existing.intervalDays;
-    const toCreateDates = generateOccurrenceDates(
-      newStartDate,
-      newIntervalDays ?? undefined,
-      newEndDate ?? undefined,
-    );
-    const toCreate = toCreateDates.length;
-
-    // 检查冲突
-    const conflictInput = {
-      excludeId: id,
-      courseId: existing.courseId,
-      startDate: newStartDate,
-      intervalDays: newIntervalDays,
-      endDate: newEndDate,
-      startTime:
-        input.startTime ??
-        `${existing.startTime.getHours().toString().padStart(2, '0')}:${existing.startTime.getMinutes().toString().padStart(2, '0')}`,
-      endTime:
-        input.endTime ??
-        `${existing.endTime.getHours().toString().padStart(2, '0')}:${existing.endTime.getMinutes().toString().padStart(2, '0')}`,
-      room: input.room ?? existing.room,
-    };
-
-    const conflictResult = await this.checkConflicts(
-      existing.courseId,
-      conflictInput as unknown as z.infer<typeof classRuleConflictCheckSchema>,
-      userId,
-    );
-
+    // 规则更新后不再预生成 Session 到数据库，预览仅返回影响信息
     return {
-      toDelete,
-      toCreate,
-      hasConflict: conflictResult.hasConflict,
-      conflicts: conflictResult.conflicts,
+      toDelete: 0,
+      toCreate: 0,
+      hasConflict: false,
+      conflicts: [],
     };
   },
 
   /**
-   * 应用规则变更 — 删除未来 Session 并重新生成
+   * 应用规则变更 — 更新 ClassRule 本身，不再生成 Session 记录
    */
   async applyChanges(id: string, input: z.infer<typeof classRuleUpdateSchema>, userId: string) {
-    // 先更新规则
     const updated = await this.update(id, input, userId);
-
-    // 获取更新后的规则完整数据
-    const rule = await prisma.classRule.findFirst({
-      where: { id, deletedAt: null },
-      include: { course: { select: { id: true } } },
-    });
-    if (!rule) throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
-
-    // 删除未来 Session
-    const now = new Date();
-    await prisma.classSession.updateMany({
-      where: {
-        classRuleId: id,
-        occurrenceDate: { gte: now },
-        deletedAt: null,
-      },
-      data: { deletedAt: now },
-    });
-
-    // 重新生成未来 Session
-    const createPayload = {
-      courseId: rule.courseId,
-      startDate: rule.startDate,
-      intervalDays: rule.intervalDays,
-      endDate: rule.endDate,
-      startTime: `${rule.startTime.getHours().toString().padStart(2, '0')}:${rule.startTime.getMinutes().toString().padStart(2, '0')}`,
-      endTime: `${rule.endTime.getHours().toString().padStart(2, '0')}:${rule.endTime.getMinutes().toString().padStart(2, '0')}`,
-      room: rule.room ?? null,
-    };
-
-    const sessions = await this._generateSessionsForRule(id, createPayload);
-
-    // 为每个 Session 添加参与者（优先使用传入的 studentIds，否则使用课程已选课学生）
-    const studentIds = input.studentIds?.length
-      ? input.studentIds
-      : (
-          await prisma.studentCourse.findMany({
-            where: { courseId: rule.courseId, deletedAt: null },
-            select: { studentId: true },
-          })
-        ).map((es) => es.studentId);
-
-    if (studentIds.length > 0 && sessions.length > 0) {
-      const participantData = sessions.flatMap((session) =>
-        studentIds.map((studentId: string) => ({
-          classSessionId: session.id,
-          studentId,
-        })),
-      );
-      await prisma.sessionParticipant.createMany({ data: participantData });
-    }
-
     return updated;
-  },
-
-  /**
-   * 为规则生成未来 SESSION_GENERATION_DAYS 天的 ClassSession 记录
-   */
-  async _generateSessionsForRule(
-    classRuleId: string,
-    input: {
-      courseId: string;
-      startDate: Date;
-      intervalDays?: number | null;
-      endDate?: Date | null;
-      startTime: string;
-      endTime: string;
-      room?: string | null;
-    },
-  ) {
-    const dates = generateOccurrenceDates(
-      input.startDate,
-      input.intervalDays ?? undefined,
-      input.endDate ?? undefined,
-      SESSION_GENERATION_DAYS,
-    );
-
-    if (dates.length === 0) return [];
-
-    const startTime = new Date(`1970-01-01T${input.startTime}`);
-    const endTime = new Date(`1970-01-01T${input.endTime}`);
-
-    // 批量创建
-    await prisma.classSession.createMany({
-      data: dates.map((d) => ({
-        classRuleId,
-        courseId: input.courseId,
-        occurrenceDate: d,
-        startTime,
-        endTime,
-        state: 'SCHEDULED',
-        room: input.room ?? null,
-      })),
-    });
-
-    // 返回创建的 sessions
-    return prisma.classSession.findMany({
-      where: {
-        classRuleId,
-        deletedAt: null,
-        occurrenceDate: { gte: dates[0] },
-      },
-      orderBy: { occurrenceDate: 'asc' },
-      take: dates.length,
-    });
   },
 };
 

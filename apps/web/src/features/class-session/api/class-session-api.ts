@@ -1,76 +1,59 @@
 import type {
-  ClassSessionCreateResponse,
-  ClassSessionDetailResponse,
-  ClassSessionListResponse,
-  ClassSessionUpdateResponse,
+  ClassSessionOverrideCreateResponse,
+  ClassSessionOverrideDetailResponse,
+  ClassSessionOverrideListResponse,
+  ClassSessionOverrideUpdateResponse,
 } from '@tutorhub/schema';
 
 import { request } from '@/utils/request';
 
-/** 分页查询课程实例 */
-export async function fetchClassSessions(params: {
-  courseId?: string;
+/** 分页查询课程实例变更记录 */
+export async function fetchClassSessionOverrides(params: {
   classRuleId?: string;
-  dateFrom?: string;
-  dateTo?: string;
   state?: string;
   offset?: number;
   limit?: number;
-}): Promise<ClassSessionListResponse> {
-  const { data } = await request.get<ClassSessionListResponse>('/class-session/list', { params });
+}): Promise<ClassSessionOverrideListResponse> {
+  const { data } = await request.get<ClassSessionOverrideListResponse>('/class-session/list', {
+    params,
+  });
   return data;
 }
 
-/** 获取单条课程实例详情 */
-export async function fetchClassSessionById(id: string): Promise<ClassSessionDetailResponse> {
-  const { data } = await request.get<{ data: ClassSessionDetailResponse }>(`/class-session/${id}`);
+/** 获取单条课程实例变更记录详情 */
+export async function fetchClassSessionOverrideById(
+  id: string,
+): Promise<ClassSessionOverrideDetailResponse> {
+  const { data } = await request.get<{ data: ClassSessionOverrideDetailResponse }>(
+    `/class-session/${id}`,
+  );
   return data.data;
 }
 
-/** 创建课程实例（补课场景） */
-export async function createClassSession(
+/** 创建课程实例变更记录 */
+export async function createClassSessionOverride(
   payload: Record<string, unknown>,
-): Promise<ClassSessionCreateResponse> {
-  const { data } = await request.post<{ data: ClassSessionCreateResponse }>(
+): Promise<ClassSessionOverrideCreateResponse> {
+  const { data } = await request.post<{ data: ClassSessionOverrideCreateResponse }>(
     '/class-session',
     payload,
   );
   return data.data;
 }
 
-/** 更新课程实例（调课/请假/完成/取消） */
-export async function updateClassSession(
+/** 更新课程实例变更记录 */
+export async function updateClassSessionOverride(
   id: string,
   payload: Record<string, unknown>,
-): Promise<ClassSessionUpdateResponse> {
-  const { data } = await request.put<{ data: ClassSessionUpdateResponse }>(
+): Promise<ClassSessionOverrideUpdateResponse> {
+  const { data } = await request.put<{ data: ClassSessionOverrideUpdateResponse }>(
     `/class-session/${id}`,
     payload,
   );
   return data.data;
 }
 
-/** 删除课程实例 */
-export async function deleteClassSession(id: string): Promise<void> {
+/** 删除课程实例变更记录 */
+export async function deleteClassSessionOverride(id: string): Promise<void> {
   await request.delete(`/class-session/${id}`);
-}
-
-/** 添加参与者 */
-export async function addSessionParticipant(
-  sessionId: string,
-  studentId: string,
-): Promise<Record<string, unknown>> {
-  const { data } = await request.post<{ data: Record<string, unknown> }>(
-    `/class-session/${sessionId}/participants`,
-    { classSessionId: sessionId, studentId },
-  );
-  return data.data;
-}
-
-/** 移除参与者 */
-export async function removeSessionParticipant(
-  sessionId: string,
-  participantId: string,
-): Promise<void> {
-  await request.delete(`/class-session/${sessionId}/participants/${participantId}`);
 }

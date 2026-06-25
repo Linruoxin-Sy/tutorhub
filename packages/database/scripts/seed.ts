@@ -92,7 +92,6 @@ const TIME_SLOTS: { startHour: number; startMin: number; endHour: number; endMin
 ];
 
 const INTERVAL_OPTIONS = [7, 14, 30] as const;
-const MS_PER_DAY = 86_400_000;
 const SEED_BASE_DATE = new Date('2026-01-05T00:00:00');
 
 // ---------------------------------------------------------------------------
@@ -107,32 +106,6 @@ function addDays(date: Date, days: number): Date {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
   return result;
-}
-
-// ---------------------------------------------------------------------------
-// Date generation helper (used for creating ClassSession records)
-// ---------------------------------------------------------------------------
-
-function generateDates(
-  startDate: Date,
-  intervalDays: number | null,
-  endDate: Date | null,
-  maxDays: number,
-): Date[] {
-  if (!intervalDays) {
-    return [new Date(startDate)];
-  }
-
-  const dates: Date[] = [];
-  const maxEnd = endDate ?? new Date(startDate.getTime() + maxDays * MS_PER_DAY);
-  let current = new Date(startDate);
-
-  while (current <= maxEnd) {
-    dates.push(new Date(current));
-    current = new Date(current.getTime() + intervalDays * MS_PER_DAY);
-  }
-
-  return dates;
 }
 
 // ---------------------------------------------------------------------------
@@ -218,8 +191,7 @@ async function main() {
 
   // 1. Clean existing data
   log('Cleaning existing data...');
-  await prisma.sessionParticipant.deleteMany();
-  await prisma.classSession.deleteMany();
+  await prisma.classSessionOverride.deleteMany();
   await prisma.classRule.deleteMany();
   await prisma.studentCourse.deleteMany();
   await prisma.course.deleteMany();
@@ -326,121 +298,6 @@ async function main() {
     totalRules += ruleBatch.length;
   }
   log(`Created ${totalRules} class rules`);
-
-  // 7. Generate ClassSessions from rules (180 days worth)
-  log('Generating class sessions...');
-
-  const SESSION_DAYS = 180;
-  let totalSessions = 0;
-  let sessionBatch: {
-    classRuleId: string;
-    courseId: string;
-    occurrenceDate: Date;
-    startTime: Date;
-    endTime: Date;
-    state: string;
-  }[] = [];
-
-  let ruleCursor: string | undefined;
-  const PAGE_SIZE = 3000;
-
-  while (true) {
-    const page = await prisma.classRule.findMany({
-      select: {
-        id: true,
-        courseId: true,
-        startDate: true,
-        endDate: true,
-        intervalDays: true,
-        startTime: true,
-        endTime: true,
-      },
-      take: PAGE_SIZE,
-      orderBy: { id: 'asc' },
-      ...(ruleCursor ? { skip: 1, cursor: { id: ruleCursor } } : {}),
-    });
-
-    if (page.length === 0) break;
-
-    for (const rule of page) {
-      const dates = generateDates(rule.startDate, rule.intervalDays, rule.endDate, SESSION_DAYS);
-      for (const d of dates) {
-        sessionBatch.push({
-          classRuleId: rule.id,
-          courseId: rule.courseId,
-          occurrenceDate: d,
-          startTime: rule.startTime,
-          endTime: rule.endTime,
-          state: 'SCHEDULED',
-        });
-      }
-    }
-
-    if (sessionBatch.length >= RULE_CHUNK_SIZE) {
-      await prisma.classSession.createMany({ data: sessionBatch, skipDuplicates: true });
-      totalSessions += sessionBatch.length;
-      sessionBatch = [];
-    }
-
-    ruleCursor = page[page.length - 1].id;
-  }
-
-  if (sessionBatch.length > 0) {
-    await prisma.classSession.createMany({ data: sessionBatch, skipDuplicates: true });
-    totalSessions += sessionBatch.length;
-  }
-  log(`Created ${totalSessions} class sessions`);
-
-  // 8. Create SessionParticipants linking students to sessions
-  log('Generating session participants...');
-
-  let totalParticipants = 0;
-  let participantBatch: {
-    classSessionId: string;
-    studentId: string;
-  }[] = [];
-  const SESSION_PAGE_SIZE = 2000;
-
-  let sessionCursor: string | undefined;
-  while (true) {
-    const sessionPage = await prisma.classSession.findMany({
-      select: { id: true, courseId: true },
-      take: SESSION_PAGE_SIZE,
-      orderBy: { id: 'asc' },
-      ...(sessionCursor ? { skip: 1, cursor: { id: sessionCursor } } : {}),
-    });
-
-    if (sessionPage.length === 0) break;
-
-    for (const sess of sessionPage) {
-      // Find all enrolled students for this course
-      const enrolled = await prisma.studentCourse.findMany({
-        where: { courseId: sess.courseId, deletedAt: null },
-        select: { studentId: true },
-      });
-
-      for (const enr of enrolled) {
-        participantBatch.push({
-          classSessionId: sess.id,
-          studentId: enr.studentId,
-        });
-      }
-    }
-
-    if (participantBatch.length >= 5000) {
-      await prisma.sessionParticipant.createMany({ data: participantBatch, skipDuplicates: true });
-      totalParticipants += participantBatch.length;
-      participantBatch = [];
-    }
-
-    sessionCursor = sessionPage[sessionPage.length - 1].id;
-  }
-
-  if (participantBatch.length > 0) {
-    await prisma.sessionParticipant.createMany({ data: participantBatch, skipDuplicates: true });
-    totalParticipants += participantBatch.length;
-  }
-  log(`Created ${totalParticipants} session participants`);
 
   log('Seed complete');
 }

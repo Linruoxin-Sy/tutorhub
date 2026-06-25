@@ -32,9 +32,6 @@ model Course {
   /// 课程排课规则
   classRules ClassRule[]
 
-  /// 课程实例
-  classSessions ClassSession[]
-
   @@index([userId])
   @@map("course")
 }

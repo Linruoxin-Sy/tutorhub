@@ -8,15 +8,13 @@
  * 🟢 You can import this file directly.
  */
 
-export const ClassSessionState = {
-  SCHEDULED: 'SCHEDULED',
-  COMPLETED: 'COMPLETED',
-  LEAVE: 'LEAVE',
+export const ClassSessionOverrideState = {
   CANCELLED: 'CANCELLED',
   RESCHEDULED: 'RESCHEDULED',
 } as const;
 
-export type ClassSessionState = (typeof ClassSessionState)[keyof typeof ClassSessionState];
+export type ClassSessionOverrideState =
+  (typeof ClassSessionOverrideState)[keyof typeof ClassSessionOverrideState];
 
 export const CourseStatus = {
   ACTIVE: 'ACTIVE',
