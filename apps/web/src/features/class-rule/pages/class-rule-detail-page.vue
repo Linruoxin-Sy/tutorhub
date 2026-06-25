@@ -83,7 +83,7 @@ const totalSessions = ref(0);
 
 onMounted(async () => {
   try {
-    // 1. 获取规则数据
+    // 1. Fetch rule data
     const rule = await fetchClassRuleById(props.ruleId);
     const data = rule as Record<string, unknown>;
     courseName.value = ((data.course as Record<string, unknown>)?.name as string) ?? '';
@@ -99,13 +99,13 @@ onMounted(async () => {
     const startTime = dayjs(startTimeRaw).format('HH:mm');
     const endTime = dayjs(endTimeRaw).format('HH:mm');
 
-    // 2. 获取所有 override 记录
+    // 2. Fetch all override records
     const overrideResult = await fetchClassSessionOverrides({
       classRuleId: props.ruleId,
       limit: 9999,
     });
 
-    // 构建 override 映射
+    // Build override map
     const cancelledDates = new Set<string>();
     const rescheduledMap = new Map<
       string,
@@ -129,7 +129,7 @@ onMounted(async () => {
       }
     }
 
-    // 3. 用 rrule 生成 session
+    // 3. Generate sessions with rrule
     let dates: Date[];
     if (!intervalDays) {
       dates = [startDate];
@@ -158,16 +158,16 @@ onMounted(async () => {
       }
     }
 
-    // 4. 转换为 GeneratedSession，跳过已取消的
+    // 4. Convert to GeneratedSession, skip cancelled
     const sessions: GeneratedSession[] = [];
     for (let i = 0; i < dates.length; i++) {
       const d = dates[i];
       const dateStr = dayjs(d).format('YYYY-MM-DD');
 
-      // 跳过已取消的
+      // Skip cancelled
       if (cancelledDates.has(dateStr)) continue;
 
-      // 检查是否有调课
+      // Check for rescheduled override
       const rescheduled = rescheduledMap.get(dateStr);
       if (rescheduled) {
         sessions.push({
@@ -193,7 +193,7 @@ onMounted(async () => {
     generatedSessions.value = sessions;
     totalSessions.value = sessions.length;
   } catch {
-    // handled by empty state
+    // Handled by empty state
   } finally {
     isLoading.value = false;
   }

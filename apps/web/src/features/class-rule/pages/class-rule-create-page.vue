@@ -5,9 +5,9 @@
       description="Define a new class schedule rule for this course."
     />
 
-    <!-- 表单卡片 -->
+    <!-- Form card -->
     <CardSection class="shrink-0 space-y-5 p-6">
-      <!-- 日期选择 -->
+      <!-- Date picker -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
           Start Date <span class="text-red-500">*</span>
@@ -25,7 +25,7 @@
         />
       </div>
 
-      <!-- 开始时间 -->
+      <!-- Start time -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
           Start Time <span class="text-red-500">*</span>
@@ -41,7 +41,7 @@
         />
       </div>
 
-      <!-- 结束时间 -->
+      <!-- End time -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
           End Time <span class="text-red-500">*</span>
@@ -57,7 +57,7 @@
         />
       </div>
 
-      <!-- 渐进式：循环间隔 -->
+      <!-- Repeat interval -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
           Repeat Every N Days
@@ -78,7 +78,7 @@
         </p>
       </div>
 
-      <!-- 渐进式：结束日期（仅当有循环间隔时显示） -->
+      <!-- End date (only shown when interval is set) -->
       <div v-if="formData.intervalDays !== null" class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
           End Date
@@ -103,32 +103,32 @@
         </p>
       </div>
 
-      <!-- 提交按钮（两阶段状态机） -->
+      <!-- Submit button (two-phase state machine) -->
       <template v-if="!conflictPassed">
-        <!-- Phase 1: 冲突检测 -->
+        <!-- Phase 1: Conflict check -->
         <button
           :disabled="!isFormComplete || isSubmitting"
           class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           @click="runConflictCheck"
         >
           <span v-if="isSubmitting">Checking...</span>
-          <span v-else>冲突检测</span>
+          <span v-else>Conflict Check</span>
         </button>
       </template>
       <template v-else>
-        <!-- Phase 2: 创建上课规则 -->
+        <!-- Phase 2: Create class rule -->
         <button
           :disabled="isSubmitting"
           class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           @click="doCreate"
         >
           <span v-if="isSubmitting">Creating...</span>
-          <span v-else>创建上课规则</span>
+          <span v-else>Create Class Rule</span>
         </button>
       </template>
     </CardSection>
 
-    <!-- 生成的具体课程 -->
+    <!-- Generated sessions -->
     <ListPageShell v-if="conflictPassed && generatedSessions.length > 0" title="Generated Sessions">
       <template #actions>
         <span class="text-sm text-gray-500 dark:text-gray-400">
@@ -156,7 +156,7 @@
       </div>
     </ListPageShell>
 
-    <!-- 冲突课程 -->
+    <!-- Conflicts -->
     <ListPageShell
       v-if="conflictResult && conflictResult.hasConflict"
       title="Schedule Conflicts Detected"

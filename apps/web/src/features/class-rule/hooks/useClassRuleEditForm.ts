@@ -61,7 +61,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     return true;
   });
 
-  // 加载已有数据
+  // Load existing data
   onMounted(async () => {
     try {
       const rule = await fetchClassRuleById(ruleId);
@@ -181,7 +181,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
 
   const { withLoading, isLoadingRef: isSubmitting } = useLoading();
 
-  /** Phase 1: 冲突检测 */
+  /** Phase 1: Conflict check */
   const runConflictCheck = withLoading(async (): Promise<boolean> => {
     if (!verify()) return false;
     conflictPassed.value = false;
@@ -194,7 +194,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     return hasNoConflict;
   });
 
-  /** Phase 2: 实际更新 */
+  /** Phase 2: Update */
   const doUpdate = withLoading(async () => {
     if (!verify()) return;
 

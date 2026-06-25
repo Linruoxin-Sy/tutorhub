@@ -165,7 +165,7 @@ export function useClassRuleCreateForm(courseId: string) {
 
   const { withLoading, isLoadingRef: isSubmitting } = useLoading();
 
-  /** Phase 1: 冲突检测 */
+  /** Phase 1: Conflict check */
   const runConflictCheck = withLoading(async (): Promise<boolean> => {
     if (!verify()) return false;
     conflictPassed.value = false;
@@ -178,7 +178,7 @@ export function useClassRuleCreateForm(courseId: string) {
     return hasNoConflict;
   });
 
-  /** Phase 2: 实际创建 */
+  /** Phase 2: Create */
   const doCreate = withLoading(async () => {
     if (!verify()) return;
 

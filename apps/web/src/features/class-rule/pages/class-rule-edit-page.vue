@@ -5,14 +5,14 @@
       description="Modify the class schedule rule for this enrollment."
     />
 
-    <!-- 加载中 -->
+    <!-- Loading -->
     <CardSection v-if="isInitialLoading" class="shrink-0 p-6">
       <LoadingIndicator text="Loading class rule data..." />
     </CardSection>
 
-    <!-- 表单卡片 -->
+    <!-- Form card -->
     <CardSection v-else class="shrink-0 space-y-5 p-6">
-      <!-- 日期选择 -->
+      <!-- Date picker -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
           Start Date <span class="text-red-500">*</span>
@@ -30,7 +30,7 @@
         />
       </div>
 
-      <!-- 开始时间 -->
+      <!-- Start time -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
           Start Time <span class="text-red-500">*</span>
@@ -46,7 +46,7 @@
         />
       </div>
 
-      <!-- 结束时间 -->
+      <!-- End time -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
           End Time <span class="text-red-500">*</span>
@@ -62,7 +62,7 @@
         />
       </div>
 
-      <!-- 循环间隔 -->
+      <!-- Repeat interval -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
           Repeat Every N Days
@@ -80,7 +80,7 @@
         </div>
       </div>
 
-      <!-- 结束日期 -->
+      <!-- End date -->
       <div v-if="formData.intervalDays !== null" class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
           End Date
@@ -102,9 +102,9 @@
         </p>
       </div>
 
-      <!-- 提交按钮（两阶段状态机） -->
+      <!-- Submit button (two-phase state machine) -->
       <template v-if="!conflictPassed">
-        <!-- Phase 1: 冲突检测 -->
+        <!-- Phase 1: Conflict check -->
         <button
           :disabled="!hasChanges || isSubmitting"
           class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
@@ -112,23 +112,23 @@
         >
           <span v-if="!hasChanges">No changes</span>
           <span v-else-if="isSubmitting">Checking...</span>
-          <span v-else>冲突检测</span>
+          <span v-else>Conflict Check</span>
         </button>
       </template>
       <template v-else>
-        <!-- Phase 2: 修改上课规则 -->
+        <!-- Phase 2: Update class rule -->
         <button
           :disabled="isSubmitting"
           class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           @click="doUpdate"
         >
           <span v-if="isSubmitting">Saving...</span>
-          <span v-else>修改上课规则</span>
+          <span v-else>Update Class Rule</span>
         </button>
       </template>
     </CardSection>
 
-    <!-- 生成的具体课程 -->
+    <!-- Generated sessions -->
     <ListPageShell v-if="conflictPassed && generatedSessions.length > 0" title="Generated Sessions">
       <template #actions>
         <span class="text-sm text-gray-500 dark:text-gray-400">
@@ -156,7 +156,7 @@
       </div>
     </ListPageShell>
 
-    <!-- 冲突课程 -->
+    <!-- Conflicts -->
     <ListPageShell
       v-if="conflictResult && conflictResult.hasConflict"
       title="Schedule Conflicts Detected"
