@@ -130,10 +130,22 @@ function buildRules(courseId: string, seed: number): ClassRuleInput[] {
   const dayOffset = Math.floor(pseudoRandom(seed + 6000) * 365);
   const courseStart = addDays(SEED_BASE_DATE, dayOffset);
 
+  // 用 Fisher-Yates 确定性洗牌打乱 TIME_SLOTS，确保每个课程内各规则使用不同的时间段（不冲突）
+  const shuffledSlots = [...TIME_SLOTS];
+  for (let i = shuffledSlots.length - 1; i > 0; i--) {
+    const j = Math.floor(pseudoRandom(seed + 7000 + i) * (i + 1));
+    [shuffledSlots[i], shuffledSlots[j]] = [shuffledSlots[j], shuffledSlots[i]];
+  }
+  let slotCursor = 0;
+  const nextSlot = () => {
+    const slot = shuffledSlots[slotCursor % shuffledSlots.length];
+    slotCursor++;
+    return slot;
+  };
+
   // --- Rule 1: 固定上课 (single) ---
   {
-    const slotIdx = Math.floor(pseudoRandom(seed + 7000) * TIME_SLOTS.length);
-    const slot = TIME_SLOTS[slotIdx];
+    const slot = nextSlot();
     rules.push({
       courseId,
       startDate: courseStart,
@@ -146,8 +158,7 @@ function buildRules(courseId: string, seed: number): ClassRuleInput[] {
 
   // --- Rule 2: 循环上课 (cyclic with end, weekly) ---
   {
-    const slotIdx = Math.floor(pseudoRandom(seed + 8000) * TIME_SLOTS.length);
-    const slot = TIME_SLOTS[slotIdx];
+    const slot = nextSlot();
     const ruleStart = addDays(courseStart, 7);
     const ruleEnd = addDays(ruleStart, 60 + Math.floor(pseudoRandom(seed + 9000) * 31));
     rules.push({
@@ -162,8 +173,7 @@ function buildRules(courseId: string, seed: number): ClassRuleInput[] {
 
   // --- Optional Rule 3: 无限循环上课 (infinite cyclic) ---
   if (count === 3) {
-    const slotIdx = Math.floor(pseudoRandom(seed + 10000) * TIME_SLOTS.length);
-    const slot = TIME_SLOTS[slotIdx];
+    const slot = nextSlot();
     const interval =
       INTERVAL_OPTIONS[Math.floor(pseudoRandom(seed + 12000) * INTERVAL_OPTIONS.length)];
     const ruleStart = addDays(courseStart, 14);
