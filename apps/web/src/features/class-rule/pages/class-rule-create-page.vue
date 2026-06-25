@@ -147,7 +147,7 @@
           :query="sessionQuery"
           :estimate-size="90"
           :overscan="10"
-          scroll-class="max-h-80 overflow-x-hidden overflow-y-auto scrollbar-none p-5"
+          scroll-class="h-125 overflow-x-hidden overflow-y-auto scrollbar-none p-5"
         >
           <template #item="{ item }">
             <SessionItem
@@ -169,7 +169,7 @@
       title="Schedule Conflicts Detected"
     >
       <div class="flex flex-col">
-        <div class="flex max-h-80 flex-col gap-3 overflow-y-auto p-5">
+        <div class="flex h-125 flex-col gap-3 overflow-y-auto p-5">
           <div
             v-for="conflict in conflictResult.conflicts"
             :key="conflict.date + conflict.startTime"

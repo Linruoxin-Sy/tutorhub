@@ -23,7 +23,7 @@
       </div>
     </header>
 
-    <div class="flex min-h-80 flex-col">
+    <div class="flex h-125 flex-col">
       <div class="flex-1 space-y-3 overflow-y-auto p-4 sm:p-5">
         <div
           v-for="message in assistantMessages"
