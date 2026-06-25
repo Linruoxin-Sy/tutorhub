@@ -95,7 +95,7 @@
           </AppButton>
         </template>
 
-        <div class="flex h-80 flex-col">
+        <div class="flex h-125 flex-col">
           <VirtualList
             :query="classRuleQuery"
             :estimate-size="160"

@@ -66,6 +66,45 @@
           </VirtualList>
         </div>
       </ListPageShell>
+
+      <!-- Class Rules -->
+      <ListPageShell title="Class Rules">
+        <div class="flex h-125 flex-col">
+          <VirtualList
+            :query="classRuleQuery"
+            :estimate-size="160"
+            :overscan="10"
+            scroll-class="flex-1 overflow-x-hidden overflow-y-auto p-5"
+          >
+            <template #loading>
+              <div class="divide-y divide-gray-200 dark:divide-[#343434]">
+                <ClassRuleItem v-for="index in 3" :key="index" loading />
+              </div>
+            </template>
+
+            <template #item="{ item, isLoaded }">
+              <ClassRuleItem
+                :rule="item!"
+                :loading="!isLoaded"
+                :actions="[]"
+                @view="router.push('/class-rule/' + item!.id)"
+              />
+            </template>
+
+            <template #empty>
+              <div
+                class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+              >
+                <div
+                  class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
+                >
+                  No class rules found.
+                </div>
+              </div>
+            </template>
+          </VirtualList>
+        </div>
+      </ListPageShell>
     </div>
   </main>
 </template>
@@ -82,7 +121,9 @@ import StudentItem from '@/features/student/components/StudentItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import SearchInput from '@/components/SearchInput.vue';
-import type { CourseEnrollmentListResponse } from '@tutorhub/schema';
+import { fetchClassRules } from '@/features/class-rule/api/class-rule-api';
+import ClassRuleItem from '@/features/class-rule/components/ClassRuleItem.vue';
+import type { CourseEnrollmentListResponse, ClassRuleListItem } from '@tutorhub/schema';
 
 type EnrollmentItem = CourseEnrollmentListResponse['items'][number];
 
@@ -104,5 +145,11 @@ const sparseQuery = useSparseQuery<EnrollmentItem>({
   queryKeyPrefix: ['course-enrollments', props.id],
   fetchFn: (params) => fetchCourseEnrollments(props.id, params),
   filters: { name: searchRef },
+});
+
+// Class Rules
+const classRuleQuery = useSparseQuery<ClassRuleListItem>({
+  queryKeyPrefix: ['course-class-rules', props.id],
+  fetchFn: (params) => fetchClassRules(props.id, params),
 });
 </script>
