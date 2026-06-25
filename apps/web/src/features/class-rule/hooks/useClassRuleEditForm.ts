@@ -61,6 +61,19 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     return true;
   });
 
+  // Reset conflict pass when form changes after conflict check
+  watch(
+    formData,
+    () => {
+      if (conflictPassed.value) {
+        conflictPassed.value = false;
+        conflictResult.value = null;
+        generatedSessions.value = [];
+      }
+    },
+    { deep: true },
+  );
+
   // Load existing data
   onMounted(async () => {
     try {
