@@ -104,12 +104,18 @@
       </div>
 
       <!-- Submit button (two-phase state machine) -->
-      <Transition name="btn-phase" mode="out-in">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition duration-250"
+        leave-active-class="transition duration-150"
+        enter-from-class="opacity-0 scale-[0.92]"
+        leave-to-class="opacity-0 scale-[0.92]"
+      >
         <button
           v-if="!conflictPassed"
           key="conflict-check"
           :disabled="!isFormComplete || isSubmitting"
-          class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-600/70"
           @click="runConflictCheck"
         >
           <span v-if="isSubmitting">Checking...</span>
@@ -119,7 +125,7 @@
           v-else
           key="create"
           :disabled="isSubmitting"
-          class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-600/70"
           @click="doCreate"
         >
           <span v-if="isSubmitting">Creating...</span>
@@ -231,21 +237,3 @@ const intervalDaysModel = computed({
   },
 });
 </script>
-
-<style scoped>
-/* Phase transition: scale + fade */
-.btn-phase-enter-active {
-  transition: all 0.25s ease-out;
-}
-.btn-phase-leave-active {
-  transition: all 0.15s ease-in;
-}
-.btn-phase-enter-from {
-  opacity: 0;
-  transform: scale(0.92);
-}
-.btn-phase-leave-to {
-  opacity: 0;
-  transform: scale(0.92);
-}
-</style>

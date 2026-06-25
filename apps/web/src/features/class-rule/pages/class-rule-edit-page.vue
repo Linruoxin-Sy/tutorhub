@@ -103,12 +103,18 @@
       </div>
 
       <!-- Submit button (three-phase state machine) -->
-      <Transition name="btn-phase" mode="out-in">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition duration-250"
+        leave-active-class="transition duration-150"
+        enter-from-class="opacity-0 scale-[0.92]"
+        leave-to-class="opacity-0 scale-[0.92]"
+      >
         <button
           v-if="!conflictPassed && !hasChanges"
           key="no-changes"
           disabled
-          class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white opacity-70"
+          class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/70 px-4 py-3 text-sm font-medium text-white"
         >
           No changes
         </button>
@@ -116,7 +122,7 @@
           v-else-if="!conflictPassed && hasChanges"
           key="conflict-check"
           :disabled="isSubmitting"
-          class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           @click="runConflictCheck"
         >
           <span v-if="isSubmitting">Checking...</span>
@@ -126,7 +132,7 @@
           v-else
           key="update"
           :disabled="isSubmitting"
-          class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           @click="doUpdate"
         >
           <span v-if="isSubmitting">Saving...</span>
@@ -241,21 +247,3 @@ const intervalDaysModel = computed({
   },
 });
 </script>
-
-<style scoped>
-/* Phase transition: scale + fade */
-.btn-phase-enter-active {
-  transition: all 0.25s ease-out;
-}
-.btn-phase-leave-active {
-  transition: all 0.15s ease-in;
-}
-.btn-phase-enter-from {
-  opacity: 0;
-  transform: scale(0.92);
-}
-.btn-phase-leave-to {
-  opacity: 0;
-  transform: scale(0.92);
-}
-</style>

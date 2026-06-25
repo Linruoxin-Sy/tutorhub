@@ -11,12 +11,18 @@
       <CardSection v-else class="p-6">
         <CourseForm v-model="formData">
           <template #actions>
-            <Transition name="btn-phase" mode="out-in">
+            <Transition
+              mode="out-in"
+              enter-active-class="transition duration-250"
+              leave-active-class="transition duration-150"
+              enter-from-class="opacity-0 scale-[0.92]"
+              leave-to-class="opacity-0 scale-[0.92]"
+            >
               <button
                 v-if="!hasChanged && !isSubmitting"
                 key="no-changes"
                 disabled
-                class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white opacity-70"
+                class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/70 px-4 py-3 text-sm font-medium text-white"
               >
                 No changes
               </button>
@@ -24,14 +30,14 @@
                 v-else-if="isSubmitting"
                 key="saving"
                 disabled
-                class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white opacity-70"
+                class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/70 px-4 py-3 text-sm font-medium text-white"
               >
                 Saving...
               </button>
               <button
                 v-else
                 key="save"
-                class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+                class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
                 @click="submit"
               >
                 Save Changes
@@ -251,20 +257,3 @@ async function handleDeleteRule(rule: ClassRuleListItem) {
   }
 }
 </script>
-
-<style scoped>
-.btn-phase-enter-active {
-  transition: all 0.25s ease-out;
-}
-.btn-phase-leave-active {
-  transition: all 0.15s ease-in;
-}
-.btn-phase-enter-from {
-  opacity: 0;
-  transform: scale(0.92);
-}
-.btn-phase-leave-to {
-  opacity: 0;
-  transform: scale(0.92);
-}
-</style>
