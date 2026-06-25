@@ -180,7 +180,21 @@ export const classRuleService = {
         deletedAt: null,
         ...(input.excludeId ? { id: { not: input.excludeId } } : {}),
       },
+      include: { course: { select: { name: true } } },
     });
+
+    // 预取所有相关课程的学生名称
+    const courseIds = [...new Set(otherRules.map((r) => r.courseId))];
+    const enrollments = await prisma.studentCourse.findMany({
+      where: { courseId: { in: courseIds }, deletedAt: null },
+      include: { student: { select: { name: true } } },
+    });
+    const courseStudentMap = new Map<string, string[]>();
+    for (const enrollment of enrollments) {
+      const names = courseStudentMap.get(enrollment.courseId) ?? [];
+      names.push(enrollment.student.name);
+      courseStudentMap.set(enrollment.courseId, names);
+    }
 
     const inputDates = generateOccurrenceDates(
       input.startDate,
@@ -255,14 +269,19 @@ export const classRuleService = {
 
         if (!isTimeOverlap(newStartMin, newEndMin, ruleStartMin, ruleEndMin)) continue;
 
+        const courseName = ('course' in rule ? (rule as Record<string, unknown>).course as Record<string, unknown> : undefined)?.name as string ?? 'Unknown';
+        const studentNames = courseStudentMap.get(rule.courseId) ?? [];
+
         // 资源冲突
         conflicts.push({
           date: dateStr,
           startTime: ruleStartStr,
           endTime: ruleEndStr,
           ruleId: rule.id,
+          courseName,
+          studentNames,
           type: 'resource',
-          description: '该时间段已有其他课程安排',
+          description: 'This time slot is already occupied by another session',
         });
 
         // 教室冲突
@@ -272,8 +291,10 @@ export const classRuleService = {
             startTime: ruleStartStr,
             endTime: ruleEndStr,
             ruleId: rule.id,
+            courseName,
+            studentNames,
             type: 'room',
-            description: `教室 "${input.room}" 在该时间段已被占用`,
+            description: `Room "${input.room}" is already occupied during this time slot`,
           });
         }
 

@@ -163,15 +163,24 @@
     >
       <div class="flex flex-col">
         <div class="flex max-h-80 flex-col gap-3 overflow-y-auto p-5">
-          <SessionItem
+          <div
             v-for="conflict in conflictResult.conflicts"
             :key="conflict.date + conflict.startTime"
-            course-name="Conflict"
-            :date="conflict.date"
-            :start-time="conflict.startTime"
-            :end-time="conflict.endTime"
-            :conflict="true"
-          />
+          >
+            <SessionItem
+              :course-name="conflict.courseName"
+              :date="conflict.date"
+              :start-time="conflict.startTime"
+              :end-time="conflict.endTime"
+              :conflict="true"
+            />
+            <div
+              v-if="conflict.studentNames?.length"
+              class="mt-1 px-5 text-xs text-gray-500 dark:text-gray-400"
+            >
+              Students: {{ conflict.studentNames.join(', ') }}
+            </div>
+          </div>
         </div>
       </div>
     </ListPageShell>

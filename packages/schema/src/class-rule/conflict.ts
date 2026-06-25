@@ -34,6 +34,10 @@ export type ConflictItem = {
   endTime: string;
   /** 冲突的规则 ID */
   ruleId: string;
+  /** 冲突所属课程名称 */
+  courseName: string;
+  /** 该课程下已选课的学生名称列表 */
+  studentNames: string[];
   /** 冲突类型 */
   type: ConflictType;
   /** 冲突描述 */
