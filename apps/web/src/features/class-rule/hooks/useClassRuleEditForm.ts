@@ -11,6 +11,7 @@ import {
   fetchClassRuleById,
   updateClassRule,
 } from '@/features/class-rule/api/class-rule-api';
+import { computeSessionStatus } from '@/features/session/utils/sessionStatus';
 import { useLoading } from '@/hooks/useLoading';
 
 import type { ClassRuleFormData } from './useClassRuleCreateForm';
@@ -178,12 +179,16 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       }
     }
 
-    generatedSessions.value = dates.map((d, i) => ({
-      id: `session_edit_${ruleId}_${dayjs(d).format('YYYY-MM-DD')}_${i}`,
-      occurrenceDate: dayjs(d).format('YYYY-MM-DD'),
-      startTime: formData.value.startTime,
-      endTime: formData.value.endTime,
-    }));
+    generatedSessions.value = dates.map((d, i) => {
+      const dateStr = dayjs(d).format('YYYY-MM-DD');
+      return {
+        id: `session_edit_${ruleId}_${dateStr}_${i}`,
+        occurrenceDate: dateStr,
+        startTime: formData.value.startTime,
+        endTime: formData.value.endTime,
+        status: computeSessionStatus(dateStr, formData.value.startTime, formData.value.endTime),
+      };
+    });
   };
 
   const loadMoreSessions = () => {

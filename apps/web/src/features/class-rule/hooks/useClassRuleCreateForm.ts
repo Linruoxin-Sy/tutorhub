@@ -7,6 +7,7 @@ import { toast } from 'vue-sonner';
 import { classRuleCreateSchema, type ConflictItem, type GeneratedSession } from '@tutorhub/schema';
 
 import { checkClassRuleConflicts, createClassRule } from '@/features/class-rule/api/class-rule-api';
+import { computeSessionStatus } from '@/features/session/utils/sessionStatus';
 import { useLoading } from '@/hooks/useLoading';
 
 export interface ClassRuleFormData {
@@ -162,12 +163,16 @@ export function useClassRuleCreateForm(courseId: string) {
       }
     }
 
-    generatedSessions.value = dates.map((d, i) => ({
-      id: `session_create_${courseId}_${dayjs(d).format('YYYY-MM-DD')}_${i}`,
-      occurrenceDate: dayjs(d).format('YYYY-MM-DD'),
-      startTime: formData.value.startTime,
-      endTime: formData.value.endTime,
-    }));
+    generatedSessions.value = dates.map((d, i) => {
+      const dateStr = dayjs(d).format('YYYY-MM-DD');
+      return {
+        id: `session_create_${courseId}_${dateStr}_${i}`,
+        occurrenceDate: dateStr,
+        startTime: formData.value.startTime,
+        endTime: formData.value.endTime,
+        status: computeSessionStatus(dateStr, formData.value.startTime, formData.value.endTime),
+      };
+    });
   };
 
   const loadMoreSessions = () => {

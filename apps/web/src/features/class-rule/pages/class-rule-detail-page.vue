@@ -48,6 +48,7 @@
               :date="item.occurrenceDate"
               :start-time="item.startTime"
               :end-time="item.endTime"
+              :status="item.status"
               :overridden-start-time="item.overridden ? item.rescheduledStartTime : null"
               :overridden-end-time="item.overridden ? item.rescheduledEndTime : null"
             />
@@ -66,6 +67,7 @@ import type { GeneratedSession } from '@tutorhub/schema';
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
 import { fetchClassSessionOverrides } from '@/features/class-session/api/class-session-api';
 import { useLocalQuery } from '@/hooks/useLocalQuery';
+import { computeSessionStatus } from '@/features/session/utils/sessionStatus';
 import SessionItem from '@/features/session/components/SessionItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
@@ -158,14 +160,23 @@ onMounted(async () => {
       }
     }
 
-    // 4. Convert to GeneratedSession, skip cancelled
+    // 4. Convert to GeneratedSession with status
     const sessions: GeneratedSession[] = [];
     for (let i = 0; i < dates.length; i++) {
       const d = dates[i];
       const dateStr = dayjs(d).format('YYYY-MM-DD');
 
-      // Skip cancelled
-      if (cancelledDates.has(dateStr)) continue;
+      // Check for cancelled override
+      if (cancelledDates.has(dateStr)) {
+        sessions.push({
+          id: `session_detail_${props.ruleId}_${dateStr}_${i}`,
+          occurrenceDate: dateStr,
+          startTime,
+          endTime,
+          status: 'cancelled',
+        });
+        continue;
+      }
 
       // Check for rescheduled override
       const rescheduled = rescheduledMap.get(dateStr);
@@ -175,6 +186,7 @@ onMounted(async () => {
           occurrenceDate: rescheduled.rescheduledDate,
           startTime: rescheduled.startTime,
           endTime: rescheduled.endTime,
+          status: 'rescheduled',
           overridden: true,
           rescheduledDate: rescheduled.rescheduledDate,
           rescheduledStartTime: rescheduled.startTime,
@@ -186,6 +198,7 @@ onMounted(async () => {
           occurrenceDate: dateStr,
           startTime,
           endTime,
+          status: computeSessionStatus(dateStr, startTime, endTime),
         });
       }
     }

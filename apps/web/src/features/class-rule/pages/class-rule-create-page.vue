@@ -156,6 +156,7 @@
               :date="item.occurrenceDate"
               :start-time="item.startTime"
               :end-time="item.endTime"
+              :status="item.status"
             />
           </template>
         </VirtualList>
