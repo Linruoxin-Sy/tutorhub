@@ -172,6 +172,7 @@ export function useClassRuleCreateForm(courseId: string) {
 
     const hasNoConflict = await checkConflicts();
     if (hasNoConflict) {
+      toast.success('No conflicts detected, sessions generated');
       generateSessions();
       conflictPassed.value = true;
     }
