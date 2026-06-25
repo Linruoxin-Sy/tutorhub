@@ -104,9 +104,10 @@
       </div>
 
       <!-- Submit button (two-phase state machine) -->
-      <template v-if="!conflictPassed">
-        <!-- Phase 1: Conflict check -->
+      <Transition name="btn-phase" mode="out-in">
         <button
+          v-if="!conflictPassed"
+          key="conflict-check"
           :disabled="!isFormComplete || isSubmitting"
           class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           @click="runConflictCheck"
@@ -114,10 +115,9 @@
           <span v-if="isSubmitting">Checking...</span>
           <span v-else>Conflict Check</span>
         </button>
-      </template>
-      <template v-else>
-        <!-- Phase 2: Create class rule -->
         <button
+          v-else
+          key="create"
           :disabled="isSubmitting"
           class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           @click="doCreate"
@@ -125,7 +125,7 @@
           <span v-if="isSubmitting">Creating...</span>
           <span v-else>Create Class Rule</span>
         </button>
-      </template>
+      </Transition>
     </CardSection>
 
     <!-- Generated sessions -->
@@ -231,3 +231,21 @@ const intervalDaysModel = computed({
   },
 });
 </script>
+
+<style scoped>
+/* Phase transition: scale + fade */
+.btn-phase-enter-active {
+  transition: all 0.25s ease-out;
+}
+.btn-phase-leave-active {
+  transition: all 0.15s ease-in;
+}
+.btn-phase-enter-from {
+  opacity: 0;
+  transform: scale(0.92);
+}
+.btn-phase-leave-to {
+  opacity: 0;
+  transform: scale(0.92);
+}
+</style>

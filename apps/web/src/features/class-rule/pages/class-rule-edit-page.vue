@@ -102,22 +102,29 @@
         </p>
       </div>
 
-      <!-- Submit button (two-phase state machine) -->
-      <template v-if="!conflictPassed">
-        <!-- Phase 1: Conflict check -->
+      <!-- Submit button (three-phase state machine) -->
+      <Transition name="btn-phase" mode="out-in">
         <button
-          :disabled="!hasChanges || isSubmitting"
+          v-if="!conflictPassed && !hasChanges"
+          key="no-changes"
+          disabled
+          class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white opacity-70"
+        >
+          No changes
+        </button>
+        <button
+          v-else-if="!conflictPassed && hasChanges"
+          key="conflict-check"
+          :disabled="isSubmitting"
           class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           @click="runConflictCheck"
         >
-          <span v-if="!hasChanges">No changes</span>
-          <span v-else-if="isSubmitting">Checking...</span>
+          <span v-if="isSubmitting">Checking...</span>
           <span v-else>Conflict Check</span>
         </button>
-      </template>
-      <template v-else>
-        <!-- Phase 2: Update class rule -->
         <button
+          v-else
+          key="update"
           :disabled="isSubmitting"
           class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           @click="doUpdate"
@@ -125,7 +132,7 @@
           <span v-if="isSubmitting">Saving...</span>
           <span v-else>Update Class Rule</span>
         </button>
-      </template>
+      </Transition>
     </CardSection>
 
     <!-- Generated sessions -->
@@ -234,3 +241,21 @@ const intervalDaysModel = computed({
   },
 });
 </script>
+
+<style scoped>
+/* Phase transition: scale + fade */
+.btn-phase-enter-active {
+  transition: all 0.25s ease-out;
+}
+.btn-phase-leave-active {
+  transition: all 0.15s ease-in;
+}
+.btn-phase-enter-from {
+  opacity: 0;
+  transform: scale(0.92);
+}
+.btn-phase-leave-to {
+  opacity: 0;
+  transform: scale(0.92);
+}
+</style>
