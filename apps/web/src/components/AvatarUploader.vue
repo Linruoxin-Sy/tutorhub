@@ -6,7 +6,13 @@
       class="group relative size-24 cursor-pointer overflow-hidden rounded-full border-2 border-dashed border-gray-300 bg-gray-100 shadow-sm transition-all hover:border-blue-400 hover:shadow-md dark:border-[#4a4a4a] dark:bg-[#202020] dark:hover:border-blue-500"
       @click="triggerFileInput"
     >
-      <Transition name="avatar-fade" mode="out-in">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition duration-300"
+        leave-active-class="transition duration-300"
+        enter-from-class="opacity-0 scale-[0.85]"
+        leave-to-class="opacity-0 scale-[0.85]"
+      >
         <!-- 1) Local preview (user just selected a file) -->
         <img
           v-if="localPreviewUrl"
@@ -152,22 +158,3 @@ onUnmounted(() => {
   updateDebouncedName.cancel();
 });
 </script>
-
-<style scoped>
-.avatar-fade-enter-active,
-.avatar-fade-leave-active {
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
-}
-
-.avatar-fade-enter-from {
-  opacity: 0;
-  transform: scale(0.85);
-}
-
-.avatar-fade-leave-to {
-  opacity: 0;
-  transform: scale(0.85);
-}
-</style>

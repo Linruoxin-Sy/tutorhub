@@ -17,7 +17,13 @@
     />
 
     <!-- ===== 标题区域 ===== -->
-    <Transition name="fade" mode="out-in">
+    <Transition
+      mode="out-in"
+      enter-active-class="transition-opacity duration-100"
+      leave-active-class="transition-opacity duration-100"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
+    >
       <div
         v-if="effectiveLoading"
         key="sk-header"
@@ -49,7 +55,13 @@
     <div class="flex flex-1 items-start justify-between gap-4 px-5 py-4">
       <div class="min-w-0 flex-1 space-y-2">
         <!-- 描述 -->
-        <Transition name="scale-fade" mode="out-in">
+        <Transition
+          mode="out-in"
+          enter-active-class="transition duration-100"
+          leave-active-class="transition duration-100"
+          enter-from-class="opacity-0 scale-[0.85]"
+          leave-to-class="opacity-0 scale-[0.85]"
+        >
           <div v-if="effectiveLoading" key="sk-desc">
             <div class="h-4 w-3/4 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
           </div>
@@ -63,7 +75,13 @@
         </Transition>
 
         <!-- 创建时间 -->
-        <Transition name="scale-fade" mode="out-in">
+        <Transition
+          mode="out-in"
+          enter-active-class="transition duration-100"
+          leave-active-class="transition duration-100"
+          enter-from-class="opacity-0 scale-[0.85]"
+          leave-to-class="opacity-0 scale-[0.85]"
+        >
           <div v-if="effectiveLoading" key="sk-date">
             <div class="h-3 w-1/3 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
           </div>
@@ -74,7 +92,13 @@
       </div>
 
       <!-- 操作按钮 -->
-      <Transition name="scale-fade" mode="out-in">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition duration-100"
+        leave-active-class="transition duration-100"
+        enter-from-class="opacity-0 scale-[0.85]"
+        leave-to-class="opacity-0 scale-[0.85]"
+      >
         <div v-if="effectiveLoading" key="sk-actions" class="flex shrink-0 gap-2 self-end">
           <div class="h-8 w-16 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
           <div class="h-8 w-18 animate-pulse rounded-lg bg-gray-200 dark:bg-[#343434]" />
@@ -121,32 +145,3 @@ const { isVisible } = useElementInView(itemRef);
 /** 数据未就绪或尚未进入视口时均显示 skeleton */
 const effectiveLoading = computed(() => props.loading || !isVisible.value);
 </script>
-
-<style scoped>
-.scale-fade-enter-active,
-.scale-fade-leave-active {
-  transition:
-    opacity 0.1s ease,
-    transform 0.1s ease;
-}
-
-.scale-fade-enter-from {
-  opacity: 0;
-  transform: scale(0.85);
-}
-
-.scale-fade-leave-to {
-  opacity: 0;
-  transform: scale(0.85);
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.1s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

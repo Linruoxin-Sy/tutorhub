@@ -22,7 +22,13 @@
 
     <!-- ===== 列 1：头像 + 姓名 ===== -->
     <div class="flex items-center gap-3 px-6 whitespace-nowrap">
-      <Transition name="scale-fade" mode="out-in">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition duration-100"
+        leave-active-class="transition duration-100"
+        enter-from-class="opacity-0 scale-[0.85]"
+        leave-to-class="opacity-0 scale-[0.85]"
+      >
         <div v-if="effectiveLoading" key="sk-name" class="flex items-center gap-3">
           <div class="size-9 shrink-0 rounded-full bg-gray-200 dark:bg-[#343434]" />
           <div class="h-4 w-32 rounded bg-gray-200 dark:bg-[#343434]" />
@@ -53,7 +59,13 @@
 
     <!-- ===== 列 2：邮箱 ===== -->
     <div class="px-6">
-      <Transition name="scale-fade" mode="out-in">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition duration-100"
+        leave-active-class="transition duration-100"
+        enter-from-class="opacity-0 scale-[0.85]"
+        leave-to-class="opacity-0 scale-[0.85]"
+      >
         <div v-if="effectiveLoading" key="sk-email">
           <div class="h-4 w-24 rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
@@ -69,7 +81,13 @@
 
     <!-- ===== 列 3：电话 ===== -->
     <div class="px-6">
-      <Transition name="scale-fade" mode="out-in">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition duration-100"
+        leave-active-class="transition duration-100"
+        enter-from-class="opacity-0 scale-[0.85]"
+        leave-to-class="opacity-0 scale-[0.85]"
+      >
         <div v-if="effectiveLoading" key="sk-phone">
           <div class="h-4 w-24 rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
@@ -85,7 +103,13 @@
 
     <!-- ===== 列 4：创建时间 ===== -->
     <div class="px-6">
-      <Transition name="scale-fade" mode="out-in">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition duration-100"
+        leave-active-class="transition duration-100"
+        enter-from-class="opacity-0 scale-[0.85]"
+        leave-to-class="opacity-0 scale-[0.85]"
+      >
         <div v-if="effectiveLoading" key="sk-date">
           <div class="h-4 w-32 rounded bg-gray-200 dark:bg-[#343434]" />
         </div>
@@ -101,7 +125,13 @@
 
     <!-- ===== 列 5：操作按钮 ===== -->
     <div class="flex items-center justify-end gap-1 px-6">
-      <Transition name="scale-fade" mode="out-in">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition duration-100"
+        leave-active-class="transition duration-100"
+        enter-from-class="opacity-0 scale-[0.85]"
+        leave-to-class="opacity-0 scale-[0.85]"
+      >
         <div v-if="effectiveLoading" key="sk-actions" class="flex items-center gap-1">
           <div class="size-8 rounded-lg bg-gray-200 dark:bg-[#343434]" />
           <div class="size-8 rounded-lg bg-gray-200 dark:bg-[#343434]" />
@@ -157,22 +187,3 @@ const { isVisible } = useElementInView(itemRef);
 /** 数据未就绪或尚未进入视口时均显示 skeleton */
 const effectiveLoading = computed(() => props.loading || !isVisible.value);
 </script>
-
-<style scoped>
-.scale-fade-enter-active,
-.scale-fade-leave-active {
-  transition:
-    opacity 0.1s ease,
-    transform 0.1s ease;
-}
-
-.scale-fade-enter-from {
-  opacity: 0;
-  transform: scale(0.85);
-}
-
-.scale-fade-leave-to {
-  opacity: 0;
-  transform: scale(0.85);
-}
-</style>
