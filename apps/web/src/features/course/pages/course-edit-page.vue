@@ -11,15 +11,32 @@
       <CardSection v-else class="p-6">
         <CourseForm v-model="formData">
           <template #actions>
-            <button
-              :disabled="isSubmitting || !hasChanged"
-              class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
-              @click="submit"
-            >
-              <span v-if="isSubmitting">Saving...</span>
-              <span v-else-if="!hasChanged">No changes</span>
-              <span v-else>Save Changes</span>
-            </button>
+            <Transition name="btn-phase" mode="out-in">
+              <button
+                v-if="!hasChanged && !isSubmitting"
+                key="no-changes"
+                disabled
+                class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white opacity-70"
+              >
+                No changes
+              </button>
+              <button
+                v-else-if="isSubmitting"
+                key="saving"
+                disabled
+                class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white opacity-70"
+              >
+                Saving...
+              </button>
+              <button
+                v-else
+                key="save"
+                class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+                @click="submit"
+              >
+                Save Changes
+              </button>
+            </Transition>
           </template>
         </CourseForm>
       </CardSection>
@@ -234,3 +251,20 @@ async function handleDeleteRule(rule: ClassRuleListItem) {
   }
 }
 </script>
+
+<style scoped>
+.btn-phase-enter-active {
+  transition: all 0.25s ease-out;
+}
+.btn-phase-leave-active {
+  transition: all 0.15s ease-in;
+}
+.btn-phase-enter-from {
+  opacity: 0;
+  transform: scale(0.92);
+}
+.btn-phase-leave-to {
+  opacity: 0;
+  transform: scale(0.92);
+}
+</style>
