@@ -38,20 +38,9 @@ export function useClassRuleCreateForm(courseId: string) {
     courseId,
   });
 
-  const selectedStudentIds = ref(new Set<string>());
-
-  function toggleStudent(studentId: string) {
-    const next = new Set(selectedStudentIds.value);
-    if (next.has(studentId)) {
-      next.delete(studentId);
-    } else {
-      next.add(studentId);
-    }
-    selectedStudentIds.value = next;
-  }
-
   const isValidated = ref(false);
   const conflictResult = ref<{ hasConflict: boolean; conflicts: ConflictItem[] } | null>(null);
+  const conflictPassed = ref(false);
   const generatedSessions = ref<GeneratedSession[]>([]);
   const sessionBatchIndex = ref(0);
   const BATCH_SIZE = 50;
@@ -160,7 +149,8 @@ export function useClassRuleCreateForm(courseId: string) {
       }
     }
 
-    generatedSessions.value = dates.map((d) => ({
+    generatedSessions.value = dates.map((d, i) => ({
+      id: `session_create_${courseId}_${dayjs(d).format('YYYY-MM-DD')}_${i}`,
       occurrenceDate: dayjs(d).format('YYYY-MM-DD'),
       startTime: formData.value.startTime,
       endTime: formData.value.endTime,
@@ -174,21 +164,23 @@ export function useClassRuleCreateForm(courseId: string) {
   };
 
   const { withLoading, isLoadingRef: isSubmitting } = useLoading();
-  const submit = withLoading(async () => {
-    if (!verify()) return;
+
+  /** Phase 1: 冲突检测 */
+  const runConflictCheck = withLoading(async (): Promise<boolean> => {
+    if (!verify()) return false;
+    conflictPassed.value = false;
 
     const hasNoConflict = await checkConflicts();
-    if (!hasNoConflict) {
+    if (hasNoConflict) {
       generateSessions();
-      return;
+      conflictPassed.value = true;
     }
+    return hasNoConflict;
+  });
 
-    generateSessions();
-
-    if (selectedStudentIds.value.size === 0) {
-      toast.warning('Please select at least one student');
-      return;
-    }
+  /** Phase 2: 实际创建 */
+  const doCreate = withLoading(async () => {
+    if (!verify()) return;
 
     const apiPayload = {
       courseId: formData.value.courseId,
@@ -198,7 +190,6 @@ export function useClassRuleCreateForm(courseId: string) {
       intervalDays: formData.value.intervalDays || null,
       endDate: formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null,
       room: formData.value.room || null,
-      studentIds: Array.from(selectedStudentIds.value),
     };
 
     await createClassRule(apiPayload);
@@ -209,10 +200,9 @@ export function useClassRuleCreateForm(courseId: string) {
 
   return {
     formData,
-    selectedStudentIds,
-    toggleStudent,
     isValidated,
     conflictResult,
+    conflictPassed,
     generatedSessions,
     displayedSessions,
     hasMoreSessions,
@@ -223,6 +213,7 @@ export function useClassRuleCreateForm(courseId: string) {
     checkConflicts,
     generateSessions,
     loadMoreSessions,
-    submit,
+    runConflictCheck,
+    doCreate,
   };
 }

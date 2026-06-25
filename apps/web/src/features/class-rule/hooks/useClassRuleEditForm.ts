@@ -1,14 +1,15 @@
 import { useQueryClient } from '@tanstack/vue-query';
 import dayjs from 'dayjs';
+import { cloneDeep, isEqual } from 'es-toolkit';
+import { RRule, type Options as RRuleOptions } from 'rrule';
 import { toast } from 'vue-sonner';
 
 import { classRuleUpdateSchema, type ConflictItem, type GeneratedSession } from '@tutorhub/schema';
 
 import {
-  applyClassRuleChanges,
   checkClassRuleConflicts,
   fetchClassRuleById,
-  previewClassRuleChanges,
+  updateClassRule,
 } from '@/features/class-rule/api/class-rule-api';
 import { useLoading } from '@/hooks/useLoading';
 
@@ -30,26 +31,16 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     room: '',
   });
 
-  const selectedStudentIds = ref(new Set<string>());
+  const initialFormData = ref<ClassRuleFormData>(cloneDeep(formData.value));
 
-  function toggleStudent(studentId: string) {
-    const next = new Set(selectedStudentIds.value);
-    if (next.has(studentId)) {
-      next.delete(studentId);
-    } else {
-      next.add(studentId);
-    }
-    selectedStudentIds.value = next;
-  }
+  const hasChanges = computed(() => !isEqual(formData.value, initialFormData.value));
 
   const isValidated = ref(false);
   const conflictResult = ref<{ hasConflict: boolean; conflicts: ConflictItem[] } | null>(null);
+  const conflictPassed = ref(false);
   const generatedSessions = ref<GeneratedSession[]>([]);
   const sessionBatchIndex = ref(0);
   const BATCH_SIZE = 50;
-
-  /** 预览数据（编辑场景：即将删除/创建的 session 数量） */
-  const previewData = ref<{ toDelete: number; toCreate: number } | null>(null);
 
   const displayedSessions = computed(() =>
     generatedSessions.value.slice(0, (sessionBatchIndex.value + 1) * BATCH_SIZE),
@@ -70,10 +61,6 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     return true;
   });
 
-  // 声明空函数以满足返回类型
-  const generateSessions = () => {};
-  const loadMoreSessions = () => {};
-
   // 加载已有数据
   onMounted(async () => {
     try {
@@ -87,6 +74,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
         endDate: rule.endDate ? dayjs(rule.endDate as string).format('YYYY-MM-DD') : '',
         room: (rule.room as string) ?? '',
       };
+      initialFormData.value = cloneDeep(formData.value);
     } catch {
       toast.error('Failed to load class rule data');
       router.push({ name: 'course.edit', params: { id: courseId } });
@@ -140,36 +128,75 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     }
   };
 
-  const { withLoading, isLoadingRef: isSubmitting } = useLoading();
-  const submit = withLoading(async () => {
-    if (!verify()) return;
+  const generateSessions = () => {
+    generatedSessions.value = [];
+    sessionBatchIndex.value = 0;
 
-    // 预览变更
-    try {
-      const preview = await previewClassRuleChanges(ruleId);
-      previewData.value = { toDelete: preview.toDelete, toCreate: preview.toCreate };
-    } catch {
-      // preview not critical
+    const startDate = dayjs(formData.value.startDate).toDate();
+    const intervalDays = formData.value.intervalDays;
+    const endDate = formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null;
+
+    let dates: Date[];
+
+    if (!intervalDays) {
+      dates = [startDate];
+    } else {
+      const rruleOptions: Partial<RRuleOptions> = {
+        freq: RRule.DAILY,
+        interval: intervalDays,
+        dtstart: new Date(
+          Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()),
+        ),
+      };
+
+      if (endDate) {
+        rruleOptions.until = new Date(
+          Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()),
+        );
+      }
+
+      const rule = new RRule(rruleOptions);
+
+      if (endDate) {
+        dates = rule.between(startDate, endDate, true);
+      } else {
+        const maxDate = new Date(startDate.getTime() + 365 * 24 * 60 * 60 * 1000);
+        dates = rule.between(startDate, maxDate, true);
+      }
     }
+
+    generatedSessions.value = dates.map((d, i) => ({
+      id: `session_edit_${ruleId}_${dayjs(d).format('YYYY-MM-DD')}_${i}`,
+      occurrenceDate: dayjs(d).format('YYYY-MM-DD'),
+      startTime: formData.value.startTime,
+      endTime: formData.value.endTime,
+    }));
+  };
+
+  const loadMoreSessions = () => {
+    if (hasMoreSessions.value) {
+      sessionBatchIndex.value++;
+    }
+  };
+
+  const { withLoading, isLoadingRef: isSubmitting } = useLoading();
+
+  /** Phase 1: 冲突检测 */
+  const runConflictCheck = withLoading(async (): Promise<boolean> => {
+    if (!verify()) return false;
+    conflictPassed.value = false;
 
     const hasNoConflict = await checkConflicts();
-    if (!hasNoConflict) {
-      return;
+    if (hasNoConflict) {
+      generateSessions();
+      conflictPassed.value = true;
     }
+    return hasNoConflict;
+  });
 
-    // 确认后应用变更
-    const confirmed = window.confirm?.(
-      previewData.value
-        ? `This will delete ${previewData.value.toDelete} future session(s) and create ${previewData.value.toCreate} new session(s). Continue?`
-        : 'Apply changes to this rule?',
-    );
-
-    if (confirmed === false) return;
-
-    if (selectedStudentIds.value.size === 0) {
-      toast.warning('Please select at least one student');
-      return;
-    }
+  /** Phase 2: 实际更新 */
+  const doUpdate = withLoading(async () => {
+    if (!verify()) return;
 
     const payload = {
       startDate: dayjs(formData.value.startDate).toDate(),
@@ -178,22 +205,21 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       intervalDays: formData.value.intervalDays || null,
       endDate: formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null,
       room: formData.value.room || null,
-      studentIds: Array.from(selectedStudentIds.value),
     };
 
-    await applyClassRuleChanges(ruleId, payload);
-    toast.success('Class rule updated and sessions regenerated!');
+    await updateClassRule(ruleId, payload);
+    toast.success('Class rule updated successfully!');
     queryClient.invalidateQueries({ queryKey: ['course-class-rules', courseId] });
     router.push({ name: 'course.edit', params: { id: courseId } });
   });
 
   return {
     formData,
-    selectedStudentIds,
-    toggleStudent,
+    hasChanges,
     isInitialLoading,
     isValidated,
     conflictResult,
+    conflictPassed,
     generatedSessions,
     displayedSessions,
     hasMoreSessions,
@@ -204,6 +230,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     checkConflicts,
     generateSessions,
     loadMoreSessions,
-    submit,
+    runConflictCheck,
+    doUpdate,
   };
 }

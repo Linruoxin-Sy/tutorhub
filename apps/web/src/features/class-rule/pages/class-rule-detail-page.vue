@@ -2,19 +2,40 @@
   <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <PageHeader
       title="Class Rule Details"
-      description="View session overrides for this class rule."
+      description="View generated sessions for this class rule."
     />
 
-    <ListPageShell title="Session Overrides">
+    <ListPageShell title="Generated Sessions">
       <template #actions>
         <span v-if="courseName" class="text-sm text-gray-500 dark:text-gray-400">
           Course: {{ courseName }}
         </span>
+        <span v-if="!isLoading" class="text-sm text-gray-500 dark:text-gray-400">
+          {{ totalSessions }} session(s)
+        </span>
       </template>
 
       <div class="flex min-h-0 flex-1 flex-col">
+        <div
+          v-if="isLoading"
+          class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400"
+        >
+          <LoadingIndicator text="Loading class rule data..." />
+        </div>
+
+        <div
+          v-else-if="generatedSessions.length === 0"
+          class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+        >
+          <div
+            class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
+          >
+            No sessions to display for this rule.
+          </div>
+        </div>
+
         <VirtualList
-          v-if="!isLoading"
+          v-else
           :query="sessionQuery"
           :estimate-size="90"
           :overscan="10"
@@ -24,46 +45,27 @@
             <SessionItem
               v-if="item"
               :course-name="courseName || 'Course'"
-              :date="formatDate(item.originalDate)"
-              :start-time="item.rescheduledStartTime ? formatTime(item.rescheduledStartTime) : '-'"
-              :end-time="item.rescheduledEndTime ? formatTime(item.rescheduledEndTime) : '-'"
-              :overridden-start-time="null"
-              :overridden-end-time="null"
-              :conflict="false"
+              :date="item.occurrenceDate"
+              :start-time="item.startTime"
+              :end-time="item.endTime"
+              :overridden-start-time="item.overridden ? item.rescheduledStartTime : null"
+              :overridden-end-time="item.overridden ? item.rescheduledEndTime : null"
             />
           </template>
-
-          <template #empty>
-            <div
-              class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
-            >
-              <div
-                class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
-              >
-                No session overrides to display.
-              </div>
-            </div>
-          </template>
         </VirtualList>
-
-        <div
-          v-if="isLoading"
-          class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400"
-        >
-          <LoadingIndicator text="Loading session overrides..." />
-        </div>
       </div>
     </ListPageShell>
   </main>
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import { onMounted, ref } from 'vue';
-import type { ClassSessionOverrideListItem } from '@tutorhub/schema';
+import { RRule, type Options as RRuleOptions } from 'rrule';
+import type { GeneratedSession } from '@tutorhub/schema';
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
 import { fetchClassSessionOverrides } from '@/features/class-session/api/class-session-api';
 import { useLocalQuery } from '@/hooks/useLocalQuery';
-import { formatDate, formatTime } from '@/utils/date';
 import SessionItem from '@/features/session/components/SessionItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
@@ -75,23 +77,121 @@ const props = defineProps<{
 
 const isLoading = ref(true);
 const courseName = ref('');
-
-const rule = ref<Record<string, unknown> | null>(null);
-const sessions = ref<ClassSessionOverrideListItem[]>([]);
-const sessionQuery = useLocalQuery(sessions);
+const generatedSessions = ref<GeneratedSession[]>([]);
+const sessionQuery = useLocalQuery(generatedSessions);
+const totalSessions = ref(0);
 
 onMounted(async () => {
   try {
-    rule.value = await fetchClassRuleById(props.ruleId);
-    courseName.value =
-      (((rule.value as Record<string, unknown>)?.course as Record<string, unknown>)
-        ?.name as string) ?? '';
+    // 1. 获取规则数据
+    const rule = await fetchClassRuleById(props.ruleId);
+    const data = rule as Record<string, unknown>;
+    courseName.value = ((data.course as Record<string, unknown>)?.name as string) ?? '';
 
-    const result = await fetchClassSessionOverrides({
+    const startDateRaw = data.startDate as string;
+    const startTimeRaw = data.startTime as string;
+    const endTimeRaw = data.endTime as string;
+    const intervalDays = (data.intervalDays as number) ?? null;
+    const endDateRaw = data.endDate as string | null;
+
+    const startDate = dayjs(startDateRaw).toDate();
+    const endDate = endDateRaw ? dayjs(endDateRaw).toDate() : null;
+    const startTime = dayjs(startTimeRaw).format('HH:mm');
+    const endTime = dayjs(endTimeRaw).format('HH:mm');
+
+    // 2. 获取所有 override 记录
+    const overrideResult = await fetchClassSessionOverrides({
       classRuleId: props.ruleId,
-      limit: 200,
+      limit: 9999,
     });
-    sessions.value = result.items;
+
+    // 构建 override 映射
+    const cancelledDates = new Set<string>();
+    const rescheduledMap = new Map<
+      string,
+      { rescheduledDate: string; startTime: string; endTime: string }
+    >();
+
+    for (const ov of overrideResult.items) {
+      const dateKey = dayjs(ov.originalDate).format('YYYY-MM-DD');
+      if (ov.state === 'CANCELLED') {
+        cancelledDates.add(dateKey);
+      } else if (ov.state === 'RESCHEDULED') {
+        rescheduledMap.set(dateKey, {
+          rescheduledDate: ov.rescheduledDate
+            ? dayjs(ov.rescheduledDate).format('YYYY-MM-DD')
+            : dateKey,
+          startTime: ov.rescheduledStartTime
+            ? dayjs(ov.rescheduledStartTime).format('HH:mm')
+            : startTime,
+          endTime: ov.rescheduledEndTime ? dayjs(ov.rescheduledEndTime).format('HH:mm') : endTime,
+        });
+      }
+    }
+
+    // 3. 用 rrule 生成 session
+    let dates: Date[];
+    if (!intervalDays) {
+      dates = [startDate];
+    } else {
+      const rruleOptions: Partial<RRuleOptions> = {
+        freq: RRule.DAILY,
+        interval: intervalDays,
+        dtstart: new Date(
+          Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()),
+        ),
+      };
+
+      if (endDate) {
+        rruleOptions.until = new Date(
+          Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()),
+        );
+      }
+
+      const rule = new RRule(rruleOptions);
+
+      if (endDate) {
+        dates = rule.between(startDate, endDate, true);
+      } else {
+        const maxDate = new Date(startDate.getTime() + 365 * 24 * 60 * 60 * 1000);
+        dates = rule.between(startDate, maxDate, true);
+      }
+    }
+
+    // 4. 转换为 GeneratedSession，跳过已取消的
+    const sessions: GeneratedSession[] = [];
+    for (let i = 0; i < dates.length; i++) {
+      const d = dates[i];
+      const dateStr = dayjs(d).format('YYYY-MM-DD');
+
+      // 跳过已取消的
+      if (cancelledDates.has(dateStr)) continue;
+
+      // 检查是否有调课
+      const rescheduled = rescheduledMap.get(dateStr);
+      if (rescheduled) {
+        sessions.push({
+          id: `session_detail_${props.ruleId}_${dateStr}_${i}`,
+          occurrenceDate: rescheduled.rescheduledDate,
+          startTime: rescheduled.startTime,
+          endTime: rescheduled.endTime,
+          overridden: true,
+          rescheduledDate: rescheduled.rescheduledDate,
+          rescheduledStartTime: rescheduled.startTime,
+          rescheduledEndTime: rescheduled.endTime,
+        });
+      } else {
+        sessions.push({
+          id: `session_detail_${props.ruleId}_${dateStr}_${i}`,
+          occurrenceDate: dateStr,
+          startTime,
+          endTime,
+        });
+      }
+    }
+
+    generatedSessions.value = sessions;
+    totalSessions.value = sessions.length;
   } catch {
     // handled by empty state
   } finally {

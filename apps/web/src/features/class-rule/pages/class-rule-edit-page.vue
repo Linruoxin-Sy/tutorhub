@@ -102,85 +102,34 @@
         </p>
       </div>
 
-      <!-- 保存按钮 -->
-      <button
-        :disabled="isSubmitting"
-        class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
-        @click="submit"
-      >
-        <span v-if="isSubmitting">Saving...</span>
-        <span v-else>Save Changes</span>
-      </button>
+      <!-- 提交按钮（两阶段状态机） -->
+      <template v-if="!conflictPassed">
+        <!-- Phase 1: 冲突检测 -->
+        <button
+          :disabled="!hasChanges || isSubmitting"
+          class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          @click="runConflictCheck"
+        >
+          <span v-if="!hasChanges">No changes</span>
+          <span v-else-if="isSubmitting">Checking...</span>
+          <span v-else>冲突检测</span>
+        </button>
+      </template>
+      <template v-else>
+        <!-- Phase 2: 修改上课规则 -->
+        <button
+          :disabled="isSubmitting"
+          class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          @click="doUpdate"
+        >
+          <span v-if="isSubmitting">Saving...</span>
+          <span v-else>修改上课规则</span>
+        </button>
+      </template>
     </CardSection>
 
-    <!-- 选择学生 -->
-    <ListPageShell title="Select Students">
-      <template #filters>
-        <SearchInput v-model="search" placeholder="Search enrolled students..." />
-      </template>
-
-      <template #actions>
-        <span class="text-sm text-gray-500 dark:text-gray-400">
-          {{ selectedStudentIds.size }} student(s) selected
-        </span>
-      </template>
-
-      <VirtualList
-        :query="enrolledQuery"
-        :estimate-size="70"
-        :overscan="10"
-        scroll-class="max-h-96 overflow-x-hidden overflow-y-auto"
-        row-class="border-b border-gray-200 transition hover:bg-gray-50 dark:border-[#343434] dark:hover:bg-[#202020]"
-        :row-style="{ display: 'flex' }"
-      >
-        <template #header>
-          <div
-            class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
-            style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr"
-          >
-            <div
-              v-for="column in columns"
-              :key="column"
-              class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
-            >
-              {{ column }}
-            </div>
-          </div>
-        </template>
-
-        <template #loading>
-          <div class="divide-y divide-gray-200 dark:divide-[#343434]">
-            <StudentItem v-for="index in 8" :key="index" loading />
-          </div>
-        </template>
-
-        <template #item="{ item, isLoaded }">
-          <StudentItem
-            :student="item!.student"
-            :loading="!isLoaded"
-            :actions="[]"
-            :selected="!!item && selectedStudentIds.has(item.student.id)"
-            @view="item && toggleStudent(item.student.id)"
-          />
-        </template>
-
-        <template #empty>
-          <div
-            class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
-          >
-            No enrolled students found.
-          </div>
-        </template>
-      </VirtualList>
-    </ListPageShell>
-
     <!-- 生成的具体课程 -->
-    <ListPageShell
-      v-if="
-        isValidated && generatedSessions.length > 0 && conflictResult && !conflictResult.hasConflict
-      "
-      title="Generated Sessions"
-    >
+    <ListPageShell v-if="conflictPassed && generatedSessions.length > 0" title="Generated Sessions">
       <template #actions>
         <span class="text-sm text-gray-500 dark:text-gray-400">
           {{ generatedSessions.length }} session(s)
@@ -201,8 +150,6 @@
               :date="item.occurrenceDate"
               :start-time="item.startTime"
               :end-time="item.endTime"
-              :actions="['change']"
-              @change="handleChangeSession(item)"
             />
           </template>
         </VirtualList>
@@ -232,25 +179,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { refDebounced } from '@vueuse/core';
+import { computed } from 'vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-import type { GeneratedSession } from '@tutorhub/schema';
 import { useLocalQuery } from '@/hooks/useLocalQuery';
-import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { useThemeToggle } from '@/hooks/useThemeToggle';
 import { datePickerUi } from '@/features/class-rule/constants/datePickerUi';
-import { fetchCourseEnrollments } from '@/features/enrollment/api/enrollment-api';
 import SessionItem from '@/features/session/components/SessionItem.vue';
-import StudentItem from '@/features/student/components/StudentItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
-import SearchInput from '@/components/SearchInput.vue';
+import LoadingIndicator from '@/components/LoadingIndicator.vue';
 import { useClassRuleEditForm } from '@/features/class-rule/hooks/useClassRuleEditForm';
-import type { CourseEnrollmentListResponse } from '@tutorhub/schema';
-
-type EnrollmentItem = CourseEnrollmentListResponse['items'][number];
 
 const props = defineProps<{
   courseId: string;
@@ -259,28 +198,16 @@ const props = defineProps<{
 
 const {
   formData,
-  selectedStudentIds,
-  toggleStudent,
+  hasChanges,
   isInitialLoading,
-  isValidated,
   conflictResult,
+  conflictPassed,
   generatedSessions,
   isInfinite,
   isSubmitting,
-  submit,
+  runConflictCheck,
+  doUpdate,
 } = useClassRuleEditForm(props.courseId, props.ruleId);
-
-const columns = ['Name', 'Email', 'Phone', 'Created At', 'Status'];
-
-const search = ref('');
-const debouncedSearch = refDebounced(search, 300);
-const searchRef = computed(() => debouncedSearch.value ?? '');
-
-const enrolledQuery = useSparseQuery<EnrollmentItem>({
-  queryKeyPrefix: ['course-enrollments', props.courseId],
-  fetchFn: (params) => fetchCourseEnrollments(props.courseId, params),
-  filters: { name: searchRef },
-});
 
 const { isDark } = useThemeToggle();
 const sessionQuery = useLocalQuery(generatedSessions);
@@ -297,9 +224,4 @@ const intervalDaysModel = computed({
     }
   },
 });
-
-function handleChangeSession(_session: GeneratedSession) {
-  // TODO: implement change session override
-  void _session;
-}
 </script>
