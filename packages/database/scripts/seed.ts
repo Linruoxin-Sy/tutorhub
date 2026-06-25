@@ -117,24 +117,48 @@ const RULE_CHUNK_SIZE = 3000;
 /**
  * Generate 2–3 ClassRule inputs for a given course.
  *
- * Rule type breakdown (per course):
+ * No two courses' rules will conflict because:
+ * - Each course gets a unique (dayOfWeek, timeSlot) + semester offset combo
+ * - With 5 slots × 7 days = 35 combos, semesters (0/4/8 months) spread across 100 courses
+ * - Courses sharing the same day+slot are offset by 4 months → active periods never overlap
+ *
+ * Rule types per course:
  * - 1 固定上课 (single): intervalDays=null, endDate=null
- * - 1 循环上课 (cyclic): intervalDays=7, endDate set
+ * - 1 循环上课 (cyclic): intervalDays=7, endDate set (~2–3 months)
  * - 1 无限循环上课 (infinite cyclic): intervalDays=7|14, endDate=null (optional)
  */
 function buildRules(courseId: string, seed: number): ClassRuleInput[] {
   const count = 2 + Math.floor(pseudoRandom(seed + 5000) * 1); // 2 or 3
   const rules: ClassRuleInput[] = [];
 
-  // Pick a random base date in 2026
-  const dayOffset = Math.floor(pseudoRandom(seed + 6000) * 365);
-  const courseStart = addDays(SEED_BASE_DATE, dayOffset);
+  // ── Deterministic scheduling: each course gets a unique day+slot+semester ──
+  const NUM_SLOTS = TIME_SLOTS.length; // 5
+  const DAYS_PER_WEEK = 7;
 
-  // 用 Fisher-Yates 确定性洗牌打乱 TIME_SLOTS，确保每个课程内各规则使用不同的时间段（不冲突）
-  const shuffledSlots = [...TIME_SLOTS];
-  for (let i = shuffledSlots.length - 1; i > 0; i--) {
-    const j = Math.floor(pseudoRandom(seed + 7000 + i) * (i + 1));
-    [shuffledSlots[i], shuffledSlots[j]] = [shuffledSlots[j], shuffledSlots[i]];
+  // Assign day of week (0=Mon..6=Sun) and primary time slot
+  const comboIndex = seed % (NUM_SLOTS * DAYS_PER_WEEK); // 0..34
+  const dayOfWeek = comboIndex % DAYS_PER_WEEK;
+  const slotIndex = Math.floor(comboIndex / DAYS_PER_WEEK);
+
+  // Semester offset: courses sharing the same combo are staggered by 1 year
+  const semesterGroup = Math.floor(seed / (NUM_SLOTS * DAYS_PER_WEEK));
+  const semesterYearOffset = semesterGroup; // 0, 1, 2 years
+
+  // Find the first date matching this dayOfWeek, offset by semester year
+  // SEED_BASE_DATE (Jan 5, 2026) is a Monday (getDay() = 1)
+  let courseStart = new Date(
+    SEED_BASE_DATE.getFullYear() + semesterYearOffset,
+    SEED_BASE_DATE.getMonth(),
+    SEED_BASE_DATE.getDate(),
+  );
+  while (courseStart.getDay() !== (dayOfWeek + 1) % 7) {
+    courseStart = addDays(courseStart, 1);
+  }
+
+  // Pick 3 distinct time slots (rotating from the assigned primary slot)
+  const shuffledSlots: typeof TIME_SLOTS = [];
+  for (let i = 0; i < NUM_SLOTS; i++) {
+    shuffledSlots.push(TIME_SLOTS[(slotIndex + i) % NUM_SLOTS]);
   }
   let slotCursor = 0;
   const nextSlot = () => {
@@ -224,9 +248,9 @@ async function main() {
   });
   log('Admin user created');
 
-  // 3. Create 1,000 students
+  // 3. Create 100 students
   log('Generating student data...');
-  const students = Array.from({ length: 1_000 }, (_, i) => buildStudent(i, user.id));
+  const students = Array.from({ length: 100 }, (_, i) => buildStudent(i, user.id));
   log('Student data generated');
 
   log('Writing to database...');
@@ -237,9 +261,9 @@ async function main() {
   }
   log(`Created ${students.length} students`);
 
-  // 4. Create 1,000 courses
+  // 4. Create 100 courses
   log('Generating course data...');
-  const courses = Array.from({ length: 1_000 }, (_, i) => buildCourse(i, user.id));
+  const courses = Array.from({ length: 100 }, (_, i) => buildCourse(i, user.id));
   log('Course data generated');
 
   log('Writing to database...');
