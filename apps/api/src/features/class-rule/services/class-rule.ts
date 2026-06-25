@@ -269,7 +269,11 @@ export const classRuleService = {
 
         if (!isTimeOverlap(newStartMin, newEndMin, ruleStartMin, ruleEndMin)) continue;
 
-        const courseName = ('course' in rule ? (rule as Record<string, unknown>).course as Record<string, unknown> : undefined)?.name as string ?? 'Unknown';
+        const courseName =
+          (('course' in rule
+            ? ((rule as Record<string, unknown>).course as Record<string, unknown>)
+            : undefined
+          )?.name as string) ?? 'Unknown';
         const studentNames = courseStudentMap.get(rule.courseId) ?? [];
 
         // 资源冲突
