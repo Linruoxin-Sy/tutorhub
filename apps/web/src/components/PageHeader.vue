@@ -1,10 +1,12 @@
 <template>
   <section
-    class="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
+    class="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm transition-colors sm:flex-row sm:items-center sm:justify-between dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
   >
     <div>
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ title }}</h1>
-      <p v-if="description" class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      <h1 class="text-2xl font-bold text-gray-900 transition-colors dark:text-white">
+        {{ title }}
+      </h1>
+      <p v-if="description" class="mt-1 text-sm text-gray-500 transition-colors dark:text-gray-400">
         {{ description }}
       </p>
     </div>

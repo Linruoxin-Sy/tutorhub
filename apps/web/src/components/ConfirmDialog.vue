@@ -1,12 +1,12 @@
 <template>
   <dialog ref="dialogRef" class="modal" @close="handleCancel">
     <div
-      class="modal-box rounded-2xl border border-gray-200 dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
+      class="modal-box rounded-2xl border border-gray-200 transition-colors dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
     >
-      <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+      <h3 class="text-lg font-bold text-gray-900 transition-colors dark:text-white">
         {{ state.title }}
       </h3>
-      <p class="py-4 text-sm text-gray-600 dark:text-gray-300">
+      <p class="py-4 text-sm text-gray-600 transition-colors dark:text-gray-300">
         {{ state.message }}
       </p>
       <div class="modal-action">
