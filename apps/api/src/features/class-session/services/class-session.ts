@@ -1,3 +1,4 @@
+import rrulePkg, { type Options as RRuleOptions } from 'rrule';
 import { z } from 'zod';
 
 import type { Prisma } from '@tutorhub/database';
@@ -10,13 +11,14 @@ import type {
 import { ApiError } from '@/shared/api-error';
 import { prisma } from '@/shared/prisma';
 
+const { RRule } = rrulePkg;
+
 export const classSessionOverrideService = {
   async list(query: z.infer<typeof classSessionOverrideListQuerySchema>, userId: string) {
     const take = query.limit;
     const skip = query.offset ?? 0;
 
     const where: Prisma.ClassSessionOverrideWhereInput = {
-      deletedAt: null,
       classRule: { course: { userId } },
     };
 
@@ -48,7 +50,7 @@ export const classSessionOverrideService = {
 
   async getById(id: string, userId: string) {
     const override = await prisma.classSessionOverride.findFirst({
-      where: { id, deletedAt: null },
+      where: { id },
       include: {
         classRule: {
           select: { startTime: true, endTime: true, intervalDays: true, courseId: true },
@@ -74,7 +76,7 @@ export const classSessionOverrideService = {
   async create(input: z.infer<typeof classSessionOverrideCreateSchema>, userId: string) {
     // 校验规则归属
     const classRule = await prisma.classRule.findFirst({
-      where: { id: input.classRuleId, deletedAt: null },
+      where: { id: input.classRuleId },
       include: { course: { select: { userId: true } } },
     });
     if (!classRule || classRule.course.userId !== userId) {
@@ -102,7 +104,7 @@ export const classSessionOverrideService = {
     userId: string,
   ) {
     const existing = await prisma.classSessionOverride.findFirst({
-      where: { id, deletedAt: null },
+      where: { id },
       include: { classRule: { include: { course: { select: { userId: true } } } } },
     });
 
@@ -120,7 +122,7 @@ export const classSessionOverrideService = {
 
   async delete(id: string, userId: string) {
     const existing = await prisma.classSessionOverride.findFirst({
-      where: { id, deletedAt: null },
+      where: { id },
       include: { classRule: { include: { course: { select: { userId: true } } } } },
     });
 
@@ -128,11 +130,153 @@ export const classSessionOverrideService = {
       throw new ApiError(404, 'OVERRIDE_NOT_FOUND', 'Class session override not found');
     }
 
-    const override = await prisma.classSessionOverride.update({
+    const override = await prisma.classSessionOverride.delete({
       where: { id },
-      data: { deletedAt: new Date() },
     });
 
     return override;
+  },
+
+  async checkConflicts(
+    classRuleId: string,
+    originalDate: Date,
+    newStartTime: string,
+    newEndTime: string,
+    userId: string,
+  ): Promise<{ hasConflict: boolean; conflicts: import('@tutorhub/schema').ConflictItem[] }> {
+    function toMinutes(t: string): number {
+      const parts = t.split(':').map(Number);
+      return parts[0] * 60 + (parts[1] ?? 0);
+    }
+    const newStartMin = toMinutes(newStartTime);
+    const newEndMin = toMinutes(newEndTime);
+
+    function isTimeOverlap(s1: number, e1: number, s2: number, e2: number): boolean {
+      return s1 < e2 && s2 < e1;
+    }
+
+    const dateStr = originalDate.toISOString().slice(0, 10);
+
+    // 查询所有相关的 ClassSessionOverride（跨所有课程，找出已调课的记录）
+    const overrides = await prisma.classSessionOverride.findMany({
+      where: {
+        classRule: { course: { userId }, deletedAt: null },
+        state: 'RESCHEDULED',
+      },
+    });
+
+    // 按 (classRuleId_date) 构建调课时间映射
+    const rescheduledMap = new Map<
+      string,
+      { startTime: string; endTime: string; courseName: string }
+    >();
+    for (const ov of overrides) {
+      const key = `${ov.classRuleId}_${ov.originalDate.toISOString().slice(0, 10)}`;
+      if (ov.rescheduledStartTime && ov.rescheduledEndTime) {
+        rescheduledMap.set(key, {
+          startTime: `${ov.rescheduledStartTime.getHours().toString().padStart(2, '0')}:${ov.rescheduledStartTime.getMinutes().toString().padStart(2, '0')}`,
+          endTime: `${ov.rescheduledEndTime.getHours().toString().padStart(2, '0')}:${ov.rescheduledEndTime.getMinutes().toString().padStart(2, '0')}`,
+          courseName: '',
+        });
+      }
+    }
+
+    // 已取消的日期集合
+    const cancelledOverrides = await prisma.classSessionOverride.findMany({
+      where: {
+        classRule: { course: { userId }, deletedAt: null },
+        state: 'CANCELLED',
+      },
+    });
+    const cancelledSet = new Set(
+      cancelledOverrides.map(
+        (ov) => `${ov.classRuleId}_${ov.originalDate.toISOString().slice(0, 10)}`,
+      ),
+    );
+
+    // 查询该用户所有课程下的 ClassRule
+    const rules = await prisma.classRule.findMany({
+      where: { course: { userId, deletedAt: null } },
+      include: { course: { select: { name: true } } },
+    });
+
+    // 预取学生名称
+    const courseIds = [...new Set(rules.map((r) => r.courseId))];
+    const enrollments = await prisma.studentCourse.findMany({
+      where: { courseId: { in: courseIds }, deletedAt: null },
+      include: { student: { select: { name: true } } },
+    });
+    const courseStudentMap = new Map<string, string[]>();
+    for (const enrollment of enrollments) {
+      const names = courseStudentMap.get(enrollment.courseId) ?? [];
+      names.push(enrollment.student.name);
+      courseStudentMap.set(enrollment.courseId, names);
+    }
+
+    const conflicts: import('@tutorhub/schema').ConflictItem[] = [];
+
+    for (const rule of rules) {
+      // 跳过当天已取消的 session
+      const ruleKey = `${rule.id}_${dateStr}`;
+      if (cancelledSet.has(ruleKey)) continue;
+
+      // 检查该规则当天是否有课（用 rrule 判断）
+      const rruleOptions: Partial<RRuleOptions> = {
+        freq: RRule.DAILY,
+        interval: rule.intervalDays ?? 1,
+        dtstart: new Date(
+          Date.UTC(
+            rule.startDate.getFullYear(),
+            rule.startDate.getMonth(),
+            rule.startDate.getDate(),
+          ),
+        ),
+      };
+      if (rule.endDate) {
+        rruleOptions.until = new Date(
+          Date.UTC(rule.endDate.getFullYear(), rule.endDate.getMonth(), rule.endDate.getDate()),
+        );
+      }
+      const rrule = new RRule(rruleOptions);
+      const ruleDates = rrule.between(originalDate, originalDate, true);
+      if (ruleDates.length === 0) continue;
+
+      // 检查该规则该日期是否被调课
+      const override = rescheduledMap.get(ruleKey);
+      const ruleStartStr =
+        override?.startTime ??
+        `${rule.startTime.getHours().toString().padStart(2, '0')}:${rule.startTime.getMinutes().toString().padStart(2, '0')}`;
+      const ruleEndStr =
+        override?.endTime ??
+        `${rule.endTime.getHours().toString().padStart(2, '0')}:${rule.endTime.getMinutes().toString().padStart(2, '0')}`;
+
+      const ruleStartMin = toMinutes(ruleStartStr);
+      const ruleEndMin = toMinutes(ruleEndStr);
+
+      if (!isTimeOverlap(newStartMin, newEndMin, ruleStartMin, ruleEndMin)) continue;
+
+      const courseName =
+        (('course' in rule
+          ? ((rule as Record<string, unknown>).course as Record<string, unknown>)
+          : undefined
+        )?.name as string) ?? 'Unknown';
+      const studentNames = courseStudentMap.get(rule.courseId) ?? [];
+
+      conflicts.push({
+        date: dateStr,
+        startTime: ruleStartStr,
+        endTime: ruleEndStr,
+        ruleId: rule.id,
+        courseName,
+        studentNames,
+        type: 'resource',
+        description: 'This time slot is already occupied by another session',
+      });
+    }
+
+    return {
+      hasConflict: conflicts.length > 0,
+      conflicts,
+    };
   },
 };

@@ -51,6 +51,8 @@
               :status="item.status"
               :overridden-start-time="item.overridden ? item.rescheduledStartTime : null"
               :overridden-end-time="item.overridden ? item.rescheduledEndTime : null"
+              :actions="['change']"
+              @change="navigateToSessionEdit(item)"
             />
           </template>
         </VirtualList>
@@ -62,6 +64,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { RRule, type Options as RRuleOptions } from 'rrule';
 import type { GeneratedSession } from '@tutorhub/schema';
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
@@ -77,11 +80,24 @@ const props = defineProps<{
   ruleId: string;
 }>();
 
+const router = useRouter();
 const isLoading = ref(true);
 const courseName = ref('');
 const generatedSessions = ref<GeneratedSession[]>([]);
 const sessionQuery = useLocalQuery(generatedSessions);
 const totalSessions = ref(0);
+
+function navigateToSessionEdit(session: GeneratedSession) {
+  router.push({
+    name: 'class-rule.session-edit',
+    params: { ruleId: props.ruleId },
+    query: {
+      date: session.occurrenceDate,
+      startTime: session.startTime,
+      endTime: session.endTime,
+    },
+  });
+}
 
 onMounted(async () => {
   try {

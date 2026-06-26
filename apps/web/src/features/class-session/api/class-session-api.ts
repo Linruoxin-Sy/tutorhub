@@ -1,4 +1,6 @@
 import type {
+  ClassSessionOverrideConflictCheckRequest,
+  ClassSessionOverrideConflictCheckResponse,
   ClassSessionOverrideCreateResponse,
   ClassSessionOverrideDetailResponse,
   ClassSessionOverrideListResponse,
@@ -56,4 +58,15 @@ export async function updateClassSessionOverride(
 /** 删除课程实例变更记录 */
 export async function deleteClassSessionOverride(id: string): Promise<void> {
   await request.delete(`/class-session/${id}`);
+}
+
+/** 课程实例变更冲突检测 */
+export async function checkClassSessionOverrideConflicts(
+  payload: ClassSessionOverrideConflictCheckRequest,
+): Promise<ClassSessionOverrideConflictCheckResponse> {
+  const { data } = await request.post<ClassSessionOverrideConflictCheckResponse>(
+    '/class-session/check-conflicts',
+    payload,
+  );
+  return data;
 }

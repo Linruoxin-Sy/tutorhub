@@ -229,6 +229,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     await updateClassRule(ruleId, payload);
     toast.success('Class rule updated successfully!');
     queryClient.invalidateQueries({ queryKey: ['course-class-rules', courseId] });
+    queryClient.invalidateQueries({ queryKey: ['class-session-overrides'] });
     router.push({ name: 'course.edit', params: { id: courseId } });
   });
 

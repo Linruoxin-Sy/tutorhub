@@ -62,6 +62,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    'class-rule.session-edit': RouteRecordInfo<
+      'class-rule.session-edit',
+      '/class-rule/session-edit/:ruleId',
+      { ruleId: ParamValue<true> },
+      { ruleId: ParamValue<false> },
+      | never
+    >,
     'course.detail': RouteRecordInfo<
       'course.detail',
       '/course/:id',
@@ -200,6 +207,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/class-rule/create.vue': {
       routes:
         | 'class-rule.create'
+      views:
+        | never
+    }
+    'src/pages/class-rule/session-edit/[ruleId].vue': {
+      routes:
+        | 'class-rule.session-edit'
       views:
         | never
     }

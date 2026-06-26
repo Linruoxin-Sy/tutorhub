@@ -1,11 +1,13 @@
 import { Hono } from 'hono';
 
 import {
+  classSessionOverrideConflictCheckSchema,
   classSessionOverrideCreateSchema,
   classSessionOverrideDetailParamsSchema,
   classSessionOverrideListQuerySchema,
   classSessionOverrideUpdateParamsSchema,
   classSessionOverrideUpdateSchema,
+  type ClassSessionOverrideConflictCheckResponse,
   type ClassSessionOverrideCreateResponse,
   type ClassSessionOverrideDetailResponse,
   type ClassSessionOverrideListResponse,
@@ -16,6 +18,23 @@ import { classSessionOverrideService } from '@/features/class-session/services/c
 import { zValidator } from '@/shared/validator';
 
 export const classSessionRoute = new Hono()
+  .post(
+    '/check-conflicts',
+    zValidator('json', classSessionOverrideConflictCheckSchema),
+    async (c) => {
+      const input = c.req.valid('json');
+      const userId = c.get('userId');
+      const res: ClassSessionOverrideConflictCheckResponse =
+        await classSessionOverrideService.checkConflicts(
+          input.classRuleId,
+          input.originalDate,
+          input.newStartTime,
+          input.newEndTime,
+          userId,
+        );
+      return c.json(res);
+    },
+  )
   .get('/list', zValidator('query', classSessionOverrideListQuerySchema), async (c) => {
     const query = c.req.valid('query');
     const userId = c.get('userId');

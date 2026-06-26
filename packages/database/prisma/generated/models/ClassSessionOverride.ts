@@ -29,7 +29,6 @@ export type ClassSessionOverrideMinAggregateOutputType = {
   id: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
-  deletedAt: Date | null;
   classRuleId: string | null;
   originalDate: Date | null;
   state: $Enums.ClassSessionOverrideState | null;
@@ -43,7 +42,6 @@ export type ClassSessionOverrideMaxAggregateOutputType = {
   id: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
-  deletedAt: Date | null;
   classRuleId: string | null;
   originalDate: Date | null;
   state: $Enums.ClassSessionOverrideState | null;
@@ -57,7 +55,6 @@ export type ClassSessionOverrideCountAggregateOutputType = {
   id: number;
   createdAt: number;
   updatedAt: number;
-  deletedAt: number;
   classRuleId: number;
   originalDate: number;
   state: number;
@@ -72,7 +69,6 @@ export type ClassSessionOverrideMinAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
-  deletedAt?: true;
   classRuleId?: true;
   originalDate?: true;
   state?: true;
@@ -86,7 +82,6 @@ export type ClassSessionOverrideMaxAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
-  deletedAt?: true;
   classRuleId?: true;
   originalDate?: true;
   state?: true;
@@ -100,7 +95,6 @@ export type ClassSessionOverrideCountAggregateInputType = {
   id?: true;
   createdAt?: true;
   updatedAt?: true;
-  deletedAt?: true;
   classRuleId?: true;
   originalDate?: true;
   state?: true;
@@ -192,7 +186,6 @@ export type ClassSessionOverrideGroupByOutputType = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
-  deletedAt: Date | null;
   classRuleId: string;
   originalDate: Date;
   state: $Enums.ClassSessionOverrideState;
@@ -225,7 +218,6 @@ export type ClassSessionOverrideWhereInput = {
   id?: Prisma.StringFilter<'ClassSessionOverride'> | string;
   createdAt?: Prisma.DateTimeFilter<'ClassSessionOverride'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'ClassSessionOverride'> | Date | string;
-  deletedAt?: Prisma.DateTimeNullableFilter<'ClassSessionOverride'> | Date | string | null;
   classRuleId?: Prisma.StringFilter<'ClassSessionOverride'> | string;
   originalDate?: Prisma.DateTimeFilter<'ClassSessionOverride'> | Date | string;
   state?:
@@ -246,7 +238,6 @@ export type ClassSessionOverrideOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
-  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   classRuleId?: Prisma.SortOrder;
   originalDate?: Prisma.SortOrder;
   state?: Prisma.SortOrder;
@@ -266,7 +257,6 @@ export type ClassSessionOverrideWhereUniqueInput = Prisma.AtLeast<
     NOT?: Prisma.ClassSessionOverrideWhereInput | Prisma.ClassSessionOverrideWhereInput[];
     createdAt?: Prisma.DateTimeFilter<'ClassSessionOverride'> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<'ClassSessionOverride'> | Date | string;
-    deletedAt?: Prisma.DateTimeNullableFilter<'ClassSessionOverride'> | Date | string | null;
     classRuleId?: Prisma.StringFilter<'ClassSessionOverride'> | string;
     originalDate?: Prisma.DateTimeFilter<'ClassSessionOverride'> | Date | string;
     state?:
@@ -293,7 +283,6 @@ export type ClassSessionOverrideOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
-  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   classRuleId?: Prisma.SortOrder;
   originalDate?: Prisma.SortOrder;
   state?: Prisma.SortOrder;
@@ -317,11 +306,6 @@ export type ClassSessionOverrideScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<'ClassSessionOverride'> | string;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'ClassSessionOverride'> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<'ClassSessionOverride'> | Date | string;
-  deletedAt?:
-    | Prisma.DateTimeNullableWithAggregatesFilter<'ClassSessionOverride'>
-    | Date
-    | string
-    | null;
   classRuleId?: Prisma.StringWithAggregatesFilter<'ClassSessionOverride'> | string;
   originalDate?: Prisma.DateTimeWithAggregatesFilter<'ClassSessionOverride'> | Date | string;
   state?:
@@ -349,7 +333,6 @@ export type ClassSessionOverrideCreateInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  deletedAt?: Date | string | null;
   originalDate: Date | string;
   state: $Enums.ClassSessionOverrideState;
   rescheduledDate?: Date | string | null;
@@ -363,7 +346,6 @@ export type ClassSessionOverrideUncheckedCreateInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  deletedAt?: Date | string | null;
   classRuleId: string;
   originalDate: Date | string;
   state: $Enums.ClassSessionOverrideState;
@@ -377,7 +359,6 @@ export type ClassSessionOverrideUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   originalDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   state?:
     | Prisma.EnumClassSessionOverrideStateFieldUpdateOperationsInput
@@ -393,7 +374,6 @@ export type ClassSessionOverrideUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   classRuleId?: Prisma.StringFieldUpdateOperationsInput | string;
   originalDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   state?:
@@ -409,7 +389,6 @@ export type ClassSessionOverrideCreateManyInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  deletedAt?: Date | string | null;
   classRuleId: string;
   originalDate: Date | string;
   state: $Enums.ClassSessionOverrideState;
@@ -423,7 +402,6 @@ export type ClassSessionOverrideUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   originalDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   state?:
     | Prisma.EnumClassSessionOverrideStateFieldUpdateOperationsInput
@@ -438,7 +416,6 @@ export type ClassSessionOverrideUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   classRuleId?: Prisma.StringFieldUpdateOperationsInput | string;
   originalDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   state?:
@@ -459,7 +436,6 @@ export type ClassSessionOverrideCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
-  deletedAt?: Prisma.SortOrder;
   classRuleId?: Prisma.SortOrder;
   originalDate?: Prisma.SortOrder;
   state?: Prisma.SortOrder;
@@ -473,7 +449,6 @@ export type ClassSessionOverrideMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
-  deletedAt?: Prisma.SortOrder;
   classRuleId?: Prisma.SortOrder;
   originalDate?: Prisma.SortOrder;
   state?: Prisma.SortOrder;
@@ -487,7 +462,6 @@ export type ClassSessionOverrideMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
-  deletedAt?: Prisma.SortOrder;
   classRuleId?: Prisma.SortOrder;
   originalDate?: Prisma.SortOrder;
   state?: Prisma.SortOrder;
@@ -515,12 +489,12 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string;
 };
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null;
-};
-
 export type EnumClassSessionOverrideStateFieldUpdateOperationsInput = {
   set?: $Enums.ClassSessionOverrideState;
+};
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null;
 };
 
 export type NullableStringFieldUpdateOperationsInput = {
@@ -637,7 +611,6 @@ export type ClassSessionOverrideCreateWithoutClassRuleInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  deletedAt?: Date | string | null;
   originalDate: Date | string;
   state: $Enums.ClassSessionOverrideState;
   rescheduledDate?: Date | string | null;
@@ -650,7 +623,6 @@ export type ClassSessionOverrideUncheckedCreateWithoutClassRuleInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  deletedAt?: Date | string | null;
   originalDate: Date | string;
   state: $Enums.ClassSessionOverrideState;
   rescheduledDate?: Date | string | null;
@@ -709,7 +681,6 @@ export type ClassSessionOverrideScalarWhereInput = {
   id?: Prisma.StringFilter<'ClassSessionOverride'> | string;
   createdAt?: Prisma.DateTimeFilter<'ClassSessionOverride'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'ClassSessionOverride'> | Date | string;
-  deletedAt?: Prisma.DateTimeNullableFilter<'ClassSessionOverride'> | Date | string | null;
   classRuleId?: Prisma.StringFilter<'ClassSessionOverride'> | string;
   originalDate?: Prisma.DateTimeFilter<'ClassSessionOverride'> | Date | string;
   state?:
@@ -729,7 +700,6 @@ export type ClassSessionOverrideCreateManyClassRuleInput = {
   id?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  deletedAt?: Date | string | null;
   originalDate: Date | string;
   state: $Enums.ClassSessionOverrideState;
   rescheduledDate?: Date | string | null;
@@ -742,7 +712,6 @@ export type ClassSessionOverrideUpdateWithoutClassRuleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   originalDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   state?:
     | Prisma.EnumClassSessionOverrideStateFieldUpdateOperationsInput
@@ -757,7 +726,6 @@ export type ClassSessionOverrideUncheckedUpdateWithoutClassRuleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   originalDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   state?:
     | Prisma.EnumClassSessionOverrideStateFieldUpdateOperationsInput
@@ -772,7 +740,6 @@ export type ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   originalDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   state?:
     | Prisma.EnumClassSessionOverrideStateFieldUpdateOperationsInput
@@ -790,7 +757,6 @@ export type ClassSessionOverrideSelect<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
-    deletedAt?: boolean;
     classRuleId?: boolean;
     originalDate?: boolean;
     state?: boolean;
@@ -810,7 +776,6 @@ export type ClassSessionOverrideSelectCreateManyAndReturn<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
-    deletedAt?: boolean;
     classRuleId?: boolean;
     originalDate?: boolean;
     state?: boolean;
@@ -830,7 +795,6 @@ export type ClassSessionOverrideSelectUpdateManyAndReturn<
     id?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
-    deletedAt?: boolean;
     classRuleId?: boolean;
     originalDate?: boolean;
     state?: boolean;
@@ -847,7 +811,6 @@ export type ClassSessionOverrideSelectScalar = {
   id?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
-  deletedAt?: boolean;
   classRuleId?: boolean;
   originalDate?: boolean;
   state?: boolean;
@@ -863,7 +826,6 @@ export type ClassSessionOverrideOmit<
   | 'id'
   | 'createdAt'
   | 'updatedAt'
-  | 'deletedAt'
   | 'classRuleId'
   | 'originalDate'
   | 'state'
@@ -913,10 +875,6 @@ export type $ClassSessionOverridePayload<
        * 更新时间
        */
       updatedAt: Date;
-      /**
-       * 删除时间
-       */
-      deletedAt: Date | null;
       /**
        * 所属规则 ID
        */
@@ -1534,7 +1492,6 @@ export interface ClassSessionOverrideFieldRefs {
   readonly id: Prisma.FieldRef<'ClassSessionOverride', 'String'>;
   readonly createdAt: Prisma.FieldRef<'ClassSessionOverride', 'DateTime'>;
   readonly updatedAt: Prisma.FieldRef<'ClassSessionOverride', 'DateTime'>;
-  readonly deletedAt: Prisma.FieldRef<'ClassSessionOverride', 'DateTime'>;
   readonly classRuleId: Prisma.FieldRef<'ClassSessionOverride', 'String'>;
   readonly originalDate: Prisma.FieldRef<'ClassSessionOverride', 'DateTime'>;
   readonly state: Prisma.FieldRef<'ClassSessionOverride', 'ClassSessionOverrideState'>;

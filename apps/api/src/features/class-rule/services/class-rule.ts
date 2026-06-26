@@ -32,7 +32,7 @@ export const classRuleService = {
     const take = query.limit;
     const skip = query.offset ?? 0;
 
-    const baseWhere = { courseId, deletedAt: null };
+    const baseWhere = { courseId };
 
     const [dbItems, total] = await Promise.all([
       prisma.classRule.findMany({
@@ -60,7 +60,7 @@ export const classRuleService = {
 
   async getById(id: string, userId: string) {
     const classRule = await prisma.classRule.findFirst({
-      where: { id, deletedAt: null },
+      where: { id },
       include: {
         course: { select: { id: true, name: true, userId: true } },
       },
@@ -105,7 +105,7 @@ export const classRuleService = {
 
   async update(id: string, input: z.infer<typeof classRuleUpdateSchema>, userId: string) {
     const existing = await prisma.classRule.findFirst({
-      where: { id, deletedAt: null },
+      where: { id },
       include: { course: { select: { userId: true } } },
     });
 
@@ -127,12 +127,17 @@ export const classRuleService = {
       data: updateData,
     });
 
+    // 规则更新后级联硬删除所有关联的 session override（旧调课不再有效）
+    await prisma.classSessionOverride.deleteMany({
+      where: { classRuleId: id },
+    });
+
     return classRule;
   },
 
   async delete(id: string, userId: string) {
     const existing = await prisma.classRule.findFirst({
-      where: { id, deletedAt: null },
+      where: { id },
       include: { course: { select: { userId: true } } },
     });
 
@@ -140,10 +145,9 @@ export const classRuleService = {
       throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
     }
 
-    // 软删除规则（关联的 ClassSessionOverride 由 onDelete Cascade 自动处理）
-    const classRule = await prisma.classRule.update({
+    // 硬删除规则（数据库 ON DELETE CASCADE 自动删除关联的 ClassSessionOverride）
+    const classRule = await prisma.classRule.delete({
       where: { id },
-      data: { deletedAt: new Date() },
     });
 
     return classRule;
@@ -177,7 +181,6 @@ export const classRuleService = {
     const otherRules = await prisma.classRule.findMany({
       where: {
         course: { userId, deletedAt: null },
-        deletedAt: null,
         ...(input.excludeId ? { id: { not: input.excludeId } } : {}),
       },
       include: { course: { select: { name: true } } },
@@ -207,7 +210,6 @@ export const classRuleService = {
     const overrides = await prisma.classSessionOverride.findMany({
       where: {
         classRule: { course: { userId }, deletedAt: null },
-        deletedAt: null,
         state: 'RESCHEDULED',
       },
     });
@@ -226,7 +228,6 @@ export const classRuleService = {
     const cancelledOverrides = await prisma.classSessionOverride.findMany({
       where: {
         classRule: { course: { userId }, deletedAt: null },
-        deletedAt: null,
         state: 'CANCELLED',
       },
     });
@@ -318,7 +319,7 @@ export const classRuleService = {
    */
   async previewChanges(id: string, _input: z.infer<typeof classRuleUpdateSchema>, userId: string) {
     const existing = await prisma.classRule.findFirst({
-      where: { id, deletedAt: null },
+      where: { id },
       include: { course: { select: { userId: true } } },
     });
 
