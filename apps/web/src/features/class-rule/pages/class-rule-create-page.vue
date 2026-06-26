@@ -137,7 +137,7 @@
     <!-- Generated sessions -->
     <ListPageShell v-if="conflictPassed && generatedSessions.length > 0" title="Generated Sessions">
       <template #actions>
-        <span class="text-sm text-gray-500 dark:text-gray-400">
+        <span v-if="!isInfinite" class="text-sm text-gray-500 dark:text-gray-400">
           {{ generatedSessions.length }} session(s)
         </span>
       </template>
