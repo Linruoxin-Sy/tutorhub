@@ -21,4 +21,6 @@ export type GeneratedSession = {
   rescheduledStartTime?: string | null;
   /** 调课后的新结束时间 */
   rescheduledEndTime?: string | null;
+  /** 调课覆盖的原始日期（仅 overridden 时有效） */
+  overriddenDate?: string | null;
 };

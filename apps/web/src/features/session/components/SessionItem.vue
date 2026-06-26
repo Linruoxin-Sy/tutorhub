@@ -28,8 +28,8 @@
       </template>
     </div>
 
-    <!-- 主信息 -->
-    <div class="flex min-w-0 flex-1 flex-col gap-1">
+    <!-- 主信息 - 非调课状态 -->
+    <div v-if="status !== 'rescheduled'" class="flex min-w-0 flex-1 flex-col gap-1">
       <div
         class="text-sm font-semibold"
         :class="{
@@ -88,26 +88,49 @@
           <i class="i-lucide-check-circle size-3" />
           Completed
         </span>
+      </div>
+    </div>
 
-        <!-- Rescheduled 标记（保留现有逻辑） -->
-        <span
-          v-if="status === 'rescheduled'"
-          class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-        >
+    <!-- 主信息 - 调课状态（横向布局：原 → 新） -->
+    <div
+      v-else
+      class="flex min-w-0 flex-1 items-center gap-4"
+    >
+      <!-- 原时间（删除线） -->
+      <div class="flex flex-1 flex-col gap-0.5">
+        <span class="text-xs font-medium text-gray-400 line-through dark:text-gray-500">
+          {{ courseName }}
+        </span>
+        <span class="text-xs text-gray-400 line-through dark:text-gray-500">
+          <i class="i-lucide-calendar inline size-3 align-text-top" />
+          {{ overriddenDate || date }}
+        </span>
+        <span class="text-xs text-gray-400 line-through dark:text-gray-500">
+          <i class="i-lucide-clock inline size-3 align-text-top" />
+          {{ startTime }} – {{ endTime }}
+        </span>
+      </div>
+
+      <!-- 箭头 + 标记 -->
+      <div class="flex shrink-0 flex-col items-center gap-1">
+        <i class="i-lucide-arrow-right size-5 text-amber-500 dark:text-amber-400" />
+        <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
           <i class="i-lucide-rotate-ccw size-3" />
           Rescheduled
         </span>
       </div>
-      <!-- 调课详情（仅 rescheduled 状态展示） -->
-      <div
-        v-if="status === 'rescheduled'"
-        class="mt-1 flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400"
-      >
-        <span class="text-gray-400 line-through dark:text-gray-500">
-          {{ startTime }} – {{ endTime }}
+
+      <!-- 新时间 -->
+      <div class="flex flex-1 flex-col gap-0.5">
+        <span class="text-xs font-medium text-amber-700 dark:text-amber-400">
+          {{ courseName }}
         </span>
-        <i class="i-lucide-arrow-right size-3 shrink-0" />
-        <span class="font-medium">
+        <span class="text-xs text-amber-700 dark:text-amber-400">
+          <i class="i-lucide-calendar inline size-3 align-text-top" />
+          {{ date }}
+        </span>
+        <span class="text-xs text-amber-700 dark:text-amber-400">
+          <i class="i-lucide-clock inline size-3 align-text-top" />
           {{ overriddenStartTime || startTime }} – {{ overriddenEndTime || endTime }}
         </span>
       </div>
@@ -146,6 +169,7 @@ withDefaults(
     startTime: string;
     endTime: string;
     status?: SessionStatus;
+    overriddenDate?: string | null;
     overriddenStartTime?: string | null;
     overriddenEndTime?: string | null;
     actions?: ('change' | 'edit')[];
@@ -155,6 +179,7 @@ withDefaults(
     status: 'default',
     actions: () => [],
     conflict: false,
+    overriddenDate: null,
     overriddenStartTime: null,
     overriddenEndTime: null,
   },
