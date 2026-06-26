@@ -281,6 +281,7 @@ import {
   createClassSessionOverride,
   deleteClassSessionOverride,
   fetchClassSessionOverrides,
+  updateClassSessionOverride,
 } from '@/features/class-session/api/class-session-api';
 import { useThemeToggle } from '@/hooks/useThemeToggle';
 import { datePickerUi } from '@/features/class-rule/constants/datePickerUi';
@@ -342,7 +343,10 @@ onMounted(async () => {
 
     const matched = overrideResult.items.find((ov) => {
       const ovDate = new Date(ov.originalDate).toISOString().slice(0, 10);
-      return ovDate === queryDate;
+      const ovRescheduled = ov.rescheduledDate
+        ? new Date(ov.rescheduledDate).toISOString().slice(0, 10)
+        : null;
+      return ovDate === queryDate || ovRescheduled === queryDate;
     });
 
     if (matched) {
@@ -416,11 +420,16 @@ const doCreateOverride = withLoading(async () => {
   }
 
   try {
-    await createClassSessionOverride(payload);
-    toast.success('Session override created successfully!');
+    if (existingOverride.value) {
+      await updateClassSessionOverride(existingOverride.value.id, payload);
+      toast.success('Session override updated successfully!');
+    } else {
+      await createClassSessionOverride(payload);
+      toast.success('Session override created successfully!');
+    }
     goBack();
   } catch {
-    toast.error('Failed to create session override');
+    toast.error('Failed to save session override');
   }
 });
 
