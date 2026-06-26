@@ -1,5 +1,5 @@
 <template>
-  <main class="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+  <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <PageHeader title="Edit Session" :description="`Editing session for rule ${ruleId}`" />
 
     <!-- Loading -->
@@ -32,7 +32,7 @@
         <div class="flex gap-3">
           <button
             type="button"
-            class="flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition"
+            class="flex-1 cursor-pointer rounded-xl border px-4 py-3 text-sm font-medium transition"
             :class="
               formState === 'CANCELLED'
                 ? 'border-red-500 bg-red-50 text-red-700 dark:border-red-400 dark:bg-red-900/20 dark:text-red-400'
@@ -45,7 +45,7 @@
           </button>
           <button
             type="button"
-            class="flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition"
+            class="flex-1 cursor-pointer rounded-xl border px-4 py-3 text-sm font-medium transition"
             :class="
               formState === 'RESCHEDULED'
                 ? 'border-amber-500 bg-amber-50 text-amber-700 dark:border-amber-400 dark:bg-amber-900/20 dark:text-amber-400'
@@ -283,10 +283,8 @@ import { toast } from 'vue-sonner';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { useRoute, useRouter } from 'vue-router';
-import type {
-  ClassSessionOverride,
-  ClassSessionOverrideConflictCheckResponse,
-} from '@tutorhub/schema';
+import type { ClassSessionOverride } from '@tutorhub/database';
+import type { ClassSessionOverrideConflictCheckResponse } from '@tutorhub/schema';
 
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
 import {
