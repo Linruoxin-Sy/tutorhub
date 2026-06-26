@@ -10,9 +10,6 @@
         <span v-if="courseName" class="text-sm text-gray-500 dark:text-gray-400">
           Course: {{ courseName }}
         </span>
-        <span v-if="!isLoading" class="text-sm text-gray-500 dark:text-gray-400">
-          {{ totalSessions }} session(s)
-        </span>
       </template>
 
       <div class="flex min-h-0 flex-1 flex-col">
@@ -63,13 +60,12 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { RRule, type Options as RRuleOptions } from 'rrule';
 import type { GeneratedSession } from '@tutorhub/schema';
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
 import { fetchClassSessionOverrides } from '@/features/class-session/api/class-session-api';
-import { useLocalQuery } from '@/hooks/useLocalQuery';
 import { computeSessionStatus } from '@/features/session/utils/sessionStatus';
 import SessionItem from '@/features/session/components/SessionItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
@@ -84,8 +80,23 @@ const router = useRouter();
 const isLoading = ref(true);
 const courseName = ref('');
 const generatedSessions = ref<GeneratedSession[]>([]);
-const sessionQuery = useLocalQuery(generatedSessions);
-const totalSessions = ref(0);
+const sessionWindowEnd = ref<Date | null>(null);
+const hasMoreRef = ref(false);
+const CHUNK_DAYS = 365;
+
+// 规则参数（从 API 获取后缓存）
+let ruleStartDate: Date | null = null;
+let ruleEndDate: Date | null = null;
+let ruleStartTime = '';
+let ruleEndTime = '';
+let ruleIntervalDays: number | null = null;
+
+// Override 映射（一次性获取）
+const cancelledDates = new Set<string>();
+const rescheduledMap = new Map<
+  string,
+  { rescheduledDate: string; startTime: string; endTime: string }
+>();
 
 function navigateToSessionEdit(session: GeneratedSession) {
   router.push({
@@ -99,6 +110,100 @@ function navigateToSessionEdit(session: GeneratedSession) {
   });
 }
 
+/** 追加下一批 session */
+function appendSessionChunk() {
+  if (!ruleStartDate || !ruleIntervalDays) return;
+
+  const rruleOptions: Partial<RRuleOptions> = {
+    freq: RRule.DAILY,
+    interval: ruleIntervalDays,
+    dtstart: new Date(
+      Date.UTC(ruleStartDate.getFullYear(), ruleStartDate.getMonth(), ruleStartDate.getDate()),
+    ),
+  };
+
+  if (ruleEndDate) {
+    rruleOptions.until = new Date(
+      Date.UTC(ruleEndDate.getFullYear(), ruleEndDate.getMonth(), ruleEndDate.getDate()),
+    );
+  }
+
+  const rule = new RRule(rruleOptions);
+
+  const prevEnd =
+    sessionWindowEnd.value ?? new Date(ruleStartDate.getTime() - 24 * 60 * 60 * 1000);
+  const nextDay = new Date(prevEnd.getTime() + 24 * 60 * 60 * 1000);
+
+  let newWindowEnd: Date;
+  if (ruleEndDate) {
+    const candidate = new Date(prevEnd.getTime() + CHUNK_DAYS * 24 * 60 * 60 * 1000);
+    newWindowEnd = candidate > ruleEndDate ? ruleEndDate : candidate;
+  } else {
+    newWindowEnd = new Date(prevEnd.getTime() + CHUNK_DAYS * 24 * 60 * 60 * 1000);
+  }
+
+  const newDates = rule.between(nextDay, newWindowEnd, true);
+  const startIdx = generatedSessions.value.length;
+
+  for (let i = 0; i < newDates.length; i++) {
+    const d = newDates[i];
+    const dateStr = dayjs(d).format('YYYY-MM-DD');
+
+    if (cancelledDates.has(dateStr)) {
+      generatedSessions.value.push({
+        id: `session_detail_${props.ruleId}_${dateStr}_${startIdx + i}`,
+        occurrenceDate: dateStr,
+        startTime: ruleStartTime,
+        endTime: ruleEndTime,
+        status: 'cancelled',
+      });
+    } else {
+      const rescheduled = rescheduledMap.get(dateStr);
+      if (rescheduled) {
+        generatedSessions.value.push({
+          id: `session_detail_${props.ruleId}_${dateStr}_${startIdx + i}`,
+          occurrenceDate: rescheduled.rescheduledDate,
+          startTime: rescheduled.startTime,
+          endTime: rescheduled.endTime,
+          status: 'rescheduled',
+          overridden: true,
+          rescheduledDate: rescheduled.rescheduledDate,
+          rescheduledStartTime: rescheduled.startTime,
+          rescheduledEndTime: rescheduled.endTime,
+        });
+      } else {
+        generatedSessions.value.push({
+          id: `session_detail_${props.ruleId}_${dateStr}_${startIdx + i}`,
+          occurrenceDate: dateStr,
+          startTime: ruleStartTime,
+          endTime: ruleEndTime,
+          status: computeSessionStatus(dateStr, ruleStartTime, ruleEndTime),
+        });
+      }
+    }
+  }
+
+  sessionWindowEnd.value = newWindowEnd;
+
+  if (ruleEndDate && newWindowEnd >= ruleEndDate) {
+    hasMoreRef.value = false;
+  }
+}
+
+/** 暴露给 VirtualList 的 query（ensureRange 自动追加） */
+const sessionQuery = {
+  getItem: (index: number): GeneratedSession | undefined => generatedSessions.value[index],
+  isLoaded: () => true,
+  total: computed(() => generatedSessions.value.length),
+  isLoading: false,
+  error: '',
+  ensureRange: async (_start: number, end: number) => {
+    if (end >= generatedSessions.value.length - 1 && hasMoreRef.value) {
+      appendSessionChunk();
+    }
+  },
+};
+
 onMounted(async () => {
   try {
     // 1. Fetch rule data
@@ -106,29 +211,17 @@ onMounted(async () => {
     const data = rule as Record<string, unknown>;
     courseName.value = ((data.course as Record<string, unknown>)?.name as string) ?? '';
 
-    const startDateRaw = data.startDate as string;
-    const startTimeRaw = data.startTime as string;
-    const endTimeRaw = data.endTime as string;
-    const intervalDays = (data.intervalDays as number) ?? null;
-    const endDateRaw = data.endDate as string | null;
-
-    const startDate = dayjs(startDateRaw).toDate();
-    const endDate = endDateRaw ? dayjs(endDateRaw).toDate() : null;
-    const startTime = dayjs(startTimeRaw).format('HH:mm');
-    const endTime = dayjs(endTimeRaw).format('HH:mm');
+    ruleStartDate = dayjs(data.startDate as string).toDate();
+    ruleEndDate = data.endDate ? dayjs(data.endDate as string).toDate() : null;
+    ruleStartTime = dayjs(data.startTime as string).format('HH:mm');
+    ruleEndTime = dayjs(data.endTime as string).format('HH:mm');
+    ruleIntervalDays = (data.intervalDays as number) ?? null;
 
     // 2. Fetch all override records
     const overrideResult = await fetchClassSessionOverrides({
       classRuleId: props.ruleId,
       limit: 9999,
     });
-
-    // Build override map
-    const cancelledDates = new Set<string>();
-    const rescheduledMap = new Map<
-      string,
-      { rescheduledDate: string; startTime: string; endTime: string }
-    >();
 
     for (const ov of overrideResult.items) {
       const dateKey = dayjs(ov.originalDate).format('YYYY-MM-DD');
@@ -141,86 +234,31 @@ onMounted(async () => {
             : dateKey,
           startTime: ov.rescheduledStartTime
             ? dayjs(ov.rescheduledStartTime).format('HH:mm')
-            : startTime,
-          endTime: ov.rescheduledEndTime ? dayjs(ov.rescheduledEndTime).format('HH:mm') : endTime,
+            : ruleStartTime,
+          endTime: ov.rescheduledEndTime ? dayjs(ov.rescheduledEndTime).format('HH:mm') : ruleEndTime,
         });
       }
     }
 
-    // 3. Generate sessions with rrule
-    let dates: Date[];
-    if (!intervalDays) {
-      dates = [startDate];
-    } else {
-      const rruleOptions: Partial<RRuleOptions> = {
-        freq: RRule.DAILY,
-        interval: intervalDays,
-        dtstart: new Date(
-          Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()),
+    // 3. 生成第一页 session
+    if (!ruleIntervalDays) {
+      // 单次上课
+      generatedSessions.value.push({
+        id: `session_detail_${props.ruleId}_${dayjs(ruleStartDate).format('YYYY-MM-DD')}_0`,
+        occurrenceDate: dayjs(ruleStartDate).format('YYYY-MM-DD'),
+        startTime: ruleStartTime,
+        endTime: ruleEndTime,
+        status: computeSessionStatus(
+          dayjs(ruleStartDate).format('YYYY-MM-DD'),
+          ruleStartTime,
+          ruleEndTime,
         ),
-      };
-
-      if (endDate) {
-        rruleOptions.until = new Date(
-          Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()),
-        );
-      }
-
-      const rule = new RRule(rruleOptions);
-
-      if (endDate) {
-        dates = rule.between(startDate, endDate, true);
-      } else {
-        const maxDate = new Date(startDate.getTime() + 365 * 24 * 60 * 60 * 1000);
-        dates = rule.between(startDate, maxDate, true);
-      }
+      });
+      hasMoreRef.value = false;
+    } else {
+      hasMoreRef.value = true;
+      appendSessionChunk();
     }
-
-    // 4. Convert to GeneratedSession with status
-    const sessions: GeneratedSession[] = [];
-    for (let i = 0; i < dates.length; i++) {
-      const d = dates[i];
-      const dateStr = dayjs(d).format('YYYY-MM-DD');
-
-      // Check for cancelled override
-      if (cancelledDates.has(dateStr)) {
-        sessions.push({
-          id: `session_detail_${props.ruleId}_${dateStr}_${i}`,
-          occurrenceDate: dateStr,
-          startTime,
-          endTime,
-          status: 'cancelled',
-        });
-        continue;
-      }
-
-      // Check for rescheduled override
-      const rescheduled = rescheduledMap.get(dateStr);
-      if (rescheduled) {
-        sessions.push({
-          id: `session_detail_${props.ruleId}_${dateStr}_${i}`,
-          occurrenceDate: rescheduled.rescheduledDate,
-          startTime: rescheduled.startTime,
-          endTime: rescheduled.endTime,
-          status: 'rescheduled',
-          overridden: true,
-          rescheduledDate: rescheduled.rescheduledDate,
-          rescheduledStartTime: rescheduled.startTime,
-          rescheduledEndTime: rescheduled.endTime,
-        });
-      } else {
-        sessions.push({
-          id: `session_detail_${props.ruleId}_${dateStr}_${i}`,
-          occurrenceDate: dateStr,
-          startTime,
-          endTime,
-          status: computeSessionStatus(dateStr, startTime, endTime),
-        });
-      }
-    }
-
-    generatedSessions.value = sessions;
-    totalSessions.value = sessions.length;
   } catch {
     // Handled by empty state
   } finally {

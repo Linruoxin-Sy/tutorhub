@@ -198,7 +198,6 @@
 import { computed } from 'vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-import { useLocalQuery } from '@/hooks/useLocalQuery';
 import { useThemeToggle } from '@/hooks/useThemeToggle';
 import { datePickerUi } from '@/features/class-rule/constants/datePickerUi';
 import SessionItem from '@/features/session/components/SessionItem.vue';
@@ -215,6 +214,7 @@ const {
   conflictResult,
   conflictPassed,
   generatedSessions,
+  sessionQuery,
   isInfinite,
   isFormComplete,
   isSubmitting,
@@ -223,7 +223,6 @@ const {
 } = useClassRuleCreateForm(props.courseId);
 
 const { isDark } = useThemeToggle();
-const sessionQuery = useLocalQuery(generatedSessions);
 
 // ---- VueDatePicker 双向绑定辅助 ----
 

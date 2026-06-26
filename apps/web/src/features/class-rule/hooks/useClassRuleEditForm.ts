@@ -40,16 +40,9 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
   const conflictResult = ref<{ hasConflict: boolean; conflicts: ConflictItem[] } | null>(null);
   const conflictPassed = ref(false);
   const generatedSessions = ref<GeneratedSession[]>([]);
-  const sessionBatchIndex = ref(0);
-  const BATCH_SIZE = 50;
-
-  const displayedSessions = computed(() =>
-    generatedSessions.value.slice(0, (sessionBatchIndex.value + 1) * BATCH_SIZE),
-  );
-
-  const hasMoreSessions = computed(
-    () => displayedSessions.value.length < generatedSessions.value.length,
-  );
+  const sessionWindowEnd = ref<Date | null>(null);
+  const hasMoreRef = ref(false);
+  const CHUNK_DAYS = 365;
 
   const isInfinite = computed(
     () => formData.value.intervalDays !== null && !formData.value.endDate,
@@ -142,59 +135,114 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     }
   };
 
+  /** 生成初始一批 session（后续通过 ensureRange 自动追加） */
   const generateSessions = () => {
     generatedSessions.value = [];
-    sessionBatchIndex.value = 0;
+    sessionWindowEnd.value = null;
+    hasMoreRef.value = true;
 
     const startDate = dayjs(formData.value.startDate).toDate();
     const intervalDays = formData.value.intervalDays;
     const endDate = formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null;
 
-    let dates: Date[];
-
     if (!intervalDays) {
-      dates = [startDate];
-    } else {
-      const rruleOptions: Partial<RRuleOptions> = {
-        freq: RRule.DAILY,
-        interval: intervalDays,
-        dtstart: new Date(
-          Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()),
-        ),
-      };
-
-      if (endDate) {
-        rruleOptions.until = new Date(
-          Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()),
-        );
-      }
-
-      const rule = new RRule(rruleOptions);
-
-      if (endDate) {
-        dates = rule.between(startDate, endDate, true);
-      } else {
-        const maxDate = new Date(startDate.getTime() + 365 * 24 * 60 * 60 * 1000);
-        dates = rule.between(startDate, maxDate, true);
-      }
-    }
-
-    generatedSessions.value = dates.map((d, i) => {
-      const dateStr = dayjs(d).format('YYYY-MM-DD');
-      return {
-        id: `session_edit_${ruleId}_${dateStr}_${i}`,
-        occurrenceDate: dateStr,
+      generatedSessions.value.push({
+        id: `session_edit_${ruleId}_0`,
+        occurrenceDate: formData.value.startDate,
         startTime: formData.value.startTime,
         endTime: formData.value.endTime,
-        status: computeSessionStatus(dateStr, formData.value.startTime, formData.value.endTime),
-      };
-    });
+        status: computeSessionStatus(
+          formData.value.startDate,
+          formData.value.startTime,
+          formData.value.endTime,
+        ),
+      });
+      hasMoreRef.value = false;
+      return;
+    }
+
+    appendSessionChunk(startDate, intervalDays, endDate, formData.value.startTime, formData.value.endTime);
   };
 
-  const loadMoreSessions = () => {
-    if (hasMoreSessions.value) {
-      sessionBatchIndex.value++;
+  /** 追加下一批 session */
+  function appendSessionChunk(
+    startDate: Date,
+    intervalDays: number,
+    endDate: Date | null,
+    startTime: string,
+    endTime: string,
+  ) {
+    const rruleOptions: Partial<RRuleOptions> = {
+      freq: RRule.DAILY,
+      interval: intervalDays,
+      dtstart: new Date(
+        Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()),
+      ),
+    };
+
+    if (endDate) {
+      rruleOptions.until = new Date(
+        Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()),
+      );
     }
+
+    const rule = new RRule(rruleOptions);
+
+    const prevEnd = sessionWindowEnd.value ?? new Date(startDate.getTime() - 24 * 60 * 60 * 1000);
+    const nextDay = new Date(prevEnd.getTime() + 24 * 60 * 60 * 1000);
+
+    let newWindowEnd: Date;
+    if (endDate) {
+      const candidate = new Date(prevEnd.getTime() + CHUNK_DAYS * 24 * 60 * 60 * 1000);
+      newWindowEnd = candidate > endDate ? endDate : candidate;
+    } else {
+      newWindowEnd = new Date(prevEnd.getTime() + CHUNK_DAYS * 24 * 60 * 60 * 1000);
+    }
+
+    const newDates = rule.between(nextDay, newWindowEnd, true);
+    const startIdx = generatedSessions.value.length;
+
+    for (let i = 0; i < newDates.length; i++) {
+      const dateStr = dayjs(newDates[i]).format('YYYY-MM-DD');
+      generatedSessions.value.push({
+        id: `session_edit_${ruleId}_${dateStr}_${startIdx + i}`,
+        occurrenceDate: dateStr,
+        startTime,
+        endTime,
+        status: computeSessionStatus(dateStr, startTime, endTime),
+      });
+    }
+
+    sessionWindowEnd.value = newWindowEnd;
+
+    if (endDate && newWindowEnd >= endDate) {
+      hasMoreRef.value = false;
+    }
+  }
+
+  /** 暴露给 VirtualList 的 query（ensureRange 自动追加） */
+  const sessionQuery = {
+    getItem: (index: number): GeneratedSession | undefined => generatedSessions.value[index],
+    isLoaded: () => true,
+    total: computed(() => generatedSessions.value.length),
+    isLoading: false,
+    error: '',
+    ensureRange: async (_start: number, end: number) => {
+      if (end >= generatedSessions.value.length - 1 && hasMoreRef.value) {
+        const startDate = dayjs(formData.value.startDate).toDate();
+        const intervalDays = formData.value.intervalDays;
+        const endDate = formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null;
+        if (intervalDays) {
+          appendSessionChunk(
+            startDate,
+            intervalDays,
+            endDate,
+            formData.value.startTime,
+            formData.value.endTime,
+          );
+        }
+      }
+    },
   };
 
   const { withLoading, isLoadingRef: isSubmitting } = useLoading();
@@ -241,15 +289,13 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     conflictResult,
     conflictPassed,
     generatedSessions,
-    displayedSessions,
-    hasMoreSessions,
+    sessionQuery,
     isFormComplete,
     isInfinite,
     isSubmitting,
     verify,
     checkConflicts,
     generateSessions,
-    loadMoreSessions,
     runConflictCheck,
     doUpdate,
   };
