@@ -158,8 +158,8 @@ function appendSessionChunk() {
         generatedSessions.value.push({
           id: `session_detail_${props.ruleId}_${dateStr}_${startIdx + i}`,
           occurrenceDate: rescheduled.rescheduledDate,
-          startTime: rescheduled.startTime,
-          endTime: rescheduled.endTime,
+          startTime: ruleStartTime,
+          endTime: ruleEndTime,
           status: 'rescheduled',
           overridden: true,
           rescheduledDate: rescheduled.rescheduledDate,
@@ -242,13 +242,37 @@ onMounted(async () => {
     if (!ruleIntervalDays) {
       // 单次上课
       const singleDateStr = ruleStartDate.toISOString().slice(0, 10);
-      generatedSessions.value.push({
-        id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
-        occurrenceDate: singleDateStr,
-        startTime: ruleStartTime,
-        endTime: ruleEndTime,
-        status: computeSessionStatus(singleDateStr, ruleStartTime, ruleEndTime),
-      });
+
+      if (cancelledDates.has(singleDateStr)) {
+        generatedSessions.value.push({
+          id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
+          occurrenceDate: singleDateStr,
+          startTime: ruleStartTime,
+          endTime: ruleEndTime,
+          status: 'cancelled',
+        });
+      } else if (rescheduledMap.has(singleDateStr)) {
+        const rescheduled = rescheduledMap.get(singleDateStr)!;
+        generatedSessions.value.push({
+          id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
+          occurrenceDate: rescheduled.rescheduledDate,
+          startTime: ruleStartTime,
+          endTime: ruleEndTime,
+          status: 'rescheduled',
+          overridden: true,
+          rescheduledDate: rescheduled.rescheduledDate,
+          rescheduledStartTime: rescheduled.startTime,
+          rescheduledEndTime: rescheduled.endTime,
+        });
+      } else {
+        generatedSessions.value.push({
+          id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
+          occurrenceDate: singleDateStr,
+          startTime: ruleStartTime,
+          endTime: ruleEndTime,
+          status: computeSessionStatus(singleDateStr, ruleStartTime, ruleEndTime),
+        });
+      }
       hasMoreRef.value = false;
     } else {
       hasMoreRef.value = true;

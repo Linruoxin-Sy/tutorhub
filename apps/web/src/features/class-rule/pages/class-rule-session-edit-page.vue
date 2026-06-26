@@ -341,7 +341,7 @@ onMounted(async () => {
     });
 
     const matched = overrideResult.items.find((ov) => {
-      const ovDate = dayjs(ov.originalDate).format('YYYY-MM-DD');
+      const ovDate = new Date(ov.originalDate).toISOString().slice(0, 10);
       return ovDate === queryDate;
     });
 
@@ -377,7 +377,7 @@ const runConflictCheck = withChecking(async () => {
   try {
     const res = await checkClassSessionOverrideConflicts({
       classRuleId: props.ruleId,
-      originalDate: dayjs(queryDate).toDate(),
+      originalDate: queryDate + 'T00:00:00.000Z',
       newStartTime: formRescheduledStartTime.value,
       newEndTime: formRescheduledEndTime.value,
     });
@@ -396,7 +396,7 @@ const runConflictCheck = withChecking(async () => {
 const doCreateOverride = withLoading(async () => {
   const payload: Record<string, unknown> = {
     classRuleId: props.ruleId,
-    originalDate: dayjs(queryDate).toDate(),
+    originalDate: queryDate + 'T00:00:00.000Z',
     state: formState.value,
     reason: formReason.value || null,
   };
@@ -410,7 +410,7 @@ const doCreateOverride = withLoading(async () => {
       toast.warning('Please fill in all reschedule fields');
       return;
     }
-    payload.rescheduledDate = dayjs(formRescheduledDate.value).toDate();
+    payload.rescheduledDate = formRescheduledDate.value + 'T00:00:00.000Z';
     payload.rescheduledStartTime = formRescheduledStartTime.value;
     payload.rescheduledEndTime = formRescheduledEndTime.value;
   }
