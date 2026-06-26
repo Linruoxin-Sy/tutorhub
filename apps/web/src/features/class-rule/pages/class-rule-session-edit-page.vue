@@ -505,9 +505,9 @@ onMounted(async () => {
     });
 
     const matched = overrideResult.items.find((ov) => {
-      const ovDate = new Date(ov.originalDate).toISOString().slice(0, 10);
+      const ovDate = dayjs(ov.originalDate).format('YYYY-MM-DD');
       const ovRescheduled = ov.rescheduledDate
-        ? new Date(ov.rescheduledDate).toISOString().slice(0, 10)
+        ? dayjs(ov.rescheduledDate).format('YYYY-MM-DD')
         : null;
       return ovDate === queryDate || ovRescheduled === queryDate;
     });

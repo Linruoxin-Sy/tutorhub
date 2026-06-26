@@ -91,6 +91,23 @@ let ruleEndDate: Date | null = null;
 let ruleStartTime = '';
 let ruleEndTime = '';
 let ruleIntervalDays: number | null = null;
+// startTime 的 UTC 小时/分钟（用于计算本地日期）
+let startUtcHour = 0;
+let startUtcMin = 0;
+
+/** 将 UTC 日期 + 开始时间（UTC）转换为本地日期字符串 */
+function getLocalDate(utcDate: Date): string {
+  const dt = new Date(
+    Date.UTC(
+      utcDate.getUTCFullYear(),
+      utcDate.getUTCMonth(),
+      utcDate.getUTCDate(),
+      startUtcHour,
+      startUtcMin,
+    ),
+  );
+  return dayjs(dt).format('YYYY-MM-DD');
+}
 
 // Override 映射（一次性获取）
 const cancelledDates = new Set<string>();
@@ -143,7 +160,7 @@ function appendSessionChunk() {
 
   for (let i = 0; i < newDates.length; i++) {
     const d = newDates[i];
-    const dateStr = d.toISOString().slice(0, 10);
+    const dateStr = getLocalDate(d);
 
     if (cancelledDates.has(dateStr)) {
       generatedSessions.value.push({
@@ -213,6 +230,11 @@ onMounted(async () => {
     ruleStartTime = dayjs(data.startTime as string).format('HH:mm');
     ruleEndTime = dayjs(data.endTime as string).format('HH:mm');
     ruleIntervalDays = (data.intervalDays as number) ?? null;
+    {
+      const st = new Date(data.startTime as string);
+      startUtcHour = st.getUTCHours();
+      startUtcMin = st.getUTCMinutes();
+    }
 
     // 2. Fetch all override records
     const overrideResult = await fetchClassSessionOverrides({
@@ -222,7 +244,17 @@ onMounted(async () => {
 
     for (const ov of overrideResult.items) {
       const ovDate = new Date(ov.originalDate);
-      const dateKey = ovDate.toISOString().slice(0, 10);
+      // 将 override 的 UTC 日期转为与 session 一致的本地日期
+      const ovDt = new Date(
+        Date.UTC(
+          ovDate.getUTCFullYear(),
+          ovDate.getUTCMonth(),
+          ovDate.getUTCDate(),
+          startUtcHour,
+          startUtcMin,
+        ),
+      );
+      const dateKey = dayjs(ovDt).format('YYYY-MM-DD');
       if (ov.state === 'CANCELLED') {
         cancelledDates.add(dateKey);
       } else if (ov.state === 'RESCHEDULED') {
@@ -243,7 +275,7 @@ onMounted(async () => {
     // 3. 生成第一页 session
     if (!ruleIntervalDays) {
       // 单次上课
-      const singleDateStr = ruleStartDate.toISOString().slice(0, 10);
+      const singleDateStr = getLocalDate(ruleStartDate);
 
       if (cancelledDates.has(singleDateStr)) {
         generatedSessions.value.push({
