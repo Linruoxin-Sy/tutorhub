@@ -264,26 +264,33 @@ export const classSessionOverrideService = {
       const ruleKey = `${rule.id}_${dateStr}`;
       if (cancelledSet.has(ruleKey)) continue;
 
-      // 检查该规则当天是否有课（用 rrule 判断）
-      const rruleOptions: Partial<RRuleOptions> = {
-        freq: RRule.DAILY,
-        interval: rule.intervalDays ?? 1,
-        dtstart: new Date(
-          Date.UTC(
-            rule.startDate.getFullYear(),
-            rule.startDate.getMonth(),
-            rule.startDate.getDate(),
+      // 检查该规则当天是否有课
+      if (rule.intervalDays === null) {
+        // 单次上课：只检查日期是否匹配 startDate
+        const ruleStartStr = rule.startDate.toISOString().slice(0, 10);
+        if (dateStr !== ruleStartStr) continue;
+      } else {
+        // 循环上课：用 rrule 判断
+        const rruleOptions: Partial<RRuleOptions> = {
+          freq: RRule.DAILY,
+          interval: rule.intervalDays,
+          dtstart: new Date(
+            Date.UTC(
+              rule.startDate.getFullYear(),
+              rule.startDate.getMonth(),
+              rule.startDate.getDate(),
+            ),
           ),
-        ),
-      };
-      if (rule.endDate) {
-        rruleOptions.until = new Date(
-          Date.UTC(rule.endDate.getFullYear(), rule.endDate.getMonth(), rule.endDate.getDate()),
-        );
+        };
+        if (rule.endDate) {
+          rruleOptions.until = new Date(
+            Date.UTC(rule.endDate.getFullYear(), rule.endDate.getMonth(), rule.endDate.getDate()),
+          );
+        }
+        const rrule = new RRule(rruleOptions);
+        const ruleDates = rrule.between(originalDate, originalDate, true);
+        if (ruleDates.length === 0) continue;
       }
-      const rrule = new RRule(rruleOptions);
-      const ruleDates = rrule.between(originalDate, originalDate, true);
-      if (ruleDates.length === 0) continue;
 
       // 检查该规则该日期是否被调课
       const override = rescheduledMap.get(ruleKey);
