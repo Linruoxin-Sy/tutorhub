@@ -91,8 +91,25 @@ export const classSessionOverrideService = {
       throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
     }
 
-    const override = await prisma.classSessionOverride.create({
-      data: {
+    const override = await prisma.classSessionOverride.upsert({
+      where: {
+        classRuleId_originalDate: {
+          classRuleId: input.classRuleId,
+          originalDate: input.originalDate,
+        },
+      },
+      update: {
+        state: input.state,
+        rescheduledDate: input.rescheduledDate ?? null,
+        rescheduledStartTime: input.rescheduledStartTime
+          ? new Date(`1970-01-01T${input.rescheduledStartTime}`)
+          : null,
+        rescheduledEndTime: input.rescheduledEndTime
+          ? new Date(`1970-01-01T${input.rescheduledEndTime}`)
+          : null,
+        reason: input.reason ?? null,
+      },
+      create: {
         classRuleId: input.classRuleId,
         originalDate: input.originalDate,
         state: input.state,
