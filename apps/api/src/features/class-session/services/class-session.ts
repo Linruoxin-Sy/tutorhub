@@ -97,8 +97,12 @@ export const classSessionOverrideService = {
         originalDate: input.originalDate,
         state: input.state,
         rescheduledDate: input.rescheduledDate ?? null,
-        rescheduledStartTime: input.rescheduledStartTime ?? null,
-        rescheduledEndTime: input.rescheduledEndTime ?? null,
+        rescheduledStartTime: input.rescheduledStartTime
+          ? new Date(`1970-01-01T${input.rescheduledStartTime}`)
+          : null,
+        rescheduledEndTime: input.rescheduledEndTime
+          ? new Date(`1970-01-01T${input.rescheduledEndTime}`)
+          : null,
         reason: input.reason ?? null,
       },
     });
@@ -120,9 +124,22 @@ export const classSessionOverrideService = {
       throw new ApiError(404, 'OVERRIDE_NOT_FOUND', 'Class session override not found');
     }
 
+    const updateData: Record<string, unknown> = {};
+    if (input.state !== undefined) updateData.state = input.state;
+    if (input.rescheduledDate !== undefined) updateData.rescheduledDate = input.rescheduledDate;
+    if (input.rescheduledStartTime !== undefined)
+      updateData.rescheduledStartTime = input.rescheduledStartTime
+        ? new Date(`1970-01-01T${input.rescheduledStartTime}`)
+        : null;
+    if (input.rescheduledEndTime !== undefined)
+      updateData.rescheduledEndTime = input.rescheduledEndTime
+        ? new Date(`1970-01-01T${input.rescheduledEndTime}`)
+        : null;
+    if (input.reason !== undefined) updateData.reason = input.reason;
+
     const override = await prisma.classSessionOverride.update({
       where: { id },
-      data: input,
+      data: updateData,
     });
 
     return override;
