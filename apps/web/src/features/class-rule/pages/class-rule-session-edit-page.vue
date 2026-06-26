@@ -263,17 +263,6 @@
         </button>
       </div>
     </CardSection>
-
-    <!-- Back link -->
-    <div class="text-center">
-      <button
-        type="button"
-        class="cursor-pointer text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-        @click="goBack"
-      >
-        &larr; Back to Class Rule Details
-      </button>
-    </div>
   </main>
 </template>
 
