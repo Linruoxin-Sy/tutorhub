@@ -130,8 +130,7 @@ function appendSessionChunk() {
 
   const rule = new RRule(rruleOptions);
 
-  const prevEnd =
-    sessionWindowEnd.value ?? new Date(ruleStartDate.getTime() - 24 * 60 * 60 * 1000);
+  const prevEnd = sessionWindowEnd.value ?? new Date(ruleStartDate.getTime() - 24 * 60 * 60 * 1000);
   const nextDay = new Date(prevEnd.getTime() + 24 * 60 * 60 * 1000);
 
   let newWindowEnd: Date;
@@ -235,7 +234,9 @@ onMounted(async () => {
           startTime: ov.rescheduledStartTime
             ? dayjs(ov.rescheduledStartTime).format('HH:mm')
             : ruleStartTime,
-          endTime: ov.rescheduledEndTime ? dayjs(ov.rescheduledEndTime).format('HH:mm') : ruleEndTime,
+          endTime: ov.rescheduledEndTime
+            ? dayjs(ov.rescheduledEndTime).format('HH:mm')
+            : ruleEndTime,
         });
       }
     }

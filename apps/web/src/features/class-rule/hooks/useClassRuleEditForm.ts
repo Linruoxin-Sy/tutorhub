@@ -161,7 +161,13 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       return;
     }
 
-    appendSessionChunk(startDate, intervalDays, endDate, formData.value.startTime, formData.value.endTime);
+    appendSessionChunk(
+      startDate,
+      intervalDays,
+      endDate,
+      formData.value.startTime,
+      formData.value.endTime,
+    );
   };
 
   /** 追加下一批 session */
