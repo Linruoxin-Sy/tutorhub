@@ -10,20 +10,6 @@ import {
 } from './seed-data';
 
 // ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-interface ClassRuleInput {
-  courseId: string;
-  startDate: Date;
-  intervalDays: number | null;
-  endDate: Date | null;
-  startTime: Date;
-  endTime: Date;
-  room?: string | null;
-}
-
-// ---------------------------------------------------------------------------
 // Course seed data generators
 // ---------------------------------------------------------------------------
 
@@ -80,139 +66,8 @@ function buildStudent(index: number, userId: string) {
 }
 
 // ---------------------------------------------------------------------------
-// Time slot templates
-// ---------------------------------------------------------------------------
-
-const TIME_SLOTS: { startHour: number; startMin: number; endHour: number; endMin: number }[] = [
-  { startHour: 9, startMin: 0, endHour: 10, endMin: 30 },
-  { startHour: 10, startMin: 45, endHour: 12, endMin: 15 },
-  { startHour: 14, startMin: 0, endHour: 15, endMin: 30 },
-  { startHour: 16, startMin: 0, endHour: 17, endMin: 30 },
-  { startHour: 19, startMin: 0, endHour: 20, endMin: 30 },
-];
-
-const INTERVAL_OPTIONS = [7, 14, 30] as const;
-const SEED_BASE_DATE = new Date('2026-01-05T00:00:00');
-
-// ---------------------------------------------------------------------------
 // Class rule generators
 // ---------------------------------------------------------------------------
-
-function makeTime(hour: number, min: number): Date {
-  return new Date(1970, 0, 1, hour, min, 0);
-}
-
-function addDays(date: Date, days: number): Date {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-}
-
-// ---------------------------------------------------------------------------
-// Class rule batch insert helpers
-// ---------------------------------------------------------------------------
-
-const RULE_CHUNK_SIZE = 3000;
-
-/**
- * Generate 2–3 ClassRule inputs for a given course.
- *
- * No two courses' rules will conflict because:
- * - Each course gets a unique (dayOfWeek, timeSlot) + semester offset combo
- * - With 5 slots × 7 days = 35 combos, semesters (0/4/8 months) spread across 100 courses
- * - Courses sharing the same day+slot are offset by 4 months → active periods never overlap
- *
- * Rule types per course:
- * - 1 固定上课 (single): intervalDays=null, endDate=null
- * - 1 循环上课 (cyclic): intervalDays=7, endDate set (~2–3 months)
- * - 1 无限循环上课 (infinite cyclic): intervalDays=7|14, endDate=null (optional)
- */
-function buildRules(courseId: string, seed: number): ClassRuleInput[] {
-  const count = 2 + Math.floor(pseudoRandom(seed + 5000) * 1); // 2 or 3
-  const rules: ClassRuleInput[] = [];
-
-  // ── Deterministic scheduling: each course gets a unique day+slot+semester ──
-  const NUM_SLOTS = TIME_SLOTS.length; // 5
-  const DAYS_PER_WEEK = 7;
-
-  // Assign day of week (0=Mon..6=Sun) and primary time slot
-  const comboIndex = seed % (NUM_SLOTS * DAYS_PER_WEEK); // 0..34
-  const dayOfWeek = comboIndex % DAYS_PER_WEEK;
-  const slotIndex = Math.floor(comboIndex / DAYS_PER_WEEK);
-
-  // Semester offset: courses sharing the same combo are staggered by 1 year
-  const semesterGroup = Math.floor(seed / (NUM_SLOTS * DAYS_PER_WEEK));
-  const semesterYearOffset = semesterGroup; // 0, 1, 2 years
-
-  // Find the first date matching this dayOfWeek, offset by semester year
-  // SEED_BASE_DATE (Jan 5, 2026) is a Monday (getDay() = 1)
-  let courseStart = new Date(
-    SEED_BASE_DATE.getFullYear() + semesterYearOffset,
-    SEED_BASE_DATE.getMonth(),
-    SEED_BASE_DATE.getDate(),
-  );
-  while (courseStart.getDay() !== (dayOfWeek + 1) % 7) {
-    courseStart = addDays(courseStart, 1);
-  }
-
-  // Pick 3 distinct time slots (rotating from the assigned primary slot)
-  const shuffledSlots: typeof TIME_SLOTS = [];
-  for (let i = 0; i < NUM_SLOTS; i++) {
-    shuffledSlots.push(TIME_SLOTS[(slotIndex + i) % NUM_SLOTS]);
-  }
-  let slotCursor = 0;
-  const nextSlot = () => {
-    const slot = shuffledSlots[slotCursor % shuffledSlots.length];
-    slotCursor++;
-    return slot;
-  };
-
-  // --- Rule 1: 固定上课 (single) ---
-  {
-    const slot = nextSlot();
-    rules.push({
-      courseId,
-      startDate: courseStart,
-      intervalDays: null,
-      endDate: null,
-      startTime: makeTime(slot.startHour, slot.startMin),
-      endTime: makeTime(slot.endHour, slot.endMin),
-    });
-  }
-
-  // --- Rule 2: 循环上课 (cyclic with end, weekly) ---
-  {
-    const slot = nextSlot();
-    const ruleStart = addDays(courseStart, 7);
-    const ruleEnd = addDays(ruleStart, 60 + Math.floor(pseudoRandom(seed + 9000) * 31));
-    rules.push({
-      courseId,
-      startDate: ruleStart,
-      intervalDays: 7,
-      endDate: ruleEnd,
-      startTime: makeTime(slot.startHour, slot.startMin),
-      endTime: makeTime(slot.endHour, slot.endMin),
-    });
-  }
-
-  // --- Optional Rule 3: 无限循环上课 (infinite cyclic) ---
-  if (count === 3) {
-    const slot = nextSlot();
-    const interval =
-      INTERVAL_OPTIONS[Math.floor(pseudoRandom(seed + 12000) * INTERVAL_OPTIONS.length)];
-    const ruleStart = addDays(courseStart, 14);
-    rules.push({
-      courseId,
-      startDate: ruleStart,
-      intervalDays: interval,
-      endDate: null,
-      startTime: makeTime(slot.startHour, slot.startMin),
-      endTime: makeTime(slot.endHour, slot.endMin),
-    });
-  }
-
-  return rules;
-}
 
 // ---------------------------------------------------------------------------
 // Main seed function
@@ -225,8 +80,6 @@ async function main() {
 
   // 1. Clean existing data
   log('Cleaning existing data...');
-  await prisma.classSessionOverride.deleteMany();
-  await prisma.classRule.deleteMany();
   await prisma.studentCourse.deleteMany();
   await prisma.course.deleteMany();
   await prisma.student.deleteMany();
@@ -310,28 +163,6 @@ async function main() {
     await prisma.studentCourse.createMany({ data: chunk, skipDuplicates: true });
   }
   log(`Created ${enrollments.length} enrollments`);
-
-  // 6. Create class rules for each course (generate + insert in batches)
-  log('Generating class rules...');
-
-  const allCourses = await prisma.course.findMany({ select: { id: true } });
-  let totalRules = 0;
-  let ruleBatch: ClassRuleInput[] = [];
-  for (let ci = 0; ci < allCourses.length; ci++) {
-    const courseRules = buildRules(allCourses[ci].id, ci);
-    ruleBatch.push(...courseRules);
-
-    if (ruleBatch.length >= RULE_CHUNK_SIZE) {
-      await prisma.classRule.createMany({ data: ruleBatch, skipDuplicates: true });
-      totalRules += ruleBatch.length;
-      ruleBatch = [];
-    }
-  }
-  if (ruleBatch.length > 0) {
-    await prisma.classRule.createMany({ data: ruleBatch, skipDuplicates: true });
-    totalRules += ruleBatch.length;
-  }
-  log(`Created ${totalRules} class rules`);
 
   log('Seed complete');
 }
