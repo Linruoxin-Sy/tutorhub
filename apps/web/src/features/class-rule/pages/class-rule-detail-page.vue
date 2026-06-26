@@ -117,15 +117,11 @@ function appendSessionChunk() {
   const rruleOptions: Partial<RRuleOptions> = {
     freq: RRule.DAILY,
     interval: ruleIntervalDays,
-    dtstart: new Date(
-      Date.UTC(ruleStartDate.getFullYear(), ruleStartDate.getMonth(), ruleStartDate.getDate()),
-    ),
+    dtstart: new Date(ruleStartDate.toISOString().slice(0, 10) + 'T00:00:00.000Z'),
   };
 
   if (ruleEndDate) {
-    rruleOptions.until = new Date(
-      Date.UTC(ruleEndDate.getFullYear(), ruleEndDate.getMonth(), ruleEndDate.getDate()),
-    );
+    rruleOptions.until = new Date(ruleEndDate.toISOString().slice(0, 10) + 'T00:00:00.000Z');
   }
 
   const rule = new RRule(rruleOptions);
@@ -146,7 +142,7 @@ function appendSessionChunk() {
 
   for (let i = 0; i < newDates.length; i++) {
     const d = newDates[i];
-    const dateStr = dayjs(d).format('YYYY-MM-DD');
+    const dateStr = d.toISOString().slice(0, 10);
 
     if (cancelledDates.has(dateStr)) {
       generatedSessions.value.push({
@@ -223,13 +219,14 @@ onMounted(async () => {
     });
 
     for (const ov of overrideResult.items) {
-      const dateKey = dayjs(ov.originalDate).format('YYYY-MM-DD');
+      const ovDate = new Date(ov.originalDate);
+      const dateKey = ovDate.toISOString().slice(0, 10);
       if (ov.state === 'CANCELLED') {
         cancelledDates.add(dateKey);
       } else if (ov.state === 'RESCHEDULED') {
         rescheduledMap.set(dateKey, {
           rescheduledDate: ov.rescheduledDate
-            ? dayjs(ov.rescheduledDate).format('YYYY-MM-DD')
+            ? new Date(ov.rescheduledDate).toISOString().slice(0, 10)
             : dateKey,
           startTime: ov.rescheduledStartTime
             ? dayjs(ov.rescheduledStartTime).format('HH:mm')
@@ -244,16 +241,13 @@ onMounted(async () => {
     // 3. 生成第一页 session
     if (!ruleIntervalDays) {
       // 单次上课
+      const singleDateStr = ruleStartDate.toISOString().slice(0, 10);
       generatedSessions.value.push({
-        id: `session_detail_${props.ruleId}_${dayjs(ruleStartDate).format('YYYY-MM-DD')}_0`,
-        occurrenceDate: dayjs(ruleStartDate).format('YYYY-MM-DD'),
+        id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
+        occurrenceDate: singleDateStr,
         startTime: ruleStartTime,
         endTime: ruleEndTime,
-        status: computeSessionStatus(
-          dayjs(ruleStartDate).format('YYYY-MM-DD'),
-          ruleStartTime,
-          ruleEndTime,
-        ),
+        status: computeSessionStatus(singleDateStr, ruleStartTime, ruleEndTime),
       });
       hasMoreRef.value = false;
     } else {
