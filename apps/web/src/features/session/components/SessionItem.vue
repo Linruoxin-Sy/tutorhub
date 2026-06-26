@@ -103,7 +103,9 @@
             <i class="i-lucide-calendar inline size-3.5 align-text-top" />
             {{ overriddenDate || date }}
           </span>
-          <span class="inline-flex items-center gap-1 text-gray-400 line-through dark:text-gray-500">
+          <span
+            class="inline-flex items-center gap-1 text-gray-400 line-through dark:text-gray-500"
+          >
             <i class="i-lucide-clock inline size-3.5 align-text-top" />
             {{ startTime }}
             <i class="i-lucide-arrow-right inline size-3.5" />
@@ -115,12 +117,21 @@
       <!-- 箭头 + 标记 -->
       <div class="flex shrink-0 flex-col items-center gap-1">
         <i class="i-lucide-arrow-right size-5 text-amber-500 dark:text-amber-400" />
-        <span
-          class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-        >
-          <i class="i-lucide-rotate-ccw size-3" />
-          Rescheduled
-        </span>
+        <div class="flex items-center gap-1">
+          <span
+            class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+          >
+            <i class="i-lucide-rotate-ccw size-3" />
+            Rescheduled
+          </span>
+          <span
+            v-if="isRescheduledCompleted"
+            class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500 dark:bg-[#2c2c2c] dark:text-gray-400"
+          >
+            <i class="i-lucide-check-circle size-3" />
+            Completed
+          </span>
+        </div>
       </div>
 
       <!-- 新时间 -->
@@ -167,9 +178,10 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { SessionStatus } from '@tutorhub/schema';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     courseName: string;
     date: string;
@@ -196,4 +208,12 @@ const emit = defineEmits<{
   change: [];
   edit: [];
 }>();
+
+/** 调课后的新时间是否已过（已完成） */
+const isRescheduledCompleted = computed(() => {
+  if (props.status !== 'rescheduled') return false;
+  const newEnd = props.overriddenEndTime || props.endTime;
+  const end = new Date(`${props.date} ${newEnd}`);
+  return end < new Date();
+});
 </script>
