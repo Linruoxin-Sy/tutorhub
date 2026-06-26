@@ -206,10 +206,12 @@ export const classRuleService = {
     );
     const inputDateSet = new Set(inputDates.map((d) => d.toISOString().slice(0, 10)));
 
+    const allRuleIds = otherRules.map((r) => r.id);
+
     // 查询所有相关的 ClassSessionOverride（跨所有课程，找出已调课的记录）
     const overrides = await prisma.classSessionOverride.findMany({
       where: {
-        classRule: { course: { userId }, deletedAt: null },
+        classRuleId: { in: allRuleIds },
         state: 'RESCHEDULED',
       },
     });
@@ -227,7 +229,7 @@ export const classRuleService = {
     // 已取消的日期集合（这些日期不参与冲突检测）
     const cancelledOverrides = await prisma.classSessionOverride.findMany({
       where: {
-        classRule: { course: { userId }, deletedAt: null },
+        classRuleId: { in: allRuleIds },
         state: 'CANCELLED',
       },
     });

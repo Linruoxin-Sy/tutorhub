@@ -18,8 +18,16 @@ export const classSessionOverrideService = {
     const take = query.limit;
     const skip = query.offset ?? 0;
 
+    // 先获取该用户的所有 class rule ID
+    const userRuleIds = await prisma.classRule
+      .findMany({
+        where: { course: { userId } },
+        select: { id: true },
+      })
+      .then((rules) => rules.map((r) => r.id));
+
     const where: Prisma.ClassSessionOverrideWhereInput = {
-      classRule: { course: { userId } },
+      classRuleId: { in: userRuleIds },
     };
 
     if (query.classRuleId) where.classRuleId = query.classRuleId;
@@ -157,10 +165,18 @@ export const classSessionOverrideService = {
 
     const dateStr = originalDate.toISOString().slice(0, 10);
 
+    // 先查询该用户所有课程下的 ClassRule
+    const rules = await prisma.classRule.findMany({
+      where: { course: { userId, deletedAt: null } },
+      include: { course: { select: { name: true } } },
+    });
+
+    const allRuleIds = rules.map((r) => r.id);
+
     // 查询所有相关的 ClassSessionOverride（跨所有课程，找出已调课的记录）
     const overrides = await prisma.classSessionOverride.findMany({
       where: {
-        classRule: { course: { userId }, deletedAt: null },
+        classRuleId: { in: allRuleIds },
         state: 'RESCHEDULED',
       },
     });
@@ -184,7 +200,7 @@ export const classSessionOverrideService = {
     // 已取消的日期集合
     const cancelledOverrides = await prisma.classSessionOverride.findMany({
       where: {
-        classRule: { course: { userId }, deletedAt: null },
+        classRuleId: { in: allRuleIds },
         state: 'CANCELLED',
       },
     });
@@ -193,12 +209,6 @@ export const classSessionOverrideService = {
         (ov) => `${ov.classRuleId}_${ov.originalDate.toISOString().slice(0, 10)}`,
       ),
     );
-
-    // 查询该用户所有课程下的 ClassRule
-    const rules = await prisma.classRule.findMany({
-      where: { course: { userId, deletedAt: null } },
-      include: { course: { select: { name: true } } },
-    });
 
     // 预取学生名称
     const courseIds = [...new Set(rules.map((r) => r.courseId))];
