@@ -5,7 +5,7 @@
       description="View generated sessions for this class rule."
     />
 
-    <ListPageShell title="Generated Sessions">
+    <ListPageShell title="Sessions">
       <template #actions>
         <span v-if="courseName" class="text-sm text-gray-500 dark:text-gray-400">
           Course: {{ courseName }}
