@@ -329,7 +329,8 @@ onMounted(async () => {
     const data = rule as Record<string, unknown>;
     courseName.value = ((data.course as Record<string, unknown>)?.name as string) ?? '';
 
-    // Pre-fill reschedule fields with original times
+    // Pre-fill reschedule fields with original session data
+    formRescheduledDate.value = queryDate;
     formRescheduledStartTime.value = queryStartTime;
     formRescheduledEndTime.value = queryEndTime;
 
