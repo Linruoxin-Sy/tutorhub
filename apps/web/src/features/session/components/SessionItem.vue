@@ -1,92 +1,41 @@
 <template>
   <article
     class="flex items-center gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm transition-all hover:shadow-md dark:border-[#2f2f2f] dark:bg-[#202020]"
-    :class="{
-      'border-amber-300 dark:border-amber-700': conflict,
-      'opacity-60': status === 'cancelled',
-    }"
+    :class="display.cardClass"
   >
     <!-- 日期/时间图标 -->
     <div
-      class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gray-100 dark:bg-[#2c2c2c]"
-      :class="{
-        'bg-red-100 dark:bg-red-900/20': status === 'cancelled',
-        'bg-green-100 dark:bg-green-900/20': status === 'ongoing',
-      }"
+      class="flex size-12 shrink-0 items-center justify-center rounded-xl"
+      :class="display.iconContainerClass"
     >
-      <template v-if="status === 'cancelled'">
-        <i class="i-lucide-x-circle size-6 text-red-500 dark:text-red-400" />
-      </template>
-      <template v-else-if="status === 'ongoing'">
-        <i class="i-lucide-play-circle size-6 text-green-600 dark:text-green-400" />
-      </template>
-      <template v-else-if="status === 'completed'">
-        <i class="i-lucide-check-circle size-6 text-gray-400 dark:text-gray-500" />
-      </template>
-      <template v-else>
-        <i class="i-lucide-calendar-days size-6 text-gray-500 dark:text-gray-400" />
-      </template>
+      <i :class="display.iconClass" />
     </div>
 
     <!-- 主信息 - 非调课状态 -->
-    <div v-if="status !== 'rescheduled'" class="flex min-w-0 flex-1 flex-col gap-1">
-      <div
-        class="text-sm font-semibold"
-        :class="{
-          'text-gray-400 line-through dark:text-gray-500': status === 'cancelled',
-          'text-gray-900 dark:text-white': status !== 'cancelled',
-        }"
-      >
-        {{ courseName }}
+    <div v-if="display.mode === 'normal'" class="flex min-w-0 flex-1 flex-col gap-1">
+      <div class="text-sm font-semibold" :class="display.normalTitleClass">
+        {{ display.courseName }}
       </div>
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-        <span
-          :class="{
-            'text-gray-400 line-through dark:text-gray-500': status === 'cancelled',
-            'text-gray-700 dark:text-gray-300': status !== 'cancelled',
-          }"
-        >
+        <span :class="display.normalDateClass">
           <i class="i-lucide-calendar inline size-3.5 align-text-top" />
-          {{ date }}
+          {{ display.normalDate }}
         </span>
-        <span
-          class="inline-flex items-center gap-1"
-          :class="{
-            'text-gray-400 line-through dark:text-gray-500': status === 'cancelled',
-            'text-gray-500 dark:text-gray-400': status !== 'cancelled',
-          }"
-        >
+        <span class="inline-flex items-center gap-1" :class="display.normalTimeClass">
           <i class="i-lucide-clock inline size-3.5 align-text-top" />
-          {{ startTime }}
+          {{ display.normalStartTime }}
           <i class="i-lucide-arrow-right inline size-3.5 text-gray-400 dark:text-gray-500" />
-          {{ endTime }}
+          {{ display.normalEndTime }}
         </span>
 
-        <!-- Cancelled 标记 -->
         <span
-          v-if="status === 'cancelled'"
-          class="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400"
+          v-for="badge in display.normalBadges"
+          :key="badge.key"
+          class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+          :class="badge.class"
         >
-          <i class="i-lucide-x-circle size-3" />
-          Cancelled
-        </span>
-
-        <!-- Ongoing 标记 -->
-        <span
-          v-if="status === 'ongoing'"
-          class="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400"
-        >
-          <i class="i-lucide-play size-3" />
-          Ongoing
-        </span>
-
-        <!-- Completed 标记 -->
-        <span
-          v-if="status === 'completed'"
-          class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500 dark:bg-[#2c2c2c] dark:text-gray-400"
-        >
-          <i class="i-lucide-check-circle size-3" />
-          Completed
+          <i :class="badge.icon" />
+          {{ badge.label }}
         </span>
       </div>
     </div>
@@ -95,21 +44,19 @@
     <div v-else class="flex min-w-0 flex-1 items-center gap-4">
       <!-- 原时间（删除线） -->
       <div class="flex flex-1 flex-col gap-1">
-        <div class="text-sm font-semibold text-gray-400 line-through dark:text-gray-500">
-          {{ courseName }}
+        <div class="text-sm font-semibold" :class="display.originalTitleClass">
+          {{ display.courseName }}
         </div>
         <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-          <span class="text-gray-400 line-through dark:text-gray-500">
+          <span :class="display.originalDateClass">
             <i class="i-lucide-calendar inline size-3.5 align-text-top" />
-            {{ overriddenDate || date }}
+            {{ display.originalDate }}
           </span>
-          <span
-            class="inline-flex items-center gap-1 text-gray-400 line-through dark:text-gray-500"
-          >
+          <span class="inline-flex items-center gap-1" :class="display.originalTimeClass">
             <i class="i-lucide-clock inline size-3.5 align-text-top" />
-            {{ startTime }}
+            {{ display.originalStartTime }}
             <i class="i-lucide-arrow-right inline size-3.5" />
-            {{ endTime }}
+            {{ display.originalEndTime }}
           </span>
         </div>
       </div>
@@ -119,36 +66,32 @@
         <i class="i-lucide-arrow-right size-5 text-amber-500 dark:text-amber-400" />
         <div class="flex items-center gap-1">
           <span
-            class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+            v-for="badge in display.rescheduledBadges"
+            :key="badge.key"
+            class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+            :class="badge.class"
           >
-            <i class="i-lucide-rotate-ccw size-3" />
-            Rescheduled
-          </span>
-          <span
-            v-if="isRescheduledCompleted"
-            class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500 dark:bg-[#2c2c2c] dark:text-gray-400"
-          >
-            <i class="i-lucide-check-circle size-3" />
-            Completed
+            <i :class="badge.icon" />
+            {{ badge.label }}
           </span>
         </div>
       </div>
 
       <!-- 新时间 -->
       <div class="flex flex-1 flex-col gap-1">
-        <div class="text-sm font-semibold text-amber-700 dark:text-amber-400">
-          {{ courseName }}
+        <div class="text-sm font-semibold" :class="display.newTitleClass">
+          {{ display.courseName }}
         </div>
         <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-          <span class="text-amber-700 dark:text-amber-400">
+          <span :class="display.newDateClass">
             <i class="i-lucide-calendar inline size-3.5 align-text-top" />
-            {{ date }}
+            {{ display.newDate }}
           </span>
-          <span class="inline-flex items-center gap-1 text-amber-700 dark:text-amber-400">
+          <span class="inline-flex items-center gap-1" :class="display.newTimeClass">
             <i class="i-lucide-clock inline size-3.5 align-text-top" />
-            {{ overriddenStartTime || startTime }}
+            {{ display.newStartTime }}
             <i class="i-lucide-arrow-right inline size-3.5" />
-            {{ overriddenEndTime || endTime }}
+            {{ display.newEndTime }}
           </span>
         </div>
       </div>
@@ -156,7 +99,7 @@
 
     <!-- 冲突标记（独立于 status） -->
     <div
-      v-if="conflict"
+      v-if="display.showConflictBadge"
       class="flex shrink-0 items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400"
     >
       <i class="i-lucide-alert-triangle size-3" />
@@ -164,8 +107,9 @@
     </div>
 
     <!-- Actions -->
-    <div v-if="actions.includes('change')" class="flex shrink-0 gap-1">
+    <div v-if="display.showActions" class="flex shrink-0 gap-1">
       <button
+        v-if="display.visibleActions.includes('change')"
         type="button"
         class="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50 dark:border-[#3a3a3a] dark:text-gray-400 dark:hover:bg-[#2c2c2c]"
         @click.stop="emit('change')"
@@ -173,12 +117,21 @@
         <i class="i-lucide-rotate-ccw size-3.5" />
         Change
       </button>
+      <button
+        v-if="display.visibleActions.includes('edit')"
+        type="button"
+        class="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50 dark:border-[#3a3a3a] dark:text-gray-400 dark:hover:bg-[#2c2c2c]"
+        @click.stop="emit('edit')"
+      >
+        <i class="i-lucide-pencil size-3.5" />
+        Edit
+      </button>
     </div>
   </article>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { useSessionDisplay } from '@/features/session/composables/useSessionDisplay';
 import type { SessionStatus } from '@tutorhub/schema';
 
 const props = withDefaults(
@@ -188,9 +141,12 @@ const props = withDefaults(
     startTime: string;
     endTime: string;
     status?: SessionStatus;
-    overriddenDate?: string | null;
-    overriddenStartTime?: string | null;
-    overriddenEndTime?: string | null;
+    /** 调课前的原始日期（仅 rescheduled 模式使用） */
+    originalDate?: string | null;
+    /** 调课前的原始开始时间（仅 rescheduled 模式使用） */
+    originalStartTime?: string | null;
+    /** 调课前的原始结束时间（仅 rescheduled 模式使用） */
+    originalEndTime?: string | null;
     actions?: ('change' | 'edit')[];
     conflict?: boolean;
   }>(),
@@ -198,9 +154,9 @@ const props = withDefaults(
     status: 'default',
     actions: () => [],
     conflict: false,
-    overriddenDate: null,
-    overriddenStartTime: null,
-    overriddenEndTime: null,
+    originalDate: null,
+    originalStartTime: null,
+    originalEndTime: null,
   },
 );
 
@@ -209,11 +165,16 @@ const emit = defineEmits<{
   edit: [];
 }>();
 
-/** 调课后的新时间是否已过（已完成） */
-const isRescheduledCompleted = computed(() => {
-  if (props.status !== 'rescheduled') return false;
-  const newEnd = props.overriddenEndTime || props.endTime;
-  const end = new Date(`${props.date} ${newEnd}`);
-  return end < new Date();
+const { display } = useSessionDisplay({
+  courseName: props.courseName,
+  date: props.date,
+  startTime: props.startTime,
+  endTime: props.endTime,
+  status: props.status,
+  originalDate: props.originalDate,
+  originalStartTime: props.originalStartTime,
+  originalEndTime: props.originalEndTime,
+  actions: props.actions,
+  conflict: props.conflict,
 });
 </script>

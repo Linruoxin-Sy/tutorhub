@@ -46,9 +46,9 @@
               :start-time="item.startTime"
               :end-time="item.endTime"
               :status="item.status"
-              :overridden-date="item.overridden ? item.overriddenDate : null"
-              :overridden-start-time="item.overridden ? item.rescheduledStartTime : null"
-              :overridden-end-time="item.overridden ? item.rescheduledEndTime : null"
+              :original-date="item.overridden ? item.overriddenDate : null"
+              :original-start-time="item.overridden ? item.rescheduledStartTime : null"
+              :original-end-time="item.overridden ? item.rescheduledEndTime : null"
               :actions="['change']"
               @change="navigateToSessionEdit(item)"
             />
