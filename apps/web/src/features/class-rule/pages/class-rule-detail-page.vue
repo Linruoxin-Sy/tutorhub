@@ -382,5 +382,7 @@ async function loadData() {
   }
 }
 
-onMounted(() => { loadData(); });
+onMounted(() => {
+  loadData();
+});
 </script>
