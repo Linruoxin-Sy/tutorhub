@@ -287,7 +287,7 @@ const runConflictCheck = withChecking(async () => {
   try {
     const res = await checkClassSessionOverrideConflicts({
       classRuleId: props.ruleId,
-      originalDate: formRescheduledDate.value + 'T00:00:00.000Z',
+      originalDate: new Date(formRescheduledDate.value + 'T00:00:00.000Z'),
       newStartTime: formRescheduledStartTime.value,
       newEndTime: formRescheduledEndTime.value,
     });
