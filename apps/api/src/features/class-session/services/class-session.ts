@@ -264,6 +264,9 @@ export const classSessionOverrideService = {
       const ruleKey = `${rule.id}_${dateStr}`;
       if (cancelledSet.has(ruleKey)) continue;
 
+      // 跳过正在被覆盖的 session（避免自己与自己冲突）
+      if (rule.id === classRuleId) continue;
+
       // 检查该规则当天是否有课
       if (rule.intervalDays === null) {
         // 单次上课：只检查日期是否匹配 startDate
