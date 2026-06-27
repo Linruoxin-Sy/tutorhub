@@ -6,16 +6,16 @@ import type {
 
 import { request } from '@/utils/request';
 
-/** 根据课程 ID 查询上课规则列表（offset 分页） */
+/** 查询上课规则列表（offset 分页），courseId 为空时查出当前用户所有规则 */
 export async function fetchClassRules(
-  courseId: string,
+  courseId: string | undefined,
   params: {
     offset?: number;
     limit?: number;
   },
 ): Promise<ClassRuleListResponse> {
   const { data } = await request.get<ClassRuleListResponse>('/class-rule/list', {
-    params: { courseId, ...params },
+    params: { ...(courseId ? { courseId } : {}), ...params },
   });
   return data;
 }

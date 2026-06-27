@@ -1,6 +1,7 @@
 import rrulePkg, { type Options as RRuleOptions } from 'rrule';
 import { z } from 'zod';
 
+import type { Prisma } from '@tutorhub/database';
 import type {
   classRuleConflictCheckSchema,
   classRuleCreateSchema,
@@ -17,22 +18,27 @@ const { RRule } = rrulePkg;
 
 export const classRuleService = {
   async list(
-    courseId: string,
+    courseId: string | undefined,
     query: Omit<z.infer<typeof classRuleListQuerySchema>, 'courseId'>,
     userId: string,
   ) {
-    // 校验课程归属
-    const course = await prisma.course.findFirst({
-      where: { id: courseId, userId, deletedAt: null },
-    });
-    if (!course) {
-      throw new ApiError(404, 'COURSE_NOT_FOUND', 'Course not found');
+    if (courseId) {
+      // 校验课程归属
+      const course = await prisma.course.findFirst({
+        where: { id: courseId, userId, deletedAt: null },
+      });
+      if (!course) {
+        throw new ApiError(404, 'COURSE_NOT_FOUND', 'Course not found');
+      }
     }
 
     const take = query.limit;
     const skip = query.offset ?? 0;
 
-    const baseWhere = { courseId };
+    const baseWhere: Prisma.ClassRuleWhereInput = {
+      userId,
+      ...(courseId ? { courseId } : {}),
+    };
 
     const [dbItems, total] = await Promise.all([
       prisma.classRule.findMany({

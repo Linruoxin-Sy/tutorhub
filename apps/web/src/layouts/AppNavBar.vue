@@ -33,6 +33,11 @@ const navItems = [
     routeName: 'course.list',
     icon: 'i-lucide-book-open',
   },
+  {
+    name: 'Class Rule',
+    routeName: 'class-rule.list',
+    icon: 'i-lucide-calendar-check',
+  },
 ] as const;
 
 const route = useRoute();

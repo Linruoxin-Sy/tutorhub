@@ -3,7 +3,7 @@ import { z } from 'zod';
 import type { ClassRule, Course } from '@tutorhub/database';
 
 export const classRuleListQuerySchema = z.object({
-  courseId: z.string().min(1, 'courseId is required'),
+  courseId: z.string().optional(),
   offset: z.coerce.number().int().min(0).optional(),
   limit: z
     .string()
