@@ -146,8 +146,7 @@ async function restoreSession(session: GeneratedSession) {
   if (!ok) return;
 
   try {
-    // Find the override ID — use overriddenDate for rescheduled sessions,
-    // occurrenceDate for cancelled ones
+    // Find the override ID
     const sessionDate = session.overriddenDate || session.occurrenceDate;
     const overrideResult = await fetchClassSessionOverrides({
       classRuleId: props.ruleId,
@@ -165,46 +164,10 @@ async function restoreSession(session: GeneratedSession) {
     }
 
     await deleteClassSessionOverride(matched.id);
-
-    // Re-fetch override data and rebuild local maps
-    const freshResult = await fetchClassSessionOverrides({
-      classRuleId: props.ruleId,
-      limit: 9999,
-    });
-    cancelledDates.clear();
-    rescheduledMap.clear();
-    for (const ov of freshResult.items) {
-      const ovDate = new Date(ov.originalDate);
-      const ovDt = new Date(
-        Date.UTC(
-          ovDate.getUTCFullYear(),
-          ovDate.getUTCMonth(),
-          ovDate.getUTCDate(),
-          startUtcHour,
-          startUtcMin,
-        ),
-      );
-      const dateKey = dayjs(ovDt).format('YYYY-MM-DD');
-      if (ov.state === 'CANCELLED') {
-        cancelledDates.add(dateKey);
-      } else if (ov.state === 'RESCHEDULED') {
-        rescheduledMap.set(dateKey, {
-          rescheduledDate: ov.rescheduledDate
-            ? new Date(ov.rescheduledDate).toISOString().slice(0, 10)
-            : dateKey,
-          startTime: ov.rescheduledStartTime
-            ? dayjs(ov.rescheduledStartTime).format('HH:mm')
-            : ruleStartTime,
-          endTime: ov.rescheduledEndTime
-            ? dayjs(ov.rescheduledEndTime).format('HH:mm')
-            : ruleEndTime,
-        });
-      }
-    }
-
     toast.success('Session restored to original time');
-    // Regenerate sessions from scratch with fresh maps
-    regenerateSessions();
+
+    // 重新加载页面数据
+    await loadData();
   } catch {
     toast.error('Failed to restore session');
   }
@@ -350,7 +313,13 @@ const sessionQuery = {
   },
 };
 
-onMounted(async () => {
+/** 加载所有数据（规则 + override + 生成 session） */
+async function loadData() {
+  isLoading.value = true;
+  generatedSessions.value = [];
+  cancelledDates.clear();
+  rescheduledMap.clear();
+
   try {
     // 1. Fetch rule data
     const rule = await fetchClassRuleById(props.ruleId);
@@ -411,5 +380,7 @@ onMounted(async () => {
   } finally {
     isLoading.value = false;
   }
-});
+}
+
+onMounted(() => { loadData(); });
 </script>
