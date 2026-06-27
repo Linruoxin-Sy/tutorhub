@@ -126,6 +126,15 @@
         <i class="i-lucide-pencil size-3.5" />
         Edit
       </button>
+      <button
+        v-if="display.visibleActions.includes('restore')"
+        type="button"
+        class="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-amber-300 px-3 py-1.5 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-50 dark:border-amber-700 dark:text-amber-400 dark:hover:bg-amber-900/20"
+        @click.stop="emit('restore')"
+      >
+        <i class="i-lucide-rotate-ccw size-3.5" />
+        Restore
+      </button>
     </div>
   </article>
 </template>
@@ -147,7 +156,7 @@ const props = withDefaults(
     originalStartTime?: string | null;
     /** 调课前的原始结束时间（仅 rescheduled 模式使用） */
     originalEndTime?: string | null;
-    actions?: ('change' | 'edit')[];
+    actions?: ('change' | 'edit' | 'restore')[];
     conflict?: boolean;
   }>(),
   {
@@ -163,6 +172,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   change: [];
   edit: [];
+  restore: [];
 }>();
 
 const { display } = useSessionDisplay({

@@ -52,7 +52,7 @@ export interface SessionDisplayState {
 
   // ── Cross-cutting ──
   showConflictBadge: boolean;
-  visibleActions: ('change' | 'edit')[];
+  visibleActions: ('change' | 'edit' | 'restore')[];
   showActions: boolean;
 }
 
@@ -65,7 +65,7 @@ export interface SessionItemProps {
   originalDate?: string | null;
   originalStartTime?: string | null;
   originalEndTime?: string | null;
-  actions?: ('change' | 'edit')[];
+  actions?: ('change' | 'edit' | 'restore')[];
   conflict?: boolean;
 }
 
@@ -80,7 +80,7 @@ export function useSessionDisplay(props: {
   originalDate: string | null;
   originalStartTime: string | null;
   originalEndTime: string | null;
-  actions: ('change' | 'edit')[];
+  actions: ('change' | 'edit' | 'restore')[];
   conflict: boolean;
 }) {
   const isRescheduledCompleted = computed(() => {

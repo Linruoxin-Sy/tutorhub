@@ -407,22 +407,10 @@
       <!-- Actions -->
       <div class="flex gap-3">
         <button
-          :disabled="isSubmitting"
-          class="inline-flex flex-1 cursor-pointer items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-70 dark:border-[#3a3a3a] dark:bg-transparent dark:text-gray-300 dark:hover:bg-[#2c2c2c]"
+          class="inline-flex flex-1 cursor-pointer items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-[#3a3a3a] dark:bg-transparent dark:text-gray-300 dark:hover:bg-[#2c2c2c]"
           @click="goBack"
         >
           Back
-        </button>
-        <button
-          :disabled="isSubmitting"
-          class="inline-flex flex-1 cursor-pointer items-center justify-center rounded-xl bg-red-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
-          @click="doRestore"
-        >
-          <span v-if="isSubmitting">Restoring...</span>
-          <span v-else>
-            <i class="i-lucide-rotate-ccw mr-1 inline size-4" />
-            Restore (Delete Override)
-          </span>
         </button>
       </div>
     </CardSection>
@@ -442,7 +430,6 @@ import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
 import {
   checkClassSessionOverrideConflicts,
   createClassSessionOverride,
-  deleteClassSessionOverride,
   fetchClassSessionOverrides,
   updateClassSessionOverride,
 } from '@/features/class-session/api/class-session-api';
@@ -593,18 +580,6 @@ const doCreateOverride = withLoading(async () => {
     goBack();
   } catch {
     toast.error('Failed to save session override');
-  }
-});
-
-const doRestore = withLoading(async () => {
-  if (!existingOverride.value) return;
-
-  try {
-    await deleteClassSessionOverride(existingOverride.value.id);
-    toast.success('Override removed, session restored to original');
-    goBack();
-  } catch {
-    toast.error('Failed to remove override');
   }
 });
 

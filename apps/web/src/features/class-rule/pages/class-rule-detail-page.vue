@@ -49,8 +49,9 @@
               :original-date="item.overridden ? item.overriddenDate : null"
               :original-start-time="item.overridden ? item.rescheduledStartTime : null"
               :original-end-time="item.overridden ? item.rescheduledEndTime : null"
-              :actions="['change']"
+              :actions="item.overridden ? ['restore'] : ['change']"
               @change="navigateToSessionEdit(item)"
+              @restore="restoreSession(item)"
             />
           </template>
         </VirtualList>
@@ -62,11 +63,16 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
 import { computed, onMounted, ref } from 'vue';
+import { toast } from 'vue-sonner';
 import { useRouter } from 'vue-router';
 import { RRule, type Options as RRuleOptions } from 'rrule';
 import type { GeneratedSession } from '@tutorhub/schema';
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
-import { fetchClassSessionOverrides } from '@/features/class-session/api/class-session-api';
+import {
+  deleteClassSessionOverride,
+  fetchClassSessionOverrides,
+} from '@/features/class-session/api/class-session-api';
+import { useDialog } from '@/hooks/useDialog';
 import { computeSessionStatus } from '@/features/session/utils/sessionStatus';
 import SessionItem from '@/features/session/components/SessionItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
@@ -126,6 +132,46 @@ function navigateToSessionEdit(session: GeneratedSession) {
       endTime: session.endTime,
     },
   });
+}
+
+const { confirm } = useDialog();
+
+async function restoreSession(session: GeneratedSession) {
+  const ok = await confirm({
+    title: 'Restore Session',
+    message: `Restore the session on ${session.occurrenceDate} to its original time? The current override will be deleted permanently.`,
+    confirmText: 'Restore',
+    variant: 'danger',
+  });
+  if (!ok) return;
+
+  try {
+    // Find the override ID for this session
+    const overrideResult = await fetchClassSessionOverrides({
+      classRuleId: props.ruleId,
+      limit: 9999,
+    });
+
+    const matched = overrideResult.items.find((ov) => {
+      const ovDate = dayjs(ov.originalDate).format('YYYY-MM-DD');
+      return ovDate === session.occurrenceDate;
+    });
+
+    if (!matched) {
+      toast.error('Override not found');
+      return;
+    }
+
+    await deleteClassSessionOverride(matched.id);
+    toast.success('Session restored to original time');
+    // Reload the page data
+    generatedSessions.value = [];
+    sessionWindowEnd.value = null;
+    hasMoreRef.value = true;
+    appendSessionChunk();
+  } catch {
+    toast.error('Failed to restore session');
+  }
 }
 
 /** 追加下一批 session */
