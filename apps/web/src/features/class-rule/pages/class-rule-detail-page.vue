@@ -124,7 +124,7 @@ const rescheduledMap = new Map<
 
 function navigateToSessionEdit(session: GeneratedSession) {
   router.push({
-    name: 'class-rule.session-edit',
+    name: 'session.edit',
     params: { ruleId: props.ruleId },
     query: {
       date: session.occurrenceDate,

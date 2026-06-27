@@ -62,13 +62,6 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    'class-rule.session-edit': RouteRecordInfo<
-      'class-rule.session-edit',
-      '/class-rule/session-edit/:ruleId',
-      { ruleId: ParamValue<true> },
-      { ruleId: ParamValue<false> },
-      | never
-    >,
     'course.detail': RouteRecordInfo<
       'course.detail',
       '/course/:id',
@@ -130,6 +123,13 @@ declare module 'vue-router/auto-routes' {
       '/session',
       Record<never, never>,
       Record<never, never>,
+      | 'session.edit'
+    >,
+    'session.edit': RouteRecordInfo<
+      'session.edit',
+      '/session/edit/:ruleId',
+      { ruleId: ParamValue<true> },
+      { ruleId: ParamValue<false> },
       | never
     >,
     'student.detail': RouteRecordInfo<
@@ -210,12 +210,6 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
-    'src/pages/class-rule/session-edit/[ruleId].vue': {
-      routes:
-        | 'class-rule.session-edit'
-      views:
-        | never
-    }
     'src/pages/course/[id].vue': {
       routes:
         | 'course.detail'
@@ -268,6 +262,13 @@ declare module 'vue-router/auto-routes' {
     'src/pages/session.vue': {
       routes:
         | 'session'
+        | 'session.edit'
+      views:
+        | 'default'
+    }
+    'src/pages/session/edit/[ruleId].vue': {
+      routes:
+        | 'session.edit'
       views:
         | never
     }
