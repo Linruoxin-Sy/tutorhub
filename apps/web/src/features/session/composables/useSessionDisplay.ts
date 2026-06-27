@@ -90,6 +90,17 @@ export function useSessionDisplay(props: {
     return end < new Date();
   });
 
+  const isRescheduledOngoing = computed(() => {
+    if (props.status !== 'rescheduled') return false;
+    if (isRescheduledCompleted.value) return false;
+    const newStart = props.originalStartTime || props.startTime;
+    const newEnd = props.originalEndTime || props.endTime;
+    const start = new Date(`${props.date} ${newStart}`);
+    const end = new Date(`${props.date} ${newEnd}`);
+    const now = new Date();
+    return now >= start && now < end;
+  });
+
   const display = computed<SessionDisplayState>(() => {
     const { status, conflict } = props;
     const isCancelled = status === 'cancelled';
@@ -184,6 +195,15 @@ export function useSessionDisplay(props: {
         icon: 'i-lucide-check-circle size-3',
         class: {
           'bg-gray-100 dark:bg-[#2c2c2c] text-gray-500 dark:text-gray-400': true,
+        },
+      });
+    } else if (isRescheduledOngoing.value) {
+      rescheduledBadges.push({
+        key: 'ongoing',
+        label: 'Ongoing',
+        icon: 'i-lucide-play size-3',
+        class: {
+          'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400': true,
         },
       });
     }
