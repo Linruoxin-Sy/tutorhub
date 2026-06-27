@@ -146,7 +146,9 @@ async function restoreSession(session: GeneratedSession) {
   if (!ok) return;
 
   try {
-    // Find the override ID for this session
+    // Find the override ID — use overriddenDate for rescheduled sessions,
+    // occurrenceDate for cancelled ones
+    const sessionDate = session.overriddenDate || session.occurrenceDate;
     const overrideResult = await fetchClassSessionOverrides({
       classRuleId: props.ruleId,
       limit: 9999,
@@ -154,7 +156,7 @@ async function restoreSession(session: GeneratedSession) {
 
     const matched = overrideResult.items.find((ov) => {
       const ovDate = dayjs(ov.originalDate).format('YYYY-MM-DD');
-      return ovDate === session.occurrenceDate;
+      return ovDate === sessionDate;
     });
 
     if (!matched) {
@@ -163,8 +165,45 @@ async function restoreSession(session: GeneratedSession) {
     }
 
     await deleteClassSessionOverride(matched.id);
+
+    // Re-fetch override data and rebuild local maps
+    const freshResult = await fetchClassSessionOverrides({
+      classRuleId: props.ruleId,
+      limit: 9999,
+    });
+    cancelledDates.clear();
+    rescheduledMap.clear();
+    for (const ov of freshResult.items) {
+      const ovDate = new Date(ov.originalDate);
+      const ovDt = new Date(
+        Date.UTC(
+          ovDate.getUTCFullYear(),
+          ovDate.getUTCMonth(),
+          ovDate.getUTCDate(),
+          startUtcHour,
+          startUtcMin,
+        ),
+      );
+      const dateKey = dayjs(ovDt).format('YYYY-MM-DD');
+      if (ov.state === 'CANCELLED') {
+        cancelledDates.add(dateKey);
+      } else if (ov.state === 'RESCHEDULED') {
+        rescheduledMap.set(dateKey, {
+          rescheduledDate: ov.rescheduledDate
+            ? new Date(ov.rescheduledDate).toISOString().slice(0, 10)
+            : dateKey,
+          startTime: ov.rescheduledStartTime
+            ? dayjs(ov.rescheduledStartTime).format('HH:mm')
+            : ruleStartTime,
+          endTime: ov.rescheduledEndTime
+            ? dayjs(ov.rescheduledEndTime).format('HH:mm')
+            : ruleEndTime,
+        });
+      }
+    }
+
     toast.success('Session restored to original time');
-    // Reload the page data
+    // Regenerate sessions from scratch with fresh maps
     generatedSessions.value = [];
     sessionWindowEnd.value = null;
     hasMoreRef.value = true;
