@@ -118,13 +118,6 @@ declare module 'vue-router/auto-routes' {
       { id: ParamValue<false> },
       | never
     >,
-    'session': RouteRecordInfo<
-      'session',
-      '/session',
-      Record<never, never>,
-      Record<never, never>,
-      | 'session.edit'
-    >,
     'session.edit': RouteRecordInfo<
       'session.edit',
       '/session/edit/:ruleId',
@@ -258,13 +251,6 @@ declare module 'vue-router/auto-routes' {
         | 'enrollment.detail'
       views:
         | never
-    }
-    'src/pages/session.vue': {
-      routes:
-        | 'session'
-        | 'session.edit'
-      views:
-        | 'default'
     }
     'src/pages/session/edit/[ruleId].vue': {
       routes:

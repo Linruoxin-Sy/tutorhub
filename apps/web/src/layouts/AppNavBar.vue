@@ -33,11 +33,7 @@ const navItems = [
     routeName: 'course.list',
     icon: 'i-lucide-book-open',
   },
-  {
-    name: 'Session',
-    routeName: 'session',
-    icon: 'i-mdi-timer-outline',
-  },
+
 ] as const;
 
 const route = useRoute();
