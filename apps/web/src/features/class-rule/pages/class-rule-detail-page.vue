@@ -204,12 +204,58 @@ async function restoreSession(session: GeneratedSession) {
 
     toast.success('Session restored to original time');
     // Regenerate sessions from scratch with fresh maps
-    generatedSessions.value = [];
-    sessionWindowEnd.value = null;
-    hasMoreRef.value = true;
-    appendSessionChunk();
+    regenerateSessions();
   } catch {
     toast.error('Failed to restore session');
+  }
+}
+
+/** 从开头重新生成所有 session（含单次和循环） */
+function regenerateSessions() {
+  generatedSessions.value = [];
+  sessionWindowEnd.value = null;
+  hasMoreRef.value = true;
+
+  if (!ruleIntervalDays || !ruleStartDate) {
+    // 单次上课
+    if (!ruleStartDate) return;
+    const singleDateStr = getLocalDate(ruleStartDate);
+
+    if (cancelledDates.has(singleDateStr)) {
+      generatedSessions.value.push({
+        id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
+        occurrenceDate: singleDateStr,
+        startTime: ruleStartTime,
+        endTime: ruleEndTime,
+        status: 'cancelled',
+        overridden: true,
+      });
+    } else if (rescheduledMap.has(singleDateStr)) {
+      const rescheduled = rescheduledMap.get(singleDateStr)!;
+      generatedSessions.value.push({
+        id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
+        occurrenceDate: rescheduled.rescheduledDate,
+        startTime: ruleStartTime,
+        endTime: ruleEndTime,
+        status: 'rescheduled',
+        overridden: true,
+        rescheduledDate: rescheduled.rescheduledDate,
+        rescheduledStartTime: rescheduled.startTime,
+        rescheduledEndTime: rescheduled.endTime,
+        overriddenDate: singleDateStr,
+      });
+    } else {
+      generatedSessions.value.push({
+        id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
+        occurrenceDate: singleDateStr,
+        startTime: ruleStartTime,
+        endTime: ruleEndTime,
+        status: computeSessionStatus(singleDateStr, ruleStartTime, ruleEndTime),
+      });
+    }
+    hasMoreRef.value = false;
+  } else {
+    appendSessionChunk();
   }
 }
 
@@ -359,47 +405,7 @@ onMounted(async () => {
     }
 
     // 3. 生成第一页 session
-    if (!ruleIntervalDays) {
-      // 单次上课
-      const singleDateStr = getLocalDate(ruleStartDate);
-
-      if (cancelledDates.has(singleDateStr)) {
-        generatedSessions.value.push({
-          id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
-          occurrenceDate: singleDateStr,
-          startTime: ruleStartTime,
-          endTime: ruleEndTime,
-          status: 'cancelled',
-          overridden: true,
-        });
-      } else if (rescheduledMap.has(singleDateStr)) {
-        const rescheduled = rescheduledMap.get(singleDateStr)!;
-        generatedSessions.value.push({
-          id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
-          occurrenceDate: rescheduled.rescheduledDate,
-          startTime: ruleStartTime,
-          endTime: ruleEndTime,
-          status: 'rescheduled',
-          overridden: true,
-          rescheduledDate: rescheduled.rescheduledDate,
-          rescheduledStartTime: rescheduled.startTime,
-          rescheduledEndTime: rescheduled.endTime,
-          overriddenDate: singleDateStr,
-        });
-      } else {
-        generatedSessions.value.push({
-          id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
-          occurrenceDate: singleDateStr,
-          startTime: ruleStartTime,
-          endTime: ruleEndTime,
-          status: computeSessionStatus(singleDateStr, ruleStartTime, ruleEndTime),
-        });
-      }
-      hasMoreRef.value = false;
-    } else {
-      hasMoreRef.value = true;
-      appendSessionChunk();
-    }
+    regenerateSessions();
   } catch {
     // Handled by empty state
   } finally {
