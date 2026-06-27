@@ -80,6 +80,8 @@ async function main() {
 
   // 1. Clean existing data
   log('Cleaning existing data...');
+  await prisma.classSessionOverride.deleteMany();
+  await prisma.classRule.deleteMany();
   await prisma.studentCourse.deleteMany();
   await prisma.course.deleteMany();
   await prisma.student.deleteMany();
@@ -137,7 +139,7 @@ async function main() {
       select: { id: true },
     })
   ).map((c) => c.id);
-  const enrollments: { studentId: string; courseId: string }[] = [];
+  const enrollments: { studentId: string; courseId: string; userId: string }[] = [];
 
   for (let si = 0; si < allStudents.length; si++) {
     const count = 10 + Math.floor(pseudoRandom(si + 3000) * 11); // 10–20
@@ -150,7 +152,11 @@ async function main() {
     }
 
     for (const ci of picked) {
-      enrollments.push({ studentId: allStudents[si].id, courseId: allCourseIds[ci] });
+      enrollments.push({
+        studentId: allStudents[si].id,
+        courseId: allCourseIds[ci],
+        userId: user.id,
+      });
     }
   }
   log('Enrollment data generated');

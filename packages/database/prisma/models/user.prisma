@@ -35,5 +35,14 @@ model User {
   /// 用户拥有的课程
   courses Course[]
 
+  /// 用户的选课关系
+  studentCourses StudentCourse[]
+
+  /// 用户的排课规则
+  classRules ClassRule[]
+
+  /// 用户的调课覆盖
+  classSessionOverrides ClassSessionOverride[]
+
   @@map("user")
 }

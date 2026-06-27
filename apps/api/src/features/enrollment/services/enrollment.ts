@@ -89,11 +89,8 @@ export const enrollmentService = {
     const baseWhere: NonNullable<Parameters<typeof prisma.studentCourse.findMany>[0]>['where'] = {
       deletedAt: null,
       courseId,
-      student: {
-        userId,
-        deletedAt: null,
-        ...(query.name ? { name: { contains: query.name, mode: 'insensitive' } } : {}),
-      },
+      userId,
+      ...(query.name ? { student: { name: { contains: query.name, mode: 'insensitive' } } } : {}),
     };
 
     // offset 分页
@@ -140,14 +137,14 @@ export const enrollmentService = {
 
   async getById(id: string, userId: string) {
     const enrollment = await prisma.studentCourse.findFirst({
-      where: { id, deletedAt: null },
+      where: { id, userId, deletedAt: null },
       include: {
         student: true,
         course: true,
       },
     });
 
-    if (!enrollment || enrollment.student.userId !== userId) {
+    if (!enrollment) {
       throw new ApiError(404, 'ENROLLMENT_NOT_FOUND', 'Enrollment not found');
     }
 
@@ -155,13 +152,12 @@ export const enrollmentService = {
   },
 
   async deleteById(id: string, userId: string) {
-    // 校验 enrollment 所属学生的 userId 匹配当前用户
+    // 校验 enrollment 的 userId 匹配当前用户
     const enrollment = await prisma.studentCourse.findFirst({
-      where: { id, deletedAt: null },
-      include: { student: { select: { userId: true } } },
+      where: { id, userId, deletedAt: null },
     });
 
-    if (!enrollment || enrollment.student.userId !== userId) {
+    if (!enrollment) {
       throw new ApiError(404, 'ENROLLMENT_NOT_FOUND', 'Enrollment not found');
     }
 
@@ -360,6 +356,7 @@ export const enrollmentService = {
         data: {
           studentId: input.studentId,
           courseId: input.courseId,
+          userId,
         },
         include: { student: true, course: true },
       });

@@ -18,16 +18,8 @@ export const classSessionOverrideService = {
     const take = query.limit;
     const skip = query.offset ?? 0;
 
-    // 先获取该用户的所有 class rule ID
-    const userRuleIds = await prisma.classRule
-      .findMany({
-        where: { course: { userId } },
-        select: { id: true },
-      })
-      .then((rules) => rules.map((r) => r.id));
-
     const where: Prisma.ClassSessionOverrideWhereInput = {
-      classRuleId: { in: userRuleIds },
+      userId,
     };
 
     if (query.classRuleId) where.classRuleId = query.classRuleId;
@@ -58,7 +50,7 @@ export const classSessionOverrideService = {
 
   async getById(id: string, userId: string) {
     const override = await prisma.classSessionOverride.findFirst({
-      where: { id },
+      where: { id, userId },
       include: {
         classRule: {
           select: { startTime: true, endTime: true, intervalDays: true, courseId: true },
@@ -67,14 +59,6 @@ export const classSessionOverrideService = {
     });
 
     if (!override) {
-      throw new ApiError(404, 'OVERRIDE_NOT_FOUND', 'Class session override not found');
-    }
-
-    // 校验归属
-    const course = await prisma.course.findFirst({
-      where: { id: override.classRule.courseId, userId, deletedAt: null },
-    });
-    if (!course) {
       throw new ApiError(404, 'OVERRIDE_NOT_FOUND', 'Class session override not found');
     }
 
@@ -111,6 +95,7 @@ export const classSessionOverrideService = {
       },
       create: {
         classRuleId: input.classRuleId,
+        userId,
         originalDate: input.originalDate,
         state: input.state,
         rescheduledDate: input.rescheduledDate ?? null,
@@ -133,11 +118,10 @@ export const classSessionOverrideService = {
     userId: string,
   ) {
     const existing = await prisma.classSessionOverride.findFirst({
-      where: { id },
-      include: { classRule: { include: { course: { select: { userId: true } } } } },
+      where: { id, userId },
     });
 
-    if (!existing || existing.classRule.course.userId !== userId) {
+    if (!existing) {
       throw new ApiError(404, 'OVERRIDE_NOT_FOUND', 'Class session override not found');
     }
 
@@ -164,11 +148,10 @@ export const classSessionOverrideService = {
 
   async delete(id: string, userId: string) {
     const existing = await prisma.classSessionOverride.findFirst({
-      where: { id },
-      include: { classRule: { include: { course: { select: { userId: true } } } } },
+      where: { id, userId },
     });
 
-    if (!existing || existing.classRule.course.userId !== userId) {
+    if (!existing) {
       throw new ApiError(404, 'OVERRIDE_NOT_FOUND', 'Class session override not found');
     }
 
@@ -201,7 +184,7 @@ export const classSessionOverrideService = {
 
     // 先查询该用户所有课程下的 ClassRule
     const rules = await prisma.classRule.findMany({
-      where: { course: { userId, deletedAt: null } },
+      where: { userId },
       include: { course: { select: { name: true } } },
     });
 

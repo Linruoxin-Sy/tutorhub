@@ -60,22 +60,17 @@ export const classRuleService = {
 
   async getById(id: string, userId: string) {
     const classRule = await prisma.classRule.findFirst({
-      where: { id },
+      where: { id, userId },
       include: {
-        course: { select: { id: true, name: true, userId: true } },
+        course: { select: { id: true, name: true } },
       },
     });
 
-    if (!classRule || classRule.course.userId !== userId) {
+    if (!classRule) {
       throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
     }
 
-    const { userId: _omit, ...courseInfo } = classRule.course;
-    void _omit;
-    return {
-      ...classRule,
-      course: courseInfo,
-    };
+    return classRule as unknown as ClassRuleListItem;
   },
 
   async create(input: z.infer<typeof classRuleCreateSchema>, userId: string) {
@@ -91,6 +86,7 @@ export const classRuleService = {
     const classRule = await prisma.classRule.create({
       data: {
         courseId: input.courseId,
+        userId,
         startDate: input.startDate,
         intervalDays: input.intervalDays ?? null,
         endDate: input.endDate ?? null,
@@ -105,11 +101,10 @@ export const classRuleService = {
 
   async update(id: string, input: z.infer<typeof classRuleUpdateSchema>, userId: string) {
     const existing = await prisma.classRule.findFirst({
-      where: { id },
-      include: { course: { select: { userId: true } } },
+      where: { id, userId },
     });
 
-    if (!existing || existing.course.userId !== userId) {
+    if (!existing) {
       throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
     }
 
@@ -137,11 +132,10 @@ export const classRuleService = {
 
   async delete(id: string, userId: string) {
     const existing = await prisma.classRule.findFirst({
-      where: { id },
-      include: { course: { select: { userId: true } } },
+      where: { id, userId },
     });
 
-    if (!existing || existing.course.userId !== userId) {
+    if (!existing) {
       throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
     }
 
@@ -180,7 +174,7 @@ export const classRuleService = {
     // 查询该用户所有课程下的 ClassRule（跨所有课程），用 rrule 生成日期来检测冲突
     const otherRules = await prisma.classRule.findMany({
       where: {
-        course: { userId, deletedAt: null },
+        userId,
         ...(input.excludeId ? { id: { not: input.excludeId } } : {}),
       },
       include: { course: { select: { name: true } } },
@@ -321,11 +315,10 @@ export const classRuleService = {
    */
   async previewChanges(id: string, _input: z.infer<typeof classRuleUpdateSchema>, userId: string) {
     const existing = await prisma.classRule.findFirst({
-      where: { id },
-      include: { course: { select: { userId: true } } },
+      where: { id, userId },
     });
 
-    if (!existing || existing.course.userId !== userId) {
+    if (!existing) {
       throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
     }
 

@@ -20,6 +20,9 @@ model ClassSessionOverride {
   /// 所属规则 ID
   classRuleId String @map("class_rule_id")
 
+  /// 所属用户 ID
+  userId String @map("user_id")
+
   /// 原始上课日期（规则生成的日期，用于定位哪个 session 被修改）
   originalDate DateTime @map("original_date") @db.Date
 
@@ -41,8 +44,12 @@ model ClassSessionOverride {
   /// 所属规则
   classRule ClassRule @relation(fields: [classRuleId], references: [id], onDelete: Cascade)
 
+  /// 所属用户
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([classRuleId, originalDate])
   @@index([classRuleId])
   @@index([originalDate])
+  @@index([userId])
   @@map("class_session_override")
 }
