@@ -260,11 +260,11 @@ export function useClassRuleCreateForm(courseId: string) {
 
     const apiPayload = {
       courseId: formData.value.courseId,
-      startDate: dayjs(formData.value.startDate).toDate(),
+      startDate: new Date(formData.value.startDate),
       startTime: formData.value.startTime,
       endTime: formData.value.endTime,
       intervalDays: formData.value.intervalDays || null,
-      endDate: formData.value.endDate ? dayjs(formData.value.endDate).toDate() : null,
+      endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
       room: formData.value.room || null,
     };
 
