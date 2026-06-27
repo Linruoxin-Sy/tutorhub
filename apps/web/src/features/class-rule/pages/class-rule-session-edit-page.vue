@@ -197,7 +197,6 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs';
 import { toast } from 'vue-sonner';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
