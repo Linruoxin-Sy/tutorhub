@@ -215,6 +215,7 @@ function appendSessionChunk() {
         startTime: ruleStartTime,
         endTime: ruleEndTime,
         status: 'cancelled',
+        overridden: true,
       });
     } else {
       const rescheduled = rescheduledMap.get(dateStr);
@@ -330,6 +331,7 @@ onMounted(async () => {
           startTime: ruleStartTime,
           endTime: ruleEndTime,
           status: 'cancelled',
+          overridden: true,
         });
       } else if (rescheduledMap.has(singleDateStr)) {
         const rescheduled = rescheduledMap.get(singleDateStr)!;
