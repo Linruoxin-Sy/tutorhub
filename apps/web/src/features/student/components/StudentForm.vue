@@ -1,5 +1,5 @@
 <template>
-  <form class="space-y-6">
+  <form class="space-y-6" @submit.prevent>
     <!-- Avatar row -->
     <div class="flex justify-center">
       <AvatarUploader v-if="!readonly" :name="model.name" @pending-file="handleAvatarFile" />

@@ -1,5 +1,5 @@
 <template>
-  <form class="space-y-6">
+  <form class="space-y-6" @submit.prevent>
     <!-- Name -->
     <div class="space-y-2">
       <label :for="field.id('name')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
