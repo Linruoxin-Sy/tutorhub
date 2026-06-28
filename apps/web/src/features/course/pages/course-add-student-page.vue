@@ -73,6 +73,7 @@ import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { toast } from 'vue-sonner';
 import { useRouter, useRoute } from 'vue-router';
+import { useQueryClient } from '@tanstack/vue-query';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchAvailableStudents, createEnrollment } from '@/features/enrollment/api/enrollment-api';
 import StudentItem from '@/features/student/components/StudentItem.vue';
@@ -84,6 +85,7 @@ import type { Student } from '@tutorhub/database';
 
 const router = useRouter();
 const route = useRoute();
+const queryClient = useQueryClient();
 const id = (route.params as Record<string, string>).id;
 
 const columns = ['Name', 'Email', 'Phone', 'Created At', 'Status'];
@@ -120,6 +122,7 @@ async function submit() {
   try {
     const selectedArray = Array.from(selectedIds.value);
     await Promise.all(selectedArray.map((studentId) => createEnrollment(studentId, id)));
+    queryClient.invalidateQueries({ queryKey: ['course-enrollments', id] });
     toast.success(`Successfully added ${selectedArray.length} student(s)!`);
     router.push({ name: 'course.edit', params: { id } });
   } catch {

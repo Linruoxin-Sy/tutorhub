@@ -73,6 +73,7 @@ import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { toast } from 'vue-sonner';
 import { useRouter } from 'vue-router';
+import { useQueryClient } from '@tanstack/vue-query';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import {
   fetchClassRuleAvailableStudents,
@@ -91,6 +92,7 @@ const props = defineProps<{
 }>();
 
 const router = useRouter();
+const queryClient = useQueryClient();
 
 const columns = ['Name', 'Email', 'Phone', 'Created At', 'Status'];
 
@@ -128,6 +130,7 @@ async function submit() {
     await Promise.all(
       selectedArray.map((studentId) => addClassRuleStudent(props.ruleId, studentId)),
     );
+    queryClient.invalidateQueries({ queryKey: ['class-rule-students', props.ruleId] });
     toast.success(`Successfully added ${selectedArray.length} student(s) to the rule!`);
     router.push({
       name: 'class-rule.edit',
