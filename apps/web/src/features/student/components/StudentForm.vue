@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <!-- 4 fields in 2x2 grid -->
+    <!-- Name + Status, Email + Phone in 2x2 grid -->
     <div class="grid gap-6 md:grid-cols-2">
       <!-- Name -->
       <div class="space-y-2">
@@ -46,6 +46,45 @@
           class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
         >
           {{ model.name }}
+        </p>
+      </div>
+
+      <!-- Status -->
+      <div class="space-y-2">
+        <label
+          :for="field.id('status')"
+          class="text-sm font-medium text-gray-700 dark:text-gray-200"
+        >
+          Status
+        </label>
+        <SelectInput
+          v-if="!readonly"
+          :id="field.id('status')"
+          v-model="model.status"
+          size="md"
+          class="w-full"
+        >
+          <option value="ACTIVE">Active</option>
+          <option value="DISABLED">Disabled</option>
+        </SelectInput>
+        <p
+          v-else
+          class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm dark:border-[#3a3a3a] dark:bg-[#202020]"
+        >
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold"
+            :class="
+              model.status === 'ACTIVE'
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                : 'bg-gray-100 text-gray-600 dark:bg-[#343434] dark:text-gray-400'
+            "
+          >
+            <span
+              class="size-1.5 rounded-full"
+              :class="model.status === 'ACTIVE' ? 'bg-green-500' : 'bg-gray-400'"
+            ></span>
+            {{ model.status === 'ACTIVE' ? 'Active' : 'Disabled' }}
+          </span>
         </p>
       </div>
 
@@ -97,65 +136,29 @@
           {{ model.phone || '-' }}
         </p>
       </div>
-
-      <!-- Description -->
-      <div class="space-y-2">
-        <label
-          :for="field.id('description')"
-          class="text-sm font-medium text-gray-700 dark:text-gray-200"
-        >
-          Description
-        </label>
-        <textarea
-          v-if="!readonly"
-          :id="field.id('description')"
-          v-model="model.description"
-          rows="4"
-          placeholder="Additional notes about the student..."
-          class="w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
-        ></textarea>
-        <p
-          v-else
-          class="min-h-24 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
-        >
-          {{ model.description || '-' }}
-        </p>
-      </div>
     </div>
 
-    <!-- Status -->
-    <div class="flex flex-col gap-2">
-      <label :for="field.id('status')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
-        Status
-      </label>
-      <SelectInput
-        v-if="!readonly"
-        :id="field.id('status')"
-        v-model="model.status"
-        size="md"
-        class="w-full md:w-60"
+    <!-- Description -->
+    <div class="space-y-2">
+      <label
+        :for="field.id('description')"
+        class="text-sm font-medium text-gray-700 dark:text-gray-200"
       >
-        <option value="ACTIVE">Active</option>
-        <option value="DISABLED">Disabled</option>
-      </SelectInput>
+        Description
+      </label>
+      <textarea
+        v-if="!readonly"
+        :id="field.id('description')"
+        v-model="model.description"
+        rows="4"
+        placeholder="Additional notes about the student..."
+        class="w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
+      ></textarea>
       <p
         v-else
-        class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm dark:border-[#3a3a3a] dark:bg-[#202020]"
+        class="min-h-24 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
       >
-        <span
-          class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold"
-          :class="
-            model.status === 'ACTIVE'
-              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-              : 'bg-gray-100 text-gray-600 dark:bg-[#343434] dark:text-gray-400'
-          "
-        >
-          <span
-            class="size-1.5 rounded-full"
-            :class="model.status === 'ACTIVE' ? 'bg-green-500' : 'bg-gray-400'"
-          ></span>
-          {{ model.status === 'ACTIVE' ? 'Active' : 'Disabled' }}
-        </span>
+        {{ model.description || '-' }}
       </p>
     </div>
 
