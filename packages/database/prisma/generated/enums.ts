@@ -22,3 +22,10 @@ export const CourseStatus = {
 } as const;
 
 export type CourseStatus = (typeof CourseStatus)[keyof typeof CourseStatus];
+
+export const StudentStatus = {
+  ACTIVE: 'ACTIVE',
+  DISABLED: 'DISABLED',
+} as const;
+
+export type StudentStatus = (typeof StudentStatus)[keyof typeof StudentStatus];

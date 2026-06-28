@@ -1048,6 +1048,7 @@ export const StudentScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   description: 'description',
+  status: 'status',
 } as const;
 
 export type StudentScalarFieldEnum =
@@ -1167,6 +1168,22 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
+
+/**
+ * Reference to a field of type 'StudentStatus'
+ */
+export type EnumStudentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'StudentStatus'
+>;
+
+/**
+ * Reference to a field of type 'StudentStatus[]'
+ */
+export type ListEnumStudentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'StudentStatus[]'
+>;
 
 /**
  * Reference to a field of type 'Float'

@@ -14,6 +14,7 @@ export const studentUpdateSchema = z
     email: preprocessNullable(studentFields.email),
     phone: preprocessNullable(studentFields.phone),
     description: preprocessNullable(studentFields.description),
+    status: studentFields.status.optional(),
   })
   .refine((data) => Object.values(data).some((val) => val !== undefined), {
     message: 'Request body cannot be empty',

@@ -7,4 +7,5 @@ export const studentFields = {
   email: z.email('Invalid email address').nullable(),
   phone: z.string().nullable(),
   description: z.string().nullable(),
+  status: z.enum(['ACTIVE', 'DISABLED']).default('ACTIVE'),
 } as const;

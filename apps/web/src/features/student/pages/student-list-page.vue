@@ -3,7 +3,15 @@
     <div class="flex h-full flex-col gap-6">
       <ListPageShell title="Students">
         <template #filters>
-          <SearchInput v-model="searchInput" placeholder="Search students..." />
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
+            <SearchInput v-model="searchInput" placeholder="Search students..." />
+
+            <SelectInput v-model="status">
+              <option value="">All status</option>
+              <option value="ACTIVE">Active</option>
+              <option value="DISABLED">Disabled</option>
+            </SelectInput>
+          </div>
         </template>
         <template #actions>
           <AppButton @click="router.push({ name: 'student.create' })">
@@ -22,7 +30,7 @@
           <template #header>
             <div
               class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
-              style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr"
+              style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1fr 1.2fr 1fr"
             >
               <div
                 v-for="column in columns"
@@ -65,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { useRouter } from 'vue-router';
 import { useStudentDelete } from '@/features/student/hooks/useStudentDelete';
@@ -73,6 +81,7 @@ import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchStudents, type StudentListResponse } from '@/features/student/api/student-api';
 import StudentItem from '@/features/student/components/StudentItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
+import SelectInput from '@/components/SelectInput.vue';
 
 type StudentItemType = StudentListResponse['items'][number];
 
@@ -82,15 +91,18 @@ const { confirmAndDelete } = useStudentDelete();
 const searchInput = ref('');
 const debouncedSearch = refDebounced(searchInput, 300);
 
-const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
+const status = ref<'ACTIVE' | 'DISABLED' | ''>('');
+
+const columns = ['Name', 'Email', 'Phone', 'Status', 'Created At', 'Actions'];
 
 const searchRef = computed(() => debouncedSearch.value ?? '');
+const statusRef = computed(() => status.value ?? '');
 const courseIdRef = computed(() => '');
 
 const sparseQuery = useSparseQuery<StudentItemType>({
   queryKeyPrefix: ['students'],
   fetchFn: (params) => fetchStudents(params as Parameters<typeof fetchStudents>[0]),
-  filters: { name: searchRef, courseId: courseIdRef },
+  filters: { name: searchRef, status: statusRef, courseId: courseIdRef },
 });
 
 async function handleDelete(item: StudentItemType) {

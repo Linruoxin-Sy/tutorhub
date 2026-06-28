@@ -123,6 +123,42 @@
       </div>
     </div>
 
+    <!-- Status -->
+    <div class="flex flex-col gap-2">
+      <label :for="field.id('status')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
+        Status
+      </label>
+      <SelectInput
+        v-if="!readonly"
+        :id="field.id('status')"
+        v-model="model.status"
+        size="md"
+        class="w-full md:w-60"
+      >
+        <option value="ACTIVE">Active</option>
+        <option value="DISABLED">Disabled</option>
+      </SelectInput>
+      <p
+        v-else
+        class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm dark:border-[#3a3a3a] dark:bg-[#202020]"
+      >
+        <span
+          class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold"
+          :class="
+            model.status === 'ACTIVE'
+              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+              : 'bg-gray-100 text-gray-600 dark:bg-[#343434] dark:text-gray-400'
+          "
+        >
+          <span
+            class="size-1.5 rounded-full"
+            :class="model.status === 'ACTIVE' ? 'bg-green-500' : 'bg-gray-400'"
+          ></span>
+          {{ model.status === 'ACTIVE' ? 'Active' : 'Disabled' }}
+        </span>
+      </p>
+    </div>
+
     <!-- Actions slot (only shown in editable mode) -->
     <div v-if="!readonly">
       <slot name="actions" />
@@ -134,6 +170,7 @@
 import type { StudentForm } from '@/features/student/types/studentForm';
 import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
 import { useField } from '@/hooks/useField';
+import SelectInput from '@/components/SelectInput.vue';
 
 const model = defineModel<StudentForm>({
   required: true,

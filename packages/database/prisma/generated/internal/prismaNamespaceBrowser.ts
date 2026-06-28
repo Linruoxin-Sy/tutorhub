@@ -145,6 +145,7 @@ export const StudentScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   description: 'description',
+  status: 'status',
 } as const;
 
 export type StudentScalarFieldEnum =

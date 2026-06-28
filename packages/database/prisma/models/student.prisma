@@ -1,3 +1,10 @@
+enum StudentStatus {
+  ACTIVE @map("active")
+  DISABLED @map("disabled")
+
+  @@map("student_status")
+}
+
 model Student {
   /// 学生主键 ID（ULID）
   id String @id @default(ulid())
@@ -28,6 +35,9 @@ model Student {
 
   /// 学生备注
   description String?
+
+  /// 学生状态
+  status StudentStatus @default(ACTIVE)
 
   /// 所属用户
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

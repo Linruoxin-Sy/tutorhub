@@ -35,6 +35,7 @@ export type StudentMinAggregateOutputType = {
   email: string | null;
   phone: string | null;
   description: string | null;
+  status: $Enums.StudentStatus | null;
 };
 
 export type StudentMaxAggregateOutputType = {
@@ -48,6 +49,7 @@ export type StudentMaxAggregateOutputType = {
   email: string | null;
   phone: string | null;
   description: string | null;
+  status: $Enums.StudentStatus | null;
 };
 
 export type StudentCountAggregateOutputType = {
@@ -61,6 +63,7 @@ export type StudentCountAggregateOutputType = {
   email: number;
   phone: number;
   description: number;
+  status: number;
   _all: number;
 };
 
@@ -75,6 +78,7 @@ export type StudentMinAggregateInputType = {
   email?: true;
   phone?: true;
   description?: true;
+  status?: true;
 };
 
 export type StudentMaxAggregateInputType = {
@@ -88,6 +92,7 @@ export type StudentMaxAggregateInputType = {
   email?: true;
   phone?: true;
   description?: true;
+  status?: true;
 };
 
 export type StudentCountAggregateInputType = {
@@ -101,6 +106,7 @@ export type StudentCountAggregateInputType = {
   email?: true;
   phone?: true;
   description?: true;
+  status?: true;
   _all?: true;
 };
 
@@ -188,6 +194,7 @@ export type StudentGroupByOutputType = {
   email: string | null;
   phone: string | null;
   description: string | null;
+  status: $Enums.StudentStatus;
   _count: StudentCountAggregateOutputType | null;
   _min: StudentMinAggregateOutputType | null;
   _max: StudentMaxAggregateOutputType | null;
@@ -219,6 +226,7 @@ export type StudentWhereInput = {
   email?: Prisma.StringNullableFilter<'Student'> | string | null;
   phone?: Prisma.StringNullableFilter<'Student'> | string | null;
   description?: Prisma.StringNullableFilter<'Student'> | string | null;
+  status?: Prisma.EnumStudentStatusFilter<'Student'> | $Enums.StudentStatus;
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
   studentCourses?: Prisma.StudentCourseListRelationFilter;
   classRuleStudents?: Prisma.ClassRuleStudentListRelationFilter;
@@ -235,6 +243,7 @@ export type StudentOrderByWithRelationInput = {
   email?: Prisma.SortOrderInput | Prisma.SortOrder;
   phone?: Prisma.SortOrderInput | Prisma.SortOrder;
   description?: Prisma.SortOrderInput | Prisma.SortOrder;
+  status?: Prisma.SortOrder;
   user?: Prisma.UserOrderByWithRelationInput;
   studentCourses?: Prisma.StudentCourseOrderByRelationAggregateInput;
   classRuleStudents?: Prisma.ClassRuleStudentOrderByRelationAggregateInput;
@@ -255,6 +264,7 @@ export type StudentWhereUniqueInput = Prisma.AtLeast<
     email?: Prisma.StringNullableFilter<'Student'> | string | null;
     phone?: Prisma.StringNullableFilter<'Student'> | string | null;
     description?: Prisma.StringNullableFilter<'Student'> | string | null;
+    status?: Prisma.EnumStudentStatusFilter<'Student'> | $Enums.StudentStatus;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
     studentCourses?: Prisma.StudentCourseListRelationFilter;
     classRuleStudents?: Prisma.ClassRuleStudentListRelationFilter;
@@ -273,6 +283,7 @@ export type StudentOrderByWithAggregationInput = {
   email?: Prisma.SortOrderInput | Prisma.SortOrder;
   phone?: Prisma.SortOrderInput | Prisma.SortOrder;
   description?: Prisma.SortOrderInput | Prisma.SortOrder;
+  status?: Prisma.SortOrder;
   _count?: Prisma.StudentCountOrderByAggregateInput;
   _max?: Prisma.StudentMaxOrderByAggregateInput;
   _min?: Prisma.StudentMinOrderByAggregateInput;
@@ -296,6 +307,7 @@ export type StudentScalarWhereWithAggregatesInput = {
   email?: Prisma.StringNullableWithAggregatesFilter<'Student'> | string | null;
   phone?: Prisma.StringNullableWithAggregatesFilter<'Student'> | string | null;
   description?: Prisma.StringNullableWithAggregatesFilter<'Student'> | string | null;
+  status?: Prisma.EnumStudentStatusWithAggregatesFilter<'Student'> | $Enums.StudentStatus;
 };
 
 export type StudentCreateInput = {
@@ -308,6 +320,7 @@ export type StudentCreateInput = {
   email?: string | null;
   phone?: string | null;
   description?: string | null;
+  status?: $Enums.StudentStatus;
   user: Prisma.UserCreateNestedOneWithoutStudentsInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutStudentInput;
   classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutStudentInput;
@@ -324,6 +337,7 @@ export type StudentUncheckedCreateInput = {
   email?: string | null;
   phone?: string | null;
   description?: string | null;
+  status?: $Enums.StudentStatus;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutStudentInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutStudentInput;
 };
@@ -338,6 +352,7 @@ export type StudentUpdateInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus;
   user?: Prisma.UserUpdateOneRequiredWithoutStudentsNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutStudentNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutStudentNestedInput;
@@ -354,6 +369,7 @@ export type StudentUncheckedUpdateInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutStudentNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutStudentNestedInput;
 };
@@ -369,6 +385,7 @@ export type StudentCreateManyInput = {
   email?: string | null;
   phone?: string | null;
   description?: string | null;
+  status?: $Enums.StudentStatus;
 };
 
 export type StudentUpdateManyMutationInput = {
@@ -381,6 +398,7 @@ export type StudentUpdateManyMutationInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus;
 };
 
 export type StudentUncheckedUpdateManyInput = {
@@ -394,6 +412,7 @@ export type StudentUncheckedUpdateManyInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus;
 };
 
 export type StudentScalarRelationFilter = {
@@ -412,6 +431,7 @@ export type StudentCountOrderByAggregateInput = {
   email?: Prisma.SortOrder;
   phone?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
+  status?: Prisma.SortOrder;
 };
 
 export type StudentMaxOrderByAggregateInput = {
@@ -425,6 +445,7 @@ export type StudentMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder;
   phone?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
+  status?: Prisma.SortOrder;
 };
 
 export type StudentMinOrderByAggregateInput = {
@@ -438,6 +459,7 @@ export type StudentMinOrderByAggregateInput = {
   email?: Prisma.SortOrder;
   phone?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
+  status?: Prisma.SortOrder;
 };
 
 export type StudentListRelationFilter = {
@@ -474,6 +496,10 @@ export type StudentUpdateOneRequiredWithoutClassRuleStudentsNestedInput = {
     >,
     Prisma.StudentUncheckedUpdateWithoutClassRuleStudentsInput
   >;
+};
+
+export type EnumStudentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.StudentStatus;
 };
 
 export type StudentCreateNestedOneWithoutStudentCoursesInput = {
@@ -598,6 +624,7 @@ export type StudentCreateWithoutClassRuleStudentsInput = {
   email?: string | null;
   phone?: string | null;
   description?: string | null;
+  status?: $Enums.StudentStatus;
   user: Prisma.UserCreateNestedOneWithoutStudentsInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutStudentInput;
 };
@@ -613,6 +640,7 @@ export type StudentUncheckedCreateWithoutClassRuleStudentsInput = {
   email?: string | null;
   phone?: string | null;
   description?: string | null;
+  status?: $Enums.StudentStatus;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutStudentInput;
 };
 
@@ -654,6 +682,7 @@ export type StudentUpdateWithoutClassRuleStudentsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus;
   user?: Prisma.UserUpdateOneRequiredWithoutStudentsNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutStudentNestedInput;
 };
@@ -669,6 +698,7 @@ export type StudentUncheckedUpdateWithoutClassRuleStudentsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutStudentNestedInput;
 };
 
@@ -682,6 +712,7 @@ export type StudentCreateWithoutStudentCoursesInput = {
   email?: string | null;
   phone?: string | null;
   description?: string | null;
+  status?: $Enums.StudentStatus;
   user: Prisma.UserCreateNestedOneWithoutStudentsInput;
   classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutStudentInput;
 };
@@ -697,6 +728,7 @@ export type StudentUncheckedCreateWithoutStudentCoursesInput = {
   email?: string | null;
   phone?: string | null;
   description?: string | null;
+  status?: $Enums.StudentStatus;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutStudentInput;
 };
 
@@ -738,6 +770,7 @@ export type StudentUpdateWithoutStudentCoursesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus;
   user?: Prisma.UserUpdateOneRequiredWithoutStudentsNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutStudentNestedInput;
 };
@@ -753,6 +786,7 @@ export type StudentUncheckedUpdateWithoutStudentCoursesInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutStudentNestedInput;
 };
 
@@ -766,6 +800,7 @@ export type StudentCreateWithoutUserInput = {
   email?: string | null;
   phone?: string | null;
   description?: string | null;
+  status?: $Enums.StudentStatus;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutStudentInput;
   classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutStudentInput;
 };
@@ -780,6 +815,7 @@ export type StudentUncheckedCreateWithoutUserInput = {
   email?: string | null;
   phone?: string | null;
   description?: string | null;
+  status?: $Enums.StudentStatus;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutStudentInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutStudentInput;
 };
@@ -839,6 +875,7 @@ export type StudentScalarWhereInput = {
   email?: Prisma.StringNullableFilter<'Student'> | string | null;
   phone?: Prisma.StringNullableFilter<'Student'> | string | null;
   description?: Prisma.StringNullableFilter<'Student'> | string | null;
+  status?: Prisma.EnumStudentStatusFilter<'Student'> | $Enums.StudentStatus;
 };
 
 export type StudentCreateManyUserInput = {
@@ -851,6 +888,7 @@ export type StudentCreateManyUserInput = {
   email?: string | null;
   phone?: string | null;
   description?: string | null;
+  status?: $Enums.StudentStatus;
 };
 
 export type StudentUpdateWithoutUserInput = {
@@ -863,6 +901,7 @@ export type StudentUpdateWithoutUserInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutStudentNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutStudentNestedInput;
 };
@@ -877,6 +916,7 @@ export type StudentUncheckedUpdateWithoutUserInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutStudentNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutStudentNestedInput;
 };
@@ -891,6 +931,7 @@ export type StudentUncheckedUpdateManyWithoutUserInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  status?: Prisma.EnumStudentStatusFieldUpdateOperationsInput | $Enums.StudentStatus;
 };
 
 /**
@@ -953,6 +994,7 @@ export type StudentSelect<
     email?: boolean;
     phone?: boolean;
     description?: boolean;
+    status?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
     studentCourses?: boolean | Prisma.Student$studentCoursesArgs<ExtArgs>;
     classRuleStudents?: boolean | Prisma.Student$classRuleStudentsArgs<ExtArgs>;
@@ -975,6 +1017,7 @@ export type StudentSelectCreateManyAndReturn<
     email?: boolean;
     phone?: boolean;
     description?: boolean;
+    status?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['student']
@@ -994,6 +1037,7 @@ export type StudentSelectUpdateManyAndReturn<
     email?: boolean;
     phone?: boolean;
     description?: boolean;
+    status?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['student']
@@ -1010,6 +1054,7 @@ export type StudentSelectScalar = {
   email?: boolean;
   phone?: boolean;
   description?: boolean;
+  status?: boolean;
 };
 
 export type StudentOmit<
@@ -1024,7 +1069,8 @@ export type StudentOmit<
   | 'avatarKey'
   | 'email'
   | 'phone'
-  | 'description',
+  | 'description'
+  | 'status',
   ExtArgs['result']['student']
 >;
 export type StudentInclude<
@@ -1106,6 +1152,10 @@ export type $StudentPayload<
        * 学生备注
        */
       description: string | null;
+      /**
+       * 学生状态
+       */
+      status: $Enums.StudentStatus;
     },
     ExtArgs['result']['student']
   >;
@@ -1698,6 +1748,7 @@ export interface StudentFieldRefs {
   readonly email: Prisma.FieldRef<'Student', 'String'>;
   readonly phone: Prisma.FieldRef<'Student', 'String'>;
   readonly description: Prisma.FieldRef<'Student', 'String'>;
+  readonly status: Prisma.FieldRef<'Student', 'StudentStatus'>;
 }
 
 // Custom InputTypes

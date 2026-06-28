@@ -8,7 +8,7 @@
     ]"
     style="
       display: grid;
-      grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr;
+      grid-template-columns: 1.5fr 2fr 1.2fr 1fr 1.2fr 1fr;
       align-items: center;
       width: 100%;
     "
@@ -101,7 +101,38 @@
       </Transition>
     </div>
 
-    <!-- ===== 列 4：创建时间 ===== -->
+    <!-- ===== 列 4：状态 ===== -->
+    <div class="px-6">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition duration-100"
+        leave-active-class="transition duration-100"
+        enter-from-class="opacity-0 scale-[0.85]"
+        leave-to-class="opacity-0 scale-[0.85]"
+      >
+        <div v-if="effectiveLoading" key="sk-status">
+          <div class="h-4 w-16 rounded bg-gray-200 dark:bg-[#343434]" />
+        </div>
+        <div v-else key="ct-status">
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold"
+            :class="
+              student!.status === 'ACTIVE'
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                : 'bg-gray-100 text-gray-600 dark:bg-[#343434] dark:text-gray-400'
+            "
+          >
+            <span
+              class="size-1.5 rounded-full"
+              :class="student!.status === 'ACTIVE' ? 'bg-green-500' : 'bg-gray-400'"
+            ></span>
+            {{ student!.status === 'ACTIVE' ? 'Active' : 'Disabled' }}
+          </span>
+        </div>
+      </Transition>
+    </div>
+
+    <!-- ===== 列 5：创建时间 ===== -->
     <div class="px-6">
       <Transition
         mode="out-in"
@@ -123,7 +154,7 @@
       </Transition>
     </div>
 
-    <!-- ===== 列 5：操作按钮 ===== -->
+    <!-- ===== 列 6：操作按钮 ===== -->
     <div class="flex items-center justify-end gap-1 px-6">
       <Transition
         mode="out-in"

@@ -3,6 +3,7 @@ export const DEFAULT_FORM_DATA = {
   email: '',
   phone: '',
   description: '',
+  status: 'ACTIVE' as const,
 };
 
 export const FORM_DATA_KEYS = Object.keys(DEFAULT_FORM_DATA) as (keyof typeof DEFAULT_FORM_DATA)[];

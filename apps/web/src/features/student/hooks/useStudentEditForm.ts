@@ -39,7 +39,9 @@ export function useStudentEditForm(id: string) {
     try {
       const student = await fetchStudentById(id);
       // Only retain the fields related to the form and convert null values to ''
-      originalData.value = mapValues(pick(student, FORM_DATA_KEYS), (v) => (isNil(v) ? '' : v));
+      originalData.value = mapValues(pick(student, FORM_DATA_KEYS), (v) =>
+        isNil(v) ? '' : v,
+      ) as StudentForm;
       formData.value = cloneDeep(originalData.value);
       currentAvatarUrl.value = student.avatarUrl ?? null;
     } catch {

@@ -13,6 +13,7 @@ export const studentCreateSchema = z.object({
   email: preprocessNullable(studentFields.email),
   phone: preprocessNullable(studentFields.phone),
   description: preprocessNullable(studentFields.description),
+  status: studentFields.status.optional(),
 });
 
 export type StudentCreateResponse = Omit<Student, 'avatarKey'> & { avatarUrl: string | null };

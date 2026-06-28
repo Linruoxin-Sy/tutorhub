@@ -20,7 +20,9 @@ export function useStudentDetailForm(id: string) {
   onMounted(async () => {
     try {
       const student = await fetchStudentById(id);
-      formData.value = mapValues(pick(student, FORM_DATA_KEYS), (v) => (isNil(v) ? '' : v));
+      formData.value = mapValues(pick(student, FORM_DATA_KEYS), (v) =>
+        isNil(v) ? '' : v,
+      ) as StudentForm;
       currentAvatarUrl.value = student.avatarUrl;
     } catch {
       toast.error('Failed to load student data');

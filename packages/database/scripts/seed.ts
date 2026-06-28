@@ -56,12 +56,14 @@ function buildStudent(index: number, userId: string) {
   const firstName = pick(FIRST_NAMES, index);
   const lastName = pick(LAST_NAMES, Math.floor(index / FIRST_NAMES.length) + index);
   const padded = String(index + 1).padStart(4, '0');
+  const status = pseudoRandom(index + 2000) > 0.15 ? 'ACTIVE' : 'DISABLED';
 
   return {
     userId,
     name: `${firstName} ${lastName}`,
     email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@email.com`,
     phone: `555-${padded}`,
+    status,
   };
 }
 
