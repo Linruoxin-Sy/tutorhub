@@ -48,6 +48,7 @@ export const JsonNull = runtime.JsonNull;
 export const AnyNull = runtime.AnyNull;
 
 export const ModelName = {
+  ClassRuleStudent: 'ClassRuleStudent',
   ClassSessionOverride: 'ClassSessionOverride',
   Course: 'Course',
   ClassRule: 'ClassRule',
@@ -71,6 +72,19 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 
 export type TransactionIsolationLevel =
   (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
+
+export const ClassRuleStudentScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  classRuleId: 'classRuleId',
+  studentId: 'studentId',
+  userId: 'userId',
+} as const;
+
+export type ClassRuleStudentScalarFieldEnum =
+  (typeof ClassRuleStudentScalarFieldEnum)[keyof typeof ClassRuleStudentScalarFieldEnum];
 
 export const ClassSessionOverrideScalarFieldEnum = {
   id: 'id',

@@ -1,0 +1,38 @@
+/// 上课规则与学生关联表
+model ClassRuleStudent {
+  /// 主键 ID（ULID）
+  id String @id @default(ulid())
+
+  /// 创建时间
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  /// 更新时间
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  /// 删除时间
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
+
+  /// 上课规则 ID
+  classRuleId String @map("class_rule_id")
+
+  /// 学生 ID
+  studentId String @map("student_id")
+
+  /// 所属用户 ID
+  userId String @map("user_id")
+
+  /// 所属上课规则
+  classRule ClassRule @relation(fields: [classRuleId], references: [id], onDelete: Cascade)
+
+  /// 所属学生
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  /// 所属用户
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([classRuleId, studentId])
+  @@index([classRuleId])
+  @@index([studentId])
+  @@index([userId])
+  @@map("class_rule_student")
+}

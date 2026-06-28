@@ -198,11 +198,81 @@
         </div>
       </div>
     </ListPageShell>
+
+    <!-- Assigned Students -->
+    <ListPageShell title="Assigned Students">
+      <template #filters>
+        <SearchInput v-model="studentSearch" placeholder="Search students..." />
+      </template>
+      <template #actions>
+        <AppButton
+          @click="
+            router.push({ name: 'class-rule.add-student', params: { ruleId }, query: { courseId } })
+          "
+        >
+          <i class="i-lucide-plus size-4"></i>
+          <span>Add Student</span>
+        </AppButton>
+      </template>
+
+      <div class="flex h-125 flex-col">
+        <VirtualList
+          :query="studentQuery"
+          :estimate-size="70"
+          :overscan="10"
+          row-class="border-b border-gray-200 transition hover:bg-gray-50 dark:border-[#343434] dark:hover:bg-[#202020]"
+          :row-style="{ display: 'flex' }"
+        >
+          <template #header>
+            <div
+              class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
+              style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr"
+            >
+              <div
+                v-for="column in studentColumns"
+                :key="column"
+                class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
+              >
+                {{ column }}
+              </div>
+            </div>
+          </template>
+
+          <template #loading>
+            <div class="divide-y divide-gray-200 dark:divide-[#343434]">
+              <StudentItem v-for="index in 8" :key="index" loading />
+            </div>
+          </template>
+
+          <template #item="{ item, isLoaded }">
+            <StudentItem
+              :student="item!.student"
+              :loading="!isLoaded"
+              :actions="['delete']"
+              @view="router.push({ name: 'enrollment.detail', params: { id: item!.id } })"
+              @delete="handleRemoveStudent(item!)"
+            />
+          </template>
+
+          <template #empty>
+            <div
+              class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+            >
+              No students found.
+            </div>
+          </template>
+        </VirtualList>
+      </div>
+    </ListPageShell>
   </main>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
+import { refDebounced } from '@vueuse/core';
+import { useQueryClient } from '@tanstack/vue-query';
+import { toast } from 'vue-sonner';
+import { useRouter } from 'vue-router';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { useThemeToggle } from '@/hooks/useThemeToggle';
@@ -211,7 +281,19 @@ import SessionItem from '@/features/session/components/SessionItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import LoadingIndicator from '@/components/LoadingIndicator.vue';
+import SearchInput from '@/components/SearchInput.vue';
+import AppButton from '@/components/AppButton.vue';
+import StudentItem from '@/features/student/components/StudentItem.vue';
 import { useClassRuleEditForm } from '@/features/class-rule/hooks/useClassRuleEditForm';
+import { useSparseQuery } from '@/hooks/useSparseQuery';
+import { useDialog } from '@/hooks/useDialog';
+import {
+  fetchClassRuleStudents,
+  removeClassRuleStudent,
+} from '@/features/class-rule/api/class-rule-api';
+import type { ClassRuleStudentListResponse } from '@tutorhub/schema';
+
+type ClassRuleStudentItem = ClassRuleStudentListResponse['items'][number];
 
 const props = defineProps<{
   courseId: string;
@@ -246,4 +328,41 @@ const intervalDaysModel = computed({
     }
   },
 });
+
+// ---- Assigned Students ----
+
+const router = useRouter();
+const queryClient = useQueryClient();
+const { confirm } = useDialog();
+
+const studentColumns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
+
+const studentSearch = ref('');
+const debouncedStudentSearch = refDebounced(studentSearch, 300);
+const studentSearchRef = computed(() => debouncedStudentSearch.value ?? '');
+
+const studentQuery = useSparseQuery<ClassRuleStudentItem>({
+  queryKeyPrefix: ['class-rule-students', props.ruleId],
+  fetchFn: (params) => fetchClassRuleStudents(props.ruleId, params),
+  filters: { name: studentSearchRef },
+});
+
+async function handleRemoveStudent(item: ClassRuleStudentItem) {
+  const confirmed = await confirm({
+    title: 'Remove Student',
+    message: `Are you sure you want to remove "${item.student.name}" from this class rule?`,
+    confirmText: 'Remove',
+    variant: 'danger',
+  });
+
+  if (!confirmed) return;
+
+  try {
+    await removeClassRuleStudent(item.id);
+    toast.success('Student removed from class rule successfully!');
+    queryClient.invalidateQueries({ queryKey: ['class-rule-students', props.ruleId] });
+  } catch {
+    toast.error('Failed to remove student from class rule');
+  }
+}
 </script>

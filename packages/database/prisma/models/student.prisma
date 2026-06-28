@@ -35,6 +35,9 @@ model Student {
   /// 学生的选课关系
   studentCourses StudentCourse[]
 
+  /// 学生在上课规则中的关联
+  classRuleStudents ClassRuleStudent[]
+
   @@index([userId], where: raw("deleted_at IS NULL"))
   @@map("student")
 }

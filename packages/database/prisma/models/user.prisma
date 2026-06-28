@@ -44,5 +44,8 @@ model User {
   /// 用户的调课覆盖
   classSessionOverrides ClassSessionOverride[]
 
+  /// 用户的上课规则-学生关联
+  classRuleStudents ClassRuleStudent[]
+
   @@map("user")
 }

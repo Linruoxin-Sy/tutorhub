@@ -505,20 +505,8 @@ export type ClassSessionOverrideOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder;
 };
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string;
-};
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string;
-};
-
 export type EnumClassSessionOverrideStateFieldUpdateOperationsInput = {
   set?: $Enums.ClassSessionOverrideState;
-};
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null;
 };
 
 export type NullableStringFieldUpdateOperationsInput = {

@@ -376,6 +376,7 @@ export type FieldRef<Model, FieldType> = runtime.FieldRef<Model, FieldType>;
 type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>;
 
 export const ModelName = {
+  ClassRuleStudent: 'ClassRuleStudent',
   ClassSessionOverride: 'ClassSessionOverride',
   Course: 'Course',
   ClassRule: 'ClassRule',
@@ -402,6 +403,7 @@ export type TypeMap<
   };
   meta: {
     modelProps:
+      | 'classRuleStudent'
       | 'classSessionOverride'
       | 'course'
       | 'classRule'
@@ -411,6 +413,82 @@ export type TypeMap<
     txIsolationLevel: TransactionIsolationLevel;
   };
   model: {
+    ClassRuleStudent: {
+      payload: Prisma.$ClassRuleStudentPayload<ExtArgs>;
+      fields: Prisma.ClassRuleStudentFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.ClassRuleStudentFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassRuleStudentPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.ClassRuleStudentFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassRuleStudentPayload>;
+        };
+        findFirst: {
+          args: Prisma.ClassRuleStudentFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassRuleStudentPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.ClassRuleStudentFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassRuleStudentPayload>;
+        };
+        findMany: {
+          args: Prisma.ClassRuleStudentFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassRuleStudentPayload>[];
+        };
+        create: {
+          args: Prisma.ClassRuleStudentCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassRuleStudentPayload>;
+        };
+        createMany: {
+          args: Prisma.ClassRuleStudentCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.ClassRuleStudentCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassRuleStudentPayload>[];
+        };
+        delete: {
+          args: Prisma.ClassRuleStudentDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassRuleStudentPayload>;
+        };
+        update: {
+          args: Prisma.ClassRuleStudentUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassRuleStudentPayload>;
+        };
+        deleteMany: {
+          args: Prisma.ClassRuleStudentDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.ClassRuleStudentUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.ClassRuleStudentUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassRuleStudentPayload>[];
+        };
+        upsert: {
+          args: Prisma.ClassRuleStudentUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassRuleStudentPayload>;
+        };
+        aggregate: {
+          args: Prisma.ClassRuleStudentAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClassRuleStudent>;
+        };
+        groupBy: {
+          args: Prisma.ClassRuleStudentGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.ClassRuleStudentGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.ClassRuleStudentCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.ClassRuleStudentCountAggregateOutputType>
+            | number;
+        };
+      };
+    };
     ClassSessionOverride: {
       payload: Prisma.$ClassSessionOverridePayload<ExtArgs>;
       fields: Prisma.ClassSessionOverrideFieldRefs;
@@ -898,6 +976,19 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel =
   (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
 
+export const ClassRuleStudentScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
+  classRuleId: 'classRuleId',
+  studentId: 'studentId',
+  userId: 'userId',
+} as const;
+
+export type ClassRuleStudentScalarFieldEnum =
+  (typeof ClassRuleStudentScalarFieldEnum)[keyof typeof ClassRuleStudentScalarFieldEnum];
+
 export const ClassSessionOverrideScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
@@ -1190,6 +1281,7 @@ export type PrismaClientOptions = (
   comments?: runtime.SqlCommenterPlugin[];
 };
 export type GlobalOmitConfig = {
+  classRuleStudent?: Prisma.ClassRuleStudentOmit;
   classSessionOverride?: Prisma.ClassSessionOverrideOmit;
   course?: Prisma.CourseOmit;
   classRule?: Prisma.ClassRuleOmit;

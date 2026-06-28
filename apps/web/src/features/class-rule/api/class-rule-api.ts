@@ -1,7 +1,11 @@
 import type {
+  ClassRuleAddStudentResponse,
+  ClassRuleAvailableStudentsResponse,
   ClassRuleConflictCheckRequest,
   ClassRuleConflictCheckResponse,
   ClassRuleListResponse,
+  ClassRuleRemoveStudentResponse,
+  ClassRuleStudentListResponse,
 } from '@tutorhub/schema';
 
 import { request } from '@/utils/request';
@@ -85,4 +89,61 @@ export async function applyClassRuleChanges(
 /** 删除上课规则（软删除） */
 export async function deleteClassRule(id: string): Promise<void> {
   await request.delete(`/class-rule/${id}`);
+}
+
+// ────────── ClassRuleStudent 相关 API ──────────
+
+/** 获取上课规则下已添加的学生列表 */
+export async function fetchClassRuleStudents(
+  ruleId: string,
+  params: {
+    cursor?: string;
+    offset?: number;
+    limit?: number;
+    name?: string;
+  },
+): Promise<ClassRuleStudentListResponse> {
+  const { data } = await request.get<ClassRuleStudentListResponse>(
+    `/class-rule/${ruleId}/students`,
+    { params },
+  );
+  return data;
+}
+
+/** 获取上课规则的可选学生（该课程已选课但未加入此规则的学生） */
+export async function fetchClassRuleAvailableStudents(
+  ruleId: string,
+  courseId: string,
+  params: {
+    cursor?: string;
+    offset?: number;
+    limit?: number;
+    name?: string;
+  },
+): Promise<ClassRuleAvailableStudentsResponse> {
+  const { data } = await request.get<ClassRuleAvailableStudentsResponse>(
+    `/class-rule/${ruleId}/available-students`,
+    { params: { courseId, ...params } },
+  );
+  return data;
+}
+
+/** 添加学生到上课规则 */
+export async function addClassRuleStudent(
+  ruleId: string,
+  studentId: string,
+): Promise<ClassRuleAddStudentResponse> {
+  const { data } = await request.post<{ data: ClassRuleAddStudentResponse }>(
+    `/class-rule/${ruleId}/student`,
+    { studentId },
+  );
+  return data.data;
+}
+
+/** 从上课规则移除学生（软删除） */
+export async function removeClassRuleStudent(id: string): Promise<ClassRuleRemoveStudentResponse> {
+  const { data } = await request.delete<{ data: ClassRuleRemoveStudentResponse }>(
+    `/class-rule-student/${id}`,
+  );
+  return data.data;
 }

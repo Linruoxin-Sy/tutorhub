@@ -224,6 +224,7 @@ export type UserWhereInput = {
   studentCourses?: Prisma.StudentCourseListRelationFilter;
   classRules?: Prisma.ClassRuleListRelationFilter;
   classSessionOverrides?: Prisma.ClassSessionOverrideListRelationFilter;
+  classRuleStudents?: Prisma.ClassRuleStudentListRelationFilter;
 };
 
 export type UserOrderByWithRelationInput = {
@@ -242,6 +243,7 @@ export type UserOrderByWithRelationInput = {
   studentCourses?: Prisma.StudentCourseOrderByRelationAggregateInput;
   classRules?: Prisma.ClassRuleOrderByRelationAggregateInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideOrderByRelationAggregateInput;
+  classRuleStudents?: Prisma.ClassRuleStudentOrderByRelationAggregateInput;
 };
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -264,6 +266,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     studentCourses?: Prisma.StudentCourseListRelationFilter;
     classRules?: Prisma.ClassRuleListRelationFilter;
     classSessionOverrides?: Prisma.ClassSessionOverrideListRelationFilter;
+    classRuleStudents?: Prisma.ClassRuleStudentListRelationFilter;
   },
   'id' | 'email' | 'phone'
 >;
@@ -316,6 +319,7 @@ export type UserCreateInput = {
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleCreateNestedManyWithoutUserInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateInput = {
@@ -334,6 +338,7 @@ export type UserUncheckedCreateInput = {
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutUserInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserUpdateInput = {
@@ -352,6 +357,7 @@ export type UserUpdateInput = {
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUpdateManyWithoutUserNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateInput = {
@@ -370,6 +376,7 @@ export type UserUncheckedUpdateInput = {
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutUserNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateManyInput = {
@@ -453,6 +460,32 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder;
   phone?: Prisma.SortOrder;
   avatarUrl?: Prisma.SortOrder;
+};
+
+export type UserCreateNestedOneWithoutClassRuleStudentsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutClassRuleStudentsInput,
+    Prisma.UserUncheckedCreateWithoutClassRuleStudentsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClassRuleStudentsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutClassRuleStudentsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutClassRuleStudentsInput,
+    Prisma.UserUncheckedCreateWithoutClassRuleStudentsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClassRuleStudentsInput;
+  upsert?: Prisma.UserUpsertWithoutClassRuleStudentsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutClassRuleStudentsInput,
+      Prisma.UserUpdateWithoutClassRuleStudentsInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutClassRuleStudentsInput
+  >;
 };
 
 export type UserCreateNestedOneWithoutClassSessionOverridesInput = {
@@ -585,6 +618,106 @@ export type UserUpdateOneRequiredWithoutStudentCoursesNestedInput = {
   >;
 };
 
+export type UserCreateWithoutClassRuleStudentsInput = {
+  id?: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  name: string;
+  passwordHash: string;
+  passwordSalt: string;
+  email?: string | null;
+  phone?: string | null;
+  avatarUrl?: string | null;
+  students?: Prisma.StudentCreateNestedManyWithoutUserInput;
+  courses?: Prisma.CourseCreateNestedManyWithoutUserInput;
+  studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
+  classRules?: Prisma.ClassRuleCreateNestedManyWithoutUserInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutClassRuleStudentsInput = {
+  id?: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  name: string;
+  passwordHash: string;
+  passwordSalt: string;
+  email?: string | null;
+  phone?: string | null;
+  avatarUrl?: string | null;
+  students?: Prisma.StudentUncheckedCreateNestedManyWithoutUserInput;
+  courses?: Prisma.CourseUncheckedCreateNestedManyWithoutUserInput;
+  studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
+  classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutUserInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutClassRuleStudentsInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutClassRuleStudentsInput,
+    Prisma.UserUncheckedCreateWithoutClassRuleStudentsInput
+  >;
+};
+
+export type UserUpsertWithoutClassRuleStudentsInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutClassRuleStudentsInput,
+    Prisma.UserUncheckedUpdateWithoutClassRuleStudentsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutClassRuleStudentsInput,
+    Prisma.UserUncheckedCreateWithoutClassRuleStudentsInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutClassRuleStudentsInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutClassRuleStudentsInput,
+    Prisma.UserUncheckedUpdateWithoutClassRuleStudentsInput
+  >;
+};
+
+export type UserUpdateWithoutClassRuleStudentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
+  passwordSalt?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  students?: Prisma.StudentUpdateManyWithoutUserNestedInput;
+  courses?: Prisma.CourseUpdateManyWithoutUserNestedInput;
+  studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
+  classRules?: Prisma.ClassRuleUpdateManyWithoutUserNestedInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutClassRuleStudentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
+  passwordSalt?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  students?: Prisma.StudentUncheckedUpdateManyWithoutUserNestedInput;
+  courses?: Prisma.CourseUncheckedUpdateManyWithoutUserNestedInput;
+  studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
+  classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutUserNestedInput;
+  classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutUserNestedInput;
+};
+
 export type UserCreateWithoutClassSessionOverridesInput = {
   id?: string;
   createdAt?: Date | string;
@@ -600,6 +733,7 @@ export type UserCreateWithoutClassSessionOverridesInput = {
   courses?: Prisma.CourseCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutClassSessionOverridesInput = {
@@ -617,6 +751,7 @@ export type UserUncheckedCreateWithoutClassSessionOverridesInput = {
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutClassSessionOverridesInput = {
@@ -662,6 +797,7 @@ export type UserUpdateWithoutClassSessionOverridesInput = {
   courses?: Prisma.CourseUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutClassSessionOverridesInput = {
@@ -679,6 +815,7 @@ export type UserUncheckedUpdateWithoutClassSessionOverridesInput = {
   courses?: Prisma.CourseUncheckedUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutCoursesInput = {
@@ -696,6 +833,7 @@ export type UserCreateWithoutCoursesInput = {
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleCreateNestedManyWithoutUserInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutCoursesInput = {
@@ -713,6 +851,7 @@ export type UserUncheckedCreateWithoutCoursesInput = {
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutUserInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutCoursesInput = {
@@ -758,6 +897,7 @@ export type UserUpdateWithoutCoursesInput = {
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUpdateManyWithoutUserNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutCoursesInput = {
@@ -775,6 +915,7 @@ export type UserUncheckedUpdateWithoutCoursesInput = {
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutUserNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutClassRulesInput = {
@@ -792,6 +933,7 @@ export type UserCreateWithoutClassRulesInput = {
   courses?: Prisma.CourseCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutClassRulesInput = {
@@ -809,6 +951,7 @@ export type UserUncheckedCreateWithoutClassRulesInput = {
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutClassRulesInput = {
@@ -854,6 +997,7 @@ export type UserUpdateWithoutClassRulesInput = {
   courses?: Prisma.CourseUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutClassRulesInput = {
@@ -871,6 +1015,7 @@ export type UserUncheckedUpdateWithoutClassRulesInput = {
   courses?: Prisma.CourseUncheckedUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutStudentsInput = {
@@ -888,6 +1033,7 @@ export type UserCreateWithoutStudentsInput = {
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleCreateNestedManyWithoutUserInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutStudentsInput = {
@@ -905,6 +1051,7 @@ export type UserUncheckedCreateWithoutStudentsInput = {
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutUserInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutStudentsInput = {
@@ -950,6 +1097,7 @@ export type UserUpdateWithoutStudentsInput = {
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUpdateManyWithoutUserNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutStudentsInput = {
@@ -967,6 +1115,7 @@ export type UserUncheckedUpdateWithoutStudentsInput = {
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutUserNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutStudentCoursesInput = {
@@ -984,6 +1133,7 @@ export type UserCreateWithoutStudentCoursesInput = {
   courses?: Prisma.CourseCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleCreateNestedManyWithoutUserInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutStudentCoursesInput = {
@@ -1001,6 +1151,7 @@ export type UserUncheckedCreateWithoutStudentCoursesInput = {
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutUserInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutUserInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutStudentCoursesInput = {
@@ -1046,6 +1197,7 @@ export type UserUpdateWithoutStudentCoursesInput = {
   courses?: Prisma.CourseUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUpdateManyWithoutUserNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutStudentCoursesInput = {
@@ -1063,6 +1215,7 @@ export type UserUncheckedUpdateWithoutStudentCoursesInput = {
   courses?: Prisma.CourseUncheckedUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutUserNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutUserNestedInput;
+  classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 /**
@@ -1075,6 +1228,7 @@ export type UserCountOutputType = {
   studentCourses: number;
   classRules: number;
   classSessionOverrides: number;
+  classRuleStudents: number;
 };
 
 export type UserCountOutputTypeSelect<
@@ -1085,6 +1239,7 @@ export type UserCountOutputTypeSelect<
   studentCourses?: boolean | UserCountOutputTypeCountStudentCoursesArgs;
   classRules?: boolean | UserCountOutputTypeCountClassRulesArgs;
   classSessionOverrides?: boolean | UserCountOutputTypeCountClassSessionOverridesArgs;
+  classRuleStudents?: boolean | UserCountOutputTypeCountClassRuleStudentsArgs;
 };
 
 /**
@@ -1144,6 +1299,15 @@ export type UserCountOutputTypeCountClassSessionOverridesArgs<
   where?: Prisma.ClassSessionOverrideWhereInput;
 };
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountClassRuleStudentsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.ClassRuleStudentWhereInput;
+};
+
 export type UserSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -1163,6 +1327,7 @@ export type UserSelect<
     studentCourses?: boolean | Prisma.User$studentCoursesArgs<ExtArgs>;
     classRules?: boolean | Prisma.User$classRulesArgs<ExtArgs>;
     classSessionOverrides?: boolean | Prisma.User$classSessionOverridesArgs<ExtArgs>;
+    classRuleStudents?: boolean | Prisma.User$classRuleStudentsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['user']
@@ -1240,6 +1405,7 @@ export type UserInclude<
   studentCourses?: boolean | Prisma.User$studentCoursesArgs<ExtArgs>;
   classRules?: boolean | Prisma.User$classRulesArgs<ExtArgs>;
   classSessionOverrides?: boolean | Prisma.User$classSessionOverridesArgs<ExtArgs>;
+  classRuleStudents?: boolean | Prisma.User$classRuleStudentsArgs<ExtArgs>;
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<
@@ -1274,6 +1440,10 @@ export type $UserPayload<
      * 用户的调课覆盖
      */
     classSessionOverrides: Prisma.$ClassSessionOverridePayload<ExtArgs>[];
+    /**
+     * 用户的上课规则-学生关联
+     */
+    classRuleStudents: Prisma.$ClassRuleStudentPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1882,6 +2052,17 @@ export interface Prisma__UserClient<
       >
     | Null
   >;
+  classRuleStudents<T extends Prisma.User$classRuleStudentsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$classRuleStudentsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$ClassRuleStudentPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2476,6 +2657,34 @@ export type User$classSessionOverridesArgs<
   distinct?:
     | Prisma.ClassSessionOverrideScalarFieldEnum
     | Prisma.ClassSessionOverrideScalarFieldEnum[];
+};
+
+/**
+ * User.classRuleStudents
+ */
+export type User$classRuleStudentsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the ClassRuleStudent
+   */
+  select?: Prisma.ClassRuleStudentSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the ClassRuleStudent
+   */
+  omit?: Prisma.ClassRuleStudentOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClassRuleStudentInclude<ExtArgs> | null;
+  where?: Prisma.ClassRuleStudentWhereInput;
+  orderBy?:
+    | Prisma.ClassRuleStudentOrderByWithRelationInput
+    | Prisma.ClassRuleStudentOrderByWithRelationInput[];
+  cursor?: Prisma.ClassRuleStudentWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.ClassRuleStudentScalarFieldEnum | Prisma.ClassRuleStudentScalarFieldEnum[];
 };
 
 /**

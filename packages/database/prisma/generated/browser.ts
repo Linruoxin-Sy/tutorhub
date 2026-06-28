@@ -18,6 +18,11 @@ export { Prisma };
 export * as $Enums from './enums';
 export * from './enums';
 /**
+ * Model ClassRuleStudent
+ * 上课规则与学生关联表
+ */
+export type ClassRuleStudent = Prisma.ClassRuleStudentModel;
+/**
  * Model ClassSessionOverride
  * 课程实例变更记录 — 由 ClassRule 生成 session 后，用户对某个具体 session 的手动变更
  */

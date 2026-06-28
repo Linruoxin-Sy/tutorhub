@@ -6,3 +6,8 @@ export * from './update';
 export * from './delete';
 export * from './session';
 export * from './conflict';
+export * from './class-rule-student';
+export * from './add-student';
+export * from './remove-student';
+export * from './list-students';
+export * from './available-students';

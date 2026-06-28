@@ -344,6 +344,224 @@ export const classRuleService = {
     const updated = await this.update(id, input, userId);
     return updated;
   },
+
+  // ──────────── ClassRuleStudent 相关方法 ────────────
+
+  /**
+   * 列出上课规则下的已添加学生
+   */
+  async listStudentsByRule(
+    ruleId: string,
+    query: { cursor?: string; offset?: number; limit: number; name?: string },
+    userId: string,
+  ) {
+    const rule = await prisma.classRule.findFirst({
+      where: { id: ruleId, userId },
+    });
+    if (!rule) {
+      throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
+    }
+
+    const take = query.limit + 1;
+
+    const baseWhere: Prisma.ClassRuleStudentWhereInput = {
+      classRuleId: ruleId,
+      deletedAt: null,
+      ...(query.name ? { student: { name: { contains: query.name, mode: 'insensitive' } } } : {}),
+    };
+
+    if (query.offset !== undefined) {
+      const [dbItems, total] = await Promise.all([
+        prisma.classRuleStudent.findMany({
+          where: baseWhere,
+          include: { student: true },
+          orderBy: { createdAt: 'desc' },
+          take: query.limit,
+          skip: query.offset,
+        }),
+        prisma.classRuleStudent.count({ where: baseWhere }),
+      ]);
+
+      const lastItem = dbItems.at(-1);
+      const hasMore = query.offset + query.limit < total;
+
+      return {
+        items: dbItems,
+        nextCursor: hasMore && lastItem ? lastItem.id : null,
+        total,
+      };
+    }
+
+    const [dbItems, total] = await Promise.all([
+      prisma.classRuleStudent.findMany({
+        where: baseWhere,
+        include: { student: true },
+        orderBy: { createdAt: 'desc' },
+        take,
+        ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
+      }),
+      prisma.classRuleStudent.count({ where: baseWhere }),
+    ]);
+
+    const hasMore = dbItems.length > query.limit;
+    const result = hasMore ? dbItems.slice(0, query.limit) : dbItems;
+    const nextCursor = hasMore ? result[result.length - 1].id : null;
+
+    return { items: result, nextCursor, total };
+  },
+
+  /**
+   * 列出可选学生（已选该课程但尚未加入此规则的学生）
+   */
+  async listAvailableStudents(
+    ruleId: string,
+    courseId: string,
+    query: { cursor?: string; offset?: number; limit: number; name?: string },
+    userId: string,
+  ) {
+    const rule = await prisma.classRule.findFirst({
+      where: { id: ruleId, userId },
+    });
+    if (!rule) {
+      throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
+    }
+
+    const take = query.limit + 1;
+
+    // 查出该规则下已添加的学生 ID（含软删除，避免重复添加）
+    const addedStudentIds = (
+      await prisma.classRuleStudent.findMany({
+        where: { classRuleId: ruleId },
+        select: { studentId: true },
+      })
+    ).map((e) => e.studentId);
+
+    // 查询该课程下已选课的学生（StudentCourse），排除已加入该规则的学生
+    const enrolledWhere: Prisma.StudentCourseWhereInput = {
+      courseId,
+      deletedAt: null,
+      ...(addedStudentIds.length > 0 ? { studentId: { notIn: addedStudentIds } } : {}),
+      ...(query.name ? { student: { name: { contains: query.name, mode: 'insensitive' } } } : {}),
+    };
+
+    if (query.offset !== undefined) {
+      const [dbItems, total] = await Promise.all([
+        prisma.studentCourse.findMany({
+          where: enrolledWhere,
+          include: { student: true },
+          orderBy: { createdAt: 'desc' },
+          take: query.limit,
+          skip: query.offset,
+        }),
+        prisma.studentCourse.count({ where: enrolledWhere }),
+      ]);
+
+      const items = dbItems.map((e) => e.student);
+      const lastItem = items.at(-1);
+      const hasMore = query.offset + query.limit < total;
+
+      return {
+        items,
+        nextCursor: hasMore && lastItem ? lastItem.id : null,
+        total,
+      };
+    }
+
+    const [dbItems, total] = await Promise.all([
+      prisma.studentCourse.findMany({
+        where: enrolledWhere,
+        include: { student: true },
+        orderBy: { createdAt: 'desc' },
+        take,
+        ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
+      }),
+      prisma.studentCourse.count({ where: enrolledWhere }),
+    ]);
+
+    const hasMore = dbItems.length > query.limit;
+    const result = hasMore ? dbItems.slice(0, query.limit) : dbItems;
+    const items = result.map((e) => e.student);
+    const nextCursor = hasMore && items.length > 0 ? items[items.length - 1].id : null;
+
+    return { items, nextCursor, total };
+  },
+
+  /**
+   * 添加学生到上课规则
+   */
+  async addStudent(ruleId: string, studentId: string, userId: string) {
+    // 校验规则归属
+    const rule = await prisma.classRule.findFirst({
+      where: { id: ruleId, userId },
+    });
+    if (!rule) {
+      throw new ApiError(404, 'CLASS_RULE_NOT_FOUND', 'Class rule not found');
+    }
+
+    // 校验学生归属
+    const student = await prisma.student.findFirst({
+      where: { id: studentId, userId, deletedAt: null },
+    });
+    if (!student) {
+      throw new ApiError(404, 'STUDENT_NOT_FOUND', 'Student not found');
+    }
+
+    // 检查联合唯一键是否已存在
+    const existing = await prisma.classRuleStudent.findFirst({
+      where: { classRuleId: ruleId, studentId },
+    });
+
+    if (existing) {
+      if (existing.deletedAt) {
+        // 已存在且软删除 → 恢复
+        const updated = await prisma.classRuleStudent.update({
+          where: { id: existing.id },
+          data: { deletedAt: null },
+        });
+        return updated;
+      }
+      // 已存在且活跃 → 409 冲突
+      throw new ApiError(
+        409,
+        'STUDENT_ALREADY_ADDED',
+        'Student is already added to this class rule',
+      );
+    }
+
+    // 不存在 → 创建新记录
+    const classRuleStudent = await prisma.classRuleStudent.create({
+      data: {
+        classRuleId: ruleId,
+        studentId,
+        userId,
+      },
+    });
+
+    return classRuleStudent;
+  },
+
+  /**
+   * 从上课规则移除学生（软删除）
+   */
+  async removeStudent(id: string, userId: string) {
+    const crs = await prisma.classRuleStudent.findFirst({
+      where: { id, userId, deletedAt: null },
+    });
+    if (!crs) {
+      throw new ApiError(
+        404,
+        'CLASS_RULE_STUDENT_NOT_FOUND',
+        'Class rule student relation not found',
+      );
+    }
+
+    const updated = await prisma.classRuleStudent.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+
+    return updated;
+  },
 };
 
 /** 生成上课日期列表（最多 maxDays 天） */

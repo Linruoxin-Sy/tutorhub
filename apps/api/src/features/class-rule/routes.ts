@@ -1,17 +1,26 @@
 import { Hono } from 'hono';
 
 import {
+  classRuleAddStudentSchema,
+  classRuleAvailableStudentsQuerySchema,
   classRuleConflictCheckSchema,
   classRuleCreateSchema,
   classRuleDeleteParamsSchema,
   classRuleDetailParamsSchema,
   classRuleListQuerySchema,
+  classRuleRemoveStudentParamsSchema,
+  classRuleStudentListParamsSchema,
+  classRuleStudentListQuerySchema,
   classRuleUpdateParamsSchema,
   classRuleUpdateSchema,
+  type ClassRuleAddStudentResponse,
+  type ClassRuleAvailableStudentsResponse,
   type ClassRuleCreateResponse,
   type ClassRuleDeleteResponse,
   type ClassRuleDetailResponse,
   type ClassRuleListResponse,
+  type ClassRuleRemoveStudentResponse,
+  type ClassRuleStudentListResponse,
   type ClassRuleUpdateResponse,
 } from '@tutorhub/schema';
 
@@ -89,4 +98,67 @@ export const classRuleRoute = new Hono()
     const userId = c.get('userId');
     const res: ClassRuleDeleteResponse = await classRuleService.delete(id, userId);
     return c.json({ data: res });
-  });
+  })
+
+  // ────────── ClassRuleStudent 路由 ──────────
+
+  .get(
+    '/:ruleId/students',
+    zValidator('param', classRuleStudentListParamsSchema),
+    zValidator('query', classRuleStudentListQuerySchema),
+    async (c) => {
+      const { ruleId } = c.req.valid('param');
+      const query = c.req.valid('query');
+      const userId = c.get('userId');
+      const res: ClassRuleStudentListResponse = await classRuleService.listStudentsByRule(
+        ruleId,
+        query,
+        userId,
+      );
+      return c.json(res);
+    },
+  )
+  .get(
+    '/:ruleId/available-students',
+    zValidator('param', classRuleStudentListParamsSchema),
+    zValidator('query', classRuleAvailableStudentsQuerySchema),
+    async (c) => {
+      const { ruleId } = c.req.valid('param');
+      const query = c.req.valid('query');
+      const courseId = c.req.query('courseId') ?? '';
+      const userId = c.get('userId');
+      const res: ClassRuleAvailableStudentsResponse = await classRuleService.listAvailableStudents(
+        ruleId,
+        courseId,
+        query,
+        userId,
+      );
+      return c.json(res);
+    },
+  )
+  .post(
+    '/:ruleId/student',
+    zValidator('param', classRuleStudentListParamsSchema),
+    zValidator('json', classRuleAddStudentSchema),
+    async (c) => {
+      const { ruleId } = c.req.valid('param');
+      const { studentId } = c.req.valid('json');
+      const userId = c.get('userId');
+      const res: ClassRuleAddStudentResponse = await classRuleService.addStudent(
+        ruleId,
+        studentId,
+        userId,
+      );
+      return c.json({ data: res }, 201);
+    },
+  )
+  .delete(
+    '/class-rule-student/:id',
+    zValidator('param', classRuleRemoveStudentParamsSchema),
+    async (c) => {
+      const { id } = c.req.valid('param');
+      const userId = c.get('userId');
+      const res: ClassRuleRemoveStudentResponse = await classRuleService.removeStudent(id, userId);
+      return c.json({ data: res });
+    },
+  );

@@ -32,8 +32,8 @@ export * from './enums';
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more ClassSessionOverrides
- * const classSessionOverrides = await prisma.classSessionOverride.findMany()
+ * // Fetch zero or more ClassRuleStudents
+ * const classRuleStudents = await prisma.classRuleStudent.findMany()
  * ```
  *
  * Read more in our [docs](https://pris.ly/d/client).
@@ -46,6 +46,11 @@ export type PrismaClient<
 > = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>;
 export { Prisma };
 
+/**
+ * Model ClassRuleStudent
+ * 上课规则与学生关联表
+ */
+export type ClassRuleStudent = Prisma.ClassRuleStudentModel;
 /**
  * Model ClassSessionOverride
  * 课程实例变更记录 — 由 ClassRule 生成 session 后，用户对某个具体 session 的手动变更

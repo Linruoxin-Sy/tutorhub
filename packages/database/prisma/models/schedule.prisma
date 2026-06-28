@@ -41,6 +41,9 @@ model ClassRule {
   /// 课程实例变更记录
   classSessionOverrides ClassSessionOverride[]
 
+  /// 规则下关联的学生
+  classRuleStudents ClassRuleStudent[]
+
   @@index([courseId])
   @@index([userId])
   @@map("class_rule")

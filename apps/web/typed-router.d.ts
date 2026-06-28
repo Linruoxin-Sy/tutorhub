@@ -48,6 +48,13 @@ declare module 'vue-router/auto-routes' {
       { ruleId: ParamValue<false> },
       | never
     >,
+    'class-rule.add-student': RouteRecordInfo<
+      'class-rule.add-student',
+      '/class-rule/:ruleId/add-student',
+      { ruleId: ParamValue<true> },
+      { ruleId: ParamValue<false> },
+      | never
+    >,
     'class-rule.edit': RouteRecordInfo<
       'class-rule.edit',
       '/class-rule/:ruleId/edit',
@@ -195,6 +202,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/class-rule/[ruleId].vue': {
       routes:
         | 'class-rule.detail'
+      views:
+        | never
+    }
+    'src/pages/class-rule/[ruleId].add-student.vue': {
+      routes:
+        | 'class-rule.add-student'
       views:
         | never
     }
