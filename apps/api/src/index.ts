@@ -3,6 +3,8 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 
+import { checkDatabaseConnection, prisma } from '@tutorhub/database';
+
 import { authMiddleware } from '@/features/auth/middlewares/auth';
 import { authRoute } from '@/features/auth/routes';
 import { classRuleRoute } from '@/features/class-rule/routes';
@@ -14,7 +16,6 @@ import { studentRoute } from '@/features/student/routes';
 import { ApiError } from '@/shared/api-error';
 import { checkStorageConnection } from '@/shared/health';
 import { retry } from '@/shared/retry';
-import { checkDatabaseConnection, prisma } from '@tutorhub/database';
 import { bucketName, ensureBucket, s3Client } from '@/shared/s3';
 
 const publicApi = new Hono()
