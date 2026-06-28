@@ -21,9 +21,14 @@ export const useUserStore = defineStore('auth/user', () => {
   const user = ref<UserState>(initialUserState);
 
   const login = async (payload: z.infer<typeof loginSchema>) => {
-    const { data } = await request.post<LoginResponse>('/auth/login', payload);
-    user.value = data.user;
-    localStorage.setItem('token', data.token);
+    try {
+      const { data } = await request.post<LoginResponse>('/auth/login', payload);
+      user.value = data.user;
+      localStorage.setItem('token', data.token);
+    } catch {
+      // Axios 拦截器已显示错误 toast，此处仅阻止传播
+      throw new Error('Login failed');
+    }
   };
 
   const logout = () => {

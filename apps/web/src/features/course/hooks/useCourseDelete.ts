@@ -25,8 +25,7 @@ export function useCourseDelete() {
       toast.success('Course deleted successfully!');
       queryClient.invalidateQueries({ queryKey: ['courses'] });
     } catch {
-      toast.error('Failed to delete course');
-      throw new Error('Delete failed');
+      // Axios 拦截器已显示错误 toast，此处仅阻止后续流程
     } finally {
       isDeleting.value = false;
     }

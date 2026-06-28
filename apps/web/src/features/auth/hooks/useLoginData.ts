@@ -37,9 +37,13 @@ export function useLoginData() {
   const { withLoading, isLoadingRef: isSubmitting } = useLoading();
   const submit = withLoading(async () => {
     if (!verify()) return;
-    await userStore.login(loginPayload());
-    toast.success('Login successful!');
-    router.push({ name: 'dashboard' });
+    try {
+      await userStore.login(loginPayload());
+      toast.success('Login successful!');
+      router.push({ name: 'dashboard' });
+    } catch {
+      // Axios 拦截器或 userStore 已显示错误 toast，此处仅阻止后续流程
+    }
   });
 
   return {

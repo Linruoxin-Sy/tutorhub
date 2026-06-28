@@ -64,10 +64,14 @@ export function useCourseEditForm(id: string) {
     if (!verify()) return;
 
     const payload = merge(cloneDeep(formData.value), {});
-    await updateCourse(id, payload);
-    toast.success('Course updated successfully!');
-    queryClient.invalidateQueries({ queryKey: ['courses'] });
-    router.push({ name: 'course.list' });
+    try {
+      await updateCourse(id, payload);
+      toast.success('Course updated successfully!');
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
+      router.push({ name: 'course.list' });
+    } catch {
+      // Axios 拦截器已显示错误 toast，此处仅阻止后续流程
+    }
   });
 
   return {
