@@ -75,7 +75,7 @@ const router = useRouter();
 const { confirmAndDelete } = useCourseDelete();
 
 const search = ref('');
-const status = ref<'ACTIVE' | 'DISABLED' | ''>('');
+const status = ref<'ACTIVE' | 'DISABLED' | ''>('ACTIVE');
 const debouncedSearch = refDebounced(search, 300);
 
 const searchRef = computed(() => debouncedSearch.value ?? '');

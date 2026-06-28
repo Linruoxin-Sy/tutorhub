@@ -91,7 +91,7 @@ const { confirmAndDelete } = useStudentDelete();
 const searchInput = ref('');
 const debouncedSearch = refDebounced(searchInput, 300);
 
-const status = ref<'ACTIVE' | 'DISABLED' | ''>('');
+const status = ref<'ACTIVE' | 'DISABLED' | ''>('ACTIVE');
 
 const columns = ['Name', 'Email', 'Phone', 'Status', 'Created At', 'Actions'];
 

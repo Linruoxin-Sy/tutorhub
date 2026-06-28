@@ -90,7 +90,7 @@ const id = (route.params as Record<string, string>).id;
 const { data: student, isInitialLoading, avatarUrl } = useStudentDetailForm(id);
 
 const search = ref('');
-const status = ref<'ACTIVE' | 'DISABLED' | ''>('');
+const status = ref<'ACTIVE' | 'DISABLED' | ''>('ACTIVE');
 const debouncedSearch = refDebounced(search, 300);
 
 const searchRef = computed(() => debouncedSearch.value ?? '');
