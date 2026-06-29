@@ -13,5 +13,4 @@ export const classRuleFields = {
   endTime: z
     .string()
     .regex(/^\d{2}:\d{2}(:\d{2})?$/, 'endTime must be in HH:mm or HH:mm:ss format'),
-  room: z.string().nullable().optional(),
 } as const;

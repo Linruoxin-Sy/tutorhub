@@ -13,7 +13,6 @@ export const classRuleCreateSchema = z.object({
   endDate: classRuleFields.endDate,
   startTime: classRuleFields.startTime,
   endTime: classRuleFields.endTime,
-  room: classRuleFields.room,
 });
 
 export type ClassRuleCreateResponse = ClassRule;

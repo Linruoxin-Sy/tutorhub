@@ -65,7 +65,6 @@ export function useClassRuleCreateForm(courseId: string) {
       endTime: formData.value.endTime,
       name: formData.value.name,
       price: formData.value.price,
-      room: formData.value.room || null,
     };
 
     const result = classRuleCreateSchema.safeParse(payload);
@@ -89,7 +88,6 @@ export function useClassRuleCreateForm(courseId: string) {
       endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
       startTime: formData.value.startTime,
       endTime: formData.value.endTime,
-      room: formData.value.room || null,
     };
 
     try {
@@ -250,7 +248,6 @@ export function useClassRuleCreateForm(courseId: string) {
       endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
       name: formData.value.name,
       price: formData.value.price,
-      room: formData.value.room || null,
     };
 
     await createClassRule(apiPayload);

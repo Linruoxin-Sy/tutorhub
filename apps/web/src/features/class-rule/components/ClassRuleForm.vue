@@ -203,30 +203,6 @@
       </p>
     </div>
 
-    <!-- Room -->
-    <div class="space-y-2">
-      <label :for="field.id('room')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
-        Room/Place
-        <span v-if="!readonly" class="text-xs font-normal text-gray-400 dark:text-gray-500"
-          >(optional)</span
-        >
-      </label>
-      <input
-        v-if="!readonly"
-        :id="field.id('room')"
-        v-model="model.room"
-        type="text"
-        placeholder="e.g. Room 201"
-        class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
-      />
-      <p
-        v-else
-        class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
-      >
-        {{ model.room || '—' }}
-      </p>
-    </div>
-
     <!-- Actions slot (only in editable mode) -->
     <div v-if="!readonly">
       <slot name="actions" />

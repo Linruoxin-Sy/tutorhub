@@ -74,7 +74,6 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
         endTime: dayjs(rule.endTime as string).format('HH:mm'),
         intervalDays: (rule.intervalDays as number | null) ?? null,
         endDate: rule.endDate ? dayjs(rule.endDate as string).format('YYYY-MM-DD') : '',
-        room: (rule.room as string) ?? '',
       };
       initialFormData.value = cloneDeep(formData.value);
     } catch {
@@ -94,7 +93,6 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       endDate: formData.value.endDate || null,
       name: formData.value.name,
       price: formData.value.price,
-      room: formData.value.room || null,
     };
 
     const result = classRuleUpdateSchema.safeParse(payload);
@@ -119,7 +117,6 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
       startTime: formData.value.startTime,
       endTime: formData.value.endTime,
-      room: formData.value.room || null,
     };
 
     try {
@@ -276,7 +273,6 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
       name: formData.value.name,
       price: formData.value.price,
-      room: formData.value.room || null,
     };
 
     await updateClassRule(ruleId, payload);

@@ -100,7 +100,6 @@ export const classRuleService = {
         endTime: new Date(`1970-01-01T${input.endTime}`),
         name: input.name,
         price: input.price,
-        room: input.room ?? null,
       },
     });
 
@@ -125,8 +124,6 @@ export const classRuleService = {
     if (input.endTime !== undefined) updateData.endTime = new Date(`1970-01-01T${input.endTime}`);
     if (input.intervalDays !== undefined) updateData.intervalDays = input.intervalDays;
     if (input.endDate !== undefined) updateData.endDate = input.endDate;
-    if (input.room !== undefined) updateData.room = input.room;
-
     const classRule = await prisma.classRule.update({
       where: { id },
       data: updateData,
@@ -294,20 +291,6 @@ export const classRuleService = {
           type: 'resource',
           description: 'This time slot is already occupied by another session',
         });
-
-        // 教室冲突
-        if (input.room && rule.room === input.room) {
-          conflicts.push({
-            date: dateStr,
-            startTime: ruleStartStr,
-            endTime: ruleEndStr,
-            ruleId: rule.id,
-            courseName,
-            studentNames,
-            type: 'room',
-            description: `Room "${input.room}" is already occupied during this time slot`,
-          });
-        }
 
         if (conflicts.length >= 20) break;
       }

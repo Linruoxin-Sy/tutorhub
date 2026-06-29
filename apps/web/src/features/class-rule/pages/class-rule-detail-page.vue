@@ -344,7 +344,6 @@ async function loadData() {
       endTime: dayjs(data.endTime as string).format('HH:mm'),
       intervalDays: (data.intervalDays as number | null) ?? null,
       endDate: data.endDate ? dayjs(data.endDate as string).format('YYYY-MM-DD') : '',
-      room: (data.room as string) ?? '',
     };
 
     ruleStartDate = dayjs(data.startDate as string).toDate();

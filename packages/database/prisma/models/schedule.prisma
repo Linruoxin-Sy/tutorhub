@@ -35,9 +35,6 @@ model ClassRule {
   /// 课程单价
   price Decimal @map("price")
 
-  /// 默认教室/场地
-  room String?
-
   /// 所属课程
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 

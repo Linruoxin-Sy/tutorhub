@@ -29,7 +29,6 @@ export function useClassRuleDetailForm(ruleId: string) {
         endTime: dayjs(raw.endTime as string).format('HH:mm'),
         intervalDays: (raw.intervalDays as number | null) ?? null,
         endDate: raw.endDate ? dayjs(raw.endDate as string).format('YYYY-MM-DD') : '',
-        room: (raw.room as string) ?? '',
       };
     } catch {
       toast.error('Failed to load class rule details');
