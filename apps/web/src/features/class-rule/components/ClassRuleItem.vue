@@ -97,9 +97,13 @@
             </template>
             <template v-else>Single session</template>
           </span>
+          <i
+            v-if="rule!.price != null"
+            class="i-mdi-circle size-2 shrink-0 self-center px-2 text-gray-400 dark:text-gray-500"
+          />
           <span
             v-if="rule!.price != null"
-            class="self-center text-lg font-semibold tracking-tight text-emerald-600 dark:text-emerald-400"
+            class="self-center text-xl font-bold tracking-tight text-gray-500 dark:text-gray-400"
           >
             ¥{{ Number(rule!.price).toFixed(2) }}
           </span>
