@@ -5,103 +5,9 @@
       description="View generated sessions for this class rule."
     />
 
-    <!-- Read-only fields card -->
-    <CardSection v-if="!isLoading" class="shrink-0 space-y-5 p-6">
-      <!-- Name -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">Name</label>
-        <input
-          :value="ruleName"
-          type="text"
-          readonly
-          class="w-full cursor-default rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-white"
-        />
-      </div>
-
-      <!-- Price -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">Price</label>
-        <div class="flex items-center gap-3">
-          <input
-            :value="rulePriceDisplay"
-            type="text"
-            readonly
-            class="w-full cursor-default rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-white"
-          />
-          <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">¥</span>
-        </div>
-      </div>
-
-      <!-- Start Date -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">Start Date</label>
-        <input
-          :value="ruleStartDateDisplay"
-          type="text"
-          readonly
-          class="w-full cursor-default rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-white"
-        />
-      </div>
-
-      <!-- Start time -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">Start Time</label>
-        <input
-          :value="ruleStartTimeDisplay"
-          type="text"
-          readonly
-          class="w-full cursor-default rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-white"
-        />
-      </div>
-
-      <!-- End time -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">End Time</label>
-        <input
-          :value="ruleEndTimeDisplay"
-          type="text"
-          readonly
-          class="w-full cursor-default rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-white"
-        />
-      </div>
-
-      <!-- Repeat interval -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-200"
-          >Repeat Every N Days</label
-        >
-        <div class="flex items-center gap-3">
-          <input
-            :value="ruleIntervalDaysDisplay"
-            type="text"
-            readonly
-            class="w-full cursor-default rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-white"
-          />
-          <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">day(s)</span>
-        </div>
-      </div>
-
-      <!-- End date (only shown when interval is set) -->
-      <div v-if="ruleIntervalDaysRef" class="space-y-2">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">End Date</label>
-        <input
-          :value="ruleEndDateDisplay"
-          type="text"
-          readonly
-          class="w-full cursor-default rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-white"
-        />
-      </div>
-
-      <!-- Room -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">Room/Place</label>
-        <input
-          :value="ruleRoomDisplay"
-          type="text"
-          readonly
-          class="w-full cursor-default rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-white"
-        />
-      </div>
+    <!-- Read-only form -->
+    <CardSection v-if="!isInitialLoading" class="shrink-0 p-6">
+      <ClassRuleForm v-model="formData" readonly />
     </CardSection>
 
     <ListPageShell title="Sessions">
@@ -111,7 +17,7 @@
 
       <div class="flex h-125 flex-col">
         <div
-          v-if="isLoading"
+          v-if="isInitialLoading"
           class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400"
         >
           <LoadingIndicator text="Loading class rule data..." />
@@ -159,6 +65,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs';
+import { cloneDeep } from 'es-toolkit';
 import { computed, onMounted, ref } from 'vue';
 import { toast } from 'vue-sonner';
 import { useRouter } from 'vue-router';
@@ -175,30 +82,20 @@ import SessionItem from '@/features/session/components/SessionItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import LoadingIndicator from '@/components/LoadingIndicator.vue';
+import ClassRuleForm from '@/features/class-rule/components/ClassRuleForm.vue';
+import {
+  DEFAULT_FORM_DATA,
+  type ClassRuleFormData,
+} from '@/features/class-rule/types/classRuleForm';
 
 const props = defineProps<{
   ruleId: string;
 }>();
 
 const router = useRouter();
-const isLoading = ref(true);
+const isInitialLoading = ref(true);
 const courseName = ref('');
-const ruleName = ref('');
-const rulePrice = ref<number | null>(null);
-const ruleStartDateDisplay = ref('');
-const ruleEndDateDisplay = ref('');
-const ruleStartTimeDisplay = ref('');
-const ruleEndTimeDisplay = ref('');
-const ruleIntervalDaysRef = ref<number | null>(null);
-const ruleRoomDisplay = ref('');
-
-const rulePriceDisplay = computed(() =>
-  rulePrice.value != null ? Number(rulePrice.value).toFixed(2) : '—',
-);
-
-const ruleIntervalDaysDisplay = computed(() =>
-  ruleIntervalDaysRef.value != null ? String(ruleIntervalDaysRef.value) : '—',
-);
+const formData = ref<ClassRuleFormData>(cloneDeep(DEFAULT_FORM_DATA));
 
 const generatedSessions = ref<GeneratedSession[]>([]);
 const sessionWindowEnd = ref<Date | null>(null);
@@ -429,7 +326,7 @@ const sessionQuery = {
 
 /** 加载所有数据（规则 + override + 生成 session） */
 async function loadData() {
-  isLoading.value = true;
+  isInitialLoading.value = true;
   generatedSessions.value = [];
   cancelledDates.clear();
   rescheduledMap.clear();
@@ -439,16 +336,16 @@ async function loadData() {
     const rule = await fetchClassRuleById(props.ruleId);
     const data = rule as Record<string, unknown>;
     courseName.value = ((data.course as Record<string, unknown>)?.name as string) ?? '';
-    ruleName.value = (data.name as string) ?? '';
-    rulePrice.value = (data.price as number | null) ?? null;
-    ruleStartDateDisplay.value = dayjs(data.startDate as string).format('YYYY-MM-DD');
-    ruleEndDateDisplay.value = data.endDate
-      ? dayjs(data.endDate as string).format('YYYY-MM-DD')
-      : '';
-    ruleStartTimeDisplay.value = dayjs(data.startTime as string).format('HH:mm');
-    ruleEndTimeDisplay.value = dayjs(data.endTime as string).format('HH:mm');
-    ruleIntervalDaysRef.value = (data.intervalDays as number | null) ?? null;
-    ruleRoomDisplay.value = (data.room as string) ?? '—';
+    formData.value = {
+      name: (data.name as string) ?? '',
+      price: (data.price as number | null) ?? null,
+      startDate: dayjs(data.startDate as string).format('YYYY-MM-DD'),
+      startTime: dayjs(data.startTime as string).format('HH:mm'),
+      endTime: dayjs(data.endTime as string).format('HH:mm'),
+      intervalDays: (data.intervalDays as number | null) ?? null,
+      endDate: data.endDate ? dayjs(data.endDate as string).format('YYYY-MM-DD') : '',
+      room: (data.room as string) ?? '',
+    };
 
     ruleStartDate = dayjs(data.startDate as string).toDate();
     ruleEndDate = data.endDate ? dayjs(data.endDate as string).toDate() : null;
@@ -502,7 +399,7 @@ async function loadData() {
   } catch {
     // Handled by empty state
   } finally {
-    isLoading.value = false;
+    isInitialLoading.value = false;
   }
 }
 

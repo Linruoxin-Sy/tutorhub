@@ -7,41 +7,18 @@ import { toast } from 'vue-sonner';
 import { classRuleCreateSchema, type ConflictItem, type GeneratedSession } from '@tutorhub/schema';
 
 import { checkClassRuleConflicts, createClassRule } from '@/features/class-rule/api/class-rule-api';
+import {
+  DEFAULT_FORM_DATA,
+  type ClassRuleFormData,
+} from '@/features/class-rule/types/classRuleForm';
 import { computeSessionStatus } from '@/features/session/utils/sessionStatus';
 import { useLoading } from '@/hooks/useLoading';
-
-export interface ClassRuleFormData {
-  courseId: string;
-  startDate: string;
-  startTime: string;
-  endTime: string;
-  intervalDays: number | null;
-  endDate: string;
-  name: string;
-  price: number | null;
-  room: string;
-}
-
-export const DEFAULT_FORM_DATA: ClassRuleFormData = {
-  courseId: '',
-  startDate: '',
-  startTime: '',
-  endTime: '',
-  intervalDays: null,
-  endDate: '',
-  name: '',
-  price: null,
-  room: '',
-};
 
 export function useClassRuleCreateForm(courseId: string) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const formData = ref<ClassRuleFormData>({
-    ...cloneDeep(DEFAULT_FORM_DATA),
-    courseId,
-  });
+  const formData = ref<ClassRuleFormData>(cloneDeep(DEFAULT_FORM_DATA));
 
   const isValidated = ref(false);
   const conflictResult = ref<{ hasConflict: boolean; conflicts: ConflictItem[] } | null>(null);
@@ -80,7 +57,7 @@ export function useClassRuleCreateForm(courseId: string) {
 
   const verify = (): boolean => {
     const payload = {
-      courseId: formData.value.courseId,
+      courseId,
       startDate: formData.value.startDate,
       intervalDays: formData.value.intervalDays,
       endDate: formData.value.endDate || null,
@@ -106,7 +83,7 @@ export function useClassRuleCreateForm(courseId: string) {
 
   const checkConflicts = async (): Promise<boolean> => {
     const payload = {
-      courseId: formData.value.courseId,
+      courseId,
       startDate: new Date(formData.value.startDate),
       intervalDays: formData.value.intervalDays,
       endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
@@ -265,7 +242,7 @@ export function useClassRuleCreateForm(courseId: string) {
     if (!verify()) return;
 
     const apiPayload = {
-      courseId: formData.value.courseId,
+      courseId,
       startDate: new Date(formData.value.startDate),
       startTime: formData.value.startTime,
       endTime: formData.value.endTime,

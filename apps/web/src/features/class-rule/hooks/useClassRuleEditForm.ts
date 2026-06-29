@@ -11,10 +11,12 @@ import {
   fetchClassRuleById,
   updateClassRule,
 } from '@/features/class-rule/api/class-rule-api';
+import {
+  DEFAULT_FORM_DATA,
+  type ClassRuleFormData,
+} from '@/features/class-rule/types/classRuleForm';
 import { computeSessionStatus } from '@/features/session/utils/sessionStatus';
 import { useLoading } from '@/hooks/useLoading';
-
-import type { ClassRuleFormData } from './useClassRuleCreateForm';
 
 export function useClassRuleEditForm(courseId: string, ruleId: string) {
   const router = useRouter();
@@ -22,17 +24,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
 
   const isInitialLoading = ref(true);
 
-  const formData = ref<ClassRuleFormData>({
-    courseId,
-    startDate: '',
-    startTime: '',
-    endTime: '',
-    intervalDays: null,
-    endDate: '',
-    name: '',
-    price: null,
-    room: '',
-  });
+  const formData = ref<ClassRuleFormData>(cloneDeep(DEFAULT_FORM_DATA));
 
   const initialFormData = ref<ClassRuleFormData>(cloneDeep(formData.value));
 
@@ -75,14 +67,13 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     try {
       const rule = await fetchClassRuleById(ruleId);
       formData.value = {
-        courseId,
+        name: (rule.name as string) ?? '',
+        price: (rule.price as number | null) ?? null,
         startDate: dayjs(rule.startDate as string).format('YYYY-MM-DD'),
         startTime: dayjs(rule.startTime as string).format('HH:mm'),
         endTime: dayjs(rule.endTime as string).format('HH:mm'),
         intervalDays: (rule.intervalDays as number | null) ?? null,
         endDate: rule.endDate ? dayjs(rule.endDate as string).format('YYYY-MM-DD') : '',
-        name: (rule.name as string) ?? '',
-        price: (rule.price as number | null) ?? null,
         room: (rule.room as string) ?? '',
       };
       initialFormData.value = cloneDeep(formData.value);
