@@ -14,6 +14,7 @@ export const classSessionOverrideUpdateSchema = z
     rescheduledDate: classSessionOverrideFields.rescheduledDate.optional(),
     rescheduledStartTime: classSessionOverrideFields.rescheduledStartTime.optional(),
     rescheduledEndTime: classSessionOverrideFields.rescheduledEndTime.optional(),
+    priceOverride: classSessionOverrideFields.priceOverride.optional(),
     reason: classSessionOverrideFields.reason.optional(),
   })
   .refine((data) => Object.values(data).some((val) => val !== undefined), {

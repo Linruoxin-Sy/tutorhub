@@ -59,6 +59,25 @@
         </div>
       </div>
 
+      <!-- Price Override (optional) -->
+      <div class="space-y-2">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
+          Price Override
+          <span class="text-xs font-normal text-gray-400 dark:text-gray-500">(optional)</span>
+        </label>
+        <div class="flex items-center gap-3">
+          <input
+            v-model.number="formPriceOverride"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Override class-rule price for this session"
+            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
+          />
+          <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">¥</span>
+        </div>
+      </div>
+
       <!-- Reason (optional) -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -238,6 +257,7 @@ const courseName = ref('');
 // ---- Form state ----
 const formState = ref<'CANCELLED' | 'RESCHEDULED'>('CANCELLED');
 const formReason = ref('');
+const formPriceOverride = ref<number | null>(null);
 const formRescheduledDate = ref('');
 const formRescheduledStartTime = ref('');
 const formRescheduledEndTime = ref('');
@@ -308,6 +328,7 @@ const doCreateOverride = withLoading(async () => {
     classRuleId: props.ruleId,
     originalDate: queryDate + 'T00:00:00.000Z',
     state: formState.value,
+    priceOverride: formPriceOverride.value ?? null,
     reason: formReason.value || null,
   };
 

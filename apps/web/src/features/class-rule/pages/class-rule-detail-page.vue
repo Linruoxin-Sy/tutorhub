@@ -5,6 +5,24 @@
       description="View generated sessions for this class rule."
     />
 
+    <!-- Rule info summary -->
+    <CardSection v-if="!isLoading" class="shrink-0 space-y-2 p-6">
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+        <span class="text-gray-500 dark:text-gray-400">Course:</span>
+        <span class="font-medium text-gray-900 dark:text-white">{{ courseName }}</span>
+        <span v-if="ruleName" class="text-gray-300 dark:text-gray-600">|</span>
+        <span v-if="ruleName" class="text-gray-500 dark:text-gray-400">Rule:</span>
+        <span v-if="ruleName" class="font-medium text-gray-900 dark:text-white">{{
+          ruleName
+        }}</span>
+        <span class="text-gray-300 dark:text-gray-600">|</span>
+        <span class="text-gray-500 dark:text-gray-400">Price:</span>
+        <span class="font-medium text-gray-900 dark:text-white">
+          {{ rulePrice != null ? `¥${Number(rulePrice).toFixed(2)}` : '—' }}
+        </span>
+      </div>
+    </CardSection>
+
     <ListPageShell title="Sessions">
       <template #actions>
         <span v-if="courseName" class="text-sm text-gray-500 dark:text-gray-400">
@@ -86,6 +104,8 @@ const props = defineProps<{
 const router = useRouter();
 const isLoading = ref(true);
 const courseName = ref('');
+const ruleName = ref('');
+const rulePrice = ref<number | null>(null);
 const generatedSessions = ref<GeneratedSession[]>([]);
 const sessionWindowEnd = ref<Date | null>(null);
 const hasMoreRef = ref(false);
@@ -325,6 +345,8 @@ async function loadData() {
     const rule = await fetchClassRuleById(props.ruleId);
     const data = rule as Record<string, unknown>;
     courseName.value = ((data.course as Record<string, unknown>)?.name as string) ?? '';
+    ruleName.value = (data.name as string) ?? '';
+    rulePrice.value = (data.price as number | null) ?? null;
 
     ruleStartDate = dayjs(data.startDate as string).toDate();
     ruleEndDate = data.endDate ? dayjs(data.endDate as string).toDate() : null;

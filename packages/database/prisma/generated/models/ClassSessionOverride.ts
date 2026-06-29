@@ -21,8 +21,18 @@ export type ClassSessionOverrideModel =
 
 export type AggregateClassSessionOverride = {
   _count: ClassSessionOverrideCountAggregateOutputType | null;
+  _avg: ClassSessionOverrideAvgAggregateOutputType | null;
+  _sum: ClassSessionOverrideSumAggregateOutputType | null;
   _min: ClassSessionOverrideMinAggregateOutputType | null;
   _max: ClassSessionOverrideMaxAggregateOutputType | null;
+};
+
+export type ClassSessionOverrideAvgAggregateOutputType = {
+  priceOverride: runtime.Decimal | null;
+};
+
+export type ClassSessionOverrideSumAggregateOutputType = {
+  priceOverride: runtime.Decimal | null;
 };
 
 export type ClassSessionOverrideMinAggregateOutputType = {
@@ -36,6 +46,7 @@ export type ClassSessionOverrideMinAggregateOutputType = {
   rescheduledDate: Date | null;
   rescheduledStartTime: Date | null;
   rescheduledEndTime: Date | null;
+  priceOverride: runtime.Decimal | null;
   reason: string | null;
 };
 
@@ -50,6 +61,7 @@ export type ClassSessionOverrideMaxAggregateOutputType = {
   rescheduledDate: Date | null;
   rescheduledStartTime: Date | null;
   rescheduledEndTime: Date | null;
+  priceOverride: runtime.Decimal | null;
   reason: string | null;
 };
 
@@ -64,8 +76,17 @@ export type ClassSessionOverrideCountAggregateOutputType = {
   rescheduledDate: number;
   rescheduledStartTime: number;
   rescheduledEndTime: number;
+  priceOverride: number;
   reason: number;
   _all: number;
+};
+
+export type ClassSessionOverrideAvgAggregateInputType = {
+  priceOverride?: true;
+};
+
+export type ClassSessionOverrideSumAggregateInputType = {
+  priceOverride?: true;
 };
 
 export type ClassSessionOverrideMinAggregateInputType = {
@@ -79,6 +100,7 @@ export type ClassSessionOverrideMinAggregateInputType = {
   rescheduledDate?: true;
   rescheduledStartTime?: true;
   rescheduledEndTime?: true;
+  priceOverride?: true;
   reason?: true;
 };
 
@@ -93,6 +115,7 @@ export type ClassSessionOverrideMaxAggregateInputType = {
   rescheduledDate?: true;
   rescheduledStartTime?: true;
   rescheduledEndTime?: true;
+  priceOverride?: true;
   reason?: true;
 };
 
@@ -107,6 +130,7 @@ export type ClassSessionOverrideCountAggregateInputType = {
   rescheduledDate?: true;
   rescheduledStartTime?: true;
   rescheduledEndTime?: true;
+  priceOverride?: true;
   reason?: true;
   _all?: true;
 };
@@ -153,6 +177,18 @@ export type ClassSessionOverrideAggregateArgs<
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
+   * Select which fields to average
+   **/
+  _avg?: ClassSessionOverrideAvgAggregateInputType;
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+   **/
+  _sum?: ClassSessionOverrideSumAggregateInputType;
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
    * Select which fields to find the minimum value
    **/
   _min?: ClassSessionOverrideMinAggregateInputType;
@@ -184,6 +220,8 @@ export type ClassSessionOverrideGroupByArgs<
   take?: number;
   skip?: number;
   _count?: ClassSessionOverrideCountAggregateInputType | true;
+  _avg?: ClassSessionOverrideAvgAggregateInputType;
+  _sum?: ClassSessionOverrideSumAggregateInputType;
   _min?: ClassSessionOverrideMinAggregateInputType;
   _max?: ClassSessionOverrideMaxAggregateInputType;
 };
@@ -199,8 +237,11 @@ export type ClassSessionOverrideGroupByOutputType = {
   rescheduledDate: Date | null;
   rescheduledStartTime: Date | null;
   rescheduledEndTime: Date | null;
+  priceOverride: runtime.Decimal | null;
   reason: string | null;
   _count: ClassSessionOverrideCountAggregateOutputType | null;
+  _avg: ClassSessionOverrideAvgAggregateOutputType | null;
+  _sum: ClassSessionOverrideSumAggregateOutputType | null;
   _min: ClassSessionOverrideMinAggregateOutputType | null;
   _max: ClassSessionOverrideMaxAggregateOutputType | null;
 };
@@ -238,6 +279,13 @@ export type ClassSessionOverrideWhereInput = {
     | string
     | null;
   rescheduledEndTime?: Prisma.DateTimeNullableFilter<'ClassSessionOverride'> | Date | string | null;
+  priceOverride?:
+    | Prisma.DecimalNullableFilter<'ClassSessionOverride'>
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.StringNullableFilter<'ClassSessionOverride'> | string | null;
   classRule?: Prisma.XOR<Prisma.ClassRuleScalarRelationFilter, Prisma.ClassRuleWhereInput>;
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
@@ -254,6 +302,7 @@ export type ClassSessionOverrideOrderByWithRelationInput = {
   rescheduledDate?: Prisma.SortOrderInput | Prisma.SortOrder;
   rescheduledStartTime?: Prisma.SortOrderInput | Prisma.SortOrder;
   rescheduledEndTime?: Prisma.SortOrderInput | Prisma.SortOrder;
+  priceOverride?: Prisma.SortOrderInput | Prisma.SortOrder;
   reason?: Prisma.SortOrderInput | Prisma.SortOrder;
   classRule?: Prisma.ClassRuleOrderByWithRelationInput;
   user?: Prisma.UserOrderByWithRelationInput;
@@ -285,6 +334,13 @@ export type ClassSessionOverrideWhereUniqueInput = Prisma.AtLeast<
       | Date
       | string
       | null;
+    priceOverride?:
+      | Prisma.DecimalNullableFilter<'ClassSessionOverride'>
+      | runtime.Decimal
+      | runtime.DecimalJsLike
+      | number
+      | string
+      | null;
     reason?: Prisma.StringNullableFilter<'ClassSessionOverride'> | string | null;
     classRule?: Prisma.XOR<Prisma.ClassRuleScalarRelationFilter, Prisma.ClassRuleWhereInput>;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
@@ -303,10 +359,13 @@ export type ClassSessionOverrideOrderByWithAggregationInput = {
   rescheduledDate?: Prisma.SortOrderInput | Prisma.SortOrder;
   rescheduledStartTime?: Prisma.SortOrderInput | Prisma.SortOrder;
   rescheduledEndTime?: Prisma.SortOrderInput | Prisma.SortOrder;
+  priceOverride?: Prisma.SortOrderInput | Prisma.SortOrder;
   reason?: Prisma.SortOrderInput | Prisma.SortOrder;
   _count?: Prisma.ClassSessionOverrideCountOrderByAggregateInput;
+  _avg?: Prisma.ClassSessionOverrideAvgOrderByAggregateInput;
   _max?: Prisma.ClassSessionOverrideMaxOrderByAggregateInput;
   _min?: Prisma.ClassSessionOverrideMinOrderByAggregateInput;
+  _sum?: Prisma.ClassSessionOverrideSumOrderByAggregateInput;
 };
 
 export type ClassSessionOverrideScalarWhereWithAggregatesInput = {
@@ -341,6 +400,13 @@ export type ClassSessionOverrideScalarWhereWithAggregatesInput = {
     | Date
     | string
     | null;
+  priceOverride?:
+    | Prisma.DecimalNullableWithAggregatesFilter<'ClassSessionOverride'>
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.StringNullableWithAggregatesFilter<'ClassSessionOverride'> | string | null;
 };
 
@@ -353,6 +419,7 @@ export type ClassSessionOverrideCreateInput = {
   rescheduledDate?: Date | string | null;
   rescheduledStartTime?: Date | string | null;
   rescheduledEndTime?: Date | string | null;
+  priceOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
   reason?: string | null;
   classRule: Prisma.ClassRuleCreateNestedOneWithoutClassSessionOverridesInput;
   user: Prisma.UserCreateNestedOneWithoutClassSessionOverridesInput;
@@ -369,6 +436,7 @@ export type ClassSessionOverrideUncheckedCreateInput = {
   rescheduledDate?: Date | string | null;
   rescheduledStartTime?: Date | string | null;
   rescheduledEndTime?: Date | string | null;
+  priceOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
   reason?: string | null;
 };
 
@@ -383,6 +451,13 @@ export type ClassSessionOverrideUpdateInput = {
   rescheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  priceOverride?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   classRule?: Prisma.ClassRuleUpdateOneRequiredWithoutClassSessionOverridesNestedInput;
   user?: Prisma.UserUpdateOneRequiredWithoutClassSessionOverridesNestedInput;
@@ -401,6 +476,13 @@ export type ClassSessionOverrideUncheckedUpdateInput = {
   rescheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  priceOverride?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -415,6 +497,7 @@ export type ClassSessionOverrideCreateManyInput = {
   rescheduledDate?: Date | string | null;
   rescheduledStartTime?: Date | string | null;
   rescheduledEndTime?: Date | string | null;
+  priceOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
   reason?: string | null;
 };
 
@@ -429,6 +512,13 @@ export type ClassSessionOverrideUpdateManyMutationInput = {
   rescheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  priceOverride?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -445,6 +535,13 @@ export type ClassSessionOverrideUncheckedUpdateManyInput = {
   rescheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  priceOverride?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -464,7 +561,12 @@ export type ClassSessionOverrideCountOrderByAggregateInput = {
   rescheduledDate?: Prisma.SortOrder;
   rescheduledStartTime?: Prisma.SortOrder;
   rescheduledEndTime?: Prisma.SortOrder;
+  priceOverride?: Prisma.SortOrder;
   reason?: Prisma.SortOrder;
+};
+
+export type ClassSessionOverrideAvgOrderByAggregateInput = {
+  priceOverride?: Prisma.SortOrder;
 };
 
 export type ClassSessionOverrideMaxOrderByAggregateInput = {
@@ -478,6 +580,7 @@ export type ClassSessionOverrideMaxOrderByAggregateInput = {
   rescheduledDate?: Prisma.SortOrder;
   rescheduledStartTime?: Prisma.SortOrder;
   rescheduledEndTime?: Prisma.SortOrder;
+  priceOverride?: Prisma.SortOrder;
   reason?: Prisma.SortOrder;
 };
 
@@ -492,7 +595,12 @@ export type ClassSessionOverrideMinOrderByAggregateInput = {
   rescheduledDate?: Prisma.SortOrder;
   rescheduledStartTime?: Prisma.SortOrder;
   rescheduledEndTime?: Prisma.SortOrder;
+  priceOverride?: Prisma.SortOrder;
   reason?: Prisma.SortOrder;
+};
+
+export type ClassSessionOverrideSumOrderByAggregateInput = {
+  priceOverride?: Prisma.SortOrder;
 };
 
 export type ClassSessionOverrideListRelationFilter = {
@@ -507,6 +615,14 @@ export type ClassSessionOverrideOrderByRelationAggregateInput = {
 
 export type EnumClassSessionOverrideStateFieldUpdateOperationsInput = {
   set?: $Enums.ClassSessionOverrideState;
+};
+
+export type NullableDecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string;
 };
 
 export type NullableStringFieldUpdateOperationsInput = {
@@ -734,6 +850,7 @@ export type ClassSessionOverrideCreateWithoutClassRuleInput = {
   rescheduledDate?: Date | string | null;
   rescheduledStartTime?: Date | string | null;
   rescheduledEndTime?: Date | string | null;
+  priceOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
   reason?: string | null;
   user: Prisma.UserCreateNestedOneWithoutClassSessionOverridesInput;
 };
@@ -748,6 +865,7 @@ export type ClassSessionOverrideUncheckedCreateWithoutClassRuleInput = {
   rescheduledDate?: Date | string | null;
   rescheduledStartTime?: Date | string | null;
   rescheduledEndTime?: Date | string | null;
+  priceOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
   reason?: string | null;
 };
 
@@ -814,6 +932,13 @@ export type ClassSessionOverrideScalarWhereInput = {
     | string
     | null;
   rescheduledEndTime?: Prisma.DateTimeNullableFilter<'ClassSessionOverride'> | Date | string | null;
+  priceOverride?:
+    | Prisma.DecimalNullableFilter<'ClassSessionOverride'>
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.StringNullableFilter<'ClassSessionOverride'> | string | null;
 };
 
@@ -826,6 +951,7 @@ export type ClassSessionOverrideCreateWithoutUserInput = {
   rescheduledDate?: Date | string | null;
   rescheduledStartTime?: Date | string | null;
   rescheduledEndTime?: Date | string | null;
+  priceOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
   reason?: string | null;
   classRule: Prisma.ClassRuleCreateNestedOneWithoutClassSessionOverridesInput;
 };
@@ -840,6 +966,7 @@ export type ClassSessionOverrideUncheckedCreateWithoutUserInput = {
   rescheduledDate?: Date | string | null;
   rescheduledStartTime?: Date | string | null;
   rescheduledEndTime?: Date | string | null;
+  priceOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
   reason?: string | null;
 };
 
@@ -896,6 +1023,7 @@ export type ClassSessionOverrideCreateManyClassRuleInput = {
   rescheduledDate?: Date | string | null;
   rescheduledStartTime?: Date | string | null;
   rescheduledEndTime?: Date | string | null;
+  priceOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
   reason?: string | null;
 };
 
@@ -910,6 +1038,13 @@ export type ClassSessionOverrideUpdateWithoutClassRuleInput = {
   rescheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  priceOverride?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   user?: Prisma.UserUpdateOneRequiredWithoutClassSessionOverridesNestedInput;
 };
@@ -926,6 +1061,13 @@ export type ClassSessionOverrideUncheckedUpdateWithoutClassRuleInput = {
   rescheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  priceOverride?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -941,6 +1083,13 @@ export type ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleInput = {
   rescheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  priceOverride?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -954,6 +1103,7 @@ export type ClassSessionOverrideCreateManyUserInput = {
   rescheduledDate?: Date | string | null;
   rescheduledStartTime?: Date | string | null;
   rescheduledEndTime?: Date | string | null;
+  priceOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
   reason?: string | null;
 };
 
@@ -968,6 +1118,13 @@ export type ClassSessionOverrideUpdateWithoutUserInput = {
   rescheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  priceOverride?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   classRule?: Prisma.ClassRuleUpdateOneRequiredWithoutClassSessionOverridesNestedInput;
 };
@@ -984,6 +1141,13 @@ export type ClassSessionOverrideUncheckedUpdateWithoutUserInput = {
   rescheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  priceOverride?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -999,6 +1163,13 @@ export type ClassSessionOverrideUncheckedUpdateManyWithoutUserInput = {
   rescheduledDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledStartTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   rescheduledEndTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  priceOverride?:
+    | Prisma.NullableDecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string
+    | null;
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -1016,6 +1187,7 @@ export type ClassSessionOverrideSelect<
     rescheduledDate?: boolean;
     rescheduledStartTime?: boolean;
     rescheduledEndTime?: boolean;
+    priceOverride?: boolean;
     reason?: boolean;
     classRule?: boolean | Prisma.ClassRuleDefaultArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -1037,6 +1209,7 @@ export type ClassSessionOverrideSelectCreateManyAndReturn<
     rescheduledDate?: boolean;
     rescheduledStartTime?: boolean;
     rescheduledEndTime?: boolean;
+    priceOverride?: boolean;
     reason?: boolean;
     classRule?: boolean | Prisma.ClassRuleDefaultArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -1058,6 +1231,7 @@ export type ClassSessionOverrideSelectUpdateManyAndReturn<
     rescheduledDate?: boolean;
     rescheduledStartTime?: boolean;
     rescheduledEndTime?: boolean;
+    priceOverride?: boolean;
     reason?: boolean;
     classRule?: boolean | Prisma.ClassRuleDefaultArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -1076,6 +1250,7 @@ export type ClassSessionOverrideSelectScalar = {
   rescheduledDate?: boolean;
   rescheduledStartTime?: boolean;
   rescheduledEndTime?: boolean;
+  priceOverride?: boolean;
   reason?: boolean;
 };
 
@@ -1092,6 +1267,7 @@ export type ClassSessionOverrideOmit<
   | 'rescheduledDate'
   | 'rescheduledStartTime'
   | 'rescheduledEndTime'
+  | 'priceOverride'
   | 'reason',
   ExtArgs['result']['classSessionOverride']
 >;
@@ -1170,6 +1346,10 @@ export type $ClassSessionOverridePayload<
        * 调课后的新结束时间
        */
       rescheduledEndTime: Date | null;
+      /**
+       * 覆盖单价（仅对该次 session 生效，可选）
+       */
+      priceOverride: runtime.Decimal | null;
       /**
        * 原因说明
        */
@@ -1784,6 +1964,7 @@ export interface ClassSessionOverrideFieldRefs {
   readonly rescheduledDate: Prisma.FieldRef<'ClassSessionOverride', 'DateTime'>;
   readonly rescheduledStartTime: Prisma.FieldRef<'ClassSessionOverride', 'DateTime'>;
   readonly rescheduledEndTime: Prisma.FieldRef<'ClassSessionOverride', 'DateTime'>;
+  readonly priceOverride: Prisma.FieldRef<'ClassSessionOverride', 'Decimal'>;
   readonly reason: Prisma.FieldRef<'ClassSessionOverride', 'String'>;
 }
 

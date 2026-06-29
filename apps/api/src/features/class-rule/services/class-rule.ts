@@ -98,6 +98,8 @@ export const classRuleService = {
         endDate: input.endDate ?? null,
         startTime: new Date(`1970-01-01T${input.startTime}`),
         endTime: new Date(`1970-01-01T${input.endTime}`),
+        name: input.name,
+        price: input.price,
         room: input.room ?? null,
       },
     });
@@ -115,6 +117,8 @@ export const classRuleService = {
     }
 
     const updateData: Record<string, unknown> = {};
+    if (input.name !== undefined) updateData.name = input.name;
+    if (input.price !== undefined) updateData.price = input.price;
     if (input.startDate !== undefined) updateData.startDate = input.startDate;
     if (input.startTime !== undefined)
       updateData.startTime = new Date(`1970-01-01T${input.startTime}`);

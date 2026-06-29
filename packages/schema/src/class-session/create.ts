@@ -11,6 +11,7 @@ export const classSessionOverrideCreateSchema = z.object({
   rescheduledDate: classSessionOverrideFields.rescheduledDate.optional(),
   rescheduledStartTime: classSessionOverrideFields.rescheduledStartTime.optional(),
   rescheduledEndTime: classSessionOverrideFields.rescheduledEndTime.optional(),
+  priceOverride: classSessionOverrideFields.priceOverride.optional(),
   reason: classSessionOverrideFields.reason.optional(),
 });
 

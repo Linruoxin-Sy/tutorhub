@@ -28,10 +28,12 @@ export type AggregateClassRule = {
 
 export type ClassRuleAvgAggregateOutputType = {
   intervalDays: number | null;
+  price: runtime.Decimal | null;
 };
 
 export type ClassRuleSumAggregateOutputType = {
   intervalDays: number | null;
+  price: runtime.Decimal | null;
 };
 
 export type ClassRuleMinAggregateOutputType = {
@@ -45,6 +47,8 @@ export type ClassRuleMinAggregateOutputType = {
   endDate: Date | null;
   startTime: Date | null;
   endTime: Date | null;
+  name: string | null;
+  price: runtime.Decimal | null;
   room: string | null;
 };
 
@@ -59,6 +63,8 @@ export type ClassRuleMaxAggregateOutputType = {
   endDate: Date | null;
   startTime: Date | null;
   endTime: Date | null;
+  name: string | null;
+  price: runtime.Decimal | null;
   room: string | null;
 };
 
@@ -73,16 +79,20 @@ export type ClassRuleCountAggregateOutputType = {
   endDate: number;
   startTime: number;
   endTime: number;
+  name: number;
+  price: number;
   room: number;
   _all: number;
 };
 
 export type ClassRuleAvgAggregateInputType = {
   intervalDays?: true;
+  price?: true;
 };
 
 export type ClassRuleSumAggregateInputType = {
   intervalDays?: true;
+  price?: true;
 };
 
 export type ClassRuleMinAggregateInputType = {
@@ -96,6 +106,8 @@ export type ClassRuleMinAggregateInputType = {
   endDate?: true;
   startTime?: true;
   endTime?: true;
+  name?: true;
+  price?: true;
   room?: true;
 };
 
@@ -110,6 +122,8 @@ export type ClassRuleMaxAggregateInputType = {
   endDate?: true;
   startTime?: true;
   endTime?: true;
+  name?: true;
+  price?: true;
   room?: true;
 };
 
@@ -124,6 +138,8 @@ export type ClassRuleCountAggregateInputType = {
   endDate?: true;
   startTime?: true;
   endTime?: true;
+  name?: true;
+  price?: true;
   room?: true;
   _all?: true;
 };
@@ -228,6 +244,8 @@ export type ClassRuleGroupByOutputType = {
   endDate: Date | null;
   startTime: Date;
   endTime: Date;
+  name: string;
+  price: runtime.Decimal;
   room: string | null;
   _count: ClassRuleCountAggregateOutputType | null;
   _avg: ClassRuleAvgAggregateOutputType | null;
@@ -262,6 +280,13 @@ export type ClassRuleWhereInput = {
   endDate?: Prisma.DateTimeNullableFilter<'ClassRule'> | Date | string | null;
   startTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
   endTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
+  name?: Prisma.StringFilter<'ClassRule'> | string;
+  price?:
+    | Prisma.DecimalFilter<'ClassRule'>
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.StringNullableFilter<'ClassRule'> | string | null;
   course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>;
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
@@ -280,6 +305,8 @@ export type ClassRuleOrderByWithRelationInput = {
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder;
   startTime?: Prisma.SortOrder;
   endTime?: Prisma.SortOrder;
+  name?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
   room?: Prisma.SortOrderInput | Prisma.SortOrder;
   course?: Prisma.CourseOrderByWithRelationInput;
   user?: Prisma.UserOrderByWithRelationInput;
@@ -302,6 +329,13 @@ export type ClassRuleWhereUniqueInput = Prisma.AtLeast<
     endDate?: Prisma.DateTimeNullableFilter<'ClassRule'> | Date | string | null;
     startTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
     endTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
+    name?: Prisma.StringFilter<'ClassRule'> | string;
+    price?:
+      | Prisma.DecimalFilter<'ClassRule'>
+      | runtime.Decimal
+      | runtime.DecimalJsLike
+      | number
+      | string;
     room?: Prisma.StringNullableFilter<'ClassRule'> | string | null;
     course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
@@ -322,6 +356,8 @@ export type ClassRuleOrderByWithAggregationInput = {
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder;
   startTime?: Prisma.SortOrder;
   endTime?: Prisma.SortOrder;
+  name?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
   room?: Prisma.SortOrderInput | Prisma.SortOrder;
   _count?: Prisma.ClassRuleCountOrderByAggregateInput;
   _avg?: Prisma.ClassRuleAvgOrderByAggregateInput;
@@ -348,6 +384,13 @@ export type ClassRuleScalarWhereWithAggregatesInput = {
   endDate?: Prisma.DateTimeNullableWithAggregatesFilter<'ClassRule'> | Date | string | null;
   startTime?: Prisma.DateTimeWithAggregatesFilter<'ClassRule'> | Date | string;
   endTime?: Prisma.DateTimeWithAggregatesFilter<'ClassRule'> | Date | string;
+  name?: Prisma.StringWithAggregatesFilter<'ClassRule'> | string;
+  price?:
+    | Prisma.DecimalWithAggregatesFilter<'ClassRule'>
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.StringNullableWithAggregatesFilter<'ClassRule'> | string | null;
 };
 
@@ -360,6 +403,8 @@ export type ClassRuleCreateInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
   course: Prisma.CourseCreateNestedOneWithoutClassRulesInput;
   user: Prisma.UserCreateNestedOneWithoutClassRulesInput;
@@ -378,6 +423,8 @@ export type ClassRuleUncheckedCreateInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutClassRuleInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutClassRuleInput;
@@ -392,6 +439,13 @@ export type ClassRuleUpdateInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   course?: Prisma.CourseUpdateOneRequiredWithoutClassRulesNestedInput;
   user?: Prisma.UserUpdateOneRequiredWithoutClassRulesNestedInput;
@@ -410,6 +464,13 @@ export type ClassRuleUncheckedUpdateInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutClassRuleNestedInput;
@@ -426,6 +487,8 @@ export type ClassRuleCreateManyInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
 };
 
@@ -438,6 +501,13 @@ export type ClassRuleUpdateManyMutationInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -452,6 +522,13 @@ export type ClassRuleUncheckedUpdateManyInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -481,11 +558,14 @@ export type ClassRuleCountOrderByAggregateInput = {
   endDate?: Prisma.SortOrder;
   startTime?: Prisma.SortOrder;
   endTime?: Prisma.SortOrder;
+  name?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
   room?: Prisma.SortOrder;
 };
 
 export type ClassRuleAvgOrderByAggregateInput = {
   intervalDays?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
 };
 
 export type ClassRuleMaxOrderByAggregateInput = {
@@ -499,6 +579,8 @@ export type ClassRuleMaxOrderByAggregateInput = {
   endDate?: Prisma.SortOrder;
   startTime?: Prisma.SortOrder;
   endTime?: Prisma.SortOrder;
+  name?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
   room?: Prisma.SortOrder;
 };
 
@@ -513,11 +595,14 @@ export type ClassRuleMinOrderByAggregateInput = {
   endDate?: Prisma.SortOrder;
   startTime?: Prisma.SortOrder;
   endTime?: Prisma.SortOrder;
+  name?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
   room?: Prisma.SortOrder;
 };
 
 export type ClassRuleSumOrderByAggregateInput = {
   intervalDays?: Prisma.SortOrder;
+  price?: Prisma.SortOrder;
 };
 
 export type ClassRuleCreateNestedOneWithoutClassRuleStudentsInput = {
@@ -666,6 +751,14 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number;
 };
 
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string;
+};
+
 export type ClassRuleCreateNestedManyWithoutUserInput = {
   create?:
     | Prisma.XOR<
@@ -761,6 +854,8 @@ export type ClassRuleCreateWithoutClassRuleStudentsInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
   course: Prisma.CourseCreateNestedOneWithoutClassRulesInput;
   user: Prisma.UserCreateNestedOneWithoutClassRulesInput;
@@ -778,6 +873,8 @@ export type ClassRuleUncheckedCreateWithoutClassRuleStudentsInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutClassRuleInput;
 };
@@ -819,6 +916,13 @@ export type ClassRuleUpdateWithoutClassRuleStudentsInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   course?: Prisma.CourseUpdateOneRequiredWithoutClassRulesNestedInput;
   user?: Prisma.UserUpdateOneRequiredWithoutClassRulesNestedInput;
@@ -836,6 +940,13 @@ export type ClassRuleUncheckedUpdateWithoutClassRuleStudentsInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleNestedInput;
 };
@@ -849,6 +960,8 @@ export type ClassRuleCreateWithoutClassSessionOverridesInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
   course: Prisma.CourseCreateNestedOneWithoutClassRulesInput;
   user: Prisma.UserCreateNestedOneWithoutClassRulesInput;
@@ -866,6 +979,8 @@ export type ClassRuleUncheckedCreateWithoutClassSessionOverridesInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutClassRuleInput;
 };
@@ -907,6 +1022,13 @@ export type ClassRuleUpdateWithoutClassSessionOverridesInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   course?: Prisma.CourseUpdateOneRequiredWithoutClassRulesNestedInput;
   user?: Prisma.UserUpdateOneRequiredWithoutClassRulesNestedInput;
@@ -924,6 +1046,13 @@ export type ClassRuleUncheckedUpdateWithoutClassSessionOverridesInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutClassRuleNestedInput;
 };
@@ -937,6 +1066,8 @@ export type ClassRuleCreateWithoutCourseInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
   user: Prisma.UserCreateNestedOneWithoutClassRulesInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutClassRuleInput;
@@ -953,6 +1084,8 @@ export type ClassRuleUncheckedCreateWithoutCourseInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutClassRuleInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutClassRuleInput;
@@ -1013,6 +1146,13 @@ export type ClassRuleScalarWhereInput = {
   endDate?: Prisma.DateTimeNullableFilter<'ClassRule'> | Date | string | null;
   startTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
   endTime?: Prisma.DateTimeFilter<'ClassRule'> | Date | string;
+  name?: Prisma.StringFilter<'ClassRule'> | string;
+  price?:
+    | Prisma.DecimalFilter<'ClassRule'>
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.StringNullableFilter<'ClassRule'> | string | null;
 };
 
@@ -1025,6 +1165,8 @@ export type ClassRuleCreateWithoutUserInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
   course: Prisma.CourseCreateNestedOneWithoutClassRulesInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutClassRuleInput;
@@ -1041,6 +1183,8 @@ export type ClassRuleUncheckedCreateWithoutUserInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutClassRuleInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutClassRuleInput;
@@ -1097,6 +1241,8 @@ export type ClassRuleCreateManyCourseInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
 };
 
@@ -1109,6 +1255,13 @@ export type ClassRuleUpdateWithoutCourseInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   user?: Prisma.UserUpdateOneRequiredWithoutClassRulesNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutClassRuleNestedInput;
@@ -1125,6 +1278,13 @@ export type ClassRuleUncheckedUpdateWithoutCourseInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutClassRuleNestedInput;
@@ -1140,6 +1300,13 @@ export type ClassRuleUncheckedUpdateManyWithoutCourseInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -1153,6 +1320,8 @@ export type ClassRuleCreateManyUserInput = {
   endDate?: Date | string | null;
   startTime: Date | string;
   endTime: Date | string;
+  name: string;
+  price: runtime.Decimal | runtime.DecimalJsLike | number | string;
   room?: string | null;
 };
 
@@ -1165,6 +1334,13 @@ export type ClassRuleUpdateWithoutUserInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   course?: Prisma.CourseUpdateOneRequiredWithoutClassRulesNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutClassRuleNestedInput;
@@ -1181,6 +1357,13 @@ export type ClassRuleUncheckedUpdateWithoutUserInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutClassRuleNestedInput;
@@ -1196,6 +1379,13 @@ export type ClassRuleUncheckedUpdateManyWithoutUserInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   startTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  price?:
+    | Prisma.DecimalFieldUpdateOperationsInput
+    | runtime.Decimal
+    | runtime.DecimalJsLike
+    | number
+    | string;
   room?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 
@@ -1259,6 +1449,8 @@ export type ClassRuleSelect<
     endDate?: boolean;
     startTime?: boolean;
     endTime?: boolean;
+    name?: boolean;
+    price?: boolean;
     room?: boolean;
     course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -1283,6 +1475,8 @@ export type ClassRuleSelectCreateManyAndReturn<
     endDate?: boolean;
     startTime?: boolean;
     endTime?: boolean;
+    name?: boolean;
+    price?: boolean;
     room?: boolean;
     course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -1304,6 +1498,8 @@ export type ClassRuleSelectUpdateManyAndReturn<
     endDate?: boolean;
     startTime?: boolean;
     endTime?: boolean;
+    name?: boolean;
+    price?: boolean;
     room?: boolean;
     course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -1322,6 +1518,8 @@ export type ClassRuleSelectScalar = {
   endDate?: boolean;
   startTime?: boolean;
   endTime?: boolean;
+  name?: boolean;
+  price?: boolean;
   room?: boolean;
 };
 
@@ -1338,6 +1536,8 @@ export type ClassRuleOmit<
   | 'endDate'
   | 'startTime'
   | 'endTime'
+  | 'name'
+  | 'price'
   | 'room',
   ExtArgs['result']['classRule']
 >;
@@ -1427,6 +1627,14 @@ export type $ClassRulePayload<
        * 结束时间
        */
       endTime: Date;
+      /**
+       * 规则名称
+       */
+      name: string;
+      /**
+       * 课程单价
+       */
+      price: runtime.Decimal;
       /**
        * 默认教室/场地
        */
@@ -2060,6 +2268,8 @@ export interface ClassRuleFieldRefs {
   readonly endDate: Prisma.FieldRef<'ClassRule', 'DateTime'>;
   readonly startTime: Prisma.FieldRef<'ClassRule', 'DateTime'>;
   readonly endTime: Prisma.FieldRef<'ClassRule', 'DateTime'>;
+  readonly name: Prisma.FieldRef<'ClassRule', 'String'>;
+  readonly price: Prisma.FieldRef<'ClassRule', 'Decimal'>;
   readonly room: Prisma.FieldRef<'ClassRule', 'String'>;
 }
 

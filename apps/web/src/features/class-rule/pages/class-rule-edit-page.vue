@@ -102,6 +102,37 @@
         </p>
       </div>
 
+      <!-- Name -->
+      <div class="space-y-2">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
+          Name <span class="text-red-500">*</span>
+        </label>
+        <input
+          v-model="formData.name"
+          type="text"
+          placeholder="e.g. Weekend Class"
+          class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
+        />
+      </div>
+
+      <!-- Price -->
+      <div class="space-y-2">
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
+          Price <span class="text-red-500">*</span>
+        </label>
+        <div class="flex items-center gap-3">
+          <input
+            v-model.number="formData.price"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="e.g. 200"
+            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
+          />
+          <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">¥</span>
+        </div>
+      </div>
+
       <!-- Submit button (three-phase state machine) -->
       <Transition
         mode="out-in"

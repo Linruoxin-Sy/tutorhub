@@ -10,6 +10,8 @@ export const classRuleUpdateParamsSchema = z.object({
 
 export const classRuleUpdateSchema = z
   .object({
+    name: classRuleFields.name.optional(),
+    price: classRuleFields.price.optional(),
     startDate: classRuleFields.startDate.optional(),
     intervalDays: classRuleFields.intervalDays,
     endDate: classRuleFields.endDate,

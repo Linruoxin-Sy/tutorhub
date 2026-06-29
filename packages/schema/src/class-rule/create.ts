@@ -6,6 +6,8 @@ import { classRuleFields } from './class-rule';
 
 export const classRuleCreateSchema = z.object({
   courseId: classRuleFields.courseId,
+  name: classRuleFields.name,
+  price: classRuleFields.price,
   startDate: classRuleFields.startDate,
   intervalDays: classRuleFields.intervalDays,
   endDate: classRuleFields.endDate,

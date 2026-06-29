@@ -17,6 +17,8 @@ export interface ClassRuleFormData {
   endTime: string;
   intervalDays: number | null;
   endDate: string;
+  name: string;
+  price: number | null;
   room: string;
 }
 
@@ -27,6 +29,8 @@ export const DEFAULT_FORM_DATA: ClassRuleFormData = {
   endTime: '',
   intervalDays: null,
   endDate: '',
+  name: '',
+  price: null,
   room: '',
 };
 
@@ -82,6 +86,8 @@ export function useClassRuleCreateForm(courseId: string) {
       endDate: formData.value.endDate || null,
       startTime: formData.value.startTime,
       endTime: formData.value.endTime,
+      name: formData.value.name,
+      price: formData.value.price,
       room: formData.value.room || null,
     };
 
@@ -265,6 +271,8 @@ export function useClassRuleCreateForm(courseId: string) {
       endTime: formData.value.endTime,
       intervalDays: formData.value.intervalDays || null,
       endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
+      name: formData.value.name,
+      price: formData.value.price,
       room: formData.value.room || null,
     };
 

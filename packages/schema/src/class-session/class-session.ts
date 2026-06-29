@@ -13,5 +13,6 @@ export const classSessionOverrideFields = {
     .string()
     .regex(/^\d{2}:\d{2}(:\d{2})?$/, 'rescheduledEndTime must be in HH:mm or HH:mm:ss format')
     .nullable(),
+  priceOverride: z.coerce.number().nonnegative().nullable(),
   reason: z.string().nullable(),
 } as const;

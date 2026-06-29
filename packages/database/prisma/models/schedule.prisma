@@ -29,6 +29,12 @@ model ClassRule {
   /// 结束时间
   endTime DateTime @map("end_time") @db.Time()
 
+  /// 规则名称
+  name String
+
+  /// 课程单价
+  price Decimal @map("price")
+
   /// 默认教室/场地
   room String?
 

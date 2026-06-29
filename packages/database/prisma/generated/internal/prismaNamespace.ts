@@ -1000,6 +1000,7 @@ export const ClassSessionOverrideScalarFieldEnum = {
   rescheduledDate: 'rescheduledDate',
   rescheduledStartTime: 'rescheduledStartTime',
   rescheduledEndTime: 'rescheduledEndTime',
+  priceOverride: 'priceOverride',
   reason: 'reason',
 } as const;
 
@@ -1031,6 +1032,8 @@ export const ClassRuleScalarFieldEnum = {
   endDate: 'endDate',
   startTime: 'startTime',
   endTime: 'endTime',
+  name: 'name',
+  price: 'price',
   room: 'room',
 } as const;
 
@@ -1142,6 +1145,16 @@ export type ListEnumClassSessionOverrideStateFieldRefInput<$PrismaModel> = Field
   $PrismaModel,
   'ClassSessionOverrideState[]'
 >;
+
+/**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>;
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>;
 
 /**
  * Reference to a field of type 'CourseStatus'

@@ -97,6 +97,7 @@ export const ClassSessionOverrideScalarFieldEnum = {
   rescheduledDate: 'rescheduledDate',
   rescheduledStartTime: 'rescheduledStartTime',
   rescheduledEndTime: 'rescheduledEndTime',
+  priceOverride: 'priceOverride',
   reason: 'reason',
 } as const;
 
@@ -128,6 +129,8 @@ export const ClassRuleScalarFieldEnum = {
   endDate: 'endDate',
   startTime: 'startTime',
   endTime: 'endTime',
+  name: 'name',
+  price: 'price',
   room: 'room',
 } as const;
 

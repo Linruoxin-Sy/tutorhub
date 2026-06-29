@@ -29,6 +29,8 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     endTime: '',
     intervalDays: null,
     endDate: '',
+    name: '',
+    price: null,
     room: '',
   });
 
@@ -79,6 +81,8 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
         endTime: dayjs(rule.endTime as string).format('HH:mm'),
         intervalDays: (rule.intervalDays as number | null) ?? null,
         endDate: rule.endDate ? dayjs(rule.endDate as string).format('YYYY-MM-DD') : '',
+        name: (rule.name as string) ?? '',
+        price: (rule.price as number | null) ?? null,
         room: (rule.room as string) ?? '',
       };
       initialFormData.value = cloneDeep(formData.value);
@@ -97,6 +101,8 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       endTime: formData.value.endTime,
       intervalDays: formData.value.intervalDays,
       endDate: formData.value.endDate || null,
+      name: formData.value.name,
+      price: formData.value.price,
       room: formData.value.room || null,
     };
 
@@ -277,6 +283,8 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       endTime: formData.value.endTime,
       intervalDays: formData.value.intervalDays || null,
       endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
+      name: formData.value.name,
+      price: formData.value.price,
       room: formData.value.room || null,
     };
 

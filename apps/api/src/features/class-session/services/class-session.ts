@@ -91,6 +91,7 @@ export const classSessionOverrideService = {
         rescheduledEndTime: input.rescheduledEndTime
           ? new Date(`1970-01-01T${input.rescheduledEndTime}`)
           : null,
+        priceOverride: input.priceOverride ?? null,
         reason: input.reason ?? null,
       },
       create: {
@@ -105,6 +106,7 @@ export const classSessionOverrideService = {
         rescheduledEndTime: input.rescheduledEndTime
           ? new Date(`1970-01-01T${input.rescheduledEndTime}`)
           : null,
+        priceOverride: input.priceOverride ?? null,
         reason: input.reason ?? null,
       },
     });
@@ -136,6 +138,7 @@ export const classSessionOverrideService = {
       updateData.rescheduledEndTime = input.rescheduledEndTime
         ? new Date(`1970-01-01T${input.rescheduledEndTime}`)
         : null;
+    if (input.priceOverride !== undefined) updateData.priceOverride = input.priceOverride;
     if (input.reason !== undefined) updateData.reason = input.reason;
 
     const override = await prisma.classSessionOverride.update({

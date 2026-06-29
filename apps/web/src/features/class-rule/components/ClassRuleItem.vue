@@ -91,6 +91,12 @@
             </template>
             <template v-else>Single session</template>
           </span>
+          <span
+            v-if="rule!.price != null"
+            class="self-center text-lg font-semibold tracking-tight text-emerald-600 dark:text-emerald-400"
+          >
+            ¥{{ Number(rule!.price).toFixed(2) }}
+          </span>
         </div>
         <div v-if="actions.length" class="flex shrink-0 gap-1 self-end">
           <EditButton v-if="actions.includes('edit')" @click.stop="emit('edit')" />
