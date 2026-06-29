@@ -33,6 +33,12 @@
         class="border-b border-gray-200 bg-gray-50 px-5 py-4 dark:border-[#343434] dark:bg-[#252525]"
       >
         <div class="flex items-center gap-2">
+          <template v-if="rule!.name">
+            <i class="i-lucide-tag size-3.5 shrink-0 text-gray-500 dark:text-gray-400" />
+            <span class="text-xs font-semibold text-gray-900 dark:text-white">
+              {{ rule!.name }}
+            </span>
+          </template>
           <template v-if="rule!.course">
             <i class="i-lucide-book-open size-3.5 shrink-0 text-gray-500 dark:text-gray-400" />
             <span class="text-xs font-semibold text-gray-900 dark:text-white">
