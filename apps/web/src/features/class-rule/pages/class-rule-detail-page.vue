@@ -1,5 +1,5 @@
 <template>
-  <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+  <main class="mx-auto flex min-h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <PageHeader
       title="Class Rule Details"
       description="View generated sessions for this class rule."
@@ -7,17 +7,6 @@
 
     <!-- Read-only fields card -->
     <CardSection v-if="!isLoading" class="shrink-0 space-y-5 p-6">
-      <!-- Course -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">Course</label>
-        <input
-          :value="courseName"
-          type="text"
-          readonly
-          class="w-full cursor-default rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none dark:border-[#3a3a3a] dark:bg-[#1a1a1a] dark:text-white"
-        />
-      </div>
-
       <!-- Name -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">Name</label>
@@ -78,7 +67,9 @@
 
       <!-- Repeat interval -->
       <div class="space-y-2">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">Repeat Every N Days</label>
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-200"
+          >Repeat Every N Days</label
+        >
         <div class="flex items-center gap-3">
           <input
             :value="ruleIntervalDaysDisplay"
@@ -451,7 +442,9 @@ async function loadData() {
     ruleName.value = (data.name as string) ?? '';
     rulePrice.value = (data.price as number | null) ?? null;
     ruleStartDateDisplay.value = dayjs(data.startDate as string).format('YYYY-MM-DD');
-    ruleEndDateDisplay.value = data.endDate ? dayjs(data.endDate as string).format('YYYY-MM-DD') : '';
+    ruleEndDateDisplay.value = data.endDate
+      ? dayjs(data.endDate as string).format('YYYY-MM-DD')
+      : '';
     ruleStartTimeDisplay.value = dayjs(data.startTime as string).format('HH:mm');
     ruleEndTimeDisplay.value = dayjs(data.endTime as string).format('HH:mm');
     ruleIntervalDaysRef.value = (data.intervalDays as number | null) ?? null;
