@@ -11,18 +11,27 @@
     <CardSection v-else class="shrink-0 space-y-5 p-6">
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Change Session</h3>
 
-      <!-- Original session info -->
-      <div
-        class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-[#3a3a3a] dark:bg-[#1a1a1a]"
-      >
-        <p class="text-sm text-gray-500 dark:text-gray-400">Original Session</p>
-        <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-          {{ queryDate }} &middot; {{ ruleStartTime }} – {{ ruleEndTime }}
-        </p>
-        <p v-if="courseName" class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-          Course: {{ courseName }}
-        </p>
-      </div>
+      <!-- Preview: change result -->
+      <SessionItem
+        v-if="formState === 'CANCELLED'"
+        :course-name="courseName"
+        :date="queryDate"
+        :start-time="ruleStartTime"
+        :end-time="ruleEndTime"
+        status="cancelled"
+      />
+      <SessionItem
+        v-else
+        :course-name="courseName"
+        :date="formRescheduledDate || queryDate"
+        :start-time="ruleStartTime"
+        :end-time="ruleEndTime"
+        :original-date="queryDate"
+        :original-start-time="formRescheduledStartTime || ruleStartTime"
+        :original-end-time="formRescheduledEndTime || ruleEndTime"
+        :price="formPriceOverride"
+        status="rescheduled"
+      />
 
       <!-- State selector -->
       <div class="space-y-2">
