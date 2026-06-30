@@ -119,17 +119,6 @@
       </div>
     </div>
 
-    <!-- Recurring toggle -->
-    <div v-if="!readonly" class="flex items-center gap-3">
-      <label class="relative inline-flex cursor-pointer items-center">
-        <input v-model="model.isRecurring" type="checkbox" class="peer sr-only" />
-        <div
-          class="h-5 w-9 rounded-full border-2 border-gray-300 bg-gray-100 transition peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-focus:outline-none after:absolute after:inset-s-0.75 after:top-0.75 after:size-3.5 after:rounded-full after:bg-white after:transition after:content-[''] peer-checked:after:translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-500"
-        />
-      </label>
-      <span class="text-sm font-medium text-gray-700 dark:text-gray-200"> Recurring course </span>
-    </div>
-
     <!-- Start & End Time -->
     <div class="flex items-start gap-3">
       <div class="flex-1 space-y-2">
@@ -187,6 +176,17 @@
           {{ model.endTime }}
         </p>
       </div>
+    </div>
+
+    <!-- Recurring toggle -->
+    <div v-if="!readonly" class="flex items-center gap-3">
+      <label class="relative inline-flex cursor-pointer items-center">
+        <input v-model="model.isRecurring" type="checkbox" class="peer sr-only" />
+        <div
+          class="h-5 w-9 rounded-full border-2 border-gray-300 bg-gray-100 transition peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-focus:outline-none after:absolute after:inset-s-0.75 after:top-0.75 after:size-3.5 after:rounded-full after:bg-white after:transition after:content-[''] peer-checked:after:translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-500"
+        />
+      </label>
+      <span class="text-sm font-medium text-gray-700 dark:text-gray-200"> Recurring course </span>
     </div>
 
     <!-- Repeat interval (only when recurring) -->
