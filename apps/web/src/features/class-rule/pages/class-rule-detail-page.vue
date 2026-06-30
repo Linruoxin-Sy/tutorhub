@@ -230,11 +230,7 @@ function navigateToSessionEdit(session: GeneratedSession) {
   router.push({
     name: 'session.edit',
     params: { ruleId: props.ruleId },
-    query: {
-      date: session.occurrenceDate,
-      startTime: session.startTime,
-      endTime: session.endTime,
-    },
+    query: { date: session.occurrenceDate },
   });
 }
 

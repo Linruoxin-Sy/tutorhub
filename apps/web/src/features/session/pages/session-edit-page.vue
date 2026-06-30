@@ -17,7 +17,7 @@
       >
         <p class="text-sm text-gray-500 dark:text-gray-400">Original Session</p>
         <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
-          {{ queryDate }} &middot; {{ queryStartTime }} – {{ queryEndTime }}
+          {{ queryDate }} &middot; {{ ruleStartTime }} – {{ ruleEndTime }}
         </p>
         <p v-if="courseName" class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
           Course: {{ courseName }}
@@ -242,6 +242,7 @@ import { toast } from 'vue-sonner';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { useRoute, useRouter } from 'vue-router';
+import dayjs from 'dayjs';
 import type { ClassSessionOverrideConflictCheckResponse } from '@tutorhub/schema';
 
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
@@ -266,8 +267,6 @@ const router = useRouter();
 const route = useRoute();
 const query = route.query as Record<string, string>;
 const queryDate = query.date ?? '';
-const queryStartTime = query.startTime ?? '';
-const queryEndTime = query.endTime ?? '';
 
 const { isDark } = useThemeToggle();
 const { withLoading, isLoadingRef: isSubmitting } = useLoading();
@@ -275,6 +274,8 @@ const { withLoading, isLoadingRef: isSubmitting } = useLoading();
 // ---- Data loading ----
 const isLoading = ref(true);
 const courseName = ref('');
+const ruleStartTime = ref('');
+const ruleEndTime = ref('');
 
 // ---- Form state ----
 const formState = ref<'CANCELLED' | 'RESCHEDULED'>('CANCELLED');
@@ -296,10 +297,14 @@ onMounted(async () => {
     const data = rule as Record<string, unknown>;
     courseName.value = ((data.course as Record<string, unknown>)?.name as string) ?? '';
 
+    // Derive original session time from class rule
+    ruleStartTime.value = dayjs(data.startTime as string).format('HH:mm');
+    ruleEndTime.value = dayjs(data.endTime as string).format('HH:mm');
+
     // Pre-fill reschedule fields with original session data
     formRescheduledDate.value = queryDate;
-    formRescheduledStartTime.value = queryStartTime;
-    formRescheduledEndTime.value = queryEndTime;
+    formRescheduledStartTime.value = ruleStartTime.value;
+    formRescheduledEndTime.value = ruleEndTime.value;
   } catch {
     toast.error('Failed to load session data');
     goBack();
