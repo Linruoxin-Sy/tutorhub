@@ -410,7 +410,13 @@ export const classRuleService = {
   async listAvailableStudents(
     ruleId: string,
     courseId: string,
-    query: { cursor?: string; offset?: number; limit: number; name?: string },
+    query: {
+      cursor?: string;
+      offset?: number;
+      limit: number;
+      name?: string;
+      status?: StudentStatus;
+    },
     userId: string,
   ) {
     const rule = await prisma.classRule.findFirst({
@@ -436,6 +442,7 @@ export const classRuleService = {
       deletedAt: null,
       ...(addedStudentIds.length > 0 ? { studentId: { notIn: addedStudentIds } } : {}),
       ...(query.name ? { student: { name: { contains: query.name, mode: 'insensitive' } } } : {}),
+      ...(query.status ? { student: { status: query.status } } : {}),
     };
 
     if (query.offset !== undefined) {

@@ -266,6 +266,7 @@ export const enrollmentService = {
       deletedAt: null,
       id: enrolledStudentIds.length > 0 ? { notIn: enrolledStudentIds } : undefined,
       ...(query.name ? { name: { contains: query.name, mode: 'insensitive' } } : {}),
+      ...(query.status ? { status: query.status } : {}),
     };
 
     // offset 分页

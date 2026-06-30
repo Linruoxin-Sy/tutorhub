@@ -120,6 +120,7 @@ export async function fetchClassRuleAvailableStudents(
     offset?: number;
     limit?: number;
     name?: string;
+    status?: string;
   },
 ): Promise<ClassRuleAvailableStudentsResponse> {
   const { data } = await request.get<ClassRuleAvailableStudentsResponse>(

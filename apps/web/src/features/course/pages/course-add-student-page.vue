@@ -4,7 +4,15 @@
 
     <ListPageShell title="Available Students">
       <template #filters>
-        <SearchInput v-model="search" placeholder="Search students..." />
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
+          <SearchInput v-model="search" placeholder="Search students..." />
+
+          <SelectInput v-model="status">
+            <option value="">All status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="DISABLED">Disabled</option>
+          </SelectInput>
+        </div>
       </template>
 
       <VirtualList
@@ -17,7 +25,7 @@
         <template #header>
           <div
             class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
-            style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr"
+            style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1fr 1.2fr 1fr"
           >
             <div
               v-for="column in columns"
@@ -81,6 +89,7 @@ import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import SearchInput from '@/components/SearchInput.vue';
+import SelectInput from '@/components/SelectInput.vue';
 import type { Student } from '@tutorhub/database';
 
 const router = useRouter();
@@ -88,16 +97,19 @@ const route = useRoute();
 const queryClient = useQueryClient();
 const id = (route.params as Record<string, string>).id;
 
-const columns = ['Name', 'Email', 'Phone', 'Created At', 'Status'];
+const columns = ['Name', 'Email', 'Phone', 'Status', 'Created At', 'Actions'];
 
 const search = ref('');
 const debouncedSearch = refDebounced(search, 300);
 const searchRef = computed(() => debouncedSearch.value ?? '');
 
+const status = ref<'ACTIVE' | 'DISABLED' | ''>('ACTIVE');
+const statusRef = computed(() => status.value ?? '');
+
 const sparseQuery = useSparseQuery<Student>({
   queryKeyPrefix: ['available-students', id],
   fetchFn: (params) => fetchAvailableStudents(id, params),
-  filters: { name: searchRef },
+  filters: { name: searchRef, status: statusRef },
 });
 
 /** 使用 Set 存储已选项的 ID，O(1) 查找 */

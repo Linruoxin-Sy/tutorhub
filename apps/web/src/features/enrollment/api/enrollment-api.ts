@@ -83,6 +83,7 @@ export async function fetchAvailableStudents(
     offset?: number;
     limit?: number;
     name?: string;
+    status?: string;
   },
 ): Promise<AvailableStudentsResponse> {
   const { data } = await request.get<AvailableStudentsResponse>(
