@@ -35,6 +35,7 @@ export async function fetchCourseEnrollments(
     offset?: number;
     limit?: number;
     name?: string;
+    status?: string;
   },
 ): Promise<CourseEnrollmentListResponse> {
   const { data } = await request.get<CourseEnrollmentListResponse>(

@@ -1,11 +1,10 @@
 import dayjs from 'dayjs';
-import { cloneDeep, isNil, mapValues, pick } from 'es-toolkit';
+import { cloneDeep } from 'es-toolkit';
 import { toast } from 'vue-sonner';
 
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
 import {
   DEFAULT_FORM_DATA,
-  FORM_DATA_KEYS,
   type ClassRuleFormData,
 } from '@/features/class-rule/types/classRuleForm';
 

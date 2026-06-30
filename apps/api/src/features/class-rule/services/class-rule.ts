@@ -1,7 +1,7 @@
 import rrulePkg, { type Options as RRuleOptions } from 'rrule';
 import { z } from 'zod';
 
-import type { Prisma } from '@tutorhub/database';
+import type { Prisma, StudentStatus } from '@tutorhub/database';
 import type {
   classRuleConflictCheckSchema,
   classRuleCreateSchema,
@@ -339,7 +339,13 @@ export const classRuleService = {
    */
   async listStudentsByRule(
     ruleId: string,
-    query: { cursor?: string; offset?: number; limit: number; name?: string },
+    query: {
+      cursor?: string;
+      offset?: number;
+      limit: number;
+      name?: string;
+      status?: StudentStatus;
+    },
     userId: string,
   ) {
     const rule = await prisma.classRule.findFirst({
@@ -355,6 +361,7 @@ export const classRuleService = {
       classRuleId: ruleId,
       deletedAt: null,
       ...(query.name ? { student: { name: { contains: query.name, mode: 'insensitive' } } } : {}),
+      ...(query.status ? { student: { status: query.status } } : {}),
     };
 
     if (query.offset !== undefined) {

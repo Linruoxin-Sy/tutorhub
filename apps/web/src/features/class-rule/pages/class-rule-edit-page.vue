@@ -139,7 +139,7 @@
           <template #header>
             <div
               class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
-              style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1.2fr 1fr"
+              style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1fr 1.2fr 1fr"
             >
               <div
                 v-for="column in studentColumns"
@@ -191,6 +191,7 @@ import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import LoadingIndicator from '@/components/LoadingIndicator.vue';
 import SearchInput from '@/components/SearchInput.vue';
+import SelectInput from '@/components/SelectInput.vue';
 import AppButton from '@/components/AppButton.vue';
 import StudentItem from '@/features/student/components/StudentItem.vue';
 import ClassRuleForm from '@/features/class-rule/components/ClassRuleForm.vue';
@@ -230,16 +231,19 @@ const router = useRouter();
 const queryClient = useQueryClient();
 const { confirm } = useDialog();
 
-const studentColumns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
+const studentColumns = ['Name', 'Email', 'Phone', 'Status', 'Created At', 'Actions'];
 
 const studentSearch = ref('');
 const debouncedStudentSearch = refDebounced(studentSearch, 300);
 const studentSearchRef = computed(() => debouncedStudentSearch.value ?? '');
 
+const studentStatus = ref<'ACTIVE' | 'DISABLED' | ''>('ACTIVE');
+const studentStatusRef = computed(() => studentStatus.value ?? '');
+
 const studentQuery = useSparseQuery<ClassRuleStudentItem>({
   queryKeyPrefix: ['class-rule-students', props.ruleId],
   fetchFn: (params) => fetchClassRuleStudents(props.ruleId, params),
-  filters: { name: studentSearchRef },
+  filters: { name: studentSearchRef, status: studentStatusRef },
 });
 
 async function handleRemoveStudent(item: ClassRuleStudentItem) {

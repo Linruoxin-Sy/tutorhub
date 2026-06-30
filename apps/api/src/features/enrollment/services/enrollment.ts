@@ -91,6 +91,7 @@ export const enrollmentService = {
       courseId,
       userId,
       ...(query.name ? { student: { name: { contains: query.name, mode: 'insensitive' } } } : {}),
+      ...(query.status ? { student: { status: query.status } } : {}),
     };
 
     // offset 分页
