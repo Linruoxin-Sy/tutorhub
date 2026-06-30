@@ -46,7 +46,7 @@
               key="update"
               :disabled="!canSubmit"
               class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
-              @click="doUpdate"
+              @click="handleUpdate"
             >
               <span v-if="isSubmitting">Saving...</span>
               <span v-else>Update Class Rule</span>
@@ -248,9 +248,13 @@ const {
 } = useClassRuleEditForm(props.courseId, props.ruleId);
 
 async function handleConflictCheck() {
+  await runConflictCheck();
+}
+
+async function handleUpdate() {
   if (hasTimeChanged.value) {
     const confirmed = await confirm({
-      title: 'Confirm Time Change',
+      title: 'Clear Session Overrides',
       message:
         'Modifying the schedule will clear all existing session overrides (cancellations/reschedules). Do you want to continue?',
       confirmText: 'Continue',
@@ -260,7 +264,7 @@ async function handleConflictCheck() {
     if (!confirmed) return;
   }
 
-  await runConflictCheck();
+  await doUpdate();
 }
 
 // ---- Assigned Students ----
