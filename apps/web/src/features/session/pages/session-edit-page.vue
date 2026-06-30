@@ -108,34 +108,40 @@
           />
         </div>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
-            New Start Time <span class="text-red-500">*</span>
-          </label>
-          <VueDatePicker
-            v-model="formRescheduledStartTime"
-            model-type="HH:mm"
-            :dark="isDark"
-            :ui="datePickerUi"
-            time-picker
-            placeholder="Select new start time"
-            class="w-full"
-          />
-        </div>
+        <div class="flex items-start gap-3">
+          <div class="flex-1 space-y-2">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
+              New Start Time <span class="text-red-500">*</span>
+            </label>
+            <VueDatePicker
+              v-model="formRescheduledStartTime"
+              model-type="HH:mm"
+              :dark="isDark"
+              :ui="datePickerUi"
+              time-picker
+              placeholder="Start time"
+              class="w-full"
+            />
+          </div>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
-            New End Time <span class="text-red-500">*</span>
-          </label>
-          <VueDatePicker
-            v-model="formRescheduledEndTime"
-            model-type="HH:mm"
-            :dark="isDark"
-            :ui="datePickerUi"
-            time-picker
-            placeholder="Select new end time"
-            class="w-full"
-          />
+          <div class="flex shrink-0 items-center pt-9">
+            <i class="i-lucide-arrow-right text-gray-400 dark:text-gray-500" />
+          </div>
+
+          <div class="flex-1 space-y-2">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
+              New End Time <span class="text-red-500">*</span>
+            </label>
+            <VueDatePicker
+              v-model="formRescheduledEndTime"
+              model-type="HH:mm"
+              :dark="isDark"
+              :ui="datePickerUi"
+              time-picker
+              placeholder="End time"
+              class="w-full"
+            />
+          </div>
         </div>
 
         <!-- Price Override (optional) -->
