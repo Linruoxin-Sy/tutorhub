@@ -256,7 +256,7 @@ async function handleUpdate() {
     const confirmed = await confirm({
       title: 'Clear Session Overrides',
       message:
-        'Modifying the schedule will clear all existing session overrides (cancellations/reschedules). Do you want to continue?',
+        'Modifying the schedule will delete all existing session changes (cancellations and reschedules). Do you want to continue?',
       confirmText: 'Continue',
       variant: 'primary',
     });
