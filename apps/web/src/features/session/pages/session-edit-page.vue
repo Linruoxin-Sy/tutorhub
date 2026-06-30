@@ -59,22 +59,19 @@
         </div>
       </div>
 
-      <!-- Price Override (optional) -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Price Override
-          <span class="text-xs font-normal text-gray-400 dark:text-gray-500">(optional)</span>
-        </label>
-        <div class="flex items-center gap-3">
-          <input
-            v-model.number="formPriceOverride"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="Override class-rule price for this session"
-            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
-          />
-          <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">¥</span>
+      <!-- Cancel info banner (only when CANCELLED) -->
+      <div
+        v-if="formState === 'CANCELLED'"
+        class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900/40 dark:bg-red-900/10"
+      >
+        <i class="i-lucide-info mt-0.5 inline size-5 shrink-0 text-red-500 dark:text-red-400" />
+        <div>
+          <p class="text-sm font-medium text-red-700 dark:text-red-400">
+            This session will be cancelled
+          </p>
+          <p class="mt-0.5 text-sm text-red-600 dark:text-red-300/70">
+            No charges will be applied for this session.
+          </p>
         </div>
       </div>
 
@@ -139,6 +136,25 @@
             placeholder="Select new end time"
             class="w-full"
           />
+        </div>
+
+        <!-- Price Override (optional) -->
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
+            Price Override
+            <span class="text-xs font-normal text-gray-400 dark:text-gray-500">(optional)</span>
+          </label>
+          <div class="flex items-center gap-3">
+            <input
+              v-model.number="formPriceOverride"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="Override class-rule price for this session"
+              class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
+            />
+            <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">¥</span>
+          </div>
         </div>
 
         <!-- Conflict check button -->
@@ -328,7 +344,7 @@ const doCreateOverride = withLoading(async () => {
     classRuleId: props.ruleId,
     originalDate: queryDate + 'T00:00:00.000Z',
     state: formState.value,
-    priceOverride: formPriceOverride.value ?? null,
+    priceOverride: formState.value === 'CANCELLED' ? null : (formPriceOverride.value ?? null),
     reason: formReason.value || null,
   };
 
