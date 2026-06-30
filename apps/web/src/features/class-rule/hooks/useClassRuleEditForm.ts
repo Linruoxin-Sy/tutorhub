@@ -98,6 +98,16 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       return false;
     }
 
+    if (
+      formData.value.startTime &&
+      formData.value.endTime &&
+      formData.value.startTime >= formData.value.endTime
+    ) {
+      toast.warning('Start time must be earlier than end time');
+      isValidated.value = false;
+      return false;
+    }
+
     const payload = {
       startDate: formData.value.startDate,
       startTime: formData.value.startTime,

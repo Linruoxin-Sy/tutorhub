@@ -65,6 +65,16 @@ export function useClassRuleCreateForm(courseId: string) {
       return false;
     }
 
+    if (
+      formData.value.startTime &&
+      formData.value.endTime &&
+      formData.value.startTime >= formData.value.endTime
+    ) {
+      toast.warning('Start time must be earlier than end time');
+      isValidated.value = false;
+      return false;
+    }
+
     const payload = {
       courseId,
       startDate: formData.value.startDate,
