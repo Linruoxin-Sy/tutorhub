@@ -1,6 +1,7 @@
 <template>
   <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div class="space-y-6">
+      <!-- Stats cards -->
       <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <article
           v-for="stat in stats"
@@ -23,185 +24,112 @@
         </article>
       </section>
 
-      <section class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <article
-          class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-        >
-          <header class="border-b border-gray-100 px-5 py-4 dark:border-[#343434]">
-            <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Teaching overview</h2>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Live metrics and recent context from the API.
-            </p>
-          </header>
+      <!-- Recent sessions (full width) -->
+      <article
+        class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
+      >
+        <header class="border-b border-gray-100 px-5 py-4 dark:border-[#343434]">
+          <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Recent sessions</h2>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Upcoming and ongoing classes.</p>
+        </header>
 
-          <div class="grid gap-3 p-5 sm:grid-cols-2">
-            <div class="rounded-xl bg-gray-50 p-4 dark:bg-[#202020]">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Courses</p>
-              <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{{ statA.value }}</p>
-            </div>
-            <div class="rounded-xl bg-gray-50 p-4 dark:bg-[#202020]">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Students</p>
-              <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{{ statB.value }}</p>
-            </div>
-            <div class="rounded-xl bg-gray-50 p-4 dark:bg-[#202020]">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Sessions</p>
-              <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{{ statC.value }}</p>
-            </div>
-            <div class="rounded-xl bg-gray-50 p-4 dark:bg-[#202020]">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Active courses</p>
-              <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{{ statD.value }}</p>
-            </div>
+        <div v-if="isLoading" class="space-y-3 p-5">
+          <div
+            v-for="index in 4"
+            :key="index"
+            class="h-16 animate-pulse rounded-xl bg-gray-100 dark:bg-[#202020]"
+          ></div>
+        </div>
+
+        <div v-else-if="error" class="px-5 py-4 text-sm text-red-700 dark:text-red-200">
+          Failed to load sessions.
+        </div>
+
+        <div v-else class="space-y-3 p-5">
+          <div v-if="recentSessions.length === 0" class="text-sm text-gray-500 dark:text-gray-400">
+            No upcoming sessions.
           </div>
-        </article>
-
-        <article
-          class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-        >
-          <header class="border-b border-gray-100 px-5 py-4 dark:border-[#343434]">
-            <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Recent sessions</h2>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Newest class activity from the session API.
-            </p>
-          </header>
-
-          <div v-if="sessionsLoading" class="space-y-3 p-5">
+          <div
+            v-for="session in recentSessions"
+            :key="session.id"
+            class="flex items-center gap-3 rounded-xl bg-gray-50 p-3 dark:bg-[#202020]"
+          >
             <div
-              v-for="index in 4"
-              :key="index"
-              class="h-16 animate-pulse rounded-xl bg-gray-100 dark:bg-[#202020]"
-            ></div>
-          </div>
-
-          <div v-else-if="sessionsError" class="px-5 py-4 text-sm text-red-700 dark:text-red-200">
-            {{ sessionsError }}
-          </div>
-
-          <div v-else class="space-y-3 p-5">
-            <div
-              v-if="recentSessions.length === 0"
-              class="text-sm text-gray-500 dark:text-gray-400"
+              class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-blue-500 to-violet-600 text-white shadow-sm"
             >
-              No sessions found.
+              <i class="i-lucide-book-open text-sm"></i>
             </div>
-            <div
-              v-for="session in recentSessions"
-              :key="session.id"
-              class="flex items-center gap-3 rounded-xl bg-gray-50 p-3 dark:bg-[#202020]"
-            >
-              <div
-                class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-blue-500 to-violet-600 text-white shadow-sm"
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
+                {{ session.courseName }}
+              </p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                {{ session.date }} · {{ session.startTime }} - {{ session.endTime }}
+              </p>
+              <p
+                v-if="session.studentNames.length > 0"
+                class="mt-0.5 text-xs text-gray-400 dark:text-gray-500"
               >
-                <i class="i-lucide-book-open text-sm"></i>
-              </div>
-              <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
-                  {{ sessionLabel(session.studentCourseId) }}
-                </p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">
-                  {{ formatDate(session.classDate) }} · {{ formatTime(session.startTime) }} -
-                  {{ formatTime(session.endTime) }}
-                </p>
-              </div>
+                {{ session.studentNames.join(', ') }}
+              </p>
             </div>
+            <span
+              class="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium"
+              :class="
+                session.status === 'ongoing'
+                  ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
+                  : 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
+              "
+            >
+              {{ session.status === 'ongoing' ? 'Ongoing' : 'Upcoming' }}
+            </span>
           </div>
-        </article>
-      </section>
+        </div>
+      </article>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import { formatDate, formatTime } from '@/utils/date';
+import { useQuery } from '@tanstack/vue-query';
+import { request } from '@/utils/request';
 
-const fakeStats = {
-  activeStudents: { total: 42 },
-  totalSessions: { total: 156 },
-  activeCourses: { total: 8 },
-};
+import type { DashboardResponse } from '@tutorhub/schema';
 
-const fakeRecentSessions = [
-  {
-    id: '1',
-    studentCourseId: 'sc1',
-    classDate: '2025-02-10',
-    startTime: '09:00',
-    endTime: '10:00',
+const { data, isLoading, error } = useQuery<DashboardResponse>({
+  queryKey: ['dashboard'],
+  queryFn: async () => {
+    const res = await request.get('/dashboard');
+    return res.data;
   },
-  {
-    id: '2',
-    studentCourseId: 'sc2',
-    classDate: '2025-02-10',
-    startTime: '10:30',
-    endTime: '11:30',
-  },
-  {
-    id: '3',
-    studentCourseId: 'sc3',
-    classDate: '2025-02-09',
-    startTime: '14:00',
-    endTime: '15:00',
-  },
-  {
-    id: '4',
-    studentCourseId: 'sc1',
-    classDate: '2025-02-09',
-    startTime: '16:00',
-    endTime: '17:00',
-  },
-];
-
-const fakeStudentCourses = [
-  { id: 'sc1', courseId: 'c1' },
-  { id: 'sc2', courseId: 'c2' },
-  { id: 'sc3', courseId: 'c3' },
-];
-
-const fakeCourses = [
-  { id: 'c1', name: 'Algebra I' },
-  { id: 'c2', name: 'English Literature' },
-  { id: 'c3', name: 'Physics Fundamentals' },
-];
-
-const statA = computed(() => ({
-  label: 'Active Students',
-  value: String(fakeStats.activeStudents.total),
-  icon: 'i-lucide-users text-blue-600 dark:text-blue-300',
-}));
-const statB = computed(() => ({
-  label: 'Total Hours',
-  value: '156.5',
-  icon: 'i-lucide-clock-3 text-violet-600 dark:text-violet-300',
-}));
-const statC = computed(() => ({
-  label: 'Total Sessions',
-  value: String(fakeStats.totalSessions.total),
-  icon: 'i-lucide-calendar-days text-pink-600 dark:text-pink-300',
-}));
-const statD = computed(() => ({
-  label: 'Active Courses',
-  value: String(fakeStats.activeCourses.total),
-  icon: 'i-lucide-book-open text-orange-600 dark:text-orange-300',
-}));
-
-const stats = computed(() => [statA.value, statB.value, statC.value, statD.value]);
-
-const sessionsLoading = ref(false);
-const sessionsError = ref('');
-const recentSessions = ref(fakeRecentSessions);
-
-const studentCourseLookup = computed(() => {
-  const courses = new Map(
-    fakeCourses.map((course: { id: string; name: string }) => [course.id, course.name]),
-  );
-  return new Map(
-    fakeStudentCourses.map((record: { id: string; courseId: string }) => [
-      record.id,
-      courses.get(record.courseId) ?? record.courseId,
-    ]),
-  );
 });
 
-function sessionLabel(studentCourseId: string) {
-  return studentCourseLookup.value.get(studentCourseId) ?? studentCourseId;
-}
+const stats = computed(() => {
+  const d = data.value;
+  if (!d) return [];
+  return [
+    {
+      label: 'Active Students',
+      value: String(d.activeStudents),
+      icon: 'i-lucide-users text-blue-600 dark:text-blue-300',
+    },
+    {
+      label: 'Active Courses',
+      value: String(d.activeCourses),
+      icon: 'i-lucide-book-open text-orange-600 dark:text-orange-300',
+    },
+    {
+      label: 'Total Hours',
+      value: String(d.totalHours),
+      icon: 'i-lucide-clock-3 text-violet-600 dark:text-violet-300',
+    },
+    {
+      label: 'Total Income',
+      value: `$${d.totalIncome.toLocaleString()}`,
+      icon: 'i-lucide-dollar-sign text-pink-600 dark:text-pink-300',
+    },
+  ];
+});
+
+const recentSessions = computed(() => data.value?.recentSessions ?? []);
 </script>

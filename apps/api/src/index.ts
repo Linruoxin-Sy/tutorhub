@@ -10,6 +10,7 @@ import { authRoute } from '@/features/auth/routes';
 import { classRuleRoute } from '@/features/class-rule/routes';
 import { classSessionRoute } from '@/features/class-session/routes';
 import { courseRoute } from '@/features/course/routes';
+import { dashboardRoute } from '@/features/dashboard/routes';
 import { enrollmentRoute } from '@/features/enrollment/routes';
 import { storageRoute } from '@/features/storage/routes';
 import { studentRoute } from '@/features/student/routes';
@@ -26,6 +27,7 @@ const publicApi = new Hono()
 const protectedApi = new Hono()
   .use(authMiddleware)
   .route('/storage', storageRoute)
+  .route('/dashboard', dashboardRoute)
   .route('/course', courseRoute)
   .route('/student', studentRoute)
   .route('/class-rule', classRuleRoute)
