@@ -17,5 +17,5 @@ export type DashboardRecentSession = {
   /** 结束时间（HH:mm） */
   endTime: string;
   /** 状态 */
-  status: 'ongoing' | 'upcoming';
+  status: 'ongoing' | 'default';
 };

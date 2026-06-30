@@ -49,40 +49,20 @@
           <div v-if="recentSessions.length === 0" class="text-sm text-gray-500 dark:text-gray-400">
             No upcoming sessions.
           </div>
-          <div
-            v-for="session in recentSessions"
-            :key="session.id"
-            class="flex items-center gap-3 rounded-xl bg-gray-50 p-3 dark:bg-[#202020]"
-          >
-            <div
-              class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-blue-500 to-violet-600 text-white shadow-sm"
+          <div v-for="session in recentSessions" :key="session.id">
+            <SessionItem
+              :course-name="session.courseName"
+              :date="session.date"
+              :start-time="session.startTime"
+              :end-time="session.endTime"
+              :status="session.status"
+            />
+            <p
+              v-if="session.studentNames.length > 0"
+              class="mt-1 px-5 text-xs text-gray-500 dark:text-gray-400"
             >
-              <i class="i-lucide-book-open text-sm"></i>
-            </div>
-            <div class="min-w-0 flex-1">
-              <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
-                {{ session.courseName }}
-              </p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                {{ session.date }} · {{ session.startTime }} - {{ session.endTime }}
-              </p>
-              <p
-                v-if="session.studentNames.length > 0"
-                class="mt-0.5 text-xs text-gray-400 dark:text-gray-500"
-              >
-                {{ session.studentNames.join(', ') }}
-              </p>
-            </div>
-            <span
-              class="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium"
-              :class="
-                session.status === 'ongoing'
-                  ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
-                  : 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
-              "
-            >
-              {{ session.status === 'ongoing' ? 'Ongoing' : 'Upcoming' }}
-            </span>
+              Students: {{ session.studentNames.join(', ') }}
+            </p>
           </div>
         </div>
       </article>
@@ -93,6 +73,7 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query';
 import { request } from '@/utils/request';
+import SessionItem from '@/features/session/components/SessionItem.vue';
 
 import type { DashboardResponse } from '@tutorhub/schema';
 

@@ -201,7 +201,7 @@ export const dashboardService = {
         const sessionEndMinutes = toMinutes(actualEnd);
 
         // 判断状态
-        let status: 'ongoing' | 'upcoming';
+        let status: 'ongoing' | 'default';
         if (actualDate < todayStr) {
           // 调课到今天的已过去日期，跳过
           continue;
@@ -212,9 +212,9 @@ export const dashboardService = {
         ) {
           status = 'ongoing';
         } else if (actualDate === todayStr && nowMinutes < sessionStartMinutes) {
-          status = 'upcoming';
+          status = 'default';
         } else if (actualDate > todayStr) {
-          status = 'upcoming';
+          status = 'default';
         } else {
           // 已经过去的 session 不展示
           continue;
