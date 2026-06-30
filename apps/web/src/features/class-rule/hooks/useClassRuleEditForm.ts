@@ -30,6 +30,20 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
 
   const hasChanges = computed(() => !isEqual(formData.value, initialFormData.value));
 
+  const TIME_FORM_FIELDS = [
+    'startDate',
+    'startTime',
+    'endTime',
+    'intervalDays',
+    'endDate',
+  ] as const;
+
+  const hasTimeChanged = computed(() =>
+    TIME_FORM_FIELDS.some((f) => formData.value[f] !== initialFormData.value[f]),
+  );
+
+  const onlyNameOrPriceChanged = computed(() => hasChanges.value && !hasTimeChanged.value);
+
   const isValidated = ref(false);
   const conflictResult = ref<{ hasConflict: boolean; conflicts: ConflictItem[] } | null>(null);
   const conflictPassed = ref(false);
@@ -303,15 +317,20 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
   const doUpdate = withLoading(async () => {
     if (!verify()) return;
 
-    const payload = {
-      startDate: new Date(formData.value.startDate),
-      startTime: formData.value.startTime,
-      endTime: formData.value.endTime,
-      intervalDays: formData.value.intervalDays || null,
-      endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
-      name: formData.value.name,
-      price: formData.value.price,
-    };
+    // 构建 diff payload：只发送有变更的字段
+    const payload: Record<string, unknown> = {};
+    if (formData.value.name !== initialFormData.value.name) payload.name = formData.value.name;
+    if (formData.value.price !== initialFormData.value.price) payload.price = formData.value.price;
+    if (formData.value.startDate !== initialFormData.value.startDate)
+      payload.startDate = new Date(formData.value.startDate);
+    if (formData.value.startTime !== initialFormData.value.startTime)
+      payload.startTime = formData.value.startTime;
+    if (formData.value.endTime !== initialFormData.value.endTime)
+      payload.endTime = formData.value.endTime;
+    if (formData.value.intervalDays !== initialFormData.value.intervalDays)
+      payload.intervalDays = formData.value.intervalDays || null;
+    if (formData.value.endDate !== initialFormData.value.endDate)
+      payload.endDate = formData.value.endDate ? new Date(formData.value.endDate) : null;
 
     await updateClassRule(ruleId, payload);
     toast.success('Class rule updated successfully!');
@@ -325,6 +344,8 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
   return {
     formData,
     hasChanges,
+    hasTimeChanged,
+    onlyNameOrPriceChanged,
     isInitialLoading,
     isValidated,
     conflictResult,

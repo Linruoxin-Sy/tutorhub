@@ -22,25 +22,27 @@
             leave-to-class="opacity-0 scale-[0.92]"
           >
             <button
-              v-if="!conflictPassed && !hasChanges"
-              key="no-changes"
-              disabled
-              class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/70 px-4 py-3 text-sm font-medium text-white"
+              v-if="onlyNameOrPriceChanged"
+              key="save-changes"
+              :disabled="!canSubmit"
+              class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-green-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
+              @click="doUpdate"
             >
-              No changes
+              <span v-if="isSubmitting">Saving...</span>
+              <span v-else>Save Changes</span>
             </button>
             <button
               v-else-if="!conflictPassed && hasChanges"
               key="conflict-check"
               :disabled="!canSubmit"
               class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
-              @click="runConflictCheck"
+              @click="handleConflictCheck"
             >
               <span v-if="isSubmitting">Checking...</span>
               <span v-else>Conflict Check</span>
             </button>
             <button
-              v-else
+              v-else-if="conflictPassed"
               key="update"
               :disabled="!canSubmit"
               class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
@@ -48,6 +50,14 @@
             >
               <span v-if="isSubmitting">Saving...</span>
               <span v-else>Update Class Rule</span>
+            </button>
+            <button
+              v-else
+              key="no-changes"
+              disabled
+              class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/70 px-4 py-3 text-sm font-medium text-white"
+            >
+              No changes
             </button>
           </Transition>
         </template>
@@ -223,6 +233,8 @@ const props = defineProps<{
 const {
   formData,
   hasChanges,
+  hasTimeChanged,
+  onlyNameOrPriceChanged,
   isInitialLoading,
   conflictResult,
   conflictPassed,
@@ -234,6 +246,22 @@ const {
   runConflictCheck,
   doUpdate,
 } = useClassRuleEditForm(props.courseId, props.ruleId);
+
+async function handleConflictCheck() {
+  if (hasTimeChanged.value) {
+    const confirmed = await confirm({
+      title: 'Confirm Time Change',
+      message:
+        'Modifying the schedule will clear all existing session overrides (cancellations/reschedules). Do you want to continue?',
+      confirmText: 'Continue',
+      variant: 'primary',
+    });
+
+    if (!confirmed) return;
+  }
+
+  await runConflictCheck();
+}
 
 // ---- Assigned Students ----
 

@@ -129,10 +129,14 @@ export const classRuleService = {
       data: updateData,
     });
 
-    // 规则更新后级联硬删除所有关联的 session override（旧调课不再有效）
-    await prisma.classSessionOverride.deleteMany({
-      where: { classRuleId: id },
-    });
+    // 仅当时间相关字段变更时，才清除 session override
+    const TIME_FIELDS = ['startDate', 'startTime', 'endTime', 'intervalDays', 'endDate'] as const;
+    const hasTimeChange = TIME_FIELDS.some((f) => f in input);
+    if (hasTimeChange) {
+      await prisma.classSessionOverride.deleteMany({
+        where: { classRuleId: id },
+      });
+    }
 
     return classRule;
   },
