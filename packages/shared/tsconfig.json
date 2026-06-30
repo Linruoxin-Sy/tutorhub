@@ -1,9 +1,0 @@
-{
-  "include": ["src/**/*", "tests/**/*"],
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "types": ["vitest/globals"]
-  }
-}

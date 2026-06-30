@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "types": ["vitest/globals"],
-    "lib": ["ES2022", "DOM"]
-  },
-  "include": ["**/tests/**/*", "**/*.test.ts", "**/*.spec.ts"],
-  "exclude": ["node_modules", "dist"]
-}
