@@ -36,6 +36,9 @@ export function useClassRuleCreateForm(courseId: string) {
     if (!formData.value.startDate || !formData.value.startTime || !formData.value.endTime) {
       return false;
     }
+    if (formData.value.isRecurring && !formData.value.intervalDays) {
+      return false;
+    }
     if (formData.value.intervalDays !== null && !formData.value.endDate && !isInfinite.value) {
       return false;
     }

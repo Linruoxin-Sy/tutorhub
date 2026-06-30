@@ -452,6 +452,7 @@ async function loadData() {
       endTime: dayjs(data.endTime as string).format('HH:mm'),
       intervalDays: (data.intervalDays as number | null) ?? null,
       endDate: data.endDate ? dayjs(data.endDate as string).format('YYYY-MM-DD') : '',
+      isRecurring: (data.intervalDays as number | null) !== null,
     };
 
     rulePrice = (data.price as number | null) ?? null;

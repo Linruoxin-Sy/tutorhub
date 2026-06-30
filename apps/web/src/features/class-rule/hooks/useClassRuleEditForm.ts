@@ -46,6 +46,12 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     if (!formData.value.startDate || !formData.value.startTime || !formData.value.endTime) {
       return false;
     }
+    if (formData.value.isRecurring && !formData.value.intervalDays) {
+      return false;
+    }
+    if (formData.value.intervalDays !== null && !formData.value.endDate && !isInfinite.value) {
+      return false;
+    }
     return true;
   });
 
@@ -74,6 +80,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
         endTime: dayjs(rule.endTime as string).format('HH:mm'),
         intervalDays: (rule.intervalDays as number | null) ?? null,
         endDate: rule.endDate ? dayjs(rule.endDate as string).format('YYYY-MM-DD') : '',
+        isRecurring: (rule.intervalDays as number | null) !== null,
       };
       initialFormData.value = cloneDeep(formData.value);
     } catch {
