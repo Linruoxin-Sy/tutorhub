@@ -75,6 +75,17 @@ export function useClassRuleCreateForm(courseId: string) {
       return false;
     }
 
+    if (
+      formData.value.isRecurring &&
+      formData.value.startDate &&
+      formData.value.endDate &&
+      formData.value.startDate >= formData.value.endDate
+    ) {
+      toast.warning('Start date must be earlier than end date');
+      isValidated.value = false;
+      return false;
+    }
+
     const payload = {
       courseId,
       startDate: formData.value.startDate,

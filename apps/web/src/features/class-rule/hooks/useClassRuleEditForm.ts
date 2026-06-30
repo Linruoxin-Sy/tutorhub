@@ -108,6 +108,17 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       return false;
     }
 
+    if (
+      formData.value.isRecurring &&
+      formData.value.startDate &&
+      formData.value.endDate &&
+      formData.value.startDate >= formData.value.endDate
+    ) {
+      toast.warning('Start date must be earlier than end date');
+      isValidated.value = false;
+      return false;
+    }
+
     const payload = {
       startDate: formData.value.startDate,
       startTime: formData.value.startTime,
