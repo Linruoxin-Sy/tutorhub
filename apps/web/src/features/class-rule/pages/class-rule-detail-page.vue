@@ -60,6 +60,69 @@
         </VirtualList>
       </div>
     </ListPageShell>
+
+    <!-- Assigned Students -->
+    <ListPageShell title="Assigned Students">
+      <template #filters>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
+          <SearchInput v-model="studentSearch" placeholder="Search students..." />
+
+          <SelectInput v-model="studentStatus">
+            <option value="">All status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="DISABLED">Disabled</option>
+          </SelectInput>
+        </div>
+      </template>
+
+      <div class="flex h-125 flex-col">
+        <VirtualList
+          :query="studentQuery"
+          :estimate-size="70"
+          :overscan="10"
+          row-class="border-b border-gray-200 transition hover:bg-gray-50 dark:border-[#343434] dark:hover:bg-[#202020]"
+          :row-style="{ display: 'flex' }"
+        >
+          <template #header>
+            <div
+              class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50 dark:border-[#343434] dark:bg-[#202020]"
+              style="display: grid; grid-template-columns: 1.5fr 2fr 1.2fr 1fr 1.2fr 1fr"
+            >
+              <div
+                v-for="column in studentColumns"
+                :key="column"
+                class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
+              >
+                {{ column }}
+              </div>
+            </div>
+          </template>
+
+          <template #loading>
+            <div class="divide-y divide-gray-200 dark:divide-[#343434]">
+              <StudentItem v-for="index in 8" :key="index" loading />
+            </div>
+          </template>
+
+          <template #item="{ item, isLoaded }">
+            <StudentItem
+              :student="item!.student"
+              :loading="!isLoaded"
+              :actions="[]"
+              @view="router.push({ name: 'student.detail', params: { id: item!.student.id } })"
+            />
+          </template>
+
+          <template #empty>
+            <div
+              class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
+            >
+              No students found.
+            </div>
+          </template>
+        </VirtualList>
+      </div>
+    </ListPageShell>
   </main>
 </template>
 
@@ -67,6 +130,7 @@
 import dayjs from 'dayjs';
 import { cloneDeep } from 'es-toolkit';
 import { computed, onMounted, ref } from 'vue';
+import { refDebounced } from '@vueuse/core';
 import { toast } from 'vue-sonner';
 import { useRouter } from 'vue-router';
 import { RRule, type Options as RRuleOptions } from 'rrule';
@@ -82,7 +146,13 @@ import SessionItem from '@/features/session/components/SessionItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import LoadingIndicator from '@/components/LoadingIndicator.vue';
+import SearchInput from '@/components/SearchInput.vue';
+import SelectInput from '@/components/SelectInput.vue';
+import StudentItem from '@/features/student/components/StudentItem.vue';
 import ClassRuleForm from '@/features/class-rule/components/ClassRuleForm.vue';
+import { useSparseQuery } from '@/hooks/useSparseQuery';
+import { fetchClassRuleStudents } from '@/features/class-rule/api/class-rule-api';
+import type { ClassRuleStudentListResponse } from '@tutorhub/schema';
 import {
   DEFAULT_FORM_DATA,
   type ClassRuleFormData,
@@ -92,9 +162,28 @@ const props = defineProps<{
   ruleId: string;
 }>();
 
+type ClassRuleStudentItem = ClassRuleStudentListResponse['items'][number];
+
 const router = useRouter();
 const isInitialLoading = ref(true);
 const courseName = ref('');
+
+// ---- Assigned Students ----
+
+const studentColumns = ['Name', 'Email', 'Phone', 'Status', 'Created At', 'Actions'];
+
+const studentSearch = ref('');
+const debouncedStudentSearch = refDebounced(studentSearch, 300);
+const studentSearchRef = computed(() => debouncedStudentSearch.value ?? '');
+
+const studentStatus = ref<'ACTIVE' | 'DISABLED' | ''>('ACTIVE');
+const studentStatusRef = computed(() => studentStatus.value ?? '');
+
+const studentQuery = useSparseQuery<ClassRuleStudentItem>({
+  queryKeyPrefix: ['class-rule-students', props.ruleId],
+  fetchFn: (params) => fetchClassRuleStudents(props.ruleId, params),
+  filters: { name: studentSearchRef, status: studentStatusRef },
+});
 const formData = ref<ClassRuleFormData>(cloneDeep(DEFAULT_FORM_DATA));
 
 const generatedSessions = ref<GeneratedSession[]>([]);

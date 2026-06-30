@@ -14,6 +14,7 @@ export const classRuleAvailableStudentsQuerySchema = z.object({
       return Math.min(parsed, 100);
     }),
   name: z.string().optional(),
+  status: z.enum(['ACTIVE', 'DISABLED']).optional(),
 });
 
 export type ClassRuleAvailableStudentsResponse = {

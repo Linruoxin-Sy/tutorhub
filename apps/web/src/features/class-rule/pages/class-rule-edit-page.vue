@@ -115,7 +115,15 @@
     <!-- Assigned Students -->
     <ListPageShell title="Assigned Students">
       <template #filters>
-        <SearchInput v-model="studentSearch" placeholder="Search students..." />
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
+          <SearchInput v-model="studentSearch" placeholder="Search students..." />
+
+          <SelectInput v-model="studentStatus">
+            <option value="">All status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="DISABLED">Disabled</option>
+          </SelectInput>
+        </div>
       </template>
       <template #actions>
         <AppButton
@@ -162,7 +170,7 @@
               :student="item!.student"
               :loading="!isLoaded"
               :actions="['delete']"
-              @view="router.push({ name: 'enrollment.detail', params: { id: item!.id } })"
+              @view="router.push({ name: 'student.detail', params: { id: item!.student.id } })"
               @delete="handleRemoveStudent(item!)"
             />
           </template>
