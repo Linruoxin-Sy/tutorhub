@@ -19,7 +19,7 @@
             <button
               v-if="!conflictPassed"
               key="conflict-check"
-              :disabled="!isFormComplete || isSubmitting"
+              :disabled="!canSubmit"
               class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-600/70"
               @click="runConflictCheck"
             >
@@ -29,7 +29,7 @@
             <button
               v-else
               key="create"
-              :disabled="isSubmitting"
+              :disabled="!canSubmit"
               class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-600/70"
               @click="doCreate"
             >
@@ -119,8 +119,8 @@ const {
   conflictPassed,
   generatedSessions,
   sessionQuery,
+  canSubmit,
   isInfinite,
-  isFormComplete,
   isSubmitting,
   runConflictCheck,
   doCreate,

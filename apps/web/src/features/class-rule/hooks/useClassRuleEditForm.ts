@@ -299,6 +299,8 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     router.push({ name: 'course.edit', params: { id: courseId } });
   });
 
+  const canSubmit = computed(() => isFormComplete.value && !isSubmitting.value);
+
   return {
     formData,
     hasChanges,
@@ -308,6 +310,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     conflictPassed,
     generatedSessions,
     sessionQuery,
+    canSubmit,
     isFormComplete,
     isInfinite,
     isSubmitting,

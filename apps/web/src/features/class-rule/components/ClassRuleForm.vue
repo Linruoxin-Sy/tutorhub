@@ -110,12 +110,6 @@
         >
           {{ model.endDate || 'Infinite' }}
         </p>
-        <p
-          v-if="!readonly && model.isRecurring && !model.endDate"
-          class="text-xs text-amber-600 dark:text-amber-400"
-        >
-          This rule will repeat indefinitely.
-        </p>
       </div>
     </div>
 
@@ -187,6 +181,12 @@
         />
       </label>
       <span class="text-sm font-medium text-gray-700 dark:text-gray-200"> Recurring course </span>
+      <p
+        v-if="model.isRecurring && !model.endDate"
+        class="text-xs text-amber-600 dark:text-amber-400"
+      >
+        This rule will repeat indefinitely.
+      </p>
     </div>
 
     <!-- Repeat interval (only when recurring) -->

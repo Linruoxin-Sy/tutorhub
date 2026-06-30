@@ -269,6 +269,8 @@ export function useClassRuleCreateForm(courseId: string) {
     router.push({ name: 'course.edit', params: { id: courseId } });
   });
 
+  const canSubmit = computed(() => isFormComplete.value && !isSubmitting.value);
+
   return {
     formData,
     isValidated,
@@ -276,6 +278,7 @@ export function useClassRuleCreateForm(courseId: string) {
     conflictPassed,
     generatedSessions,
     sessionQuery,
+    canSubmit,
     isFormComplete,
     isInfinite,
     isSubmitting,
