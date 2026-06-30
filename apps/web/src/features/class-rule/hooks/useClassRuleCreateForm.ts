@@ -122,6 +122,8 @@ export function useClassRuleCreateForm(courseId: string) {
           formData.value.startTime,
           formData.value.endTime,
         ),
+        price: formData.value.price,
+        originalPrice: formData.value.price,
       });
       hasMoreRef.value = false;
       return;
@@ -183,6 +185,8 @@ export function useClassRuleCreateForm(courseId: string) {
         startTime,
         endTime,
         status: computeSessionStatus(dateStr, startTime, endTime),
+        price: formData.value.price,
+        originalPrice: formData.value.price,
       });
     }
 

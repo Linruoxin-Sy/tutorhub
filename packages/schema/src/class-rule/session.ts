@@ -23,4 +23,8 @@ export type GeneratedSession = {
   rescheduledEndTime?: string | null;
   /** 调课覆盖的原始日期（仅 overridden 时有效） */
   overriddenDate?: string | null;
+  /** 该次 session 的有效价格（有 priceOverride 则用它，否则用 rule.price） */
+  price?: number | null;
+  /** 修改前原始价格（调课时展示左侧划掉的价格） */
+  originalPrice?: number | null;
 };

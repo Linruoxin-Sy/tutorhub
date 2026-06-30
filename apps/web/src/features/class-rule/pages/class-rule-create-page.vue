@@ -64,6 +64,7 @@
               :start-time="item.startTime"
               :end-time="item.endTime"
               :status="item.status"
+              :price="item.price"
             />
           </template>
         </VirtualList>

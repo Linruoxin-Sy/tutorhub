@@ -67,6 +67,9 @@ export interface SessionItemProps {
   originalEndTime?: string | null;
   actions?: ('change' | 'edit' | 'restore')[];
   conflict?: boolean;
+  price?: number | null;
+  /** 修改前原始价格（调课时展示左侧划掉的价格） */
+  originalPrice?: number | null;
 }
 
 // ─── Composable ─────────────────────────────────────────

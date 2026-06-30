@@ -150,6 +150,8 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
           formData.value.startTime,
           formData.value.endTime,
         ),
+        price: formData.value.price,
+        originalPrice: formData.value.price,
       });
       hasMoreRef.value = false;
       return;
@@ -210,6 +212,8 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
         startTime,
         endTime,
         status: computeSessionStatus(dateStr, startTime, endTime),
+        price: formData.value.price,
+        originalPrice: formData.value.price,
       });
     }
 

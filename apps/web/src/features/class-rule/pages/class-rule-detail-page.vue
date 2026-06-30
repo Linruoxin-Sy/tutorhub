@@ -49,6 +49,8 @@
               :start-time="item.startTime"
               :end-time="item.endTime"
               :status="item.status"
+              :price="item.price"
+              :original-price="item.originalPrice"
               :original-date="item.overridden ? item.overriddenDate : null"
               :original-start-time="item.overridden ? item.rescheduledStartTime : null"
               :original-end-time="item.overridden ? item.rescheduledEndTime : null"
@@ -200,6 +202,7 @@ let ruleIntervalDays: number | null = null;
 // startTime 的 UTC 小时/分钟（用于计算本地日期）
 let startUtcHour = 0;
 let startUtcMin = 0;
+let rulePrice: number | null = null;
 
 /** 将 UTC 日期 + 开始时间（UTC）转换为本地日期字符串 */
 function getLocalDate(utcDate: Date): string {
@@ -217,9 +220,10 @@ function getLocalDate(utcDate: Date): string {
 
 // Override 映射（一次性获取）
 const cancelledDates = new Set<string>();
+const priceOverrideMap = new Map<string, number | null>();
 const rescheduledMap = new Map<
   string,
-  { rescheduledDate: string; startTime: string; endTime: string }
+  { rescheduledDate: string; startTime: string; endTime: string; priceOverride: number | null }
 >();
 
 function navigateToSessionEdit(session: GeneratedSession) {
@@ -284,6 +288,7 @@ function regenerateSessions() {
     if (!ruleStartDate) return;
     const singleDateStr = getLocalDate(ruleStartDate);
 
+    const singlePrice = priceOverrideMap.get(singleDateStr) ?? rulePrice;
     if (cancelledDates.has(singleDateStr)) {
       generatedSessions.value.push({
         id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
@@ -292,6 +297,8 @@ function regenerateSessions() {
         endTime: ruleEndTime,
         status: 'cancelled',
         overridden: true,
+        price: singlePrice,
+        originalPrice: rulePrice,
       });
     } else if (rescheduledMap.has(singleDateStr)) {
       const rescheduled = rescheduledMap.get(singleDateStr)!;
@@ -306,6 +313,8 @@ function regenerateSessions() {
         rescheduledStartTime: rescheduled.startTime,
         rescheduledEndTime: rescheduled.endTime,
         overriddenDate: singleDateStr,
+        price: rescheduled.priceOverride ?? rulePrice,
+        originalPrice: rulePrice,
       });
     } else {
       generatedSessions.value.push({
@@ -314,6 +323,8 @@ function regenerateSessions() {
         startTime: ruleStartTime,
         endTime: ruleEndTime,
         status: computeSessionStatus(singleDateStr, ruleStartTime, ruleEndTime),
+        price: singlePrice,
+        originalPrice: rulePrice,
       });
     }
     hasMoreRef.value = false;
@@ -355,6 +366,7 @@ function appendSessionChunk() {
   for (let i = 0; i < newDates.length; i++) {
     const d = newDates[i];
     const dateStr = getLocalDate(d);
+    const ovPrice = priceOverrideMap.get(dateStr) ?? rulePrice;
 
     if (cancelledDates.has(dateStr)) {
       generatedSessions.value.push({
@@ -364,6 +376,8 @@ function appendSessionChunk() {
         endTime: ruleEndTime,
         status: 'cancelled',
         overridden: true,
+        price: ovPrice,
+        originalPrice: rulePrice,
       });
     } else {
       const rescheduled = rescheduledMap.get(dateStr);
@@ -379,6 +393,8 @@ function appendSessionChunk() {
           rescheduledStartTime: rescheduled.startTime,
           rescheduledEndTime: rescheduled.endTime,
           overriddenDate: dateStr,
+          price: rescheduled.priceOverride ?? rulePrice,
+          originalPrice: rulePrice,
         });
       } else {
         generatedSessions.value.push({
@@ -387,6 +403,8 @@ function appendSessionChunk() {
           startTime: ruleStartTime,
           endTime: ruleEndTime,
           status: computeSessionStatus(dateStr, ruleStartTime, ruleEndTime),
+          price: ovPrice,
+          originalPrice: rulePrice,
         });
       }
     }
@@ -418,6 +436,7 @@ async function loadData() {
   isInitialLoading.value = true;
   generatedSessions.value = [];
   cancelledDates.clear();
+  priceOverrideMap.clear();
   rescheduledMap.clear();
 
   try {
@@ -435,6 +454,7 @@ async function loadData() {
       endDate: data.endDate ? dayjs(data.endDate as string).format('YYYY-MM-DD') : '',
     };
 
+    rulePrice = (data.price as number | null) ?? null;
     ruleStartDate = dayjs(data.startDate as string).toDate();
     ruleEndDate = data.endDate ? dayjs(data.endDate as string).toDate() : null;
     ruleStartTime = dayjs(data.startTime as string).format('HH:mm');
@@ -465,6 +485,8 @@ async function loadData() {
         ),
       );
       const dateKey = dayjs(ovDt).format('YYYY-MM-DD');
+      const ovPrice = ov.priceOverride != null ? Number(ov.priceOverride) : null;
+      priceOverrideMap.set(dateKey, ovPrice);
       if (ov.state === 'CANCELLED') {
         cancelledDates.add(dateKey);
       } else if (ov.state === 'RESCHEDULED') {
@@ -478,6 +500,7 @@ async function loadData() {
           endTime: ov.rescheduledEndTime
             ? dayjs(ov.rescheduledEndTime).format('HH:mm')
             : ruleEndTime,
+          priceOverride: ovPrice,
         });
       }
     }

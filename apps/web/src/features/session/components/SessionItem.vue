@@ -37,6 +37,14 @@
           <i :class="badge.icon" />
           {{ badge.label }}
         </span>
+
+        <span
+          v-if="price != null"
+          class="inline-flex items-center gap-1 text-sm font-semibold text-gray-700 dark:text-gray-200"
+        >
+          <i class="i-lucide-coins inline size-3.5 align-text-top" />
+          ¥{{ Number(price).toFixed(2) }}
+        </span>
       </div>
     </div>
 
@@ -57,6 +65,15 @@
             {{ display.originalStartTime }}
             <i class="i-lucide-arrow-right inline size-3.5" />
             {{ display.originalEndTime }}
+          </span>
+
+          <span
+            v-if="originalPrice != null"
+            class="inline-flex items-center gap-1 text-sm font-semibold"
+            :class="display.originalTimeClass"
+          >
+            <i class="i-lucide-coins inline size-3.5 align-text-top" />
+            ¥{{ Number(originalPrice).toFixed(2) }}
           </span>
         </div>
       </div>
@@ -92,6 +109,15 @@
             {{ display.newStartTime }}
             <i class="i-lucide-arrow-right inline size-3.5" />
             {{ display.newEndTime }}
+          </span>
+
+          <span
+            v-if="price != null"
+            class="inline-flex items-center gap-1 text-sm font-semibold"
+            :class="display.newTimeClass"
+          >
+            <i class="i-lucide-coins inline size-3.5 align-text-top" />
+            ¥{{ Number(price).toFixed(2) }}
           </span>
         </div>
       </div>
@@ -158,6 +184,10 @@ const props = withDefaults(
     originalEndTime?: string | null;
     actions?: ('change' | 'edit' | 'restore')[];
     conflict?: boolean;
+    /** 该次 session 的价格 */
+    price?: number | null;
+    /** 修改前原始价格（调课时展示左侧划掉的价格） */
+    originalPrice?: number | null;
   }>(),
   {
     status: 'default',
@@ -166,6 +196,8 @@ const props = withDefaults(
     originalDate: null,
     originalStartTime: null,
     originalEndTime: null,
+    price: null,
+    originalPrice: null,
   },
 );
 

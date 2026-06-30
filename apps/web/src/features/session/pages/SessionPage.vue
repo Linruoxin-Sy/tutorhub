@@ -62,6 +62,9 @@
                     {{ stateLabel(session.state) }}
                   </span>
                 </td>
+                <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-700 dark:text-gray-200">
+                  {{ formatPrice(session.priceOverride) }}
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <AppButton variant="secondary" @click="viewOverride(session.id)">
                     <i class="i-lucide-eye size-3.5" />
@@ -110,7 +113,12 @@ import type { ClassSessionOverrideListItem } from '@tutorhub/schema';
 
 const router = useRouter();
 
-const columns = ['Original Date', 'Status', 'Actions'];
+const columns = ['Original Date', 'Status', 'Price', 'Actions'];
+
+function formatPrice(price: unknown): string {
+  if (price == null) return '—';
+  return `¥${Number(price).toFixed(2)}`;
+}
 
 const limit = 20;
 const offset = ref(0);

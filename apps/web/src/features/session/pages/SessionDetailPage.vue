@@ -23,6 +23,16 @@
             >
             <p class="text-sm font-medium" :class="statusClass">{{ statusLabel }}</p>
           </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-gray-500 uppercase dark:text-gray-400"
+              >Price</label
+            >
+            <p class="text-sm font-medium text-gray-900 dark:text-white">
+              {{
+                session.priceOverride != null ? `¥${Number(session.priceOverride).toFixed(2)}` : '—'
+              }}
+            </p>
+          </div>
           <div v-if="session.reason" class="space-y-1">
             <label class="text-xs font-semibold text-gray-500 uppercase dark:text-gray-400"
               >Reason</label
