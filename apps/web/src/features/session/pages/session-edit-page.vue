@@ -1,15 +1,15 @@
 <template>
   <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <PageHeader title="Edit Session" :description="`Editing session for rule ${ruleId}`" />
+    <PageHeader title="Edit Session" :description="`Change session for rule ${ruleId}`" />
 
     <!-- Loading -->
     <CardSection v-if="isLoading" class="shrink-0 p-6">
       <LoadingIndicator text="Loading session data..." />
     </CardSection>
 
-    <!-- ═══════ Create Override ═══════ -->
+    <!-- ═══════ Change Session ═══════ -->
     <CardSection v-else class="shrink-0 space-y-5 p-6">
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Create Override</h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Change Session</h3>
 
       <!-- Original session info -->
       <div
@@ -144,10 +144,10 @@
           </div>
         </div>
 
-        <!-- Price Override (optional) -->
+        <!-- Custom Price (optional) -->
         <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
-            Price Override
+            Custom Price
             <span class="text-xs font-normal text-gray-400 dark:text-gray-500">(optional)</span>
           </label>
           <div class="flex items-center gap-3">
@@ -156,7 +156,7 @@
               type="number"
               min="0"
               step="0.01"
-              placeholder="Override class-rule price for this session"
+              placeholder="Set a custom price for this session"
               class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
             />
             <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">¥</span>
@@ -189,7 +189,7 @@
             @click="doCreateOverride"
           >
             <span v-if="isSubmitting">Saving...</span>
-            <span v-else>Create Override</span>
+            <span v-else>Save Change</span>
           </button>
         </Transition>
       </template>
@@ -370,10 +370,10 @@ const doCreateOverride = withLoading(async () => {
 
   try {
     await createClassSessionOverride(payload);
-    toast.success('Session override created successfully!');
+    toast.success('Session change saved successfully!');
     goBack();
   } catch {
-    toast.error('Failed to save session override');
+    toast.error('Failed to save session change');
   }
 });
 
