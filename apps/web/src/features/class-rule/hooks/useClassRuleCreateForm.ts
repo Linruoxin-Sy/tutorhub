@@ -59,6 +59,12 @@ export function useClassRuleCreateForm(courseId: string) {
   );
 
   const verify = (): boolean => {
+    if (formData.value.isRecurring && !formData.value.intervalDays) {
+      toast.warning('Please enter the repeat interval');
+      isValidated.value = false;
+      return false;
+    }
+
     const payload = {
       courseId,
       startDate: formData.value.startDate,

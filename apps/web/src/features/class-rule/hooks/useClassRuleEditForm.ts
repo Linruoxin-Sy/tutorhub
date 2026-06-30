@@ -92,6 +92,12 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
   });
 
   const verify = (): boolean => {
+    if (formData.value.isRecurring && !formData.value.intervalDays) {
+      toast.warning('Please enter the repeat interval');
+      isValidated.value = false;
+      return false;
+    }
+
     const payload = {
       startDate: formData.value.startDate,
       startTime: formData.value.startTime,
