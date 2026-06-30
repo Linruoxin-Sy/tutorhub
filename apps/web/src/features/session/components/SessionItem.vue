@@ -1,7 +1,8 @@
 <template>
   <article
-    class="flex items-center gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm transition-all hover:shadow-md dark:border-[#2f2f2f] dark:bg-[#202020]"
+    class="flex cursor-pointer items-center gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm transition-all hover:shadow-md dark:border-[#2f2f2f] dark:bg-[#202020]"
     :class="display.cardClass"
+    @click="emit('view')"
   >
     <!-- 日期/时间图标 -->
     <div
@@ -205,6 +206,7 @@ const emit = defineEmits<{
   change: [];
   edit: [];
   restore: [];
+  view: [];
 }>();
 
 const { display } = useSessionDisplay({

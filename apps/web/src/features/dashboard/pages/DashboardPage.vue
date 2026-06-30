@@ -56,6 +56,7 @@
               :start-time="session.startTime"
               :end-time="session.endTime"
               :status="session.status"
+              @view="goToClassRule(session.ruleId)"
             />
             <p
               v-if="session.studentNames.length > 0"
@@ -113,4 +114,10 @@ const stats = computed(() => {
 });
 
 const recentSessions = computed(() => data.value?.recentSessions ?? []);
+
+const router = useRouter();
+
+function goToClassRule(ruleId: string) {
+  router.push({ name: 'class-rule.detail', params: { ruleId } });
+}
 </script>
