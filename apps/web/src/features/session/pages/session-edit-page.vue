@@ -1,6 +1,6 @@
 <template>
   <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <PageHeader title="Edit Session" :description="`Change session for rule ${ruleId}`" />
+    <PageHeader title="Edit Session" description="Modify or cancel this class session" />
 
     <!-- Loading -->
     <CardSection v-if="isLoading" class="shrink-0 p-6">
