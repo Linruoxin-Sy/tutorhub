@@ -1,11 +1,12 @@
 import { afterAll, afterEach, beforeAll } from 'vitest';
 
-import { worker } from './src/mocks/browser';
+import { worker } from '../mocks/browser';
 
 // Mock IntersectionObserver for useElementInView in tests
 class MockIntersectionObserver implements IntersectionObserver {
   readonly root: Element | Document | null = null;
   readonly rootMargin: string = '';
+  readonly scrollMargin: string = '';
   readonly thresholds: ReadonlyArray<number> = [0];
   observe() {}
   unobserve() {}

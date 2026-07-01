@@ -1,7 +1,7 @@
 import { expect, test, vi } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
-import AvatarUploader from '../AvatarUploader.vue';
+import AvatarUploader from '@/components/AvatarUploader.vue';
 
 // Mock browser-image-compression
 vi.mock('browser-image-compression', () => ({
@@ -71,7 +71,7 @@ test('emits pendingFile when a file is selected', async () => {
 test('shows local preview immediately after selecting a file', async () => {
   vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-preview');
 
-  await render(AvatarUploader, {
+  const screen = await render(AvatarUploader, {
     props: { name: 'Test', avatarUrl: null },
   });
 

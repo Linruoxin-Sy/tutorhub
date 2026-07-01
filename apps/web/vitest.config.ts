@@ -29,7 +29,7 @@ export default defineConfig({
     },
   },
   test: {
-    setupFiles: ['vitest-browser-vue', './vitest.setup.ts'],
+    setupFiles: ['vitest-browser-vue', './src/tests/vitest.setup.ts'],
     browser: {
       enabled: true,
       provider: playwright(),

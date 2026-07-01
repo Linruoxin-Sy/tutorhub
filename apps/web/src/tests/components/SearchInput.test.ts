@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
-import SearchInput from '../SearchInput.vue';
+import SearchInput from '@/components/SearchInput.vue';
 
 test('renders with default placeholder', async () => {
   const screen = await render(SearchInput, {

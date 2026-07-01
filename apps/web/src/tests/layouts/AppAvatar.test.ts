@@ -5,7 +5,7 @@ import { createMemoryHistory, createRouter } from 'vue-router';
 
 import { useUserStore } from '@/features/auth/stores/user';
 
-import AppAvatar from '../AppAvatar.vue';
+import AppAvatar from '@/layouts/AppAvatar.vue';
 
 beforeEach(() => {
   setActivePinia(createPinia());

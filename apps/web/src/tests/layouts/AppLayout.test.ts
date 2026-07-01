@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
-import AppLayout from '../AppLayout.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
 
 function createMockRouter() {
   const router = createRouter({

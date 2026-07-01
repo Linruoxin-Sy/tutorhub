@@ -2,7 +2,7 @@ import { expect, test, vi } from 'vitest';
 import { render } from 'vitest-browser-vue';
 import { computed, ref } from 'vue';
 
-import VirtualList from '../VirtualList.vue';
+import VirtualList from '@/components/VirtualList.vue';
 
 function createMockQuery() {
   const items = ref<Array<{ id: number; name: string }>>([]);

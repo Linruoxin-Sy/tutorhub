@@ -2,7 +2,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
-import ThemeToggler from '../ThemeToggler.vue';
+import ThemeToggler from '@/layouts/ThemeToggler.vue';
 
 beforeEach(() => {
   setActivePinia(createPinia());

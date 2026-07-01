@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
-import DeleteButton from '../DeleteButton.vue';
+import DeleteButton from '@/components/DeleteButton.vue';
 
 test('renders the delete button', async () => {
   const screen = await render(DeleteButton);

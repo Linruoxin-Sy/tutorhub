@@ -1,7 +1,6 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "typed-router.d.ts", "src/**/*", "src/**/*.vue"],
-  "exclude": ["src/**/__tests__/*"],
+  "include": ["env.d.ts", "typed-router.d.ts", "src/**/*", "src/**/*.vue", "src/**/tests/**/*.ts"],
   "vueCompilerOptions": {
     "plugins": ["vue-router/volar/sfc-route-blocks", "vue-router/volar/sfc-typed-router"]
   },
@@ -9,6 +8,8 @@
     "rootDir": ".",
     // Extra safety for array and object lookups, but may have false positives.
     // "noUncheckedIndexedAccess": true,
+
+    "types": ["vitest/globals"],
 
     // Path mapping for cleaner imports.
     "paths": {

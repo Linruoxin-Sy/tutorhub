@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
-import ListPageShell from '../ListPageShell.vue';
+import ListPageShell from '@/components/ListPageShell.vue';
 
 test('renders title', async () => {
   const screen = await render(ListPageShell, {

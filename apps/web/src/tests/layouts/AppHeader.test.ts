@@ -3,7 +3,7 @@ import { beforeEach, expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
-import AppHeader from '../AppHeader.vue';
+import AppHeader from '@/layouts/AppHeader.vue';
 
 beforeEach(() => {
   setActivePinia(createPinia());

@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
-import AppNavBar from '../AppNavBar.vue';
+import AppNavBar from '@/layouts/AppNavBar.vue';
 
 function createMockRouter(initialRoute = '/dashboard') {
   const router = createRouter({

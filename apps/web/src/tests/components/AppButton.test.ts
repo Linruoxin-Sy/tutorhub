@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
-import AppButton from '../AppButton.vue';
+import AppButton from '@/components/AppButton.vue';
 
 test('renders default primary variant', async () => {
   const screen = await render(AppButton, {

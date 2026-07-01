@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
-import EditButton from '../EditButton.vue';
+import EditButton from '@/components/EditButton.vue';
 
 test('renders the edit button', async () => {
   const screen = await render(EditButton);

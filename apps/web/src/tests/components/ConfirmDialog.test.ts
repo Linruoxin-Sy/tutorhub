@@ -3,7 +3,7 @@ import { render } from 'vitest-browser-vue';
 
 import { useDialog } from '@/hooks/useDialog';
 
-import ConfirmDialog from '../ConfirmDialog.vue';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 
 test('does not render dialog when not triggered', async () => {
   await render(ConfirmDialog);

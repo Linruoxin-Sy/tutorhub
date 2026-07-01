@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
-import LoadingIndicator from '../LoadingIndicator.vue';
+import LoadingIndicator from '@/components/LoadingIndicator.vue';
 
 test('renders default text', async () => {
   const screen = await render(LoadingIndicator, {

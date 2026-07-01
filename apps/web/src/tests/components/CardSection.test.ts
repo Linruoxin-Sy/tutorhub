@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
-import CardSection from '../CardSection.vue';
+import CardSection from '@/components/CardSection.vue';
 
 test('renders default slot content', async () => {
   const screen = await render(CardSection, {

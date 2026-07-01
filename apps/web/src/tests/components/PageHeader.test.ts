@@ -2,7 +2,7 @@ import { expect, test, vi } from 'vitest';
 import { render } from 'vitest-browser-vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
-import PageHeader from '../PageHeader.vue';
+import PageHeader from '@/components/PageHeader.vue';
 
 // Mock useRouter
 const mockBack = vi.fn();

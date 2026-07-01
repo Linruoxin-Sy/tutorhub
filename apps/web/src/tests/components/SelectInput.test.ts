@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 import { h } from 'vue';
 
-import SelectInput from '../SelectInput.vue';
+import SelectInput from '@/components/SelectInput.vue';
 
 test('renders options passed via default slot', async () => {
   const screen = await render(SelectInput, {
