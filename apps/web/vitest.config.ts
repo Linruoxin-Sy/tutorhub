@@ -1,7 +1,7 @@
 import { fileURLToPath, URL } from 'node:url';
 
-import { playwright } from '@vitest/browser-playwright';
 import vue from '@vitejs/plugin-vue';
+import { playwright } from '@vitest/browser-playwright';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { defineConfig } from 'vitest/config';
