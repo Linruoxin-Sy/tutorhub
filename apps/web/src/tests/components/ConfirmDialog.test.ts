@@ -1,9 +1,8 @@
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
-import { useDialog } from '@/hooks/useDialog';
-
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import { useDialog } from '@/hooks/useDialog';
 
 test('does not render dialog when not triggered', async () => {
   await render(ConfirmDialog);

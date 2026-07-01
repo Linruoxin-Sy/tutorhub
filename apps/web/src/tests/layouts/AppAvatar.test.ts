@@ -4,7 +4,6 @@ import { render } from 'vitest-browser-vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
 import { useUserStore } from '@/features/auth/stores/user';
-
 import AppAvatar from '@/layouts/AppAvatar.vue';
 
 beforeEach(() => {
