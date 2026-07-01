@@ -1,6 +1,6 @@
 export const DEFAULT_FORM_DATA = {
   name: '',
-  status: 'ACTIVE' as const,
+  status: 'ACTIVE' as 'ACTIVE' | 'DISABLED',
   description: '',
 };
 
