@@ -77,15 +77,15 @@ async function startServer(): Promise<void> {
   await retry(() => checkDatabaseConnection(prisma), { label: 'database' });
   console.log('[startup] ✅ Database connection OK');
 
-  // 2. 检查对象存储连接（带重试）
+  // 2. 确保 MinIO bucket 已就绪（先创建 bucket，否则 HeadBucket 会失败）
+  await ensureBucket();
+
+  // 3. 检查对象存储连接（带重试）
   console.log('[startup] Checking storage connection...');
   await retry(() => checkStorageConnection(s3Client, bucketName), {
     label: 'storage',
   });
   console.log('[startup] ✅ Storage connection OK');
-
-  // 3. 确保 MinIO bucket 已就绪
-  await ensureBucket();
 
   // 4. 启动 HTTP 服务
   serve(
