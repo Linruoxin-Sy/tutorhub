@@ -25,14 +25,7 @@
       </section>
 
       <!-- Recent sessions (full width) -->
-      <article
-        class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
-      >
-        <header class="border-b border-gray-100 px-5 py-4 dark:border-[#343434]">
-          <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Recent sessions</h2>
-          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Upcoming and ongoing classes.</p>
-        </header>
-
+      <ListPageShell title="Recent sessions" description="Upcoming and ongoing classes.">
         <div v-if="isLoading" class="space-y-3 p-5">
           <div
             v-for="index in 4"
@@ -66,7 +59,7 @@
             </p>
           </div>
         </div>
-      </article>
+      </ListPageShell>
     </div>
   </main>
 </template>
@@ -74,6 +67,7 @@
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query';
 import { request } from '@/utils/request';
+import ListPageShell from '@/components/ListPageShell.vue';
 import SessionItem from '@/features/session/components/SessionItem.vue';
 
 import type { DashboardResponse } from '@tutorhub/schema';
