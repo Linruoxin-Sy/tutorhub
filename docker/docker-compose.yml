@@ -2,8 +2,6 @@ services:
   postgres:
     image: postgres:18
     restart: unless-stopped
-    ports:
-      - '${POSTGRES_PORT}:5432'
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -13,27 +11,26 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ['CMD', 'pg_isready', '-U', '${POSTGRES_USER}', '-d', '${POSTGRES_DB}']
 
   pgbouncer:
-    image: edoburu/pgbouncer
+    image: edoburu/pgbouncer:v1.25.2-p0
     restart: unless-stopped
     ports:
-      - '${PGBOUNCER_PORT}:5432'
+      - '${POSTGRES_PORT}:5432'
     environment:
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       DB_HOST: postgres
       DB_NAME: ${POSTGRES_DB}
+      AUTH_TYPE: scram-sha-256
       POOL_MODE: transaction
       MAX_CLIENT_CONN: 1000
       DEFAULT_POOL_SIZE: 25
-      ADMIN_USERS: postgres
     depends_on:
       - postgres
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-h', 'localhost']
 
   minio:
     image: minio/minio:RELEASE.2025-09-07T16-13-09Z
