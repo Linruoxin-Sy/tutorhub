@@ -33,7 +33,7 @@ router.beforeEach(async (to) => {
     return;
   }
 
-  let token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem('accessToken');
 
   // 没有 Access Token 但可能仍有 Refresh Token Cookie → 尝试静默刷新
   if (!token) {
