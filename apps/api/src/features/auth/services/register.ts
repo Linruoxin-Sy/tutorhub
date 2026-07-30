@@ -41,7 +41,7 @@ export const registerService = {
   },
   async safetifyUser(user: User) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordHash, passwordSalt, ...safeUser } = user;
+    const { passwordHash, passwordSalt, refreshTokenHash, ...safeUser } = user;
     return safeUser;
   },
 };

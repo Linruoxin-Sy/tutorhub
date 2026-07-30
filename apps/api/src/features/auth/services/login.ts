@@ -1,12 +1,18 @@
 import { z } from 'zod';
 
 import type { User } from '@tutorhub/database';
-import type { emailLoginSchema, phoneLoginSchema } from '@tutorhub/schema';
+import type { emailLoginSchema, phoneLoginSchema, safeUser } from '@tutorhub/schema';
 
-import { JWTService } from '@/features/auth/services/jwt';
+import { TokenService } from '@/features/auth/services/jwt';
 import { passwordService } from '@/features/auth/services/password';
 import { ApiError } from '@/shared/api-error';
 import { prisma } from '@/shared/prisma';
+
+export interface LoginResult {
+  user: safeUser;
+  accessToken: string;
+  refreshToken: string;
+}
 
 export const loginService = {
   async loginWithEmail(input: z.infer<typeof emailLoginSchema>) {
@@ -22,11 +28,7 @@ export const loginService = {
 
     await loginService.verifyPassword(password, user.passwordSalt, user.passwordHash);
 
-    const token = await JWTService.signAccessToken({ userId: user.id });
-
-    const safeUser = await loginService.safetifyUser(user);
-
-    return { user: safeUser, token };
+    return loginService.generateTokens(user);
   },
   async loginWithPhone(input: z.infer<typeof phoneLoginSchema>) {
     const { phone, password } = input;
@@ -41,11 +43,23 @@ export const loginService = {
 
     await loginService.verifyPassword(password, user.passwordSalt, user.passwordHash);
 
-    const token = await JWTService.signAccessToken({ userId: user.id });
+    return loginService.generateTokens(user);
+  },
+
+  /** 生成双 Token 并持久化 Refresh Token 哈希 */
+  async generateTokens(user: User): Promise<LoginResult> {
+    const accessToken = await TokenService.signAccessToken({ userId: user.id });
+    const refreshToken = await TokenService.generateRefreshToken();
+    const refreshTokenHash = TokenService.hashRefreshToken(refreshToken);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { refreshTokenHash },
+    });
 
     const safeUser = await loginService.safetifyUser(user);
 
-    return { user: safeUser, token };
+    return { user: safeUser, accessToken, refreshToken };
   },
   async verifyPassword(password: string, salt: string, passwordHash: string) {
     const matched = await passwordService.verify(password, salt, passwordHash);
@@ -56,7 +70,7 @@ export const loginService = {
   },
   async safetifyUser(user: User) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordHash, passwordSalt, ...safeUser } = user;
+    const { passwordHash, passwordSalt, refreshTokenHash, ...safeUser } = user;
     return safeUser;
   },
 };

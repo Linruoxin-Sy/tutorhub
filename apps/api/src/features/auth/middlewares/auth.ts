@@ -1,6 +1,6 @@
 import type { MiddlewareHandler } from 'hono';
 
-import { JWTService } from '@/features/auth/services/jwt';
+import { TokenService } from '@/features/auth/services/jwt';
 import { ApiError } from '@/shared/api-error';
 
 declare module 'hono' {
@@ -19,7 +19,7 @@ export const authMiddleware: MiddlewareHandler = async (c, next) => {
   const token = authHeader.slice(7);
 
   try {
-    const payload = await JWTService.verifyAccessToken(token);
+    const payload = await TokenService.verifyAccessToken(token);
     c.set('userId', payload.userId);
     await next();
   } catch {

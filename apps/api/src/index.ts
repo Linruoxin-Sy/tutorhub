@@ -35,7 +35,13 @@ const protectedApi = new Hono()
   .route('/', enrollmentRoute);
 
 const app = new Hono()
-  .use('*', cors())
+  .use(
+    '*',
+    cors({
+      origin: (origin) => origin,
+      credentials: true,
+    }),
+  )
   .route('/api/v1', publicApi)
   .route('/api/v1', protectedApi)
   .onError((error, c) => {
