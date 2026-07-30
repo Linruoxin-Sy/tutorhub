@@ -16,6 +16,11 @@ export const request = axios.create({
   withCredentials: true,
 });
 
+/** 判断 Axios config.url 是否指向 /auth/refresh（匹配各种 URL 格式） */
+function isRefreshUrl(url: string | undefined | null): boolean {
+  return typeof url === 'string' && url.endsWith('/auth/refresh');
+}
+
 // ── 刷新状态（用于并发 401 时排队重试） ──
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -64,7 +69,7 @@ request.interceptors.response.use(
     // ── 401: 尝试刷新 Token ──
     if (normalized.status === 401 && !originalRequest._retry) {
       // 刷新接口本身返回 401 → 直接登出，避免死循环
-      if (originalRequest.url === '/auth/refresh') {
+      if (isRefreshUrl(originalRequest.url)) {
         forceLogout('Session expired. Please log in again.');
         return Promise.reject(error);
       }
@@ -84,8 +89,12 @@ request.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // 发送刷新请求（实例已配置 withCredentials，自动携带 Cookie）
-        const { data } = await request.post<RefreshResponse>('/auth/refresh');
+        // 使用裸 axios 发刷新请求，避免递归进入本拦截器
+        const { data } = await axios.post<RefreshResponse>(
+          `${getEnv('BASE_URL')}/auth/refresh`,
+          {},
+          { withCredentials: true },
+        );
 
         const newToken = data.accessToken;
         localStorage.setItem(TOKEN_KEY, newToken);
