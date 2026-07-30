@@ -21,6 +21,7 @@
     "@vuepic/vue-datepicker": "^14.0.0",
     "@vueuse/core": "^14.3.0",
     "axios": "^1.17.0",
+    "axios-auth-refresh": "^5.0.2",
     "browser-image-compression": "^2.0.2",
     "dayjs": "^1.11.13",
     "es-toolkit": "^1.47.0",

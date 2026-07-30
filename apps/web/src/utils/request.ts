@@ -1,4 +1,5 @@
 import axios from 'axios';
+import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { toast } from 'vue-sonner';
 
 import type { RefreshResponse } from '@tutorhub/schema';
@@ -16,36 +17,6 @@ export const request = axios.create({
   withCredentials: true,
 });
 
-/** 判断 Axios config.url 是否指向 /auth/refresh（匹配各种 URL 格式） */
-function isRefreshUrl(url: string | undefined | null): boolean {
-  return typeof url === 'string' && url.endsWith('/auth/refresh');
-}
-
-// ── 刷新状态（用于并发 401 时排队重试） ──
-let isRefreshing = false;
-let failedQueue: Array<{
-  resolve: (token: string) => void;
-  reject: (error: unknown) => void;
-}> = [];
-
-function processQueue(error: unknown, token: string | null = null): void {
-  for (const { resolve, reject } of failedQueue) {
-    if (error) {
-      reject(error);
-    } else {
-      resolve(token!);
-    }
-  }
-  failedQueue = [];
-}
-
-/** 清除所有登录态并跳转到登录页 */
-function forceLogout(message: string): void {
-  localStorage.removeItem(TOKEN_KEY);
-  toast.error(message);
-  router.push({ name: 'auth.login' });
-}
-
 request.interceptors.request.use((config) => {
   const token = localStorage.getItem(TOKEN_KEY);
   if (token) {
@@ -54,71 +25,52 @@ request.interceptors.request.use((config) => {
   return config;
 });
 
+// ── 401 自动刷新（axios-auth-refresh 接管队列和重试） ──
+createAuthRefreshInterceptor(request, async (error) => {
+  const { data } = await axios.post<RefreshResponse>(
+    `${getEnv('BASE_URL')}/auth/refresh`,
+    {},
+    { withCredentials: true },
+  );
+
+  const newToken = data.accessToken;
+  localStorage.setItem(TOKEN_KEY, newToken);
+
+  // 为重试请求设置新 token
+  if (error.response?.config.headers) {
+    error.response.config.headers.Authorization = `Bearer ${newToken}`;
+  }
+}, {
+  statusCodes: [401],
+  maxRetries: 1,
+  onRetry: (config) => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+});
+
+// ── 捕获刷新失败的 401（刷新接口返回 401 或网络错误） ──
 request.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-
-    // 如果请求配置不存在（非 Axios 错误），走通用错误处理
-    if (!originalRequest) {
-      return handleGenericError(error);
-    }
-
+  (error) => {
+    // axios-auth-refresh 已处理成功刷新的 401，此处仅处理刷新失败后的残留 401
     const normalized = extractApiError(error);
 
-    // ── 401: 尝试刷新 Token ──
-    if (normalized.status === 401 && !originalRequest._retry) {
-      // 刷新接口本身返回 401 → 直接登出，避免死循环
-      if (isRefreshUrl(originalRequest.url)) {
-        forceLogout('Session expired. Please log in again.');
-        return Promise.reject(error);
-      }
-
-      // 已有刷新请求进行中 → 排队等待
-      if (isRefreshing) {
-        return new Promise<string>((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then((newToken) => {
-          originalRequest.headers.Authorization = `Bearer ${newToken}`;
-          return request(originalRequest);
-        });
-      }
-
-      // 开始刷新
-      originalRequest._retry = true;
-      isRefreshing = true;
-
-      try {
-        // 使用裸 axios 发刷新请求，避免递归进入本拦截器
-        const { data } = await axios.post<RefreshResponse>(
-          `${getEnv('BASE_URL')}/auth/refresh`,
-          {},
-          { withCredentials: true },
-        );
-
-        const newToken = data.accessToken;
-        localStorage.setItem(TOKEN_KEY, newToken);
-
-        // 重放排队中的请求
-        processQueue(null, newToken);
-
-        // 重试当前请求
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return request(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError, null);
-        forceLogout('Session expired. Please log in again.');
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
+    if (normalized.status === 401) {
+      localStorage.removeItem(TOKEN_KEY);
+      toast.error('Session expired. Please log in again.');
+      router.push({ name: 'auth.login' });
+      return Promise.reject(error);
     }
 
     return handleGenericError(error);
   },
 );
 
-/** 处理非 401 或无需刷新的错误 */
+/** 处理非 401 的通用错误 */
 function handleGenericError(error: unknown): Promise<never> {
   const normalized = extractApiError(error);
 
