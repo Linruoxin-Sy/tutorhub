@@ -17,7 +17,12 @@ export const authHandlers = [
       );
     }
 
-    return HttpResponse.json({ data: mockLoginResponse() });
+    return HttpResponse.json(mockLoginResponse(), {
+      headers: {
+        'Set-Cookie':
+          'refreshToken=mock-refresh-token; HttpOnly; SameSite=Lax; Path=/; Max-Age=2592000',
+      },
+    });
   }),
 
   // POST /api/v1/auth/register
@@ -32,6 +37,29 @@ export const authHandlers = [
       );
     }
 
-    return HttpResponse.json({ data: mockRegisterResponse() }, { status: 201 });
+    return HttpResponse.json(mockRegisterResponse(), { status: 201 });
+  }),
+
+  // POST /api/v1/auth/refresh
+  http.post('*/api/v1/auth/refresh', async () => {
+    return HttpResponse.json(
+      { accessToken: 'mock-refreshed-access-token' },
+      {
+        headers: {
+          'Set-Cookie':
+            'refreshToken=new-mock-refresh-token; HttpOnly; SameSite=Lax; Path=/; Max-Age=2592000',
+        },
+      },
+    );
+  }),
+
+  // POST /api/v1/auth/logout
+  http.post('*/api/v1/auth/logout', async () => {
+    return HttpResponse.json(
+      { message: 'Logged out' },
+      {
+        headers: { 'Set-Cookie': 'refreshToken=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0' },
+      },
+    );
   }),
 ];

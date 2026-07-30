@@ -37,7 +37,7 @@ export function mockUser(overrides?: Partial<LoginResponse['user']>): LoginRespo
 export function mockLoginResponse(overrides?: Partial<LoginResponse>): LoginResponse {
   return {
     user: mockUser(),
-    token: 'mock-jwt-token-abc123',
+    accessToken: 'mock-access-token-abc123',
     ...overrides,
   };
 }
