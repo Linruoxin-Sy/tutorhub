@@ -29,6 +29,9 @@ model User {
   /// 头像 URL
   avatarUrl String? @map("avatar_url")
 
+  /// 刷新令牌哈希值（SHA-256），用于 Refresh Token Rotation
+  refreshTokenHash String? @map("refresh_token_hash")
+
   /// 用户拥有的学生
   students Student[]
 
