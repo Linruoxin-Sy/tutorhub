@@ -16,5 +16,10 @@ export const loginSchema = z.union([emailLoginSchema, phoneLoginSchema]);
 
 export type LoginResponse = {
   user: safeUser;
-  token: string;
+  accessToken: string;
+};
+
+/** POST /auth/refresh 的响应类型 */
+export type RefreshResponse = {
+  accessToken: string;
 };
