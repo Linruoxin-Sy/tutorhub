@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 
 import {
   loginSchema,
@@ -15,32 +16,15 @@ import { registerService } from '@/features/auth/services/register';
 import { ApiError } from '@/shared/api-error';
 import { zValidator } from '@/shared/validator';
 
-/** 生成 Refresh Token 的 Set-Cookie 响应头值 */
-function buildRefreshCookie(token: string, maxAge: number): string {
-  const parts = [
-    `refreshToken=${token}`,
-    'HttpOnly',
-    'SameSite=Lax',
-    'Path=/',
-    `Max-Age=${maxAge}`,
-  ];
-  // 生产环境附加 Secure 标志
-  if (process.env.NODE_ENV === 'production') {
-    parts.push('Secure');
-  }
-  return parts.join('; ');
-}
-
-/** 清除 Refresh Token Cookie */
-function buildClearCookie(): string {
-  return 'refreshToken=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0';
-}
-
-/** 从 Cookie 头中提取 refreshToken */
-function extractRefreshToken(cookie: string | undefined): string | null {
-  if (!cookie) return null;
-  const match = cookie.match(/(?:^|;\s*)refreshToken=([^;]+)/);
-  return match?.[1] ?? null;
+/** 设置 Refresh Token Cookie */
+function setRefreshCookie(c: Parameters<typeof setCookie>[0], token: string, maxAge: number): void {
+  setCookie(c, 'refreshToken', token, {
+    httpOnly: true,
+    sameSite: 'Lax',
+    path: '/',
+    maxAge,
+    secure: process.env.NODE_ENV === 'production',
+  });
 }
 
 export const authRoute = new Hono()
@@ -60,11 +44,10 @@ export const authRoute = new Hono()
     const { user, accessToken, refreshToken } = result;
     const maxAge = TokenService.getRefreshTokenExpiresDays() * 24 * 60 * 60;
 
-    const res: LoginResponse = { user, accessToken };
+    setRefreshCookie(c, refreshToken, maxAge);
 
-    return c.json(res, 200, {
-      'Set-Cookie': buildRefreshCookie(refreshToken, maxAge),
-    });
+    const res: LoginResponse = { user, accessToken };
+    return c.json(res, 200);
   })
   .post('/register', zValidator('json', registerSchema), async (c) => {
     const input = c.req.valid('json');
@@ -74,7 +57,7 @@ export const authRoute = new Hono()
     return c.json(res);
   })
   .post('/refresh', async (c) => {
-    const oldRefreshToken = extractRefreshToken(c.req.header('Cookie'));
+    const oldRefreshToken = getCookie(c, 'refreshToken');
 
     if (!oldRefreshToken) {
       throw new ApiError(401, 'REFRESH_TOKEN_MISSING', 'No refresh token provided');
@@ -84,21 +67,18 @@ export const authRoute = new Hono()
       await refreshService.refresh(oldRefreshToken);
     const maxAge = TokenService.getRefreshTokenExpiresDays() * 24 * 60 * 60;
 
-    const res: RefreshResponse = { accessToken };
+    setRefreshCookie(c, newRefreshToken, maxAge);
 
-    return c.json(res, 200, {
-      'Set-Cookie': buildRefreshCookie(newRefreshToken, maxAge),
-    });
+    const res: RefreshResponse = { accessToken };
+    return c.json(res, 200);
   })
   .post('/logout', async (c) => {
-    const refreshToken = extractRefreshToken(c.req.header('Cookie'));
+    const token = getCookie(c, 'refreshToken');
 
-    if (refreshToken) {
-      await refreshService.logoutByToken(refreshToken);
+    if (token) {
+      await refreshService.logoutByToken(token);
     }
 
-    // 无论是否找到用户，都清除 Cookie
-    return c.json({ message: 'Logged out' }, 200, {
-      'Set-Cookie': buildClearCookie(),
-    });
+    deleteCookie(c, 'refreshToken');
+    return c.json({ message: 'Logged out' });
   });
