@@ -42,7 +42,7 @@ export const authRoute = new Hono()
     }
 
     const { user, accessToken, refreshToken } = result;
-    const maxAge = TokenService.getRefreshTokenExpiresDays() * 24 * 60 * 60;
+    const maxAge = TokenService.getRefreshTokenMaxAge();
 
     setRefreshCookie(c, refreshToken, maxAge);
 
@@ -65,7 +65,7 @@ export const authRoute = new Hono()
 
     const { accessToken, refreshToken: newRefreshToken } =
       await refreshService.refresh(oldRefreshToken);
-    const maxAge = TokenService.getRefreshTokenExpiresDays() * 24 * 60 * 60;
+    const maxAge = TokenService.getRefreshTokenMaxAge();
 
     setRefreshCookie(c, newRefreshToken, maxAge);
 

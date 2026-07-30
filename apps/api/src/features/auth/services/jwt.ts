@@ -1,12 +1,13 @@
 import { createHash, randomBytes } from 'node:crypto';
 
 import jwt from 'jsonwebtoken';
+import ms from 'ms';
 
 import { getEnv } from '@/shared/getEnv';
 
 const JWT_SECRET = getEnv('JWT_SECRET');
 const ACCESS_TOKEN_EXPIRES = getEnv('ACCESS_TOKEN_EXPIRES', '15m') as jwt.SignOptions['expiresIn'];
-const REFRESH_TOKEN_EXPIRES_DAYS = Number.parseInt(getEnv('REFRESH_TOKEN_EXPIRES_DAYS', '30'), 10);
+const REFRESH_TOKEN_EXPIRES = getEnv('REFRESH_TOKEN_EXPIRES', '30d');
 
 export interface AccessTokenPayload {
   userId: string;
@@ -37,8 +38,8 @@ export const TokenService = {
     return createHash('sha256').update(token, 'utf8').digest('hex');
   },
 
-  /** 获取 Refresh Token 过期天数 */
-  getRefreshTokenExpiresDays(): number {
-    return REFRESH_TOKEN_EXPIRES_DAYS;
+  /** 获取 Refresh Token 的 Cookie Max-Age（秒），基于 ms 格式字符串解析 */
+  getRefreshTokenMaxAge(): number {
+    return Math.floor(ms(REFRESH_TOKEN_EXPIRES as ms.StringValue) / 1000);
   },
 };
