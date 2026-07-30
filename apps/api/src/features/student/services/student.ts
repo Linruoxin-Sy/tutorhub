@@ -11,7 +11,9 @@ import { bucketName, s3Client } from '@/shared/s3';
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
 const ALLOWED_MIME_PREFIXES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 
-const AVATAR_BASE_URL = getEnv('AVATAR_BASE_URL', 'http://localhost:9000/tutorhub');
+const endpoint = getEnv('MINIO_ENDPOINT', 'localhost:9000').replace(/\/+$/, '');
+const bucket = getEnv('MINIO_BUCKET', 'tutorhub').replace(/\/+$/, '');
+const avatarBaseUrl = `http://${endpoint}/${bucket}`;
 
 /** 异步删除 MinIO 中的头像文件（失败仅日志，不影响主流程） */
 function deleteAvatarFile(objectKey: string): void {
@@ -24,7 +26,7 @@ function addAvatarUrl<T extends { avatarKey: string | null }>(item: T) {
   const { avatarKey, ...rest } = item;
   return {
     ...rest,
-    avatarUrl: avatarKey ? `${AVATAR_BASE_URL}/${avatarKey}` : null,
+    avatarUrl: avatarKey ? `${avatarBaseUrl}/${avatarKey}` : null,
   };
 }
 
@@ -87,7 +89,7 @@ export const studentService = {
     }
 
     // 6) 更新数据库
-    const avatarUrl = `${AVATAR_BASE_URL}/${objectKey}`;
+    const avatarUrl = `${avatarBaseUrl}/${objectKey}`;
     const updated = await prisma.student.update({
       where: { id: studentId },
       data: { avatarKey: objectKey },
