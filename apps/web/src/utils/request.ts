@@ -26,31 +26,35 @@ request.interceptors.request.use((config) => {
 });
 
 // ── 401 自动刷新（axios-auth-refresh 接管队列和重试） ──
-createAuthRefreshInterceptor(request, async (error) => {
-  const { data } = await axios.post<RefreshResponse>(
-    `${getEnv('BASE_URL')}/auth/refresh`,
-    {},
-    { withCredentials: true },
-  );
+createAuthRefreshInterceptor(
+  request,
+  async (error) => {
+    const { data } = await axios.post<RefreshResponse>(
+      `${getEnv('BASE_URL')}/auth/refresh`,
+      {},
+      { withCredentials: true },
+    );
 
-  const newToken = data.accessToken;
-  localStorage.setItem(TOKEN_KEY, newToken);
+    const newToken = data.accessToken;
+    localStorage.setItem(TOKEN_KEY, newToken);
 
-  // 为重试请求设置新 token
-  if (error.response?.config.headers) {
-    error.response.config.headers.Authorization = `Bearer ${newToken}`;
-  }
-}, {
-  statusCodes: [401],
-  maxRetries: 1,
-  onRetry: (config) => {
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // 为重试请求设置新 token
+    if (error.response?.config.headers) {
+      error.response.config.headers.Authorization = `Bearer ${newToken}`;
     }
-    return config;
   },
-});
+  {
+    statusCodes: [401],
+    maxRetries: 1,
+    onRetry: (config) => {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+  },
+);
 
 // ── 捕获刷新失败的 401（刷新接口返回 401 或网络错误） ──
 request.interceptors.response.use(
