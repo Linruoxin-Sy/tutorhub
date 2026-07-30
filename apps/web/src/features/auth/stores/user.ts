@@ -6,6 +6,8 @@ import { request } from '@/utils/request';
 
 type UserState = LoginResponse['user'];
 
+const TOKEN_KEY = 'accessToken';
+
 const initialUserState: UserState = {
   id: '',
   name: '',
@@ -24,17 +26,32 @@ export const useUserStore = defineStore('auth/user', () => {
     try {
       const { data } = await request.post<LoginResponse>('/auth/login', payload);
       user.value = data.user;
-      localStorage.setItem('token', data.token);
+      localStorage.setItem(TOKEN_KEY, data.accessToken);
     } catch {
       // Axios 拦截器已显示错误 toast，此处仅阻止传播
       throw new Error('Login failed');
     }
   };
 
-  const logout = () => {
-    user.value = initialUserState;
-    localStorage.removeItem('token');
+  /** 刷新 Access Token（由 request.ts 拦截器自动调用） */
+  const setAccessToken = (accessToken: string) => {
+    localStorage.setItem(TOKEN_KEY, accessToken);
   };
 
-  return { user, login, logout };
+  const getAccessToken = (): string | null => {
+    return localStorage.getItem(TOKEN_KEY);
+  };
+
+  const logout = async () => {
+    try {
+      // 尝试通知服务端清除 Refresh Token（忽略失败）
+      await request.post('/auth/logout');
+    } catch {
+      // 即使请求失败也清除本地状态
+    }
+    user.value = initialUserState;
+    localStorage.removeItem(TOKEN_KEY);
+  };
+
+  return { user, login, logout, setAccessToken, getAccessToken };
 });

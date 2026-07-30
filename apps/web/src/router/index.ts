@@ -16,7 +16,7 @@ router.beforeEach((to) => {
   if (to.meta.publicRoute) {
     return;
   }
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('accessToken');
   if (token) {
     return;
   }
