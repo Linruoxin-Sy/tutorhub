@@ -1,40 +1,44 @@
 <template>
   <nav
     class="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 p-1 shadow-sm dark:border-[#2f2f2f] dark:bg-[#202020]"
-    aria-label="Primary navigation"
+    :aria-label="t('layouts.nav.ariaLabel')"
   >
     <RouterLink
       v-for="item in navItems"
-      :key="item.name"
+      :key="item.labelKey"
       :to="{ name: item.routeName }"
       class="group inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition"
       :class="isActive(item.routeName) ? activeClass : inactiveClass"
     >
       <i :class="item.icon"></i>
-      <span>{{ item.name }}</span>
+      <span>{{ t(item.labelKey) }}</span>
     </RouterLink>
   </nav>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 const navItems = [
   {
-    name: 'Dashboard',
+    labelKey: 'layouts.nav.dashboard',
     routeName: 'dashboard',
     icon: 'i-mdi-view-dashboard-outline',
   },
   {
-    name: 'Student',
+    labelKey: 'layouts.nav.student',
     routeName: 'student.list',
     icon: 'i-lucide-users',
   },
   {
-    name: 'Course',
+    labelKey: 'layouts.nav.course',
     routeName: 'course.list',
     icon: 'i-lucide-book-open',
   },
   {
-    name: 'Class Rule',
+    labelKey: 'layouts.nav.classRule',
     routeName: 'class-rule.list',
     icon: 'i-lucide-calendar-check',
   },

@@ -8,7 +8,7 @@
           ? 'bg-white text-gray-900 shadow-sm dark:bg-[#3a3a3a] dark:text-white'
           : 'text-gray-500 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-[#3a3a3a]'
       "
-      aria-label="跟随系统主题"
+      :aria-label="t('layouts.theme.system')"
       :aria-pressed="theme === 'system'"
       @click="setTheme('system')"
     >
@@ -23,7 +23,7 @@
           ? 'bg-white text-amber-500 shadow-sm dark:bg-[#3a3a3a]'
           : 'text-gray-500 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-[#3a3a3a]'
       "
-      aria-label="亮色主题"
+      :aria-label="t('layouts.theme.light')"
       :aria-pressed="theme === 'light'"
       @click="setTheme('light')"
     >
@@ -38,7 +38,7 @@
           ? 'bg-white text-blue-500 shadow-sm dark:bg-[#3a3a3a]'
           : 'text-gray-500 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-[#3a3a3a]'
       "
-      aria-label="暗色主题"
+      :aria-label="t('layouts.theme.dark')"
       :aria-pressed="theme === 'dark'"
       @click="setTheme('dark')"
     >
@@ -48,7 +48,10 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 import { useThemeToggle } from '@/hooks/useThemeToggle';
 
+const { t } = useI18n();
 const { theme, setTheme } = useThemeToggle();
 </script>
