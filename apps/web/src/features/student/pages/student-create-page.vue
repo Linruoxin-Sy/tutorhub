@@ -1,10 +1,7 @@
 <template>
   <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div class="space-y-6">
-      <PageHeader
-        title="Create Student"
-        description="Fill in the details below to add a new student."
-      />
+      <PageHeader title-key="student.create.title" description-key="student.create.description" />
 
       <!-- Form -->
       <CardSection class="p-6">
@@ -23,7 +20,7 @@
                 disabled
                 class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/70 px-4 py-3 text-sm font-medium text-white"
               >
-                Creating...
+                <T keypath="common.actions.creating" />
               </button>
               <button
                 v-else
@@ -31,7 +28,7 @@
                 class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
                 @click="submit"
               >
-                Create Student
+                <T keypath="common.actions.createStudent" />
               </button>
             </Transition>
           </template>

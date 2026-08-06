@@ -126,7 +126,11 @@
               class="size-1.5 rounded-full"
               :class="student!.status === 'ACTIVE' ? 'bg-green-500' : 'bg-gray-400'"
             ></span>
-            {{ student!.status === 'ACTIVE' ? 'Active' : 'Disabled' }}
+            <T
+              :keypath="
+                student!.status === 'ACTIVE' ? 'common.status.active' : 'common.status.disabled'
+              "
+            />
           </span>
         </div>
       </Transition>

@@ -12,6 +12,7 @@ import {
   type StudentForm,
 } from '@/features/student/types/studentForm';
 import { useLoading } from '@/hooks/useLoading';
+import { i18n } from '@/locales';
 
 export function useStudentEditForm(id: string) {
   const router = useRouter();
@@ -45,7 +46,7 @@ export function useStudentEditForm(id: string) {
       formData.value = cloneDeep(originalData.value);
       currentAvatarUrl.value = student.avatarUrl ?? null;
     } catch {
-      toast.error('Failed to load student data');
+      toast.error(i18n.global.t('student.edit.loadError'));
       router.push({ name: 'student.list' });
     } finally {
       isInitialLoading.value = false;
@@ -73,14 +74,14 @@ export function useStudentEditForm(id: string) {
       try {
         avatarKeyObj.avatarKey = await uploadAvatarFile(pendingFile.value);
       } catch {
-        toast.error('Avatar upload failed, please try again.');
+        toast.error(i18n.global.t('student.avatarUploadError'));
         return;
       }
     }
 
     const payload = merge(cloneDeep(formData.value), avatarKeyObj);
     await updateStudent(id, payload);
-    toast.success('Student updated successfully!');
+    toast.success(i18n.global.t('student.edit.success'));
     queryClient.invalidateQueries({ queryKey: ['students'] });
     router.push({ name: 'student.list' });
   });

@@ -1,10 +1,10 @@
 <template>
   <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div class="space-y-6">
-      <PageHeader title="Student Details" description="View the student's information below." />
+      <PageHeader title-key="student.detail.title" description-key="student.detail.description" />
 
       <CardSection v-if="isInitialLoading" class="p-6">
-        <LoadingIndicator text="Loading student data..." />
+        <LoadingIndicator :text="t('common.loading.student')" />
       </CardSection>
 
       <!-- Detail content -->
@@ -13,15 +13,18 @@
       </CardSection>
 
       <!-- Enrolled courses -->
-      <ListPageShell title="Enrolled Courses">
+      <ListPageShell title-key="student.enrolledCourses.title">
         <template #filters>
           <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
-            <SearchInput v-model="search" placeholder="Search courses..." />
+            <SearchInput
+              v-model="search"
+              :placeholder="t('student.enrolledCourses.searchPlaceholder')"
+            />
 
             <SelectInput v-model="status">
-              <option value="">All status</option>
-              <option value="ACTIVE">Active</option>
-              <option value="DISABLED">Disabled</option>
+              <option value=""><T keypath="common.status.all" /></option>
+              <option value="ACTIVE"><T keypath="common.status.active" /></option>
+              <option value="DISABLED"><T keypath="common.status.disabled" /></option>
             </SelectInput>
           </div>
         </template>
@@ -55,7 +58,7 @@
                 <div
                   class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
                 >
-                  No courses found.
+                  <T keypath="student.enrolledCourses.empty" />
                 </div>
               </div>
             </template>
@@ -69,6 +72,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import StudentForm from '@/features/student/components/StudentForm.vue';
 import { useStudentDetailForm } from '@/features/student/hooks/useStudentDetailForm';
@@ -86,6 +90,8 @@ type EnrollmentItem = StudentEnrollmentListResponse['items'][number];
 const route = useRoute();
 const router = useRouter();
 const id = (route.params as Record<string, string>).id;
+
+const { t } = useI18n();
 
 const { data: student, isInitialLoading, avatarUrl } = useStudentDetailForm(id);
 

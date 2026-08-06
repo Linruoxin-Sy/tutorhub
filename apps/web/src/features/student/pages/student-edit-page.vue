@@ -1,10 +1,10 @@
 <template>
   <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div class="space-y-6">
-      <PageHeader title="Edit Student" description="Update the student's information below." />
+      <PageHeader title-key="student.edit.title" description-key="student.edit.description" />
 
       <CardSection v-if="isInitialLoading" class="p-6">
-        <LoadingIndicator text="Loading student data..." />
+        <LoadingIndicator :text="t('common.loading.student')" />
       </CardSection>
 
       <!-- Form -->
@@ -28,7 +28,7 @@
                 disabled
                 class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/70 px-4 py-3 text-sm font-medium text-white"
               >
-                No changes
+                <T keypath="common.actions.noChanges" />
               </button>
               <button
                 v-else-if="isSubmitting"
@@ -36,7 +36,7 @@
                 disabled
                 class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/70 px-4 py-3 text-sm font-medium text-white"
               >
-                Saving...
+                <T keypath="common.actions.saving" />
               </button>
               <button
                 v-else
@@ -44,7 +44,7 @@
                 class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
                 @click="submit"
               >
-                Save Changes
+                <T keypath="common.actions.saveChanges" />
               </button>
             </Transition>
           </template>
@@ -52,22 +52,25 @@
       </CardSection>
 
       <!-- Enrolled courses -->
-      <ListPageShell title="Enrolled Courses">
+      <ListPageShell title-key="student.enrolledCourses.title">
         <template #filters>
           <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
-            <SearchInput v-model="search" placeholder="Search courses..." />
+            <SearchInput
+              v-model="search"
+              :placeholder="t('student.enrolledCourses.searchPlaceholder')"
+            />
 
             <SelectInput v-model="status">
-              <option value="">All status</option>
-              <option value="ACTIVE">Active</option>
-              <option value="DISABLED">Disabled</option>
+              <option value=""><T keypath="common.status.all" /></option>
+              <option value="ACTIVE"><T keypath="common.status.active" /></option>
+              <option value="DISABLED"><T keypath="common.status.disabled" /></option>
             </SelectInput>
           </div>
         </template>
         <template #actions>
           <AppButton @click="router.push({ name: 'student.add-course', params: { id } })">
             <i class="i-lucide-plus size-4"></i>
-            <span>Add Course</span>
+            <span><T keypath="common.actions.addCourse" /></span>
           </AppButton>
         </template>
 
@@ -101,7 +104,7 @@
                 <div
                   class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
                 >
-                  No courses found.
+                  <T keypath="student.enrolledCourses.empty" />
                 </div>
               </div>
             </template>
@@ -117,8 +120,10 @@ import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { useQueryClient } from '@tanstack/vue-query';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { useStudentEditForm } from '@/features/student/hooks/useStudentEditForm';
+import { i18n } from '@/locales';
 import StudentForm from '@/features/student/components/StudentForm.vue';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import {
@@ -139,6 +144,8 @@ type EnrollmentItem = StudentEnrollmentListResponse['items'][number];
 const route = useRoute();
 const router = useRouter();
 const id = (route.params as Record<string, string>).id;
+
+const { t } = useI18n();
 
 const {
   formData,
@@ -168,9 +175,9 @@ const { confirm } = useDialog();
 
 async function handleDeleteCourse(item: EnrollmentItem) {
   const confirmed = await confirm({
-    title: 'Delete Enrollment',
-    message: `Are you sure you want to remove "${item.course.name}" from this student?`,
-    confirmText: 'Delete',
+    title: i18n.global.t('common.enrollmentRemoval.title'),
+    message: i18n.global.t('student.removeCourse.message', { course: item.course.name }),
+    confirmText: i18n.global.t('common.actions.delete'),
     variant: 'danger',
   });
 
@@ -178,10 +185,10 @@ async function handleDeleteCourse(item: EnrollmentItem) {
 
   try {
     await deleteEnrollment(item.id);
-    toast.success('Course removed from student successfully!');
+    toast.success(i18n.global.t('student.removeCourse.success'));
     queryClient.invalidateQueries({ queryKey: ['student-enrollments', id] });
   } catch {
-    toast.error('Failed to remove course from student');
+    toast.error(i18n.global.t('student.removeCourse.error'));
   }
 }
 </script>

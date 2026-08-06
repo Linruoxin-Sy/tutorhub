@@ -1,14 +1,17 @@
 <template>
   <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <PageHeader title="Add Courses" description="Select courses to enroll the student in." />
+    <PageHeader
+      title-key="student.addCourse.pageTitle"
+      description-key="student.addCourse.pageDescription"
+    />
 
-    <ListPageShell title="Available Courses">
+    <ListPageShell title-key="student.addCourse.availableTitle">
       <template #filters>
-        <SearchInput v-model="search" placeholder="Search courses..." />
+        <SearchInput v-model="search" :placeholder="t('student.addCourse.searchPlaceholder')" />
         <SelectInput v-model="status">
-          <option value="">All status</option>
-          <option value="ACTIVE">Active</option>
-          <option value="DISABLED">Disabled</option>
+          <option value=""><T keypath="common.status.all" /></option>
+          <option value="ACTIVE"><T keypath="common.status.active" /></option>
+          <option value="DISABLED"><T keypath="common.status.disabled" /></option>
         </SelectInput>
       </template>
 
@@ -41,7 +44,7 @@
             <div
               class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
             >
-              No available courses found.
+              <T keypath="student.addCourse.empty" />
             </div>
           </div>
         </template>
@@ -51,11 +54,11 @@
     <!-- 底部提交栏 -->
     <CardSection class="flex items-center justify-end gap-4 px-6 py-4">
       <span class="text-sm text-gray-500 dark:text-gray-400">
-        {{ selectedIds.size }} course(s) selected
+        <T keypath="student.addCourse.selected" :params="{ count: selectedIds.size }" />
       </span>
       <AppButton :disabled="selectedIds.size === 0 || isSubmitting" @click="submit">
-        <span v-if="isSubmitting">Adding...</span>
-        <span v-else>Add to Student</span>
+        <T v-if="isSubmitting" keypath="common.actions.adding" />
+        <T v-else keypath="common.actions.addToStudent" />
       </AppButton>
     </CardSection>
   </main>
@@ -65,10 +68,12 @@
 import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from 'vue-router';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchAvailableCourses, createEnrollment } from '@/features/enrollment/api/enrollment-api';
 import CourseItem from '@/features/course/components/CourseItem.vue';
+import { i18n } from '@/locales';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import PageHeader from '@/components/PageHeader.vue';
@@ -79,6 +84,8 @@ import type { Course } from '@tutorhub/database';
 const router = useRouter();
 const route = useRoute();
 const id = (route.params as Record<string, string>).id;
+
+const { t } = useI18n();
 
 const search = ref('');
 const status = ref<'ACTIVE' | 'DISABLED' | ''>('ACTIVE');
@@ -115,10 +122,10 @@ async function submit() {
   try {
     const selectedArray = Array.from(selectedIds.value);
     await Promise.all(selectedArray.map((courseId) => createEnrollment(id, courseId)));
-    toast.success(`Successfully added ${selectedArray.length} course(s)!`);
+    toast.success(i18n.global.t('student.addCourse.success', { count: selectedArray.length }));
     router.push({ name: 'student.edit', params: { id } });
   } catch {
-    toast.error('Failed to add courses');
+    toast.error(i18n.global.t('student.addCourse.error'));
   } finally {
     isSubmitting.value = false;
   }

@@ -1,22 +1,22 @@
 <template>
   <main class="mx-auto h-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div class="flex h-full flex-col gap-6">
-      <ListPageShell title="Students">
+      <ListPageShell title-key="student.pageTitle">
         <template #filters>
           <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
-            <SearchInput v-model="searchInput" placeholder="Search students..." />
+            <SearchInput v-model="searchInput" :placeholder="t('student.searchPlaceholder')" />
 
             <SelectInput v-model="status">
-              <option value="">All status</option>
-              <option value="ACTIVE">Active</option>
-              <option value="DISABLED">Disabled</option>
+              <option value=""><T keypath="common.status.all" /></option>
+              <option value="ACTIVE"><T keypath="common.status.active" /></option>
+              <option value="DISABLED"><T keypath="common.status.disabled" /></option>
             </SelectInput>
           </div>
         </template>
         <template #actions>
           <AppButton @click="router.push({ name: 'student.create' })">
             <i class="i-lucide-plus size-4"></i>
-            <span>Add Student</span>
+            <span><T keypath="common.actions.addStudent" /></span>
           </AppButton>
         </template>
 
@@ -37,7 +37,7 @@
                 :key="column"
                 class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
               >
-                {{ column }}
+                <T>{{ column }}</T>
               </div>
             </div>
           </template>
@@ -63,7 +63,7 @@
             <div
               class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
             >
-              No students found.
+              <T keypath="student.empty" />
             </div>
           </template>
         </VirtualList>
@@ -75,6 +75,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useStudentDelete } from '@/features/student/hooks/useStudentDelete';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
@@ -85,6 +86,7 @@ import SelectInput from '@/components/SelectInput.vue';
 
 type StudentItemType = StudentListResponse['items'][number];
 
+const { t, tm } = useI18n();
 const router = useRouter();
 const { confirmAndDelete } = useStudentDelete();
 
@@ -93,7 +95,7 @@ const debouncedSearch = refDebounced(searchInput, 300);
 
 const status = ref<'ACTIVE' | 'DISABLED' | ''>('ACTIVE');
 
-const columns = ['Name', 'Email', 'Phone', 'Status', 'Created At', 'Actions'];
+const columns = computed(() => tm('student.columns'));
 
 const searchRef = computed(() => debouncedSearch.value ?? '');
 const statusRef = computed(() => status.value ?? '');

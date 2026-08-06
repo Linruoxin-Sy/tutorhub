@@ -8,6 +8,7 @@ import { uploadAvatarFile } from '@/features/student/api/avatar-upload';
 import { createStudent } from '@/features/student/api/student-api';
 import { DEFAULT_FORM_DATA, type StudentForm } from '@/features/student/types/studentForm';
 import { useLoading } from '@/hooks/useLoading';
+import { i18n } from '@/locales';
 
 export function useStudentCreateForm() {
   const router = useRouter();
@@ -38,14 +39,14 @@ export function useStudentCreateForm() {
       try {
         avatarKeyObj.avatarKey = await uploadAvatarFile(pendingFile.value);
       } catch {
-        toast.error('Avatar upload failed, please try again.');
+        toast.error(i18n.global.t('student.avatarUploadError'));
         return;
       }
     }
 
     const payload = merge(cloneDeep(formData.value), avatarKeyObj);
     await createStudent(payload);
-    toast.success('Student created successfully!');
+    toast.success(i18n.global.t('student.create.success'));
     queryClient.invalidateQueries({ queryKey: ['students'] });
     router.push({ name: 'student.list' });
   });

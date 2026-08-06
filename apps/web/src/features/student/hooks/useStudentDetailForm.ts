@@ -7,6 +7,7 @@ import {
   FORM_DATA_KEYS,
   type StudentForm,
 } from '@/features/student/types/studentForm';
+import { i18n } from '@/locales';
 
 export function useStudentDetailForm(id: string) {
   const router = useRouter();
@@ -25,7 +26,7 @@ export function useStudentDetailForm(id: string) {
       ) as StudentForm;
       currentAvatarUrl.value = student.avatarUrl;
     } catch {
-      toast.error('Failed to load student data');
+      toast.error(i18n.global.t('student.edit.loadError'));
       router.push({ name: 'student.list' });
     } finally {
       isInitialLoading.value = false;
