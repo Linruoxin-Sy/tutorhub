@@ -7,6 +7,7 @@
       <AppNavBar />
     </div>
     <div class="flex items-center gap-4">
+      <LocaleToggler />
       <ThemeToggler />
       <AppAvatar />
     </div>
@@ -16,5 +17,6 @@
 <script setup lang="ts">
 import AppAvatar from '@/layouts/AppAvatar.vue';
 import AppNavBar from '@/layouts/AppNavBar.vue';
+import LocaleToggler from '@/layouts/LocaleToggler.vue';
 import ThemeToggler from '@/layouts/ThemeToggler.vue';
 </script>
