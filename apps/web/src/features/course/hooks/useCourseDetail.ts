@@ -7,6 +7,7 @@ import {
   FORM_DATA_KEYS,
   type CourseFormData,
 } from '@/features/course/types/courseForm';
+import { i18n } from '@/locales';
 
 export function useCourseDetail(id: string) {
   const router = useRouter();
@@ -22,7 +23,7 @@ export function useCourseDetail(id: string) {
         isNil(v) ? '' : v,
       ) as CourseFormData;
     } catch {
-      toast.error('Failed to load course details');
+      toast.error(i18n.global.t('course.detail.loadError'));
       router.push({ name: 'course.list' });
     } finally {
       isInitialLoading.value = false;

@@ -6,6 +6,7 @@ import { courseUpdateSchema } from '@tutorhub/schema';
 
 import { fetchCourseById, updateCourse } from '@/features/course/api/course-api';
 import { useLoading } from '@/hooks/useLoading';
+import { i18n } from '@/locales';
 
 const DEFAULT_FORM_DATA = {
   name: '',
@@ -41,7 +42,7 @@ export function useCourseEditForm(id: string) {
       );
       formData.value = cloneDeep(originalData.value);
     } catch {
-      toast.error('Failed to load course data');
+      toast.error(i18n.global.t('course.edit.loadError'));
       router.push({ name: 'course.list' });
     } finally {
       isInitialLoading.value = false;
@@ -66,7 +67,7 @@ export function useCourseEditForm(id: string) {
     const payload = merge(cloneDeep(formData.value), {});
     try {
       await updateCourse(id, payload);
-      toast.success('Course updated successfully!');
+      toast.success(i18n.global.t('course.edit.success'));
       queryClient.invalidateQueries({ queryKey: ['courses'] });
       router.push({ name: 'course.list' });
     } catch {

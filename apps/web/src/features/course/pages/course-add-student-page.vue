@@ -1,16 +1,19 @@
 <template>
   <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <PageHeader title="Add Students" description="Select students to enroll in this course." />
+    <PageHeader
+      title-key="course.addStudent.pageTitle"
+      description-key="course.addStudent.pageDescription"
+    />
 
-    <ListPageShell title="Available Students">
+    <ListPageShell title-key="course.addStudent.availableTitle">
       <template #filters>
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
-          <SearchInput v-model="search" placeholder="Search students..." />
+          <SearchInput v-model="search" :placeholder="t('course.addStudent.searchPlaceholder')" />
 
           <SelectInput v-model="status">
-            <option value="">All status</option>
-            <option value="ACTIVE">Active</option>
-            <option value="DISABLED">Disabled</option>
+            <option value=""><T keypath="common.status.all" /></option>
+            <option value="ACTIVE"><T keypath="common.status.active" /></option>
+            <option value="DISABLED"><T keypath="common.status.disabled" /></option>
           </SelectInput>
         </div>
       </template>
@@ -32,7 +35,7 @@
               :key="column"
               class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
             >
-              {{ column }}
+              <T>{{ column }}</T>
             </div>
           </div>
         </template>
@@ -57,7 +60,7 @@
           <div
             class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
           >
-            No available students found.
+            <T keypath="course.addStudent.empty" />
           </div>
         </template>
       </VirtualList>
@@ -66,11 +69,11 @@
     <!-- 底部提交栏 -->
     <CardSection class="flex items-center justify-end gap-4 px-6 py-4">
       <span class="text-sm text-gray-500 dark:text-gray-400">
-        {{ selectedIds.size }} student(s) selected
+        <T keypath="course.addStudent.selected" :params="{ count: selectedIds.size }" />
       </span>
       <AppButton :disabled="selectedIds.size === 0 || isSubmitting" @click="submit">
-        <span v-if="isSubmitting">Adding...</span>
-        <span v-else>Add to Course</span>
+        <T v-if="isSubmitting" keypath="common.actions.adding" />
+        <T v-else keypath="common.actions.addToCourse" />
       </AppButton>
     </CardSection>
   </main>
@@ -80,11 +83,13 @@
 import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from 'vue-router';
 import { useQueryClient } from '@tanstack/vue-query';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchAvailableStudents, createEnrollment } from '@/features/enrollment/api/enrollment-api';
 import StudentItem from '@/features/student/components/StudentItem.vue';
+import { i18n } from '@/locales';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import PageHeader from '@/components/PageHeader.vue';
@@ -97,7 +102,8 @@ const route = useRoute();
 const queryClient = useQueryClient();
 const id = (route.params as Record<string, string>).id;
 
-const columns = ['Name', 'Email', 'Phone', 'Status', 'Created At', 'Actions'];
+const { t, tm } = useI18n();
+const columns = computed(() => tm('course.columns'));
 
 const search = ref('');
 const debouncedSearch = refDebounced(search, 300);
@@ -135,10 +141,10 @@ async function submit() {
     const selectedArray = Array.from(selectedIds.value);
     await Promise.all(selectedArray.map((studentId) => createEnrollment(studentId, id)));
     queryClient.invalidateQueries({ queryKey: ['course-enrollments', id] });
-    toast.success(`Successfully added ${selectedArray.length} student(s)!`);
+    toast.success(i18n.global.t('course.addStudent.success', { count: selectedArray.length }));
     router.push({ name: 'course.edit', params: { id } });
   } catch {
-    toast.error('Failed to add students');
+    toast.error(i18n.global.t('course.addStudent.error'));
   } finally {
     isSubmitting.value = false;
   }

@@ -5,14 +5,14 @@
       <!-- Name -->
       <div class="space-y-2">
         <label :for="field.id('name')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Name <span v-if="!readonly" class="text-red-500">*</span>
+          <T keypath="course.form.name" /> <span v-if="!readonly" class="text-red-500">*</span>
         </label>
         <input
           v-if="!readonly"
           :id="field.id('name')"
           v-model.trim="model.name"
           type="text"
-          placeholder="Course name"
+          :placeholder="t('course.form.namePlaceholder')"
           class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
         />
         <p
@@ -29,7 +29,7 @@
           :for="field.id('status')"
           class="text-sm font-medium text-gray-700 dark:text-gray-200"
         >
-          Status
+          <T keypath="course.form.status" />
         </label>
         <SelectInput
           v-if="!readonly"
@@ -38,8 +38,8 @@
           size="md"
           class="w-full"
         >
-          <option value="ACTIVE">Active</option>
-          <option value="DISABLED">Disabled</option>
+          <option value="ACTIVE"><T keypath="common.status.active" /></option>
+          <option value="DISABLED"><T keypath="common.status.disabled" /></option>
         </SelectInput>
         <p
           v-else
@@ -57,7 +57,11 @@
               class="size-1.5 rounded-full"
               :class="model.status === 'ACTIVE' ? 'bg-green-500' : 'bg-gray-400'"
             ></span>
-            {{ model.status === 'ACTIVE' ? 'Active' : 'Disabled' }}
+            <T
+              :keypath="
+                model.status === 'ACTIVE' ? 'common.status.active' : 'common.status.disabled'
+              "
+            />
           </span>
         </p>
       </div>
@@ -69,21 +73,22 @@
         :for="field.id('description')"
         class="text-sm font-medium text-gray-700 dark:text-gray-200"
       >
-        Description
+        <T keypath="course.form.description" />
       </label>
       <textarea
         v-if="!readonly"
         :id="field.id('description')"
         v-model="model.description"
         rows="4"
-        placeholder="Course description..."
+        :placeholder="t('course.form.descriptionPlaceholder')"
         class="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
       ></textarea>
       <p
         v-else
         class="min-h-20 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm whitespace-pre-wrap text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
       >
-        {{ model.description || 'No description provided.' }}
+        <T v-if="model.description">{{ model.description }}</T>
+        <T v-else keypath="common.misc.noDescription" />
       </p>
     </div>
 
@@ -95,8 +100,12 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 import type { CourseFormData } from '@/features/course/types/courseForm';
 import { useField } from '@/hooks/useField';
+
+const { t } = useI18n();
 
 const model = defineModel<CourseFormData>({
   required: true,

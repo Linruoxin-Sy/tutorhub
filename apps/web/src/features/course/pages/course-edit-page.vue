@@ -1,10 +1,10 @@
 <template>
   <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div class="space-y-6">
-      <PageHeader title="Edit Course" description="Update the course information below." />
+      <PageHeader title-key="course.edit.title" description-key="course.edit.description" />
 
       <CardSection v-if="isInitialLoading" class="p-6">
-        <LoadingIndicator text="Loading course data..." />
+        <LoadingIndicator :text="t('common.loading.course')" />
       </CardSection>
 
       <!-- Form -->
@@ -24,7 +24,7 @@
                 disabled
                 class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/70 px-4 py-3 text-sm font-medium text-white"
               >
-                No changes
+                <T keypath="common.actions.noChanges" />
               </button>
               <button
                 v-else-if="isSubmitting"
@@ -32,7 +32,7 @@
                 disabled
                 class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/70 px-4 py-3 text-sm font-medium text-white"
               >
-                Saving...
+                <T keypath="common.actions.saving" />
               </button>
               <button
                 v-else
@@ -40,7 +40,7 @@
                 class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700"
                 @click="submit"
               >
-                Save Changes
+                <T keypath="common.actions.saveChanges" />
               </button>
             </Transition>
           </template>
@@ -48,22 +48,25 @@
       </CardSection>
 
       <!-- Enrolled students -->
-      <ListPageShell title="Enrolled Students">
+      <ListPageShell title-key="course.enrolledStudents.title">
         <template #filters>
           <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
-            <SearchInput v-model="search" placeholder="Search students..." />
+            <SearchInput
+              v-model="search"
+              :placeholder="t('course.enrolledStudents.searchPlaceholder')"
+            />
 
             <SelectInput v-model="status">
-              <option value="">All status</option>
-              <option value="ACTIVE">Active</option>
-              <option value="DISABLED">Disabled</option>
+              <option value=""><T keypath="common.status.all" /></option>
+              <option value="ACTIVE"><T keypath="common.status.active" /></option>
+              <option value="DISABLED"><T keypath="common.status.disabled" /></option>
             </SelectInput>
           </div>
         </template>
         <template #actions>
           <AppButton @click="router.push({ name: 'course.add-student', params: { id } })">
             <i class="i-lucide-plus size-4"></i>
-            <span>Add Student</span>
+            <span><T keypath="common.actions.addStudent" /></span>
           </AppButton>
         </template>
 
@@ -85,7 +88,7 @@
                   :key="column"
                   class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
                 >
-                  {{ column }}
+                  <T>{{ column }}</T>
                 </div>
               </div>
             </template>
@@ -110,7 +113,7 @@
               <div
                 class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
               >
-                No students found.
+                <T keypath="course.enrolledStudents.empty" />
               </div>
             </template>
           </VirtualList>
@@ -118,11 +121,11 @@
       </ListPageShell>
 
       <!-- Class Rules -->
-      <ListPageShell title="Class Rules">
+      <ListPageShell title-key="course.classRules.title">
         <template #actions>
           <AppButton @click="router.push('/class-rule/create?courseId=' + id)">
             <i class="i-lucide-plus size-4"></i>
-            <span>Add Rule</span>
+            <span><T keypath="common.actions.addRule" /></span>
           </AppButton>
         </template>
 
@@ -157,7 +160,7 @@
                 <div
                   class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
                 >
-                  No class rules found. Add a rule to start scheduling.
+                  <T keypath="common.empty.noClassRulesWithHint" />
                 </div>
               </div>
             </template>
@@ -173,8 +176,10 @@ import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { useQueryClient } from '@tanstack/vue-query';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { useCourseEditForm } from '@/features/course/hooks/useCourseEditForm';
+import { i18n } from '@/locales';
 import CourseForm from '@/features/course/components/CourseForm.vue';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchCourseEnrollments, deleteEnrollment } from '@/features/enrollment/api/enrollment-api';
@@ -195,6 +200,7 @@ const route = useRoute();
 const router = useRouter();
 const id = (route.params as Record<string, string>).id;
 
+const { t, tm } = useI18n();
 const { formData, hasChanged, isInitialLoading, submit, isSubmitting } = useCourseEditForm(id);
 
 const search = ref('');
@@ -202,7 +208,7 @@ const debouncedSearch = refDebounced(search, 300);
 
 const status = ref<'ACTIVE' | 'DISABLED' | ''>('ACTIVE');
 
-const columns = ['Name', 'Email', 'Phone', 'Status', 'Created At', 'Actions'];
+const columns = computed(() => tm('course.columns'));
 
 const searchRef = computed(() => debouncedSearch.value ?? '');
 const statusRef = computed(() => status.value ?? '');
@@ -224,9 +230,9 @@ const { confirm } = useDialog();
 
 async function handleDeleteStudent(item: EnrollmentItem) {
   const confirmed = await confirm({
-    title: 'Delete Enrollment',
-    message: `Are you sure you want to remove "${item.student.name}" from this course?`,
-    confirmText: 'Delete',
+    title: i18n.global.t('common.enrollmentRemoval.title'),
+    message: i18n.global.t('course.removeStudent.message', { student: item.student.name }),
+    confirmText: i18n.global.t('common.actions.delete'),
     variant: 'danger',
   });
 
@@ -234,10 +240,10 @@ async function handleDeleteStudent(item: EnrollmentItem) {
 
   try {
     await deleteEnrollment(item.id);
-    toast.success('Student removed from course successfully!');
+    toast.success(i18n.global.t('course.removeStudent.success'));
     queryClient.invalidateQueries({ queryKey: ['course-enrollments', id] });
   } catch {
-    toast.error('Failed to remove student from course');
+    toast.error(i18n.global.t('course.removeStudent.error'));
   }
 }
 
@@ -251,10 +257,9 @@ function handleEditRule(rule: ClassRuleListItem) {
 
 async function handleDeleteRule(rule: ClassRuleListItem) {
   const confirmed = await confirm({
-    title: 'Delete Class Rule',
-    message:
-      'Are you sure you want to delete this class rule? All future sessions will be removed.',
-    confirmText: 'Delete',
+    title: i18n.global.t('course.deleteRule.title'),
+    message: i18n.global.t('course.deleteRule.message'),
+    confirmText: i18n.global.t('common.actions.delete'),
     variant: 'danger',
   });
 
@@ -262,10 +267,10 @@ async function handleDeleteRule(rule: ClassRuleListItem) {
 
   try {
     await deleteClassRule(rule.id);
-    toast.success('Class rule deleted successfully!');
+    toast.success(i18n.global.t('course.deleteRule.success'));
     queryClient.invalidateQueries({ queryKey: ['course-class-rules', id] });
   } catch {
-    toast.error('Failed to delete class rule');
+    toast.error(i18n.global.t('course.deleteRule.error'));
   }
 }
 </script>

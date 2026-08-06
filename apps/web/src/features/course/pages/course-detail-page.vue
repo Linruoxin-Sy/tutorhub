@@ -1,10 +1,10 @@
 <template>
   <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div class="space-y-6">
-      <PageHeader title="Course Details" description="View the full information of the course." />
+      <PageHeader title-key="course.detail.title" description-key="course.detail.description" />
 
       <CardSection v-if="isInitialLoading" class="p-6">
-        <LoadingIndicator text="Loading course data..." />
+        <LoadingIndicator :text="t('common.loading.course')" />
       </CardSection>
 
       <!-- Detail content -->
@@ -13,9 +13,12 @@
       </CardSection>
 
       <!-- Enrolled students -->
-      <ListPageShell title="Enrolled Students">
+      <ListPageShell title-key="course.enrolledStudents.title">
         <template #filters>
-          <SearchInput v-model="search" placeholder="Search students..." />
+          <SearchInput
+            v-model="search"
+            :placeholder="t('course.enrolledStudents.searchPlaceholder')"
+          />
         </template>
 
         <div class="flex h-125 flex-col">
@@ -36,7 +39,7 @@
                   :key="column"
                   class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
                 >
-                  {{ column }}
+                  <T>{{ column }}</T>
                 </div>
               </div>
             </template>
@@ -60,7 +63,7 @@
               <div
                 class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
               >
-                No students found.
+                <T keypath="course.enrolledStudents.empty" />
               </div>
             </template>
           </VirtualList>
@@ -68,7 +71,7 @@
       </ListPageShell>
 
       <!-- Class Rules -->
-      <ListPageShell title="Class Rules">
+      <ListPageShell title-key="course.classRules.title">
         <div class="flex h-125 flex-col">
           <VirtualList
             :query="classRuleQuery"
@@ -98,7 +101,7 @@
                 <div
                   class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
                 >
-                  No class rules found.
+                  <T keypath="course.classRules.empty" />
                 </div>
               </div>
             </template>
@@ -112,6 +115,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useCourseDetail } from '@/features/course/hooks/useCourseDetail';
 import CourseForm from '@/features/course/components/CourseForm.vue';
@@ -134,10 +138,11 @@ const props = defineProps<{
 const router = useRouter();
 const { data, isInitialLoading } = useCourseDetail(props.id);
 
+const { t, tm } = useI18n();
 const search = ref('');
 const debouncedSearch = refDebounced(search, 300);
 
-const columns = ['Name', 'Email', 'Phone', 'Created At', 'Actions'];
+const columns = computed(() => tm('course.columnsDetail'));
 
 const searchRef = computed(() => debouncedSearch.value ?? '');
 

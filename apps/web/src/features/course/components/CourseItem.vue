@@ -45,7 +45,11 @@
             class="rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold"
             :style="{ color: getAvatarTextColor(course!.name) }"
           >
-            {{ course!.status }}
+            <T
+              :keypath="
+                course!.status === 'ACTIVE' ? 'common.status.active' : 'common.status.disabled'
+              "
+            />
           </span>
         </div>
       </div>
@@ -70,7 +74,8 @@
             key="ct-desc"
             class="truncate text-sm leading-relaxed text-gray-600 dark:text-gray-300"
           >
-            {{ course!.description || 'No description provided.' }}
+            <T v-if="course!.description">{{ course!.description }}</T>
+            <T v-else keypath="common.misc.noDescription" />
           </p>
         </Transition>
 
@@ -86,7 +91,10 @@
             <div class="h-3 w-1/3 animate-pulse rounded bg-gray-200 dark:bg-[#343434]" />
           </div>
           <span v-else key="ct-date" class="block text-xs text-gray-500 dark:text-gray-400">
-            Created {{ formatDateTime(course!.createdAt) }}
+            <T
+              keypath="common.misc.created"
+              :params="{ date: formatDateTime(course!.createdAt) }"
+            />
           </span>
         </Transition>
       </div>

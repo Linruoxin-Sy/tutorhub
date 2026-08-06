@@ -6,6 +6,7 @@ import { courseCreateSchema } from '@tutorhub/schema';
 
 import { createCourse } from '@/features/course/api/course-api';
 import { useLoading } from '@/hooks/useLoading';
+import { i18n } from '@/locales';
 
 const DEFAULT_FORM_DATA = {
   name: '',
@@ -39,7 +40,7 @@ export function useCourseCreateForm() {
     const payload = merge(cloneDeep(formData.value), {});
     try {
       await createCourse(payload);
-      toast.success('Course created successfully!');
+      toast.success(i18n.global.t('course.create.success'));
       queryClient.invalidateQueries({ queryKey: ['courses'] });
       router.push({ name: 'course.list' });
     } catch {

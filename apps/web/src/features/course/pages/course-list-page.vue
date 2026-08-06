@@ -1,22 +1,22 @@
 <template>
   <main class="mx-auto h-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div class="flex h-full flex-col gap-6">
-      <ListPageShell title="Courses">
+      <ListPageShell title-key="course.pageTitle">
         <template #filters>
           <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
-            <SearchInput v-model="search" placeholder="Search courses..." />
+            <SearchInput v-model="search" :placeholder="t('course.searchPlaceholder')" />
 
             <SelectInput v-model="status">
-              <option value="">All status</option>
-              <option value="ACTIVE">Active</option>
-              <option value="DISABLED">Disabled</option>
+              <option value=""><T keypath="common.status.all" /></option>
+              <option value="ACTIVE"><T keypath="common.status.active" /></option>
+              <option value="DISABLED"><T keypath="common.status.disabled" /></option>
             </SelectInput>
           </div>
         </template>
         <template #actions>
           <AppButton @click="router.push({ name: 'course.create' })">
             <i class="i-lucide-plus size-4"></i>
-            <span>Add Course</span>
+            <span><T keypath="common.actions.addCourse" /></span>
           </AppButton>
         </template>
 
@@ -50,7 +50,7 @@
               <div
                 class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
               >
-                No courses found.
+                <T keypath="course.empty" />
               </div>
             </div>
           </template>
@@ -63,6 +63,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useCourseDelete } from '@/features/course/hooks/useCourseDelete';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
@@ -71,6 +72,7 @@ import CourseItem from '@/features/course/components/CourseItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import type { Course } from '@tutorhub/database';
 
+const { t } = useI18n();
 const router = useRouter();
 const { confirmAndDelete } = useCourseDelete();
 
