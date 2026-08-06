@@ -1,7 +1,7 @@
 import type { App } from 'vue';
 import { toast } from 'vue-sonner';
 
-import { extractApiError, HTTP_STATUS_MESSAGES } from './api-error';
+import { extractApiError, getHttpStatusMessage } from './api-error';
 
 /**
  * 注册 Vue 运行时 + 浏览器全局的错误处理器。
@@ -17,7 +17,7 @@ export function registerGlobalErrorHandlers(app: App): void {
   // ── 1. Vue 运行时错误 ──
   app.config.errorHandler = (error, instance, info) => {
     const normalized = extractApiError(error);
-    const fallbackMessage = normalized.status ? HTTP_STATUS_MESSAGES[normalized.status] : undefined;
+    const fallbackMessage = normalized.status ? getHttpStatusMessage(normalized.status) : undefined;
 
     toast.error(fallbackMessage ?? normalized.message);
     console.error(`[Vue errorHandler] ${normalized.code}: ${normalized.message}`, {

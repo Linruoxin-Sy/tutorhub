@@ -4,9 +4,10 @@ import { toast } from 'vue-sonner';
 
 import type { RefreshResponse } from '@tutorhub/schema';
 
+import { i18n } from '@/locales';
 import router from '@/router';
 
-import { extractApiError, HTTP_STATUS_MESSAGES } from './api-error';
+import { extractApiError, getHttpStatusMessage } from './api-error';
 import { getEnv } from './env';
 
 const TOKEN_KEY = 'accessToken';
@@ -65,7 +66,7 @@ request.interceptors.response.use(
 
     if (normalized.status === 401) {
       localStorage.removeItem(TOKEN_KEY);
-      toast.error('Session expired. Please log in again.');
+      toast.error(i18n.global.t('errors.sessionExpired'));
       router.push({ name: 'auth.login' });
       return Promise.reject(error);
     }
@@ -90,9 +91,9 @@ function handleGenericError(error: unknown): Promise<never> {
     return Promise.reject(error);
   }
 
-  // ── 其它 HTTP 状态码 → 从预设映射中取消息 ──
-  if (normalized.status && HTTP_STATUS_MESSAGES[normalized.status]) {
-    toast.error(HTTP_STATUS_MESSAGES[normalized.status]!);
+  // ── 其它 HTTP 状态码 → 从本地化映射中取消息 ──
+  if (normalized.status) {
+    toast.error(getHttpStatusMessage(normalized.status));
     return Promise.reject(error);
   }
 

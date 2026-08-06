@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { i18n, type MessageKey } from '@/locales';
+
 /** 后端错误响应的标准格式 */
 export interface ApiErrorResponse {
   code: string;
@@ -17,25 +19,24 @@ export interface NormalizedApiError {
   raw: unknown;
 }
 
-/** HTTP 状态码 → 用户友好提示 */
-export const HTTP_STATUS_MESSAGES: Record<number, string> = {
-  400: '请求参数有误，请检查输入',
-  403: '权限不足，无法执行此操作',
-  404: '请求的资源不存在',
-  409: '数据冲突，请刷新后重试',
-  422: '请求参数校验失败',
-  429: '请求太频繁，请稍后再试',
-  500: '服务器内部错误，请稍后重试',
-  502: '网关错误，请稍后重试',
-  503: '服务暂时不可用，请稍后重试',
-};
+/** 有本地化文案的 HTTP 状态码 */
+const KNOWN_HTTP_STATUSES = new Set([400, 403, 404, 409, 422, 429, 500, 502, 503]);
 
-/** 常见网络错误码 → 用户友好提示 */
-export const NETWORK_ERROR_MESSAGES: Record<string, string> = {
-  ERR_NETWORK: '网络连接失败，请检查网络',
-  ECONNABORTED: '请求超时，请重试',
-  ERR_CANCELED: '请求已取消',
-};
+/** 常见网络错误码（有本地化文案） */
+const NETWORK_ERROR_CODES = ['ERR_NETWORK', 'ECONNABORTED', 'ERR_CANCELED'] as const;
+
+/** HTTP 状态码 → 本地化用户提示（惰性解析，跟随当前语言） */
+export function getHttpStatusMessage(status: number): string {
+  if (KNOWN_HTTP_STATUSES.has(status)) {
+    return i18n.global.t(`errors.http.${status}` as MessageKey);
+  }
+  return i18n.global.t('errors.requestFailed', { status });
+}
+
+/** 网络错误码 → 本地化用户提示（惰性解析，跟随当前语言） */
+export function getNetworkErrorMessage(code: string): string {
+  return i18n.global.t(`errors.network.${code}` as MessageKey);
+}
 
 /**
  * 从任何错误对象中标准化提取后端/前端错误信息。
@@ -64,10 +65,9 @@ export function extractApiError(error: unknown): NormalizedApiError {
       }
 
       // 后端返回了非标准格式 → 使用 HTTP 状态码映射
-      const fallbackMessage = HTTP_STATUS_MESSAGES[error.response.status];
       return {
         code: `HTTP_${error.response.status}`,
-        message: fallbackMessage ?? `请求失败 (${error.response.status})`,
+        message: getHttpStatusMessage(error.response.status),
         status: error.response.status,
         details: null,
         raw: error,
@@ -75,10 +75,10 @@ export function extractApiError(error: unknown): NormalizedApiError {
     }
 
     // 请求未收到响应（网络错误/超时/取消）
-    if (error.code && NETWORK_ERROR_MESSAGES[error.code]) {
+    if (error.code && (NETWORK_ERROR_CODES as readonly string[]).includes(error.code)) {
       return {
         code: error.code,
-        message: NETWORK_ERROR_MESSAGES[error.code]!,
+        message: getNetworkErrorMessage(error.code),
         status: null,
         details: null,
         raw: error,
@@ -90,7 +90,7 @@ export function extractApiError(error: unknown): NormalizedApiError {
   if (error instanceof Error) {
     return {
       code: 'UNKNOWN_ERROR',
-      message: error.message || '发生未知错误',
+      message: error.message || i18n.global.t('errors.unknown'),
       status: null,
       details: null,
       raw: error,
@@ -100,7 +100,7 @@ export function extractApiError(error: unknown): NormalizedApiError {
   // ── 彻底兜底 ──
   return {
     code: 'UNKNOWN_ERROR',
-    message: '发生未知错误',
+    message: i18n.global.t('errors.unknown'),
     status: null,
     details: null,
     raw: error,
