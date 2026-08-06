@@ -23,6 +23,7 @@
     "axios": "^1.17.0",
     "axios-auth-refresh": "^5.0.2",
     "browser-image-compression": "^2.0.2",
+    "date-fns": "^4.4.0",
     "dayjs": "^1.11.13",
     "es-toolkit": "^1.47.0",
     "ky": "^2.0.2",
@@ -31,6 +32,7 @@
     "rrule": "^2.8.1",
     "tailwindcss": "^4.3.0",
     "vue": "^3.5.31",
+    "vue-i18n": "^11.4.8",
     "vue-router": "^5.0.4",
     "vue-sonner": "^2.0.9",
     "zod": "^4.4.3"
