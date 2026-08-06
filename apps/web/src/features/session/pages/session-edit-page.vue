@@ -1,15 +1,17 @@
 <template>
   <main class="mx-auto flex h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <PageHeader title="Edit Session" description="Modify or cancel this class session" />
+    <PageHeader title-key="session.edit.title" description-key="session.edit.description" />
 
     <!-- Loading -->
     <CardSection v-if="isLoading" class="shrink-0 p-6">
-      <LoadingIndicator text="Loading session data..." />
+      <LoadingIndicator :text="t('common.loading.session')" />
     </CardSection>
 
     <!-- ═══════ Change Session ═══════ -->
     <CardSection v-else class="shrink-0 space-y-5 p-6">
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Change Session</h3>
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+        <T keypath="session.edit.changeSession" />
+      </h3>
 
       <!-- Preview: change result -->
       <SessionItem
@@ -36,7 +38,7 @@
       <!-- State selector -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Action <span class="text-red-500">*</span>
+          <T keypath="common.labels.action" /> <span class="text-red-500">*</span>
         </label>
         <div class="flex gap-3">
           <button
@@ -50,7 +52,7 @@
             @click="formState = 'CANCELLED'"
           >
             <i class="i-lucide-x-circle mr-1 inline size-4" />
-            Cancel
+            <T keypath="common.actions.cancel" />
           </button>
           <button
             type="button"
@@ -63,7 +65,7 @@
             @click="formState = 'RESCHEDULED'"
           >
             <i class="i-lucide-rotate-ccw mr-1 inline size-4" />
-            Reschedule
+            <T keypath="common.actions.reschedule" />
           </button>
         </div>
       </div>
@@ -76,10 +78,10 @@
         <i class="i-lucide-info mt-0.5 inline size-5 shrink-0 text-red-500 dark:text-red-400" />
         <div>
           <p class="text-sm font-medium text-red-700 dark:text-red-400">
-            This session will be cancelled
+            <T keypath="session.edit.thisSessionCancelled" />
           </p>
           <p class="mt-0.5 text-sm text-red-600 dark:text-red-300/70">
-            No charges will be applied for this session.
+            <T keypath="session.edit.noCharges" />
           </p>
         </div>
       </div>
@@ -87,13 +89,15 @@
       <!-- Reason (optional) -->
       <div class="space-y-2">
         <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Reason
-          <span class="text-xs font-normal text-gray-400 dark:text-gray-500">(optional)</span>
+          <T keypath="common.labels.reason" />
+          <span class="text-xs font-normal text-gray-400 dark:text-gray-500"
+            ><T keypath="common.labels.optional"
+          /></span>
         </label>
         <input
           v-model="formReason"
           type="text"
-          placeholder="e.g. Holiday adjustment"
+          :placeholder="t('session.edit.reasonPlaceholder')"
           class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
         />
       </div>
@@ -102,17 +106,18 @@
       <template v-if="formState === 'RESCHEDULED'">
         <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
-            New Date <span class="text-red-500">*</span>
+            <T keypath="common.labels.newDate" /> <span class="text-red-500">*</span>
           </label>
           <VueDatePicker
             v-model="formRescheduledDate"
             model-type="yyyy-MM-dd"
             :dark="isDark"
             :ui="datePickerUi"
+            :locale="datePickerLocale"
             :formats="{ input: 'yyyy-MM-dd' }"
             :enable-time-picker="false"
             :clearable="false"
-            placeholder="Select new date"
+            :placeholder="t('session.edit.newDatePlaceholder')"
             class="w-full"
           />
         </div>
@@ -120,15 +125,16 @@
         <div class="flex items-start gap-3">
           <div class="flex-1 space-y-2">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
-              New Start Time <span class="text-red-500">*</span>
+              <T keypath="common.labels.newStartTime" /> <span class="text-red-500">*</span>
             </label>
             <VueDatePicker
               v-model="formRescheduledStartTime"
               model-type="HH:mm"
               :dark="isDark"
               :ui="datePickerUi"
+              :locale="datePickerLocale"
               time-picker
-              placeholder="Start time"
+              :placeholder="t('common.labels.startTime')"
               class="w-full"
             />
           </div>
@@ -139,15 +145,16 @@
 
           <div class="flex-1 space-y-2">
             <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
-              New End Time <span class="text-red-500">*</span>
+              <T keypath="common.labels.newEndTime" /> <span class="text-red-500">*</span>
             </label>
             <VueDatePicker
               v-model="formRescheduledEndTime"
               model-type="HH:mm"
               :dark="isDark"
               :ui="datePickerUi"
+              :locale="datePickerLocale"
               time-picker
-              placeholder="End time"
+              :placeholder="t('common.labels.endTime')"
               class="w-full"
             />
           </div>
@@ -156,8 +163,10 @@
         <!-- Custom Price (optional) -->
         <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
-            Custom Price
-            <span class="text-xs font-normal text-gray-400 dark:text-gray-500">(optional)</span>
+            <T keypath="common.labels.customPrice" />
+            <span class="text-xs font-normal text-gray-400 dark:text-gray-500"
+              ><T keypath="common.labels.optional"
+            /></span>
           </label>
           <div class="flex items-center gap-3">
             <input
@@ -165,10 +174,12 @@
               type="number"
               min="0"
               step="0.01"
-              placeholder="Set a custom price for this session"
+              :placeholder="t('session.edit.customPricePlaceholder')"
               class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
             />
-            <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">¥</span>
+            <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">
+              <T keypath="common.misc.currencySymbol" />
+            </span>
           </div>
         </div>
 
@@ -187,8 +198,12 @@
             class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
             @click="runConflictCheck"
           >
-            <span v-if="isChecking">Checking...</span>
-            <span v-else>Conflict Check</span>
+            <span v-if="isChecking">
+              <T keypath="common.actions.checking" />
+            </span>
+            <span v-else>
+              <T keypath="common.actions.conflictCheck" />
+            </span>
           </button>
           <button
             v-else
@@ -197,8 +212,12 @@
             class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-green-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
             @click="doCreateOverride"
           >
-            <span v-if="isSubmitting">Saving...</span>
-            <span v-else>Save Change</span>
+            <span v-if="isSubmitting">
+              <T keypath="common.actions.saving" />
+            </span>
+            <span v-else>
+              <T keypath="session.edit.saveChange" />
+            </span>
           </button>
         </Transition>
       </template>
@@ -210,14 +229,18 @@
         class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-red-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-70"
         @click="doCreateOverride"
       >
-        <span v-if="isSubmitting">Saving...</span>
-        <span v-else>Cancel Session</span>
+        <span v-if="isSubmitting">
+          <T keypath="common.actions.saving" />
+        </span>
+        <span v-else>
+          <T keypath="session.edit.cancelSession" />
+        </span>
       </button>
 
       <!-- Conflicts display -->
       <ListPageShell
         v-if="conflictResult && conflictResult.hasConflict"
-        title="Schedule Conflicts Detected"
+        title-key="classRule.conflicts.title"
       >
         <div class="flex flex-col">
           <div class="flex h-64 flex-col gap-3 overflow-y-auto p-5">
@@ -236,7 +259,7 @@
                 v-if="conflict.studentNames?.length"
                 class="mt-1 px-5 text-xs text-gray-500 dark:text-gray-400"
               >
-                Students: {{ conflict.studentNames.join(', ') }}
+                <T keypath="common.misc.studentsPrefix" /> {{ conflict.studentNames.join(', ') }}
               </div>
             </div>
           </div>
@@ -250,6 +273,8 @@
 import { toast } from 'vue-sonner';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { enUS, zhCN } from 'date-fns/locale';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import dayjs from 'dayjs';
 import type { ClassSessionOverrideConflictCheckResponse } from '@tutorhub/schema';
@@ -262,6 +287,7 @@ import {
 import { useThemeToggle } from '@/hooks/useThemeToggle';
 import { datePickerUi } from '@/features/class-rule/constants/datePickerUi';
 import { useLoading } from '@/hooks/useLoading';
+import { i18n } from '@/locales';
 import SessionItem from '@/features/session/components/SessionItem.vue';
 import CardSection from '@/components/CardSection.vue';
 import PageHeader from '@/components/PageHeader.vue';
@@ -271,6 +297,9 @@ import ListPageShell from '@/components/ListPageShell.vue';
 const props = defineProps<{
   ruleId: string;
 }>();
+
+const { t, locale } = useI18n();
+const datePickerLocale = computed(() => (locale.value === 'zh-CN' ? zhCN : enUS));
 
 const router = useRouter();
 const route = useRoute();
@@ -315,7 +344,7 @@ onMounted(async () => {
     formRescheduledStartTime.value = ruleStartTime.value;
     formRescheduledEndTime.value = ruleEndTime.value;
   } catch {
-    toast.error('Failed to load session data');
+    toast.error(i18n.global.t('session.edit.loadError'));
     goBack();
   } finally {
     isLoading.value = false;
@@ -336,7 +365,7 @@ const runConflictCheck = withChecking(async () => {
     !formRescheduledStartTime.value ||
     !formRescheduledEndTime.value
   ) {
-    toast.warning('Please fill in new date, start time, and end time');
+    toast.warning(i18n.global.t('session.edit.fillNewDate'));
     return;
   }
 
@@ -349,13 +378,13 @@ const runConflictCheck = withChecking(async () => {
     });
     conflictResult.value = res;
     if (res.hasConflict) {
-      toast.error('Time conflict detected!');
+      toast.error(i18n.global.t('session.edit.timeConflict'));
     } else {
-      toast.success('No conflicts, you can proceed');
+      toast.success(i18n.global.t('session.edit.noConflicts'));
       conflictPassed.value = true;
     }
   } catch {
-    toast.error('Failed to check conflicts');
+    toast.error(i18n.global.t('session.edit.conflictCheckFailed'));
   }
 });
 
@@ -374,7 +403,7 @@ const doCreateOverride = withLoading(async () => {
       !formRescheduledStartTime.value ||
       !formRescheduledEndTime.value
     ) {
-      toast.warning('Please fill in all reschedule fields');
+      toast.warning(i18n.global.t('session.edit.fillReschedule'));
       return;
     }
     payload.rescheduledDate = formRescheduledDate.value + 'T00:00:00.000Z';
@@ -384,10 +413,10 @@ const doCreateOverride = withLoading(async () => {
 
   try {
     await createClassSessionOverride(payload);
-    toast.success('Session change saved successfully!');
+    toast.success(i18n.global.t('session.edit.saveSuccess'));
     goBack();
   } catch {
-    toast.error('Failed to save session change');
+    toast.error(i18n.global.t('session.edit.saveError'));
   }
 });
 

@@ -5,12 +5,14 @@
       <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <article
           v-for="stat in stats"
-          :key="stat.label"
+          :key="stat.labelKey"
           class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
         >
           <div class="flex items-center justify-between gap-4">
             <div>
-              <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ stat.label }}</p>
+              <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <T :keypath="stat.labelKey" />
+              </p>
               <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
                 {{ stat.value }}
               </p>
@@ -25,7 +27,10 @@
       </section>
 
       <!-- Recent sessions (full width) -->
-      <ListPageShell title="Recent sessions" description="Upcoming and ongoing classes.">
+      <ListPageShell
+        title-key="dashboard.recentSessions.title"
+        description-key="dashboard.recentSessions.description"
+      >
         <div v-if="isLoading" class="space-y-3 p-5">
           <div
             v-for="index in 4"
@@ -35,12 +40,12 @@
         </div>
 
         <div v-else-if="error" class="px-5 py-4 text-sm text-red-700 dark:text-red-200">
-          Failed to load sessions.
+          <T keypath="dashboard.recentSessions.loadError" />
         </div>
 
         <div v-else class="space-y-3 p-5">
           <div v-if="recentSessions.length === 0" class="text-sm text-gray-500 dark:text-gray-400">
-            No upcoming sessions.
+            <T keypath="dashboard.recentSessions.empty" />
           </div>
           <div v-for="session in recentSessions" :key="session.id">
             <SessionItem
@@ -55,7 +60,7 @@
               v-if="session.studentNames.length > 0"
               class="mt-1 px-5 text-xs text-gray-500 dark:text-gray-400"
             >
-              Students: {{ session.studentNames.join(', ') }}
+              <T keypath="common.misc.studentsPrefix" /> {{ session.studentNames.join(', ') }}
             </p>
           </div>
         </div>
@@ -66,11 +71,14 @@
 
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query';
+import { useI18n } from 'vue-i18n';
 import { request } from '@/utils/request';
 import ListPageShell from '@/components/ListPageShell.vue';
 import SessionItem from '@/features/session/components/SessionItem.vue';
 
 import type { DashboardResponse } from '@tutorhub/schema';
+
+const { n } = useI18n();
 
 const { data, isLoading, error } = useQuery<DashboardResponse>({
   queryKey: ['dashboard'],
@@ -85,23 +93,23 @@ const stats = computed(() => {
   if (!d) return [];
   return [
     {
-      label: 'Active Students',
+      labelKey: 'dashboard.stats.activeStudents',
       value: String(d.activeStudents),
       icon: 'i-lucide-users text-blue-600 dark:text-blue-300',
     },
     {
-      label: 'Active Courses',
+      labelKey: 'dashboard.stats.activeCourses',
       value: String(d.activeCourses),
       icon: 'i-lucide-book-open text-orange-600 dark:text-orange-300',
     },
     {
-      label: 'Total Hours',
+      labelKey: 'dashboard.stats.totalHours',
       value: String(d.totalHours),
       icon: 'i-lucide-clock-3 text-violet-600 dark:text-violet-300',
     },
     {
-      label: 'Total Income',
-      value: `$${d.totalIncome.toLocaleString()}`,
+      labelKey: 'dashboard.stats.totalIncome',
+      value: n(d.totalIncome, 'currency'),
       icon: 'i-lucide-dollar-sign text-pink-600 dark:text-pink-300',
     },
   ];

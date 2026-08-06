@@ -36,7 +36,7 @@
           :class="badge.class"
         >
           <i :class="badge.icon" />
-          {{ badge.label }}
+          <T :keypath="badgeKeypath(badge.key)" />
         </span>
 
         <span
@@ -44,7 +44,7 @@
           class="inline-flex items-center gap-1 text-sm font-semibold text-gray-700 dark:text-gray-200"
         >
           <i class="i-lucide-coins inline size-3.5 align-text-top" />
-          ¥{{ Number(price).toFixed(2) }}
+          {{ n(price, 'currency') }}
         </span>
       </div>
     </div>
@@ -74,7 +74,7 @@
             :class="display.originalTimeClass"
           >
             <i class="i-lucide-coins inline size-3.5 align-text-top" />
-            ¥{{ Number(originalPrice).toFixed(2) }}
+            {{ n(originalPrice, 'currency') }}
           </span>
         </div>
       </div>
@@ -90,7 +90,7 @@
             :class="badge.class"
           >
             <i :class="badge.icon" />
-            {{ badge.label }}
+            <T :keypath="badgeKeypath(badge.key)" />
           </span>
         </div>
       </div>
@@ -118,7 +118,7 @@
             :class="display.newTimeClass"
           >
             <i class="i-lucide-coins inline size-3.5 align-text-top" />
-            ¥{{ Number(price).toFixed(2) }}
+            {{ n(price, 'currency') }}
           </span>
         </div>
       </div>
@@ -130,7 +130,7 @@
       class="flex shrink-0 items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400"
     >
       <i class="i-lucide-alert-triangle size-3" />
-      Conflict
+      <T keypath="session.item.conflict" />
     </div>
 
     <!-- Actions -->
@@ -142,7 +142,7 @@
         @click.stop="emit('change')"
       >
         <i class="i-lucide-rotate-ccw size-3.5" />
-        Change
+        <T keypath="common.actions.change" />
       </button>
       <button
         v-if="display.visibleActions.includes('edit')"
@@ -151,7 +151,7 @@
         @click.stop="emit('edit')"
       >
         <i class="i-lucide-pencil size-3.5" />
-        Edit
+        <T keypath="common.actions.edit" />
       </button>
       <button
         v-if="display.visibleActions.includes('restore')"
@@ -160,15 +160,21 @@
         @click.stop="emit('restore')"
       >
         <i class="i-lucide-rotate-ccw size-3.5" />
-        Restore
+        <T keypath="common.actions.restore" />
       </button>
     </div>
   </article>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 import { useSessionDisplay } from '@/features/session/composables/useSessionDisplay';
+import type { MessageKey } from '@/locales';
 import type { SessionStatus } from '@tutorhub/schema';
+
+const { n } = useI18n();
+const badgeKeypath = (key: string): MessageKey => `session.status.${key}` as MessageKey;
 
 const props = withDefaults(
   defineProps<{
