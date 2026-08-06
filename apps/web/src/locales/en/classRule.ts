@@ -1,0 +1,102 @@
+export default {
+  pageTitle: 'Class Rules',
+  empty: 'No class rules found.',
+  create: {
+    title: 'Create Class Rule',
+    description: 'Define a new class schedule rule for this course.',
+    success: 'Class rule created successfully!',
+  },
+  edit: {
+    title: 'Edit Class Rule',
+    description: 'Modify the class schedule rule for this enrollment.',
+    success: 'Class rule updated successfully!',
+    loadError: 'Failed to load class rule data',
+  },
+  detail: {
+    title: 'Class Rule Details',
+    description: 'View generated sessions for this class rule.',
+    loadError: 'Failed to load class rule details',
+  },
+  addStudent: {
+    pageTitle: 'Add Students',
+    pageDescription: 'Select students to add to this class rule.',
+    availableTitle: 'Available Students',
+    searchPlaceholder: 'Search students...',
+    empty: 'No available students found.',
+    selected: '{count} student(s) selected',
+    success: 'Successfully added {count} student(s) to the rule!',
+    error: 'Failed to add students',
+  },
+  generatedSessions: {
+    title: 'Generated Sessions',
+    count: '{count} session(s)',
+  },
+  conflicts: {
+    title: 'Schedule Conflicts Detected',
+  },
+  assignedStudents: {
+    title: 'Assigned Students',
+    searchPlaceholder: 'Search students...',
+    empty: 'No students found.',
+  },
+  sessions: {
+    title: 'Sessions',
+    empty: 'No sessions to display for this rule.',
+  },
+  form: {
+    name: 'Name',
+    namePlaceholder: 'e.g. Weekend Class',
+    price: 'Price',
+    pricePlaceholder: 'e.g. 200',
+    startDate: 'Start Date',
+    date: 'Date',
+    selectStartDate: 'Select start date',
+    endDate: 'End Date',
+    leaveInfinite: 'Leave empty for infinite',
+    infinite: 'Infinite',
+    startTime: 'Start Time',
+    startTimePlaceholder: 'Start time',
+    endTime: 'End Time',
+    endTimePlaceholder: 'End time',
+    recurring: 'Recurring course',
+    repeatsIndefinitely: 'This rule will repeat indefinitely.',
+    repeatEvery: 'Repeat Every N Days',
+    intervalPlaceholder: 'e.g. 7',
+    days: 'day(s)',
+    singleSession: 'Single session',
+    every: 'Every {count} day(s)',
+  },
+  delete: {
+    title: 'Confirm Deletion',
+    message:
+      'Are you sure you want to delete this class rule for "{course}"? This action cannot be undone.',
+    success: 'Class rule deleted successfully!',
+    error: 'Failed to delete class rule',
+  },
+  clearOverrides: {
+    title: 'Clear Session Overrides',
+    message:
+      'Modifying the schedule will delete all existing session changes (cancellations and reschedules). Do you want to continue?',
+  },
+  removeStudent: {
+    title: 'Remove Student',
+    message: 'Are you sure you want to remove "{student}" from this class rule?',
+    success: 'Student removed from class rule successfully!',
+    error: 'Failed to remove student from class rule',
+  },
+  restoreSession: {
+    title: 'Restore Session',
+    message:
+      'Restore the session on {date} to its original time? The current override will be deleted permanently.',
+    success: 'Session restored to original time',
+    error: 'Failed to restore session',
+    notFound: 'Override not found',
+  },
+  toasts: {
+    repeatIntervalRequired: 'Please enter the repeat interval',
+    startTimeBeforeEnd: 'Start time must be earlier than end time',
+    startDateBeforeEnd: 'Start date must be earlier than end date',
+    conflictCheckFailed: 'Failed to check conflicts',
+    noConflicts: 'No conflicts detected, sessions generated',
+  },
+};

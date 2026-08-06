@@ -1,0 +1,66 @@
+export default {
+  pageTitle: '课程',
+  searchPlaceholder: '搜索课程...',
+  empty: '未找到课程',
+  columns: ['姓名', '邮箱', '手机号', '状态', '创建时间', '操作'],
+  columnsDetail: ['姓名', '邮箱', '手机号', '创建时间', '操作'],
+  create: {
+    title: '创建课程',
+    description: '填写以下信息以添加新课程。',
+    success: '课程创建成功！',
+  },
+  edit: {
+    title: '编辑课程',
+    description: '更新课程信息。',
+    success: '课程更新成功！',
+    loadError: '加载课程数据失败',
+  },
+  detail: {
+    title: '课程详情',
+    description: '查看课程的完整信息。',
+    loadError: '加载课程详情失败',
+  },
+  addStudent: {
+    pageTitle: '添加学生',
+    pageDescription: '选择要报名该课程的学生。',
+    availableTitle: '可选学生',
+    searchPlaceholder: '搜索学生...',
+    empty: '暂无可用学生',
+    selected: '已选择 {count} 名学生',
+    success: '成功添加 {count} 名学生！',
+    error: '添加学生失败',
+  },
+  enrolledStudents: {
+    title: '已报名学生',
+    searchPlaceholder: '搜索学生...',
+    empty: '未找到学生',
+  },
+  classRules: {
+    title: '课规',
+    empty: '未找到课规',
+  },
+  form: {
+    name: '名称',
+    namePlaceholder: '课程名称',
+    status: '状态',
+    description: '描述',
+    descriptionPlaceholder: '课程描述...',
+  },
+  removeStudent: {
+    title: '删除报名',
+    message: '确定要将“{student}”从该课程中移除吗？',
+    success: '已成功从课程中移除学生！',
+    error: '从课程中移除学生失败',
+  },
+  deleteRule: {
+    title: '删除课规',
+    message: '确定要删除该课规吗？所有未来的课时都将被移除。',
+    success: '课规删除成功！',
+    error: '删除课规失败',
+  },
+  delete: {
+    title: '确认删除',
+    message: '确定要删除课程“{course}”吗？此操作无法撤销。',
+    success: '课程删除成功！',
+  },
+};
