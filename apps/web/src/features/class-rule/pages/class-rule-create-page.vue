@@ -1,9 +1,6 @@
 <template>
   <main class="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <PageHeader
-      title="Create Class Rule"
-      description="Define a new class schedule rule for this course."
-    />
+    <PageHeader title-key="classRule.create.title" description-key="classRule.create.description" />
 
     <!-- Form card -->
     <CardSection class="shrink-0 space-y-5 p-6">
@@ -23,8 +20,12 @@
               class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-600/70"
               @click="runConflictCheck"
             >
-              <span v-if="isSubmitting">Checking...</span>
-              <span v-else>Conflict Check</span>
+              <span v-if="isSubmitting">
+                <T keypath="common.actions.checking" />
+              </span>
+              <span v-else>
+                <T keypath="common.actions.conflictCheck" />
+              </span>
             </button>
             <button
               v-else
@@ -33,8 +34,12 @@
               class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-600/70"
               @click="doCreate"
             >
-              <span v-if="isSubmitting">Creating...</span>
-              <span v-else>Create Class Rule</span>
+              <span v-if="isSubmitting">
+                <T keypath="common.actions.creating" />
+              </span>
+              <span v-else>
+                <T keypath="common.actions.createClassRule" />
+              </span>
             </button>
           </Transition>
         </template>
@@ -42,10 +47,16 @@
     </CardSection>
 
     <!-- Generated sessions -->
-    <ListPageShell v-if="conflictPassed && generatedSessions.length > 0" title="Generated Sessions">
+    <ListPageShell
+      v-if="conflictPassed && generatedSessions.length > 0"
+      title-key="classRule.generatedSessions.title"
+    >
       <template #actions>
         <span v-if="!isInfinite" class="text-sm text-gray-500 dark:text-gray-400">
-          {{ generatedSessions.length }} session(s)
+          <T
+            keypath="classRule.generatedSessions.count"
+            :params="{ count: generatedSessions.length }"
+          />
         </span>
       </template>
 
@@ -59,7 +70,7 @@
           <template #item="{ item }">
             <SessionItem
               v-if="item"
-              course-name="Course"
+              :course-name="t('common.misc.courseName')"
               :date="item.occurrenceDate"
               :start-time="item.startTime"
               :end-time="item.endTime"
@@ -74,7 +85,7 @@
     <!-- Conflicts -->
     <ListPageShell
       v-if="conflictResult && conflictResult.hasConflict"
-      title="Schedule Conflicts Detected"
+      title-key="classRule.conflicts.title"
     >
       <div class="flex flex-col">
         <div class="flex h-125 flex-col gap-3 overflow-y-auto p-5">
@@ -93,7 +104,7 @@
               v-if="conflict.studentNames?.length"
               class="mt-1 px-5 text-xs text-gray-500 dark:text-gray-400"
             >
-              Students: {{ conflict.studentNames.join(', ') }}
+              <T keypath="common.misc.studentsPrefix" /> {{ conflict.studentNames.join(', ') }}
             </div>
           </div>
         </div>
@@ -103,11 +114,15 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 import SessionItem from '@/features/session/components/SessionItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import ClassRuleForm from '@/features/class-rule/components/ClassRuleForm.vue';
 import { useClassRuleCreateForm } from '@/features/class-rule/hooks/useClassRuleCreateForm';
+
+const { t } = useI18n();
 
 const props = defineProps<{
   courseId: string;

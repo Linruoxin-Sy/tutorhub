@@ -1,16 +1,13 @@
 <template>
   <main class="mx-auto flex min-h-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <PageHeader
-      title="Class Rule Details"
-      description="View generated sessions for this class rule."
-    />
+    <PageHeader title-key="classRule.detail.title" description-key="classRule.detail.description" />
 
     <!-- Read-only form -->
     <CardSection v-if="!isInitialLoading" class="shrink-0 p-6">
       <ClassRuleForm v-model="formData" readonly />
     </CardSection>
 
-    <ListPageShell title="Sessions">
+    <ListPageShell title-key="classRule.sessions.title">
       <template #actions>
         <!-- empty -->
       </template>
@@ -20,7 +17,7 @@
           v-if="isInitialLoading"
           class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400"
         >
-          <LoadingIndicator text="Loading class rule data..." />
+          <LoadingIndicator :text="t('common.loading.classRule')" />
         </div>
 
         <div
@@ -30,7 +27,7 @@
           <div
             class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
           >
-            No sessions to display for this rule.
+            <T keypath="classRule.sessions.empty" />
           </div>
         </div>
 
@@ -44,7 +41,7 @@
           <template #item="{ item }">
             <SessionItem
               v-if="item"
-              :course-name="courseName || 'Course'"
+              :course-name="courseName || t('common.misc.courseName')"
               :date="item.occurrenceDate"
               :start-time="item.startTime"
               :end-time="item.endTime"
@@ -64,15 +61,18 @@
     </ListPageShell>
 
     <!-- Assigned Students -->
-    <ListPageShell title="Assigned Students">
+    <ListPageShell title-key="classRule.assignedStudents.title">
       <template #filters>
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
-          <SearchInput v-model="studentSearch" placeholder="Search students..." />
+          <SearchInput
+            v-model="studentSearch"
+            :placeholder="t('classRule.assignedStudents.searchPlaceholder')"
+          />
 
           <SelectInput v-model="studentStatus">
-            <option value="">All status</option>
-            <option value="ACTIVE">Active</option>
-            <option value="DISABLED">Disabled</option>
+            <option value=""><T keypath="common.status.all" /></option>
+            <option value="ACTIVE"><T keypath="common.status.active" /></option>
+            <option value="DISABLED"><T keypath="common.status.disabled" /></option>
           </SelectInput>
         </div>
       </template>
@@ -95,7 +95,7 @@
                 :key="column"
                 class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
               >
-                {{ column }}
+                <T>{{ column }}</T>
               </div>
             </div>
           </template>
@@ -119,7 +119,7 @@
             <div
               class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
             >
-              No students found.
+              <T keypath="classRule.assignedStudents.empty" />
             </div>
           </template>
         </VirtualList>
@@ -134,10 +134,12 @@ import { cloneDeep } from 'es-toolkit';
 import { computed, onMounted, ref } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { RRule, type Options as RRuleOptions } from 'rrule';
 import type { GeneratedSession } from '@tutorhub/schema';
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
+import { i18n } from '@/locales';
 import {
   deleteClassSessionOverride,
   fetchClassSessionOverrides,
@@ -170,9 +172,11 @@ const router = useRouter();
 const isInitialLoading = ref(true);
 const courseName = ref('');
 
+const { t, tm } = useI18n();
+
 // ---- Assigned Students ----
 
-const studentColumns = ['Name', 'Email', 'Phone', 'Status', 'Created At', 'Actions'];
+const studentColumns = computed(() => tm('student.columns'));
 
 const studentSearch = ref('');
 const debouncedStudentSearch = refDebounced(studentSearch, 300);
@@ -238,9 +242,11 @@ const { confirm } = useDialog();
 
 async function restoreSession(session: GeneratedSession) {
   const ok = await confirm({
-    title: 'Restore Session',
-    message: `Restore the session on ${session.occurrenceDate} to its original time? The current override will be deleted permanently.`,
-    confirmText: 'Restore',
+    title: i18n.global.t('classRule.restoreSession.title'),
+    message: i18n.global.t('classRule.restoreSession.message', {
+      date: session.occurrenceDate,
+    }),
+    confirmText: i18n.global.t('common.actions.restore'),
     variant: 'danger',
   });
   if (!ok) return;
@@ -259,17 +265,17 @@ async function restoreSession(session: GeneratedSession) {
     });
 
     if (!matched) {
-      toast.error('Override not found');
+      toast.error(i18n.global.t('classRule.restoreSession.notFound'));
       return;
     }
 
     await deleteClassSessionOverride(matched.id);
-    toast.success('Session restored to original time');
+    toast.success(i18n.global.t('classRule.restoreSession.success'));
 
     // 重新加载页面数据
     await loadData();
   } catch {
-    toast.error('Failed to restore session');
+    toast.error(i18n.global.t('classRule.restoreSession.error'));
   }
 }
 

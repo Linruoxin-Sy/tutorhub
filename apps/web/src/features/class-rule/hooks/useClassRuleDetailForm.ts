@@ -7,6 +7,7 @@ import {
   DEFAULT_FORM_DATA,
   type ClassRuleFormData,
 } from '@/features/class-rule/types/classRuleForm';
+import { i18n } from '@/locales';
 
 export function useClassRuleDetailForm(ruleId: string) {
   const router = useRouter();
@@ -31,7 +32,7 @@ export function useClassRuleDetailForm(ruleId: string) {
         isRecurring: (raw.intervalDays as number | null) !== null,
       };
     } catch {
-      toast.error('Failed to load class rule details');
+      toast.error(i18n.global.t('classRule.detail.loadError'));
       router.push({ name: 'course.list' });
     } finally {
       isInitialLoading.value = false;

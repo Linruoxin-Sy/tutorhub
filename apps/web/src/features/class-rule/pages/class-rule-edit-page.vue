@@ -1,13 +1,10 @@
 <template>
   <main class="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-    <PageHeader
-      title="Edit Class Rule"
-      description="Modify the class schedule rule for this enrollment."
-    />
+    <PageHeader title-key="classRule.edit.title" description-key="classRule.edit.description" />
 
     <!-- Loading -->
     <CardSection v-if="isInitialLoading" class="shrink-0 p-6">
-      <LoadingIndicator text="Loading class rule data..." />
+      <LoadingIndicator :text="t('common.loading.classRule')" />
     </CardSection>
 
     <!-- Form card -->
@@ -28,8 +25,12 @@
               class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-green-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
               @click="doUpdate"
             >
-              <span v-if="isSubmitting">Saving...</span>
-              <span v-else>Save Changes</span>
+              <span v-if="isSubmitting">
+                <T keypath="common.actions.saving" />
+              </span>
+              <span v-else>
+                <T keypath="common.actions.saveChanges" />
+              </span>
             </button>
             <button
               v-else-if="!conflictPassed && hasChanges"
@@ -38,8 +39,12 @@
               class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
               @click="handleConflictCheck"
             >
-              <span v-if="isSubmitting">Checking...</span>
-              <span v-else>Conflict Check</span>
+              <span v-if="isSubmitting">
+                <T keypath="common.actions.checking" />
+              </span>
+              <span v-else>
+                <T keypath="common.actions.conflictCheck" />
+              </span>
             </button>
             <button
               v-else-if="conflictPassed"
@@ -48,8 +53,12 @@
               class="inline-flex w-full cursor-pointer items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
               @click="handleUpdate"
             >
-              <span v-if="isSubmitting">Saving...</span>
-              <span v-else>Update Class Rule</span>
+              <span v-if="isSubmitting">
+                <T keypath="common.actions.saving" />
+              </span>
+              <span v-else>
+                <T keypath="common.actions.updateClassRule" />
+              </span>
             </button>
             <button
               v-else
@@ -57,7 +66,7 @@
               disabled
               class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/70 px-4 py-3 text-sm font-medium text-white"
             >
-              No changes
+              <T keypath="common.actions.noChanges" />
             </button>
           </Transition>
         </template>
@@ -65,10 +74,16 @@
     </CardSection>
 
     <!-- Generated sessions -->
-    <ListPageShell v-if="conflictPassed && generatedSessions.length > 0" title="Generated Sessions">
+    <ListPageShell
+      v-if="conflictPassed && generatedSessions.length > 0"
+      title-key="classRule.generatedSessions.title"
+    >
       <template #actions>
         <span v-if="!isInfinite" class="text-sm text-gray-500 dark:text-gray-400">
-          {{ generatedSessions.length }} session(s)
+          <T
+            keypath="classRule.generatedSessions.count"
+            :params="{ count: generatedSessions.length }"
+          />
         </span>
       </template>
 
@@ -82,7 +97,7 @@
           <template #item="{ item }">
             <SessionItem
               v-if="item"
-              course-name="Course"
+              :course-name="t('common.misc.courseName')"
               :date="item.occurrenceDate"
               :start-time="item.startTime"
               :end-time="item.endTime"
@@ -97,7 +112,7 @@
     <!-- Conflicts -->
     <ListPageShell
       v-if="conflictResult && conflictResult.hasConflict"
-      title="Schedule Conflicts Detected"
+      title-key="classRule.conflicts.title"
     >
       <div class="flex flex-col">
         <div class="flex h-125 flex-col gap-3 overflow-y-auto p-5">
@@ -116,7 +131,7 @@
               v-if="conflict.studentNames?.length"
               class="mt-1 px-5 text-xs text-gray-500 dark:text-gray-400"
             >
-              Students: {{ conflict.studentNames.join(', ') }}
+              <T keypath="common.misc.studentsPrefix" /> {{ conflict.studentNames.join(', ') }}
             </div>
           </div>
         </div>
@@ -124,15 +139,18 @@
     </ListPageShell>
 
     <!-- Assigned Students -->
-    <ListPageShell title="Assigned Students">
+    <ListPageShell title-key="classRule.assignedStudents.title">
       <template #filters>
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[max-content_12rem]">
-          <SearchInput v-model="studentSearch" placeholder="Search students..." />
+          <SearchInput
+            v-model="studentSearch"
+            :placeholder="t('classRule.assignedStudents.searchPlaceholder')"
+          />
 
           <SelectInput v-model="studentStatus">
-            <option value="">All status</option>
-            <option value="ACTIVE">Active</option>
-            <option value="DISABLED">Disabled</option>
+            <option value=""><T keypath="common.status.all" /></option>
+            <option value="ACTIVE"><T keypath="common.status.active" /></option>
+            <option value="DISABLED"><T keypath="common.status.disabled" /></option>
           </SelectInput>
         </div>
       </template>
@@ -143,7 +161,7 @@
           "
         >
           <i class="i-lucide-plus size-4"></i>
-          <span>Add Student</span>
+          <span><T keypath="common.actions.addStudent" /></span>
         </AppButton>
       </template>
 
@@ -165,7 +183,7 @@
                 :key="column"
                 class="truncate px-6 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-gray-600 uppercase dark:text-gray-400"
               >
-                {{ column }}
+                <T>{{ column }}</T>
               </div>
             </div>
           </template>
@@ -190,7 +208,7 @@
             <div
               class="flex flex-1 items-center justify-center px-5 py-10 text-sm text-gray-500 dark:text-gray-400"
             >
-              No students found.
+              <T keypath="classRule.assignedStudents.empty" />
             </div>
           </template>
         </VirtualList>
@@ -204,8 +222,10 @@ import { ref, computed } from 'vue';
 import { refDebounced } from '@vueuse/core';
 import { useQueryClient } from '@tanstack/vue-query';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SessionItem from '@/features/session/components/SessionItem.vue';
+import { i18n } from '@/locales';
 import VirtualList from '@/components/VirtualList.vue';
 import ListPageShell from '@/components/ListPageShell.vue';
 import LoadingIndicator from '@/components/LoadingIndicator.vue';
@@ -229,6 +249,8 @@ const props = defineProps<{
   courseId: string;
   ruleId: string;
 }>();
+
+const { t, tm } = useI18n();
 
 const {
   formData,
@@ -254,10 +276,9 @@ async function handleConflictCheck() {
 async function handleUpdate() {
   if (hasTimeChanged.value) {
     const confirmed = await confirm({
-      title: 'Clear Session Overrides',
-      message:
-        'Modifying the schedule will delete all existing session changes (cancellations and reschedules). Do you want to continue?',
-      confirmText: 'Continue',
+      title: i18n.global.t('classRule.clearOverrides.title'),
+      message: i18n.global.t('classRule.clearOverrides.message'),
+      confirmText: i18n.global.t('common.actions.continue'),
       variant: 'primary',
     });
 
@@ -273,7 +294,7 @@ const router = useRouter();
 const queryClient = useQueryClient();
 const { confirm } = useDialog();
 
-const studentColumns = ['Name', 'Email', 'Phone', 'Status', 'Created At', 'Actions'];
+const studentColumns = computed(() => tm('student.columns'));
 
 const studentSearch = ref('');
 const debouncedStudentSearch = refDebounced(studentSearch, 300);
@@ -290,9 +311,11 @@ const studentQuery = useSparseQuery<ClassRuleStudentItem>({
 
 async function handleRemoveStudent(item: ClassRuleStudentItem) {
   const confirmed = await confirm({
-    title: 'Remove Student',
-    message: `Are you sure you want to remove "${item.student.name}" from this class rule?`,
-    confirmText: 'Remove',
+    title: i18n.global.t('classRule.removeStudent.title'),
+    message: i18n.global.t('classRule.removeStudent.message', {
+      student: item.student.name,
+    }),
+    confirmText: i18n.global.t('common.actions.remove'),
     variant: 'danger',
   });
 
@@ -300,10 +323,10 @@ async function handleRemoveStudent(item: ClassRuleStudentItem) {
 
   try {
     await removeClassRuleStudent(item.id);
-    toast.success('Student removed from class rule successfully!');
+    toast.success(i18n.global.t('classRule.removeStudent.success'));
     queryClient.invalidateQueries({ queryKey: ['class-rule-students', props.ruleId] });
   } catch {
-    toast.error('Failed to remove student from class rule');
+    toast.error(i18n.global.t('classRule.removeStudent.error'));
   }
 }
 </script>

@@ -3,14 +3,14 @@
     <!-- Name -->
     <div class="space-y-2">
       <label :for="field.id('name')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
-        Name <span v-if="!readonly" class="text-red-500">*</span>
+        <T keypath="classRule.form.name" /> <span v-if="!readonly" class="text-red-500">*</span>
       </label>
       <input
         v-if="!readonly"
         :id="field.id('name')"
         v-model.trim="model.name"
         type="text"
-        placeholder="e.g. Weekend Class"
+        :placeholder="t('classRule.form.namePlaceholder')"
         class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
       />
       <p
@@ -24,7 +24,7 @@
     <!-- Price -->
     <div class="space-y-2">
       <label :for="field.id('price')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
-        Price <span v-if="!readonly" class="text-red-500">*</span>
+        <T keypath="classRule.form.price" /> <span v-if="!readonly" class="text-red-500">*</span>
       </label>
       <div v-if="!readonly" class="flex items-center gap-3">
         <input
@@ -33,16 +33,19 @@
           type="number"
           min="0"
           step="0.01"
-          placeholder="e.g. 200"
+          :placeholder="t('classRule.form.pricePlaceholder')"
           class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
         />
-        <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">¥</span>
+        <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">
+          <T keypath="common.misc.currencySymbol" />
+        </span>
       </div>
       <p
         v-else
         class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
       >
-        {{ model.price != null ? `¥${Number(model.price).toFixed(2)}` : '—' }}
+        <template v-if="model.price != null">{{ n(model.price, 'currency') }}</template>
+        <template v-else>—</template>
       </p>
     </div>
 
@@ -53,7 +56,7 @@
           :for="field.id('startDate')"
           class="text-sm font-medium text-gray-700 dark:text-gray-200"
         >
-          {{ model.isRecurring ? 'Start Date' : 'Date' }}
+          <T :keypath="model.isRecurring ? 'classRule.form.startDate' : 'classRule.form.date'" />
           <span v-if="!readonly" class="text-red-500">*</span>
         </label>
         <VueDatePicker
@@ -63,10 +66,11 @@
           model-type="yyyy-MM-dd"
           :dark="isDark"
           :ui="datePickerUi"
+          :locale="datePickerLocale"
           :formats="{ input: 'yyyy-MM-dd' }"
           :enable-time-picker="false"
           :clearable="false"
-          placeholder="Select start date"
+          :placeholder="t('classRule.form.selectStartDate')"
           class="w-full"
         />
         <p
@@ -86,10 +90,10 @@
           :for="field.id('endDate')"
           class="text-sm font-medium text-gray-700 dark:text-gray-200"
         >
-          End Date
+          <T keypath="classRule.form.endDate" />
           <span v-if="!readonly" class="text-xs font-normal text-gray-400 dark:text-gray-500"
-            >(optional)</span
-          >
+            ><T keypath="common.labels.optional"
+          /></span>
         </label>
         <VueDatePicker
           v-if="!readonly"
@@ -98,17 +102,19 @@
           model-type="yyyy-MM-dd"
           :dark="isDark"
           :ui="datePickerUi"
+          :locale="datePickerLocale"
           :formats="{ input: 'yyyy-MM-dd' }"
           :enable-time-picker="false"
           :clearable="true"
-          placeholder="Leave empty for infinite"
+          :placeholder="t('classRule.form.leaveInfinite')"
           class="w-full"
         />
         <p
           v-else
           class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
         >
-          {{ model.endDate || 'Infinite' }}
+          <T v-if="model.endDate">{{ model.endDate }}</T>
+          <T v-else keypath="classRule.form.infinite" />
         </p>
       </div>
     </div>
@@ -120,7 +126,8 @@
           :for="field.id('startTime')"
           class="text-sm font-medium text-gray-700 dark:text-gray-200"
         >
-          Start Time <span v-if="!readonly" class="text-red-500">*</span>
+          <T keypath="classRule.form.startTime" />
+          <span v-if="!readonly" class="text-red-500">*</span>
         </label>
         <VueDatePicker
           v-if="!readonly"
@@ -129,8 +136,9 @@
           model-type="HH:mm"
           :dark="isDark"
           :ui="datePickerUi"
+          :locale="datePickerLocale"
           time-picker
-          placeholder="Start time"
+          :placeholder="t('classRule.form.startTimePlaceholder')"
           class="w-full"
         />
         <p
@@ -150,7 +158,8 @@
           :for="field.id('endTime')"
           class="text-sm font-medium text-gray-700 dark:text-gray-200"
         >
-          End Time <span v-if="!readonly" class="text-red-500">*</span>
+          <T keypath="classRule.form.endTime" />
+          <span v-if="!readonly" class="text-red-500">*</span>
         </label>
         <VueDatePicker
           v-if="!readonly"
@@ -159,8 +168,9 @@
           model-type="HH:mm"
           :dark="isDark"
           :ui="datePickerUi"
+          :locale="datePickerLocale"
           time-picker
-          placeholder="End time"
+          :placeholder="t('classRule.form.endTimePlaceholder')"
           class="w-full"
         />
         <p
@@ -180,12 +190,14 @@
           class="h-5 w-9 rounded-full border-2 border-gray-300 bg-gray-100 transition peer-checked:border-blue-600 peer-checked:bg-blue-600 peer-focus:outline-none after:absolute after:inset-s-0.75 after:top-0.75 after:size-3.5 after:rounded-full after:bg-white after:transition after:content-[''] peer-checked:after:translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-500"
         />
       </label>
-      <span class="text-sm font-medium text-gray-700 dark:text-gray-200"> Recurring course </span>
+      <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+        <T keypath="classRule.form.recurring" />
+      </span>
       <p
         v-if="model.isRecurring && !model.endDate"
         class="text-xs text-amber-600 dark:text-amber-400"
       >
-        This rule will repeat indefinitely.
+        <T keypath="classRule.form.repeatsIndefinitely" />
       </p>
     </div>
 
@@ -195,7 +207,7 @@
         :for="field.id('intervalDays')"
         class="text-sm font-medium text-gray-700 dark:text-gray-200"
       >
-        Repeat Every N Days <span class="text-red-500">*</span>
+        <T keypath="classRule.form.repeatEvery" /> <span class="text-red-500">*</span>
       </label>
       <div v-if="!readonly" class="flex items-center gap-3">
         <input
@@ -203,16 +215,23 @@
           v-model.number="intervalDaysModel"
           type="number"
           min="1"
-          placeholder="e.g. 7"
+          :placeholder="t('classRule.form.intervalPlaceholder')"
           class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
         />
-        <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">day(s)</span>
+        <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">
+          <T keypath="classRule.form.days" />
+        </span>
       </div>
       <p
         v-else
         class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
       >
-        {{ model.intervalDays != null ? `Every ${model.intervalDays} day(s)` : 'Single session' }}
+        <T
+          v-if="model.intervalDays != null"
+          keypath="classRule.form.every"
+          :params="{ count: model.intervalDays }"
+        />
+        <T v-else keypath="classRule.form.singleSession" />
       </p>
     </div>
 
@@ -227,10 +246,16 @@
 import { computed } from 'vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { enUS, zhCN } from 'date-fns/locale';
+import { useI18n } from 'vue-i18n';
+
 import { useThemeToggle } from '@/hooks/useThemeToggle';
 import { datePickerUi } from '@/features/class-rule/constants/datePickerUi';
 import { useField } from '@/hooks/useField';
 import type { ClassRuleFormData } from '@/features/class-rule/types/classRuleForm';
+
+const { t, n, locale } = useI18n();
+const datePickerLocale = computed(() => (locale.value === 'zh-CN' ? zhCN : enUS));
 
 const model = defineModel<ClassRuleFormData>({
   required: true,

@@ -48,12 +48,12 @@
           <i class="i-lucide-calendar size-4 shrink-0 text-gray-500 dark:text-gray-400" />
           <template v-if="rule!.intervalDays && !rule!.endDate">
             <span class="text-sm font-medium text-gray-900 dark:text-white">
-              From {{ formatDate(rule!.startDate) }}
+              <T keypath="common.misc.from" :params="{ date: formatDate(rule!.startDate) }" />
             </span>
           </template>
           <template v-else-if="rule!.intervalDays">
             <span class="text-sm font-medium text-gray-900 dark:text-white">
-              From {{ formatDate(rule!.startDate) }}
+              <T keypath="common.misc.from" :params="{ date: formatDate(rule!.startDate) }" />
             </span>
             <i class="i-lucide-arrow-right size-3.5 shrink-0 text-gray-400 dark:text-gray-500" />
             <span class="text-sm font-medium text-gray-900 dark:text-white">
@@ -90,12 +90,14 @@
             class="self-center text-xl font-bold tracking-tight text-gray-500 dark:text-gray-400"
           >
             <template v-if="rule!.intervalDays && !rule!.endDate">
-              Every {{ rule!.intervalDays }} day(s)
+              <T keypath="common.misc.repeatEvery" :params="{ count: rule!.intervalDays }" />
             </template>
             <template v-else-if="rule!.intervalDays">
-              Every {{ rule!.intervalDays }} day(s)
+              <T keypath="common.misc.repeatEvery" :params="{ count: rule!.intervalDays }" />
             </template>
-            <template v-else>Single session</template>
+            <template v-else>
+              <T keypath="common.misc.singleSession" />
+            </template>
           </span>
           <i
             v-if="rule!.price != null"
@@ -105,7 +107,7 @@
             v-if="rule!.price != null"
             class="self-center text-xl font-bold tracking-tight text-gray-500 dark:text-gray-400"
           >
-            ¥{{ Number(rule!.price).toFixed(2) }}
+            {{ n(Number(rule!.price), 'currency') }}
           </span>
         </div>
         <div v-if="actions.length" class="flex shrink-0 gap-1 self-end">
@@ -119,9 +121,12 @@
 
 <script setup lang="ts">
 import { useTemplateRef, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { ClassRuleListItem } from '@tutorhub/schema';
 import { formatDate, formatTime } from '@/utils/date';
 import { useElementInView } from '@/hooks/useElementInView';
+
+const { n } = useI18n();
 
 const props = withDefaults(
   defineProps<{

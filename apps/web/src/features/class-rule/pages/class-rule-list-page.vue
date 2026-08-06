@@ -1,7 +1,7 @@
 <template>
   <main class="mx-auto h-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div class="flex h-full flex-col gap-6">
-      <ListPageShell title="Class Rules">
+      <ListPageShell title-key="classRule.pageTitle">
         <template #filters>
           <!-- 无筛选条件 -->
         </template>
@@ -45,7 +45,7 @@
               <div
                 class="rounded-2xl border border-dashed border-gray-200 px-6 py-10 text-center dark:border-[#3a3a3a]"
               >
-                No class rules found.
+                <T keypath="classRule.empty" />
               </div>
             </div>
           </template>
@@ -62,6 +62,7 @@ import { toast } from 'vue-sonner';
 import { useSparseQuery } from '@/hooks/useSparseQuery';
 import { fetchClassRules, deleteClassRule } from '@/features/class-rule/api/class-rule-api';
 import { useDialog } from '@/hooks/useDialog';
+import { i18n } from '@/locales';
 import ClassRuleItem from '@/features/class-rule/components/ClassRuleItem.vue';
 import VirtualList from '@/components/VirtualList.vue';
 import type { ClassRuleListItem } from '@tutorhub/schema';
@@ -77,9 +78,11 @@ const sparseQuery = useSparseQuery<ClassRuleListItem>({
 
 async function handleDelete(item: ClassRuleListItem) {
   const confirmed = await confirm({
-    title: 'Confirm Deletion',
-    message: `Are you sure you want to delete this class rule for "${item.course?.name}"? This action cannot be undone.`,
-    confirmText: 'Delete',
+    title: i18n.global.t('classRule.delete.title'),
+    message: i18n.global.t('classRule.delete.message', {
+      course: item.course?.name ?? '',
+    }),
+    confirmText: i18n.global.t('common.actions.delete'),
     variant: 'danger',
   });
 
@@ -87,10 +90,10 @@ async function handleDelete(item: ClassRuleListItem) {
 
   try {
     await deleteClassRule(item.id);
-    toast.success('Class rule deleted successfully!');
+    toast.success(i18n.global.t('classRule.delete.success'));
     queryClient.invalidateQueries({ queryKey: ['class-rules'] });
   } catch {
-    toast.error('Failed to delete class rule');
+    toast.error(i18n.global.t('classRule.delete.error'));
   }
 }
 </script>

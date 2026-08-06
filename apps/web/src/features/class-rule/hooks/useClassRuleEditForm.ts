@@ -17,6 +17,7 @@ import {
 } from '@/features/class-rule/types/classRuleForm';
 import { computeSessionStatus } from '@/features/session/utils/sessionStatus';
 import { useLoading } from '@/hooks/useLoading';
+import { i18n } from '@/locales';
 
 export function useClassRuleEditForm(courseId: string, ruleId: string) {
   const router = useRouter();
@@ -98,7 +99,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       };
       initialFormData.value = cloneDeep(formData.value);
     } catch {
-      toast.error('Failed to load class rule data');
+      toast.error(i18n.global.t('classRule.edit.loadError'));
       router.push({ name: 'course.edit', params: { id: courseId } });
     } finally {
       isInitialLoading.value = false;
@@ -107,7 +108,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
 
   const verify = (): boolean => {
     if (formData.value.isRecurring && !formData.value.intervalDays) {
-      toast.warning('Please enter the repeat interval');
+      toast.warning(i18n.global.t('classRule.toasts.repeatIntervalRequired'));
       isValidated.value = false;
       return false;
     }
@@ -117,7 +118,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       formData.value.endTime &&
       formData.value.startTime >= formData.value.endTime
     ) {
-      toast.warning('Start time must be earlier than end time');
+      toast.warning(i18n.global.t('classRule.toasts.startTimeBeforeEnd'));
       isValidated.value = false;
       return false;
     }
@@ -128,7 +129,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       formData.value.endDate &&
       formData.value.startDate >= formData.value.endDate
     ) {
-      toast.warning('Start date must be earlier than end date');
+      toast.warning(i18n.global.t('classRule.toasts.startDateBeforeEnd'));
       isValidated.value = false;
       return false;
     }
@@ -172,7 +173,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       conflictResult.value = res;
       return !res.hasConflict;
     } catch {
-      toast.error('Failed to check conflicts');
+      toast.error(i18n.global.t('classRule.toasts.conflictCheckFailed'));
       return false;
     }
   };
@@ -306,7 +307,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
 
     const hasNoConflict = await checkConflicts();
     if (hasNoConflict) {
-      toast.success('No conflicts detected, sessions generated');
+      toast.success(i18n.global.t('classRule.toasts.noConflicts'));
       generateSessions();
       conflictPassed.value = true;
     }
@@ -333,7 +334,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       payload.endDate = formData.value.endDate ? new Date(formData.value.endDate) : null;
 
     await updateClassRule(ruleId, payload);
-    toast.success('Class rule updated successfully!');
+    toast.success(i18n.global.t('classRule.edit.success'));
     queryClient.invalidateQueries({ queryKey: ['course-class-rules', courseId] });
     queryClient.invalidateQueries({ queryKey: ['class-session-overrides'] });
     router.push({ name: 'course.edit', params: { id: courseId } });
