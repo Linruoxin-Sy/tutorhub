@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import type { LoginResponse, loginSchema } from '@tutorhub/schema';
 
+import { i18n } from '@/locales';
 import { request } from '@/utils/request';
 
 type UserState = LoginResponse['user'];
@@ -29,7 +30,7 @@ export const useUserStore = defineStore('auth/user', () => {
       localStorage.setItem(TOKEN_KEY, data.accessToken);
     } catch {
       // Axios 拦截器已显示错误 toast，此处仅阻止传播
-      throw new Error('Login failed');
+      throw new Error(i18n.global.t('auth.errors.loginFailed'));
     }
   };
 

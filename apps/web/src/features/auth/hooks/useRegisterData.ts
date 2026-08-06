@@ -3,6 +3,7 @@ import { toast } from 'vue-sonner';
 import { registerSchema, type RegisterResponse } from '@tutorhub/schema';
 
 import { useLoading } from '@/hooks/useLoading';
+import { i18n } from '@/locales';
 import { request } from '@/utils/request';
 
 export function useRegisterData() {
@@ -25,11 +26,11 @@ export function useRegisterData() {
       return false;
     }
     if (!registerData.email.length && !registerData.phone.length) {
-      toast.warning('Either email or phone number is required');
+      toast.warning(i18n.global.t('auth.register.emailOrPhoneRequired'));
       return false;
     }
     if (registerData.password !== registerData.rePassword) {
-      toast.warning('Passwords do not match');
+      toast.warning(i18n.global.t('auth.register.passwordMismatch'));
       return false;
     }
     return true;
@@ -39,7 +40,7 @@ export function useRegisterData() {
   const submit = withLoading(async () => {
     if (!verify()) return;
     await request.post<RegisterResponse>('/auth/register', registerData);
-    toast.success('Registration successful!');
+    toast.success(i18n.global.t('auth.register.success'));
     router.push({ name: 'auth.login' });
   });
 

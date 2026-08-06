@@ -5,6 +5,7 @@ import { emailLoginSchema, loginSchema, phoneLoginSchema } from '@tutorhub/schem
 
 import { useUserStore } from '@/features/auth/stores/user';
 import { useLoading } from '@/hooks/useLoading';
+import { i18n } from '@/locales';
 
 export function useLoginData() {
   const router = useRouter();
@@ -39,7 +40,7 @@ export function useLoginData() {
     if (!verify()) return;
     try {
       await userStore.login(loginPayload());
-      toast.success('Login successful!');
+      toast.success(i18n.global.t('auth.login.success'));
       router.push({ name: 'dashboard' });
     } catch {
       // Axios 拦截器或 userStore 已显示错误 toast，此处仅阻止后续流程
