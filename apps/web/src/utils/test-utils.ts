@@ -5,6 +5,15 @@ import { render, type ComponentRenderOptions } from 'vitest-browser-vue';
 import type { Component, Plugin } from 'vue';
 import { createMemoryHistory, createRouter, type RouterOptions } from 'vue-router';
 
+import { i18n, type AppLocale } from '@/locales';
+
+/**
+ * 重置全局 i18n locale（避免测试间污染，默认 en）
+ */
+export function resetI18nLocale(locale: AppLocale = 'en') {
+  i18n.global.locale.value = locale;
+}
+
 /**
  * 创建一个已清空的 QueryClient，避免测试间缓存污染
  */
@@ -53,6 +62,10 @@ interface RenderWithSetupOptions<Props> extends ComponentRenderOptions<any, Prop
    */
   withQuery?: boolean;
   /**
+   * 是否自动注入 vue-i18n 实例（默认 true）
+   */
+  withI18n?: boolean;
+  /**
    * 是否自动注入 router（默认 false）
    */
   withRouter?: boolean;
@@ -72,6 +85,7 @@ export async function renderWithSetup<Props extends Record<string, unknown>>(
   const {
     withPinia = true,
     withQuery = false,
+    withI18n = true,
     withRouter: _withRouter = false,
     routes,
     global,
@@ -88,6 +102,10 @@ export async function renderWithSetup<Props extends Record<string, unknown>>(
   if (withQuery) {
     const queryClient = createTestQueryClient();
     plugins.push([VueQueryPlugin, { queryClient }]);
+  }
+
+  if (withI18n) {
+    plugins.push(i18n);
   }
 
   if (_withRouter) {

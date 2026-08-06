@@ -2,6 +2,7 @@ import { expect, test, vi } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
 import AvatarUploader from '@/components/AvatarUploader.vue';
+import { i18n } from '@/locales';
 
 // Mock browser-image-compression
 vi.mock('browser-image-compression', () => ({
@@ -14,6 +15,7 @@ vi.mock('browser-image-compression', () => ({
 test('renders camera icon placeholder when no name or avatar', async () => {
   const screen = await render(AvatarUploader, {
     props: { name: '', avatarUrl: null },
+    global: { plugins: [i18n] },
   });
 
   await expect.element(screen.getByText('Click to change avatar')).toBeVisible();
@@ -24,6 +26,7 @@ test('renders camera icon placeholder when no name or avatar', async () => {
 test('renders initials when name is provided without avatar', async () => {
   const screen = await render(AvatarUploader, {
     props: { name: 'Alice', avatarUrl: null },
+    global: { plugins: [i18n] },
   });
 
   // After debounce (300ms), the gradient avatar should appear
@@ -37,6 +40,7 @@ test('renders initials when name is provided without avatar', async () => {
 test('renders avatar image when avatarUrl is provided', async () => {
   const screen = await render(AvatarUploader, {
     props: { name: 'Alice', avatarUrl: 'https://example.com/avatar.jpg' },
+    global: { plugins: [i18n] },
   });
 
   const img = screen.getByAltText('Avatar').element() as HTMLImageElement;
@@ -49,6 +53,7 @@ test('emits pendingFile when a file is selected', async () => {
   await render(AvatarUploader, {
     props: { name: 'Test', avatarUrl: null },
     attrs: { onPendingFile: onPendingFile },
+    global: { plugins: [i18n] },
   });
 
   // Trigger file selection
@@ -73,6 +78,7 @@ test('shows local preview immediately after selecting a file', async () => {
 
   const screen = await render(AvatarUploader, {
     props: { name: 'Test', avatarUrl: null },
+    global: { plugins: [i18n] },
   });
 
   const fileInput = document.querySelector<HTMLInputElement>('input[type="file"]');
@@ -98,6 +104,7 @@ test('ignores non-image file selection', async () => {
   await render(AvatarUploader, {
     props: { name: 'Test', avatarUrl: null },
     attrs: { onPendingFile: onPendingFile },
+    global: { plugins: [i18n] },
   });
 
   const fileInput = document.querySelector<HTMLInputElement>('input[type="file"]');

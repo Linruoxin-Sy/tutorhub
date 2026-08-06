@@ -4,6 +4,7 @@ import { render } from 'vitest-browser-vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
 import DashboardPage from '@/features/dashboard/pages/dashboard-page.vue';
+import { i18n } from '@/locales';
 import { createTestQueryClient } from '@/utils/test-utils';
 
 async function renderDashboardPage() {
@@ -18,7 +19,7 @@ async function renderDashboardPage() {
 
   return render(DashboardPage, {
     global: {
-      plugins: [router, [VueQueryPlugin, { queryClient }]],
+      plugins: [i18n, router, [VueQueryPlugin, { queryClient }]],
       stubs: { SessionItem: true },
     },
   });

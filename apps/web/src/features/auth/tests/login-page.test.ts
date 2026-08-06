@@ -5,6 +5,7 @@ import { render } from 'vitest-browser-vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
 import LoginPage from '@/features/auth/pages/login-page.vue';
+import { i18n } from '@/locales';
 import { createTestQueryClient } from '@/utils/test-utils';
 
 beforeEach(() => {
@@ -30,7 +31,7 @@ async function renderLoginPage() {
 
   return render(LoginPage, {
     global: {
-      plugins: [router, createPinia(), [VueQueryPlugin, { queryClient }]],
+      plugins: [i18n, router, createPinia(), [VueQueryPlugin, { queryClient }]],
     },
   });
 }

@@ -3,6 +3,7 @@ import { render } from 'vitest-browser-vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
 import AppNavBar from '@/layouts/AppNavBar.vue';
+import { i18n } from '@/locales';
 
 function createMockRouter(initialRoute = '/dashboard') {
   const router = createRouter({
@@ -42,7 +43,7 @@ test('renders all 4 navigation items', async () => {
   const router = createMockRouter();
 
   const screen = await render(AppNavBar, {
-    global: { plugins: [router] },
+    global: { plugins: [i18n, router] },
   });
 
   await expect.element(screen.getByText('Dashboard')).toBeVisible();
@@ -55,7 +56,7 @@ test('highlights active route', async () => {
   const router = createMockRouter('/student');
 
   const screen = await render(AppNavBar, {
-    global: { plugins: [router] },
+    global: { plugins: [i18n, router] },
   });
 
   const studentLink = screen.getByText('Student').element().closest('a') as HTMLElement;
@@ -67,7 +68,7 @@ test('does not highlight inactive routes', async () => {
   const router = createMockRouter('/dashboard');
 
   const screen = await render(AppNavBar, {
-    global: { plugins: [router] },
+    global: { plugins: [i18n, router] },
   });
 
   const studentLink = screen.getByText('Student').element().closest('a') as HTMLElement;
@@ -78,7 +79,7 @@ test('navigates on click', async () => {
   const router = createMockRouter('/dashboard');
 
   const screen = await render(AppNavBar, {
-    global: { plugins: [router] },
+    global: { plugins: [i18n, router] },
   });
 
   await screen.getByText('Student').click();
@@ -90,7 +91,7 @@ test('has navigation landmark', async () => {
   const router = createMockRouter();
 
   const screen = await render(AppNavBar, {
-    global: { plugins: [router] },
+    global: { plugins: [i18n, router] },
   });
 
   const nav = screen.getByRole('navigation');

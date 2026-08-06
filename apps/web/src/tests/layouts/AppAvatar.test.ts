@@ -5,6 +5,7 @@ import { createMemoryHistory, createRouter } from 'vue-router';
 
 import { useUserStore } from '@/features/auth/stores/user';
 import AppAvatar from '@/layouts/AppAvatar.vue';
+import { i18n } from '@/locales';
 
 beforeEach(() => {
   setActivePinia(createPinia());
@@ -21,7 +22,7 @@ async function renderWithSetup() {
   await router.replace('/dashboard');
 
   return render(AppAvatar, {
-    global: { plugins: [router, createPinia()] },
+    global: { plugins: [i18n, router, createPinia()] },
   });
 }
 

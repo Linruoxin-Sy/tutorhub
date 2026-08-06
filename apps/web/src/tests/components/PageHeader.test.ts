@@ -3,6 +3,7 @@ import { render } from 'vitest-browser-vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
 import PageHeader from '@/components/PageHeader.vue';
+import { i18n } from '@/locales';
 
 // Mock useRouter
 const mockBack = vi.fn();
@@ -23,7 +24,7 @@ test('renders title', async () => {
   const router = createMockRouter();
   const screen = await render(PageHeader, {
     props: { title: 'Test Page' },
-    global: { plugins: [router] },
+    global: { plugins: [i18n, router] },
   });
 
   await expect.element(screen.getByText('Test Page')).toBeVisible();
@@ -33,7 +34,7 @@ test('renders description when provided', async () => {
   const router = createMockRouter();
   const screen = await render(PageHeader, {
     props: { title: 'Test Page', description: 'This is a test page' },
-    global: { plugins: [router] },
+    global: { plugins: [i18n, router] },
   });
 
   await expect.element(screen.getByText('This is a test page')).toBeVisible();
@@ -43,7 +44,7 @@ test('does not render description when not provided', async () => {
   const router = createMockRouter();
   const screen = await render(PageHeader, {
     props: { title: 'Test Page' },
-    global: { plugins: [router] },
+    global: { plugins: [i18n, router] },
   });
 
   await expect.element(screen.getByText('Test Page')).toBeVisible();
@@ -56,7 +57,7 @@ test('renders Back button', async () => {
   const router = createMockRouter();
   const screen = await render(PageHeader, {
     props: { title: 'Test Page' },
-    global: { plugins: [router] },
+    global: { plugins: [i18n, router] },
   });
 
   await expect.element(screen.getByText('Back')).toBeVisible();
@@ -70,7 +71,7 @@ test('calls router.back() on Back button click when history exists', async () =>
 
   const screen = await render(PageHeader, {
     props: { title: 'Test Page' },
-    global: { plugins: [router] },
+    global: { plugins: [i18n, router] },
   });
 
   await screen.getByText('Back').click();
@@ -85,7 +86,7 @@ test('calls router.push(dashboard) when no history', async () => {
 
   const screen = await render(PageHeader, {
     props: { title: 'Test Page' },
-    global: { plugins: [router] },
+    global: { plugins: [i18n, router] },
   });
 
   await screen.getByText('Back').click();

@@ -1,6 +1,8 @@
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
+import { i18n } from '@/locales';
+
 import CourseForm from '../components/CourseForm.vue';
 
 test('renders form fields in edit mode', async () => {
@@ -10,6 +12,7 @@ test('renders form fields in edit mode', async () => {
       readonly: false,
     },
     global: {
+      plugins: [i18n],
       stubs: { SelectInput: true },
     },
   });
@@ -23,6 +26,7 @@ test('renders in readonly mode', async () => {
       modelValue: { name: 'Math 101', description: 'Basic math', status: 'ACTIVE' },
       readonly: true,
     },
+    global: { plugins: [i18n] },
   });
 
   await expect.element(screen.getByText('Math 101')).toBeVisible();
@@ -35,6 +39,7 @@ test('renders disabled status in readonly mode', async () => {
       modelValue: { name: 'New Course', description: '', status: 'DISABLED' },
       readonly: true,
     },
+    global: { plugins: [i18n] },
   });
 
   await expect.element(screen.getByText('New Course')).toBeVisible();

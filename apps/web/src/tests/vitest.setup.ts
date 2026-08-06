@@ -1,6 +1,14 @@
-import { afterAll, afterEach, beforeAll } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
+
+import { i18n } from '@/locales';
 
 import { worker } from '../mocks/browser';
+
+// 每个测试前重置 i18n locale 与 localStorage，避免跨测试污染
+beforeEach(() => {
+  i18n.global.locale.value = 'en';
+  window.localStorage.removeItem('locale');
+});
 
 // Mock IntersectionObserver for useElementInView in tests
 class MockIntersectionObserver implements IntersectionObserver {

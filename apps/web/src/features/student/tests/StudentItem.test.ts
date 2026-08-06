@@ -1,6 +1,7 @@
 import { expect, test, vi } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
+import { i18n } from '@/locales';
 import { mockStudent } from '@/mocks/factories';
 
 import StudentItem from '../components/StudentItem.vue';
@@ -15,6 +16,7 @@ test('renders student name and email', async () => {
 
   const screen = await render(StudentItem, {
     props: { student, loading: false },
+    global: { plugins: [i18n] },
   });
 
   await expect.element(screen.getByText('Alice Wang')).toBeVisible();
@@ -27,6 +29,7 @@ test('does not emit view when loading', async () => {
   await render(StudentItem, {
     props: { student: undefined, loading: true },
     attrs: { onView },
+    global: { plugins: [i18n] },
   });
 
   // Try clicking on the container
@@ -42,6 +45,7 @@ test('emits view on click', async () => {
   const screen = await render(StudentItem, {
     props: { student, loading: false },
     attrs: { onView },
+    global: { plugins: [i18n] },
   });
 
   await screen.getByText(student.name).click();
@@ -54,6 +58,7 @@ test('does not emit view when loading', async () => {
   await render(StudentItem, {
     props: { student: undefined, loading: true },
     attrs: { onView },
+    global: { plugins: [i18n] },
   });
 
   // Try clicking on skeleton area
@@ -67,6 +72,7 @@ test('shows selected indicator when selected', async () => {
 
   await render(StudentItem, {
     props: { student, loading: false, selected: true },
+    global: { plugins: [i18n] },
   });
 
   // 行元素应包含选中背景色类
@@ -80,6 +86,7 @@ test('renders phone number', async () => {
   const screen = await render(StudentItem, {
     props: { student, loading: false },
     global: {
+      plugins: [i18n],
       stubs: { Transition: false },
     },
   });

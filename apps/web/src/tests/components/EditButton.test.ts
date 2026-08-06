@@ -2,15 +2,16 @@ import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
 import EditButton from '@/components/EditButton.vue';
+import { i18n } from '@/locales';
 
 test('renders the edit button', async () => {
-  const screen = await render(EditButton);
+  const screen = await render(EditButton, { global: { plugins: [i18n] } });
 
   await expect.element(screen.getByText('Edit')).toBeVisible();
 });
 
 test('renders pen icon', async () => {
-  const screen = await render(EditButton);
+  const screen = await render(EditButton, { global: { plugins: [i18n] } });
 
   const button = screen.getByText('Edit').element().closest('button') as HTMLButtonElement;
   const icon = button.querySelector('.i-lucide-square-pen');
@@ -18,7 +19,7 @@ test('renders pen icon', async () => {
 });
 
 test('has blue color classes', async () => {
-  const screen = await render(EditButton);
+  const screen = await render(EditButton, { global: { plugins: [i18n] } });
 
   const button = screen.getByText('Edit').element().closest('button') as HTMLButtonElement;
   expect(button.className).toContain('text-blue-600');

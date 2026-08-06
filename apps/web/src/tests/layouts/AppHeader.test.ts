@@ -4,6 +4,7 @@ import { render } from 'vitest-browser-vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
 
 import AppHeader from '@/layouts/AppHeader.vue';
+import { i18n } from '@/locales';
 
 beforeEach(() => {
   setActivePinia(createPinia());
@@ -30,7 +31,7 @@ test('renders TutorHub branding', async () => {
   const router = createMockRouter();
 
   const screen = await render(AppHeader, {
-    global: { plugins: [router, createPinia()] },
+    global: { plugins: [i18n, router, createPinia()] },
   });
 
   await expect.element(screen.getByText('TutorHub')).toBeVisible();
@@ -40,7 +41,7 @@ test('renders navigation bar', async () => {
   const router = createMockRouter();
 
   const screen = await render(AppHeader, {
-    global: { plugins: [router, createPinia()] },
+    global: { plugins: [i18n, router, createPinia()] },
   });
 
   await expect.element(screen.getByText('Dashboard')).toBeVisible();
@@ -53,19 +54,19 @@ test('renders theme toggler', async () => {
   const router = createMockRouter();
 
   const screen = await render(AppHeader, {
-    global: { plugins: [router, createPinia()] },
+    global: { plugins: [i18n, router, createPinia()] },
   });
 
-  await expect.element(screen.getByLabelText('跟随系统主题')).toBeVisible();
-  await expect.element(screen.getByLabelText('亮色主题')).toBeVisible();
-  await expect.element(screen.getByLabelText('暗色主题')).toBeVisible();
+  await expect.element(screen.getByLabelText('Follow system theme')).toBeVisible();
+  await expect.element(screen.getByLabelText('Light theme')).toBeVisible();
+  await expect.element(screen.getByLabelText('Dark theme')).toBeVisible();
 });
 
 test('renders logout button', async () => {
   const router = createMockRouter();
 
   const screen = await render(AppHeader, {
-    global: { plugins: [router, createPinia()] },
+    global: { plugins: [i18n, router, createPinia()] },
   });
 
   await expect.element(screen.getByText('Logout')).toBeVisible();

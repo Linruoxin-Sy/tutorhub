@@ -2,10 +2,12 @@ import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
 import SearchInput from '@/components/SearchInput.vue';
+import { i18n } from '@/locales';
 
 test('renders with default placeholder', async () => {
   const screen = await render(SearchInput, {
     props: { modelValue: '' },
+    global: { plugins: [i18n] },
   });
 
   const input = screen.getByPlaceholder('Search...');
@@ -15,6 +17,7 @@ test('renders with default placeholder', async () => {
 test('renders with custom placeholder', async () => {
   const screen = await render(SearchInput, {
     props: { modelValue: '', placeholder: 'Find students...' },
+    global: { plugins: [i18n] },
   });
 
   const input = screen.getByPlaceholder('Find students...');
@@ -24,6 +27,7 @@ test('renders with custom placeholder', async () => {
 test('renders search icon', async () => {
   const screen = await render(SearchInput, {
     props: { modelValue: '' },
+    global: { plugins: [i18n] },
   });
 
   const container = screen.getByPlaceholder('Search...').element().parentElement as HTMLElement;
@@ -34,6 +38,7 @@ test('renders search icon', async () => {
 test('renders with sm size class', async () => {
   const screen = await render(SearchInput, {
     props: { modelValue: '', size: 'sm' },
+    global: { plugins: [i18n] },
   });
 
   const outer = screen.getByPlaceholder('Search...').element().parentElement
@@ -44,6 +49,7 @@ test('renders with sm size class', async () => {
 test('renders with md size (no sm size constraints)', async () => {
   const screen = await render(SearchInput, {
     props: { modelValue: '', size: 'md' },
+    global: { plugins: [i18n] },
   });
 
   const outer = screen.getByPlaceholder('Search...').element().parentElement
@@ -62,6 +68,7 @@ test('updates model value on input', async () => {
       modelValue: '',
       'onUpdate:modelValue': onUpdate,
     },
+    global: { plugins: [i18n] },
   });
 
   const input = screen.getByPlaceholder('Search...').element() as HTMLInputElement;

@@ -3,9 +3,10 @@ import { render } from 'vitest-browser-vue';
 
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import { useDialog } from '@/hooks/useDialog';
+import { i18n } from '@/locales';
 
 test('does not render dialog when not triggered', async () => {
-  await render(ConfirmDialog);
+  await render(ConfirmDialog, { global: { plugins: [i18n] } });
 
   // Dialog 默认不可见 — dialog 元素存在但未打开
   const dialog = document.querySelector('dialog');
@@ -14,7 +15,7 @@ test('does not render dialog when not triggered', async () => {
 });
 
 test('renders dialog title and message after confirm() is called', async () => {
-  await render(ConfirmDialog);
+  await render(ConfirmDialog, { global: { plugins: [i18n] } });
   const { confirm } = useDialog();
 
   // 触发弹窗
@@ -37,7 +38,7 @@ test('renders dialog title and message after confirm() is called', async () => {
 });
 
 test('renders with primary variant', async () => {
-  const screen = await render(ConfirmDialog);
+  const screen = await render(ConfirmDialog, { global: { plugins: [i18n] } });
   const { confirm } = useDialog();
 
   confirm({
@@ -53,7 +54,7 @@ test('renders with primary variant', async () => {
 });
 
 test('renders with danger variant has btn-error class', async () => {
-  await render(ConfirmDialog);
+  await render(ConfirmDialog, { global: { plugins: [i18n] } });
   const { confirm } = useDialog();
 
   confirm({
@@ -73,7 +74,7 @@ test('renders with danger variant has btn-error class', async () => {
 });
 
 test('resolves with true on confirm button click', async () => {
-  await render(ConfirmDialog);
+  await render(ConfirmDialog, { global: { plugins: [i18n] } });
   const { confirm } = useDialog();
 
   const promise = confirm({
@@ -95,7 +96,7 @@ test('resolves with true on confirm button click', async () => {
 });
 
 test('resolves with false on cancel button click', async () => {
-  await render(ConfirmDialog);
+  await render(ConfirmDialog, { global: { plugins: [i18n] } });
   const { confirm } = useDialog();
 
   const promise = confirm({
@@ -117,7 +118,7 @@ test('resolves with false on cancel button click', async () => {
 });
 
 test('shows loading spinner on confirm button when loading', async () => {
-  await render(ConfirmDialog);
+  await render(ConfirmDialog, { global: { plugins: [i18n] } });
   const { confirm, state } = useDialog();
 
   confirm({
@@ -136,7 +137,7 @@ test('shows loading spinner on confirm button when loading', async () => {
 });
 
 test('disables buttons during loading', async () => {
-  await render(ConfirmDialog);
+  await render(ConfirmDialog, { global: { plugins: [i18n] } });
   const { confirm, state } = useDialog();
 
   confirm({
