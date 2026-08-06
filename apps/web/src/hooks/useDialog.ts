@@ -1,3 +1,5 @@
+import { i18n } from '@/locales';
+
 export interface DialogOptions {
   title: string;
   message: string;
@@ -19,8 +21,8 @@ export interface DialogState {
 const defaultOptions: Required<Omit<DialogOptions, keyof unknown>> = {
   title: '',
   message: '',
-  confirmText: 'Confirm',
-  cancelText: 'Cancel',
+  confirmText: '',
+  cancelText: '',
   variant: 'danger',
 };
 
@@ -28,8 +30,8 @@ const state = reactive<DialogState & { resolve: ((value: boolean) => void) | nul
   visible: false,
   title: '',
   message: '',
-  confirmText: 'Confirm',
-  cancelText: 'Cancel',
+  confirmText: '',
+  cancelText: '',
   variant: 'danger',
   loading: false,
   resolve: null,
@@ -37,7 +39,17 @@ const state = reactive<DialogState & { resolve: ((value: boolean) => void) | nul
 
 export function useDialog() {
   function confirm(options: DialogOptions): Promise<boolean> {
-    Object.assign(state, defaultOptions, options, { visible: true, loading: false });
+    // 默认按钮文案惰性解析（跟随当前语言），调用方传值则覆盖
+    Object.assign(
+      state,
+      defaultOptions,
+      {
+        confirmText: i18n.global.t('common.actions.confirm'),
+        cancelText: i18n.global.t('common.actions.cancel'),
+      },
+      options,
+      { visible: true, loading: false },
+    );
 
     return new Promise((resolve) => {
       state.resolve = resolve;

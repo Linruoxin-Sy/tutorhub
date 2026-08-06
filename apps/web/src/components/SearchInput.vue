@@ -7,7 +7,7 @@
       <input
         v-model="model"
         type="text"
-        :placeholder="placeholder"
+        :placeholder="placeholder || t('components.searchInput.placeholder')"
         class="w-full rounded-xl border border-gray-200 bg-white py-2.5 pr-4 pl-10 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
       />
     </label>
@@ -15,13 +15,17 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 withDefaults(
   defineProps<{
     placeholder?: string;
     size?: 'sm' | 'md';
   }>(),
   {
-    placeholder: 'Search...',
+    placeholder: '',
     size: 'sm',
   },
 );

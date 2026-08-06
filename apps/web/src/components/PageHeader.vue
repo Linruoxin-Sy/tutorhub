@@ -3,11 +3,19 @@
     class="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm transition-colors sm:flex-row sm:items-center sm:justify-between dark:border-[#2f2f2f] dark:bg-[#2c2c2c]"
   >
     <div>
-      <h1 class="text-2xl font-bold text-gray-900 transition-colors dark:text-white">
-        {{ title }}
+      <h1
+        v-if="title || titleKey"
+        class="text-2xl font-bold text-gray-900 transition-colors dark:text-white"
+      >
+        <T v-if="titleKey" :keypath="titleKey" :params="titleParams" />
+        <template v-else>{{ title }}</template>
       </h1>
-      <p v-if="description" class="mt-1 text-sm text-gray-500 transition-colors dark:text-gray-400">
-        {{ description }}
+      <p
+        v-if="description || descriptionKey"
+        class="mt-1 text-sm text-gray-500 transition-colors dark:text-gray-400"
+      >
+        <T v-if="descriptionKey" :keypath="descriptionKey" :params="descriptionParams" />
+        <template v-else>{{ description }}</template>
       </p>
     </div>
     <button
@@ -16,15 +24,21 @@
       @click="goBack"
     >
       <i class="i-lucide-arrow-left size-4"></i>
-      Back
+      <T keypath="components.pageHeader.back" />
     </button>
   </section>
 </template>
 
 <script setup lang="ts">
+import type { MessageKey } from '@/locales';
+
 defineProps<{
-  title: string;
+  title?: string;
+  titleKey?: MessageKey;
+  titleParams?: Record<string, unknown>;
   description?: string;
+  descriptionKey?: MessageKey;
+  descriptionParams?: Record<string, unknown>;
 }>();
 
 const router = useRouter();

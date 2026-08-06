@@ -19,7 +19,7 @@
           :key="'preview'"
           :src="localPreviewUrl"
           class="size-full rounded-full object-cover"
-          alt="Avatar preview"
+          :alt="t('components.avatarUploader.previewAlt')"
         />
 
         <!-- 2) Existing avatar image -->
@@ -28,7 +28,7 @@
           :key="'real'"
           :src="resolvedAvatarUrl"
           class="size-full rounded-full object-cover"
-          alt="Avatar"
+          :alt="t('components.avatarUploader.avatarAlt')"
         />
 
         <!-- 3) Gradient avatar (based on debounced name) -->
@@ -74,14 +74,20 @@
     </button>
 
     <!-- Hint text -->
-    <p class="text-xs text-gray-500 dark:text-gray-400">Click to change avatar</p>
+    <p class="text-xs text-gray-500 dark:text-gray-400">
+      <T keypath="components.avatarUploader.changeAvatar" />
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { debounce } from 'es-toolkit';
 import imageCompression from 'browser-image-compression';
+import { useI18n } from 'vue-i18n';
+
 import { getAvatarGradient, getAvatarTextColor } from '@/utils/avatar';
+
+const { t } = useI18n();
 
 const props = defineProps<{
   name?: string;

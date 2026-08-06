@@ -2,6 +2,8 @@ import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import pLimit from 'p-limit';
 import { computed, readonly, ref, watch, watchEffect, type Ref } from 'vue';
 
+import { i18n } from '@/locales';
+
 const DEFAULT_PAGE_SIZE = 20;
 const DEFAULT_CONCURRENCY = 4;
 const DEFAULT_STALE_TIME = 30_000;
@@ -176,7 +178,7 @@ export function useSparseQuery<TItem>(config: {
     if (firstPageQuery.error.value) {
       return firstPageQuery.error.value instanceof Error
         ? firstPageQuery.error.value.message
-        : 'Failed to load data';
+        : i18n.global.t('errors.failedToLoad');
     }
     return '';
   });

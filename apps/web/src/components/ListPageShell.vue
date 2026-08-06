@@ -6,16 +6,18 @@
       <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h1
-            v-if="title"
+            v-if="title || titleKey"
             class="text-2xl font-bold text-gray-900 transition-colors dark:text-white"
           >
-            {{ title }}
+            <T v-if="titleKey" :keypath="titleKey" :params="titleParams" />
+            <template v-else>{{ title }}</template>
           </h1>
           <p
-            v-if="description"
+            v-if="description || descriptionKey"
             class="mt-1 text-sm text-gray-500 transition-colors dark:text-gray-400"
           >
-            {{ description }}
+            <T v-if="descriptionKey" :keypath="descriptionKey" :params="descriptionParams" />
+            <template v-else>{{ description }}</template>
           </p>
         </div>
         <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -29,8 +31,14 @@
 </template>
 
 <script setup lang="ts">
+import type { MessageKey } from '@/locales';
+
 defineProps<{
-  title: string;
+  title?: string;
+  titleKey?: MessageKey;
+  titleParams?: Record<string, unknown>;
   description?: string;
+  descriptionKey?: MessageKey;
+  descriptionParams?: Record<string, unknown>;
 }>();
 </script>
