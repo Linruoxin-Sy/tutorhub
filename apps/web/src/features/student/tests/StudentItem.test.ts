@@ -1,8 +1,8 @@
 import { expect, test, vi } from 'vitest';
 import { render } from 'vitest-browser-vue';
 
+import { mockStudent } from '@/features/student/mocks/factories';
 import { i18n } from '@/locales';
-import { mockStudent } from '@/mocks/factories';
 
 import StudentItem from '../components/StudentItem.vue';
 
