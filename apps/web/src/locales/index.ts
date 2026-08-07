@@ -1,7 +1,22 @@
 import { createI18n } from 'vue-i18n';
 
-import en from './en';
-import zhCN from './zh-CN';
+import authEn from '@/features/auth/locales/en';
+import authZh from '@/features/auth/locales/zh-CN';
+import classRuleEn from '@/features/class-rule/locales/en';
+import classRuleZh from '@/features/class-rule/locales/zh-CN';
+import courseEn from '@/features/course/locales/en';
+import courseZh from '@/features/course/locales/zh-CN';
+import dashboardEn from '@/features/dashboard/locales/en';
+import dashboardZh from '@/features/dashboard/locales/zh-CN';
+import enrollmentEn from '@/features/enrollment/locales/en';
+import enrollmentZh from '@/features/enrollment/locales/zh-CN';
+import sessionEn from '@/features/session/locales/en';
+import sessionZh from '@/features/session/locales/zh-CN';
+import studentEn from '@/features/student/locales/en';
+import studentZh from '@/features/student/locales/zh-CN';
+
+import sharedEn from './shared/en';
+import sharedZh from './shared/zh-CN';
 
 export type AppLocale = 'en' | 'zh-CN';
 
@@ -23,14 +38,39 @@ export function getInitialLocale(): AppLocale {
   return isAppLocale(stored) ? stored : 'en';
 }
 
+/** 组装 en / zh-CN 消息树（命名空间 key 在此统一装配） */
+const en = {
+  ...sharedEn,
+  auth: authEn,
+  student: studentEn,
+  course: courseEn,
+  classRule: classRuleEn,
+  session: sessionEn,
+  enrollment: enrollmentEn,
+  dashboard: dashboardEn,
+};
+
+const zhCN = {
+  ...sharedZh,
+  auth: authZh,
+  student: studentZh,
+  course: courseZh,
+  classRule: classRuleZh,
+  session: sessionZh,
+  enrollment: enrollmentZh,
+  dashboard: dashboardZh,
+};
+
+export const messages = { en, 'zh-CN': zhCN };
+
+/** 完整消息结构（供 vue-i18n 类型增强引用） */
+export type MessageSchema = typeof en;
+
 export const i18n = createI18n({
   legacy: false,
   locale: getInitialLocale(),
   fallbackLocale: 'en',
-  messages: {
-    en,
-    'zh-CN': zhCN,
-  },
+  messages,
   datetimeFormats: {
     en: {
       short: { year: 'numeric', month: 'short', day: 'numeric' },
