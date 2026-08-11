@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { currencySchema } from '../currency';
+
 export const classSessionOverrideFields = {
   classRuleId: z.string().min(1, 'classRuleId is required'),
   originalDate: z.coerce.date(),
@@ -14,5 +16,6 @@ export const classSessionOverrideFields = {
     .regex(/^\d{2}:\d{2}(:\d{2})?$/, 'rescheduledEndTime must be in HH:mm or HH:mm:ss format')
     .nullable(),
   priceOverride: z.coerce.number().nonnegative().nullable(),
+  currencyOverride: currencySchema.nullable(),
   reason: z.string().nullable(),
 } as const;

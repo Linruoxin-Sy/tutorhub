@@ -8,6 +8,7 @@ export const classRuleCreateSchema = z.object({
   courseId: classRuleFields.courseId,
   name: classRuleFields.name,
   price: classRuleFields.price,
+  currency: classRuleFields.currency,
   startDate: classRuleFields.startDate,
   intervalDays: classRuleFields.intervalDays,
   endDate: classRuleFields.endDate,

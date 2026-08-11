@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { currencySchema } from '../currency';
 import type { safeUser } from './user';
 
 export const registerSchema = z.object({
@@ -16,6 +17,7 @@ export const registerSchema = z.object({
     .string()
     .min(6, 'Password must be at least 6 characters')
     .max(20, 'Password must be at most 20 characters'),
+  currency: currencySchema.optional(),
 });
 
 export type RegisterResponse = safeUser;

@@ -15,7 +15,11 @@ export const classSessionOverrideUpdateSchema = z
     rescheduledStartTime: classSessionOverrideFields.rescheduledStartTime.optional(),
     rescheduledEndTime: classSessionOverrideFields.rescheduledEndTime.optional(),
     priceOverride: classSessionOverrideFields.priceOverride.optional(),
+    currencyOverride: classSessionOverrideFields.currencyOverride.optional(),
     reason: classSessionOverrideFields.reason.optional(),
+  })
+  .refine((data) => data.priceOverride == null || data.currencyOverride != null, {
+    message: 'currencyOverride is required when priceOverride is set',
   })
   .refine((data) => Object.values(data).some((val) => val !== undefined), {
     message: 'Request body cannot be empty',

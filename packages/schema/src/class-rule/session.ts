@@ -1,3 +1,5 @@
+import type { Currency } from '../currency';
+
 /** Session 状态：取消 | 调课 | 进行中 | 已完成 | 未开始（默认） */
 export type SessionStatus = 'cancelled' | 'rescheduled' | 'ongoing' | 'completed' | 'default';
 
@@ -25,6 +27,10 @@ export type GeneratedSession = {
   overriddenDate?: string | null;
   /** 该次 session 的有效价格（有 priceOverride 则用它，否则用 rule.price） */
   price?: number | null;
+  /** 有效价格的货币 */
+  currency?: Currency | null;
   /** 修改前原始价格（调课时展示左侧划掉的价格） */
   originalPrice?: number | null;
+  /** 原始价格的货币 */
+  originalCurrency?: Currency | null;
 };

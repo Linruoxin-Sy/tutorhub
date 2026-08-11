@@ -1,4 +1,5 @@
 export * from './auth';
+export * from './currency';
 export * from './student';
 export * from './course';
 export * from './enrollment';

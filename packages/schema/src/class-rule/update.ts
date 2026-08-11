@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import type { ClassRule } from '@tutorhub/database';
 
+import { currencySchema } from '../currency';
 import { classRuleFields } from './class-rule';
 
 export const classRuleUpdateParamsSchema = z.object({
@@ -12,6 +13,7 @@ export const classRuleUpdateSchema = z
   .object({
     name: classRuleFields.name.optional(),
     price: classRuleFields.price.optional(),
+    currency: currencySchema.optional(),
     startDate: classRuleFields.startDate.optional(),
     intervalDays: classRuleFields.intervalDays,
     endDate: classRuleFields.endDate,

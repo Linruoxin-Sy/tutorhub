@@ -4,15 +4,20 @@ import type { ClassSessionOverride } from '@tutorhub/database';
 
 import { classSessionOverrideFields } from './class-session';
 
-export const classSessionOverrideCreateSchema = z.object({
-  classRuleId: classSessionOverrideFields.classRuleId,
-  originalDate: classSessionOverrideFields.originalDate,
-  state: classSessionOverrideFields.state,
-  rescheduledDate: classSessionOverrideFields.rescheduledDate.optional(),
-  rescheduledStartTime: classSessionOverrideFields.rescheduledStartTime.optional(),
-  rescheduledEndTime: classSessionOverrideFields.rescheduledEndTime.optional(),
-  priceOverride: classSessionOverrideFields.priceOverride.optional(),
-  reason: classSessionOverrideFields.reason.optional(),
-});
+export const classSessionOverrideCreateSchema = z
+  .object({
+    classRuleId: classSessionOverrideFields.classRuleId,
+    originalDate: classSessionOverrideFields.originalDate,
+    state: classSessionOverrideFields.state,
+    rescheduledDate: classSessionOverrideFields.rescheduledDate.optional(),
+    rescheduledStartTime: classSessionOverrideFields.rescheduledStartTime.optional(),
+    rescheduledEndTime: classSessionOverrideFields.rescheduledEndTime.optional(),
+    priceOverride: classSessionOverrideFields.priceOverride.optional(),
+    currencyOverride: classSessionOverrideFields.currencyOverride.optional(),
+    reason: classSessionOverrideFields.reason.optional(),
+  })
+  .refine((data) => data.priceOverride == null || data.currencyOverride != null, {
+    message: 'currencyOverride is required when priceOverride is set',
+  });
 
 export type ClassSessionOverrideCreateResponse = ClassSessionOverride;
