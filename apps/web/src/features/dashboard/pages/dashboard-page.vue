@@ -71,19 +71,22 @@
 
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query';
-import { useI18n } from 'vue-i18n';
 import { request } from '@/utils/request';
 import ListPageShell from '@/components/ListPageShell.vue';
 import SessionItem from '@/features/session/components/SessionItem.vue';
+import { usePreferredCurrency } from '@/hooks/useCurrency';
+import { formatMoney } from '@/utils/currency';
 
 import type { DashboardResponse } from '@tutorhub/schema';
 
-const { n } = useI18n();
+const { preferredCurrency } = usePreferredCurrency();
 
 const { data, isLoading, error } = useQuery<DashboardResponse>({
-  queryKey: ['dashboard'],
+  queryKey: ['dashboard', preferredCurrency],
   queryFn: async () => {
-    const res = await request.get('/dashboard');
+    const res = await request.get('/dashboard', {
+      params: { currency: preferredCurrency.value },
+    });
     return res.data;
   },
 });
@@ -109,7 +112,7 @@ const stats = computed(() => {
     },
     {
       labelKey: 'dashboard.stats.totalIncome',
-      value: n(d.totalIncome, 'currency'),
+      value: formatMoney(d.totalIncome, d.currency),
       icon: 'i-lucide-dollar-sign text-pink-600 dark:text-pink-300',
     },
   ];

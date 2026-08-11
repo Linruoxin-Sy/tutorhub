@@ -29,7 +29,7 @@
             /></label>
             <p class="text-sm font-medium text-gray-900 dark:text-white">
               <template v-if="session.priceOverride != null">
-                {{ n(Number(session.priceOverride), 'currency') }}
+                {{ formatMoney(Number(session.priceOverride), session.currencyOverride ?? 'CNY') }}
               </template>
               <template v-else>—</template>
             </p>
@@ -71,13 +71,14 @@ import {
 } from '@/features/class-session/api/class-session-api';
 import { useLoading } from '@/hooks/useLoading';
 import { i18n, type MessageKey } from '@/locales';
+import { formatMoney } from '@/utils/currency';
 import { formatDate } from '@/utils/date';
 import type { ClassSessionOverrideDetailResponse } from '@tutorhub/schema';
 
 const props = defineProps<{ sessionId: string }>();
 const router = useRouter();
 
-const { t, n } = useI18n();
+const { t } = useI18n();
 const isLoading = ref(true);
 const session = ref<ClassSessionOverrideDetailResponse | null>(null);
 

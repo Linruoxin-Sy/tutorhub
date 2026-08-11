@@ -14,6 +14,7 @@ export function mockClassSessionOverride(overrides?: Partial<Record<string, unkn
     rescheduledStartTime: new Date('2025-03-03T10:00:00'),
     rescheduledEndTime: new Date('2025-03-03T11:30:00'),
     priceOverride: null,
+    currencyOverride: null,
     reason: null,
     ...overrides,
   };

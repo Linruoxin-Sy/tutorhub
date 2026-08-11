@@ -8,6 +8,7 @@ export function mockDashboard(overrides?: Partial<DashboardResponse>): Dashboard
     activeCourses: 8,
     totalHours: 156,
     totalIncome: 31200,
+    currency: 'CNY',
     recentSessions: [
       {
         id: `${ulid()}_2025-03-01`,
