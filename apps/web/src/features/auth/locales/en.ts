@@ -35,5 +35,6 @@ export default {
   },
   errors: {
     loginFailed: 'Login failed',
+    updateFailed: 'Failed to update preferences',
   },
 };

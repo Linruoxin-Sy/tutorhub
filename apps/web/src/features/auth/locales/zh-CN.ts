@@ -35,5 +35,6 @@ export default {
   },
   errors: {
     loginFailed: '登录失败',
+    updateFailed: '更新偏好失败',
   },
 };

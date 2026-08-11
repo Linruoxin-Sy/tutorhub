@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { LoginResponse, loginSchema } from '@tutorhub/schema';
+import type { Currency, LoginResponse, loginSchema } from '@tutorhub/schema';
 
 import { i18n } from '@/locales';
 import { request } from '@/utils/request';
@@ -18,6 +18,7 @@ const initialUserState: UserState = {
   email: null,
   phone: null,
   avatarUrl: '',
+  currency: 'CNY',
 };
 
 export const useUserStore = defineStore('auth/user', () => {
@@ -43,6 +44,26 @@ export const useUserStore = defineStore('auth/user', () => {
     return localStorage.getItem(TOKEN_KEY);
   };
 
+  /** 获取当前用户信息（用于启动/刷新后恢复用户与货币偏好） */
+  const fetchMe = async () => {
+    try {
+      const { data } = await request.get<UserState>('/auth/me');
+      user.value = data;
+    } catch {
+      // Axios 拦截器已显示错误 toast，此处仅阻止传播
+    }
+  };
+
+  /** 更新货币偏好（仅影响表单下拉框默认选项，不强制任何价格） */
+  const updateCurrency = async (currency: Currency) => {
+    try {
+      const { data } = await request.patch<UserState>('/auth/me', { currency });
+      user.value = data;
+    } catch {
+      throw new Error(i18n.global.t('auth.errors.updateFailed'));
+    }
+  };
+
   const logout = async () => {
     try {
       // 尝试通知服务端清除 Refresh Token（忽略失败）
@@ -54,5 +75,5 @@ export const useUserStore = defineStore('auth/user', () => {
     localStorage.removeItem(TOKEN_KEY);
   };
 
-  return { user, login, logout, setAccessToken, getAccessToken };
+  return { user, login, logout, setAccessToken, getAccessToken, fetchMe, updateCurrency };
 });

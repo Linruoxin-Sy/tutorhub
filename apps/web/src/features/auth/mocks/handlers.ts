@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 
-import { mockLoginResponse, mockRegisterResponse } from './factories';
+import { mockLoginResponse, mockRegisterResponse, mockUser } from './factories';
 
 export const authHandlers = [
   // POST /api/v1/auth/login
@@ -61,5 +61,16 @@ export const authHandlers = [
         headers: { 'Set-Cookie': 'refreshToken=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0' },
       },
     );
+  }),
+
+  // GET /api/v1/auth/me
+  http.get('*/api/v1/auth/me', () => {
+    return HttpResponse.json(mockUser());
+  }),
+
+  // PATCH /api/v1/auth/me
+  http.patch('*/api/v1/auth/me', async ({ request }) => {
+    const body = (await request.json()) as { currency?: string };
+    return HttpResponse.json(mockUser({ currency: body.currency === 'USD' ? 'USD' : 'CNY' }));
   }),
 ];

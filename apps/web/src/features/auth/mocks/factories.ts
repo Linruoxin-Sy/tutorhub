@@ -9,6 +9,7 @@ export function mockUser(overrides?: Partial<LoginResponse['user']>): LoginRespo
     email: 'test@example.com',
     phone: null,
     avatarUrl: null,
+    currency: 'CNY',
     createdAt: new Date('2025-01-01'),
     updatedAt: new Date('2025-01-01'),
     deletedAt: null,

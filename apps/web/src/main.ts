@@ -3,6 +3,7 @@ import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 
 import App from './App.vue';
+import { useUserStore } from './features/auth/stores/user';
 import { i18n } from './locales';
 import { applyLocale } from './locales/applier';
 import router from './router';
@@ -16,11 +17,19 @@ applyLocale();
 
 const app = createApp(App);
 
-app.use(createPinia());
+const pinia = createPinia();
+
+app.use(pinia);
 app.use(i18n);
 app.use(VueQueryPlugin, { queryClient });
 app.use(router);
 
 registerGlobalErrorHandlers(app);
+
+// 启动时若有 Access Token，恢复用户信息（含货币偏好）
+const userStore = useUserStore(pinia);
+if (userStore.getAccessToken()) {
+  void userStore.fetchMe();
+}
 
 app.mount('#app');
