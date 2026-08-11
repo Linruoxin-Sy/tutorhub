@@ -32,6 +32,9 @@ model User {
   /// 刷新令牌哈希值（SHA-256），用于 Refresh Token Rotation
   refreshTokenHash String? @map("refresh_token_hash")
 
+  /// 货币偏好（仅作为货币选择表单的默认选项，不强制任何价格的货币）
+  currency Currency @default(CNY)
+
   /// 用户拥有的学生
   students Student[]
 

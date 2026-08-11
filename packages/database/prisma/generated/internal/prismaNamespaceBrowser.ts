@@ -98,6 +98,7 @@ export const ClassSessionOverrideScalarFieldEnum = {
   rescheduledStartTime: 'rescheduledStartTime',
   rescheduledEndTime: 'rescheduledEndTime',
   priceOverride: 'priceOverride',
+  currencyOverride: 'currencyOverride',
   reason: 'reason',
 } as const;
 
@@ -131,6 +132,7 @@ export const ClassRuleScalarFieldEnum = {
   endTime: 'endTime',
   name: 'name',
   price: 'price',
+  currency: 'currency',
 } as const;
 
 export type ClassRuleScalarFieldEnum =
@@ -178,6 +180,7 @@ export const UserScalarFieldEnum = {
   phone: 'phone',
   avatarUrl: 'avatarUrl',
   refreshTokenHash: 'refreshTokenHash',
+  currency: 'currency',
 } as const;
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];

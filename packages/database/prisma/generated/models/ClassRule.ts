@@ -49,6 +49,7 @@ export type ClassRuleMinAggregateOutputType = {
   endTime: Date | null;
   name: string | null;
   price: runtime.Decimal | null;
+  currency: $Enums.Currency | null;
 };
 
 export type ClassRuleMaxAggregateOutputType = {
@@ -64,6 +65,7 @@ export type ClassRuleMaxAggregateOutputType = {
   endTime: Date | null;
   name: string | null;
   price: runtime.Decimal | null;
+  currency: $Enums.Currency | null;
 };
 
 export type ClassRuleCountAggregateOutputType = {
@@ -79,6 +81,7 @@ export type ClassRuleCountAggregateOutputType = {
   endTime: number;
   name: number;
   price: number;
+  currency: number;
   _all: number;
 };
 
@@ -105,6 +108,7 @@ export type ClassRuleMinAggregateInputType = {
   endTime?: true;
   name?: true;
   price?: true;
+  currency?: true;
 };
 
 export type ClassRuleMaxAggregateInputType = {
@@ -120,6 +124,7 @@ export type ClassRuleMaxAggregateInputType = {
   endTime?: true;
   name?: true;
   price?: true;
+  currency?: true;
 };
 
 export type ClassRuleCountAggregateInputType = {
@@ -135,6 +140,7 @@ export type ClassRuleCountAggregateInputType = {
   endTime?: true;
   name?: true;
   price?: true;
+  currency?: true;
   _all?: true;
 };
 
@@ -240,6 +246,7 @@ export type ClassRuleGroupByOutputType = {
   endTime: Date;
   name: string;
   price: runtime.Decimal;
+  currency: $Enums.Currency;
   _count: ClassRuleCountAggregateOutputType | null;
   _avg: ClassRuleAvgAggregateOutputType | null;
   _sum: ClassRuleSumAggregateOutputType | null;
@@ -280,6 +287,7 @@ export type ClassRuleWhereInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFilter<'ClassRule'> | $Enums.Currency;
   course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>;
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
   classSessionOverrides?: Prisma.ClassSessionOverrideListRelationFilter;
@@ -299,6 +307,7 @@ export type ClassRuleOrderByWithRelationInput = {
   endTime?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   price?: Prisma.SortOrder;
+  currency?: Prisma.SortOrder;
   course?: Prisma.CourseOrderByWithRelationInput;
   user?: Prisma.UserOrderByWithRelationInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideOrderByRelationAggregateInput;
@@ -327,6 +336,7 @@ export type ClassRuleWhereUniqueInput = Prisma.AtLeast<
       | runtime.DecimalJsLike
       | number
       | string;
+    currency?: Prisma.EnumCurrencyFilter<'ClassRule'> | $Enums.Currency;
     course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
     classSessionOverrides?: Prisma.ClassSessionOverrideListRelationFilter;
@@ -348,6 +358,7 @@ export type ClassRuleOrderByWithAggregationInput = {
   endTime?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   price?: Prisma.SortOrder;
+  currency?: Prisma.SortOrder;
   _count?: Prisma.ClassRuleCountOrderByAggregateInput;
   _avg?: Prisma.ClassRuleAvgOrderByAggregateInput;
   _max?: Prisma.ClassRuleMaxOrderByAggregateInput;
@@ -380,6 +391,7 @@ export type ClassRuleScalarWhereWithAggregatesInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyWithAggregatesFilter<'ClassRule'> | $Enums.Currency;
 };
 
 export type ClassRuleCreateInput = {
@@ -393,6 +405,7 @@ export type ClassRuleCreateInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
   course: Prisma.CourseCreateNestedOneWithoutClassRulesInput;
   user: Prisma.UserCreateNestedOneWithoutClassRulesInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutClassRuleInput;
@@ -412,6 +425,7 @@ export type ClassRuleUncheckedCreateInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutClassRuleInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutClassRuleInput;
 };
@@ -432,6 +446,7 @@ export type ClassRuleUpdateInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   course?: Prisma.CourseUpdateOneRequiredWithoutClassRulesNestedInput;
   user?: Prisma.UserUpdateOneRequiredWithoutClassRulesNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutClassRuleNestedInput;
@@ -456,6 +471,7 @@ export type ClassRuleUncheckedUpdateInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutClassRuleNestedInput;
 };
@@ -473,6 +489,7 @@ export type ClassRuleCreateManyInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
 };
 
 export type ClassRuleUpdateManyMutationInput = {
@@ -491,6 +508,7 @@ export type ClassRuleUpdateManyMutationInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
 };
 
 export type ClassRuleUncheckedUpdateManyInput = {
@@ -511,6 +529,7 @@ export type ClassRuleUncheckedUpdateManyInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
 };
 
 export type ClassRuleScalarRelationFilter = {
@@ -541,6 +560,7 @@ export type ClassRuleCountOrderByAggregateInput = {
   endTime?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   price?: Prisma.SortOrder;
+  currency?: Prisma.SortOrder;
 };
 
 export type ClassRuleAvgOrderByAggregateInput = {
@@ -561,6 +581,7 @@ export type ClassRuleMaxOrderByAggregateInput = {
   endTime?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   price?: Prisma.SortOrder;
+  currency?: Prisma.SortOrder;
 };
 
 export type ClassRuleMinOrderByAggregateInput = {
@@ -576,6 +597,7 @@ export type ClassRuleMinOrderByAggregateInput = {
   endTime?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   price?: Prisma.SortOrder;
+  currency?: Prisma.SortOrder;
 };
 
 export type ClassRuleSumOrderByAggregateInput = {
@@ -737,6 +759,10 @@ export type DecimalFieldUpdateOperationsInput = {
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string;
 };
 
+export type EnumCurrencyFieldUpdateOperationsInput = {
+  set?: $Enums.Currency;
+};
+
 export type ClassRuleCreateNestedManyWithoutUserInput = {
   create?:
     | Prisma.XOR<
@@ -834,6 +860,7 @@ export type ClassRuleCreateWithoutClassRuleStudentsInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
   course: Prisma.CourseCreateNestedOneWithoutClassRulesInput;
   user: Prisma.UserCreateNestedOneWithoutClassRulesInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutClassRuleInput;
@@ -852,6 +879,7 @@ export type ClassRuleUncheckedCreateWithoutClassRuleStudentsInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutClassRuleInput;
 };
 
@@ -899,6 +927,7 @@ export type ClassRuleUpdateWithoutClassRuleStudentsInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   course?: Prisma.CourseUpdateOneRequiredWithoutClassRulesNestedInput;
   user?: Prisma.UserUpdateOneRequiredWithoutClassRulesNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutClassRuleNestedInput;
@@ -922,6 +951,7 @@ export type ClassRuleUncheckedUpdateWithoutClassRuleStudentsInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleNestedInput;
 };
 
@@ -936,6 +966,7 @@ export type ClassRuleCreateWithoutClassSessionOverridesInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
   course: Prisma.CourseCreateNestedOneWithoutClassRulesInput;
   user: Prisma.UserCreateNestedOneWithoutClassRulesInput;
   classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutClassRuleInput;
@@ -954,6 +985,7 @@ export type ClassRuleUncheckedCreateWithoutClassSessionOverridesInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutClassRuleInput;
 };
 
@@ -1001,6 +1033,7 @@ export type ClassRuleUpdateWithoutClassSessionOverridesInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   course?: Prisma.CourseUpdateOneRequiredWithoutClassRulesNestedInput;
   user?: Prisma.UserUpdateOneRequiredWithoutClassRulesNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutClassRuleNestedInput;
@@ -1024,6 +1057,7 @@ export type ClassRuleUncheckedUpdateWithoutClassSessionOverridesInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutClassRuleNestedInput;
 };
 
@@ -1038,6 +1072,7 @@ export type ClassRuleCreateWithoutCourseInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
   user: Prisma.UserCreateNestedOneWithoutClassRulesInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutClassRuleInput;
   classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutClassRuleInput;
@@ -1055,6 +1090,7 @@ export type ClassRuleUncheckedCreateWithoutCourseInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutClassRuleInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutClassRuleInput;
 };
@@ -1121,6 +1157,7 @@ export type ClassRuleScalarWhereInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFilter<'ClassRule'> | $Enums.Currency;
 };
 
 export type ClassRuleCreateWithoutUserInput = {
@@ -1134,6 +1171,7 @@ export type ClassRuleCreateWithoutUserInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
   course: Prisma.CourseCreateNestedOneWithoutClassRulesInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideCreateNestedManyWithoutClassRuleInput;
   classRuleStudents?: Prisma.ClassRuleStudentCreateNestedManyWithoutClassRuleInput;
@@ -1151,6 +1189,7 @@ export type ClassRuleUncheckedCreateWithoutUserInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedCreateNestedManyWithoutClassRuleInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedCreateNestedManyWithoutClassRuleInput;
 };
@@ -1208,6 +1247,7 @@ export type ClassRuleCreateManyCourseInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
 };
 
 export type ClassRuleUpdateWithoutCourseInput = {
@@ -1226,6 +1266,7 @@ export type ClassRuleUpdateWithoutCourseInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   user?: Prisma.UserUpdateOneRequiredWithoutClassRulesNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutClassRuleNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutClassRuleNestedInput;
@@ -1248,6 +1289,7 @@ export type ClassRuleUncheckedUpdateWithoutCourseInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutClassRuleNestedInput;
 };
@@ -1269,6 +1311,7 @@ export type ClassRuleUncheckedUpdateManyWithoutCourseInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
 };
 
 export type ClassRuleCreateManyUserInput = {
@@ -1283,6 +1326,7 @@ export type ClassRuleCreateManyUserInput = {
   endTime: Date | string;
   name: string;
   price: runtime.Decimal | runtime.DecimalJsLike | number | string;
+  currency?: $Enums.Currency;
 };
 
 export type ClassRuleUpdateWithoutUserInput = {
@@ -1301,6 +1345,7 @@ export type ClassRuleUpdateWithoutUserInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   course?: Prisma.CourseUpdateOneRequiredWithoutClassRulesNestedInput;
   classSessionOverrides?: Prisma.ClassSessionOverrideUpdateManyWithoutClassRuleNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUpdateManyWithoutClassRuleNestedInput;
@@ -1323,6 +1368,7 @@ export type ClassRuleUncheckedUpdateWithoutUserInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   classSessionOverrides?: Prisma.ClassSessionOverrideUncheckedUpdateManyWithoutClassRuleNestedInput;
   classRuleStudents?: Prisma.ClassRuleStudentUncheckedUpdateManyWithoutClassRuleNestedInput;
 };
@@ -1344,6 +1390,7 @@ export type ClassRuleUncheckedUpdateManyWithoutUserInput = {
     | runtime.DecimalJsLike
     | number
     | string;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
 };
 
 /**
@@ -1408,6 +1455,7 @@ export type ClassRuleSelect<
     endTime?: boolean;
     name?: boolean;
     price?: boolean;
+    currency?: boolean;
     course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
     classSessionOverrides?: boolean | Prisma.ClassRule$classSessionOverridesArgs<ExtArgs>;
@@ -1433,6 +1481,7 @@ export type ClassRuleSelectCreateManyAndReturn<
     endTime?: boolean;
     name?: boolean;
     price?: boolean;
+    currency?: boolean;
     course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
@@ -1455,6 +1504,7 @@ export type ClassRuleSelectUpdateManyAndReturn<
     endTime?: boolean;
     name?: boolean;
     price?: boolean;
+    currency?: boolean;
     course?: boolean | Prisma.CourseDefaultArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
   },
@@ -1474,6 +1524,7 @@ export type ClassRuleSelectScalar = {
   endTime?: boolean;
   name?: boolean;
   price?: boolean;
+  currency?: boolean;
 };
 
 export type ClassRuleOmit<
@@ -1490,7 +1541,8 @@ export type ClassRuleOmit<
   | 'startTime'
   | 'endTime'
   | 'name'
-  | 'price',
+  | 'price'
+  | 'currency',
   ExtArgs['result']['classRule']
 >;
 export type ClassRuleInclude<
@@ -1587,6 +1639,10 @@ export type $ClassRulePayload<
        * 课程单价
        */
       price: runtime.Decimal;
+      /**
+       * 单价货币
+       */
+      currency: $Enums.Currency;
     },
     ExtArgs['result']['classRule']
   >;
@@ -2218,6 +2274,7 @@ export interface ClassRuleFieldRefs {
   readonly endTime: Prisma.FieldRef<'ClassRule', 'DateTime'>;
   readonly name: Prisma.FieldRef<'ClassRule', 'String'>;
   readonly price: Prisma.FieldRef<'ClassRule', 'Decimal'>;
+  readonly currency: Prisma.FieldRef<'ClassRule', 'Currency'>;
 }
 
 // Custom InputTypes

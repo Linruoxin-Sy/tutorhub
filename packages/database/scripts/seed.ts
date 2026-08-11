@@ -101,6 +101,7 @@ async function main() {
       phone: '12345678911',
       passwordHash,
       passwordSalt: salt,
+      currency: 'CNY',
     },
   });
   log('Admin user created');

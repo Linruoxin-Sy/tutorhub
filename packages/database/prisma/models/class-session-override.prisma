@@ -41,6 +41,9 @@ model ClassSessionOverride {
   /// 覆盖单价（仅对该次 session 生效，可选）
   priceOverride Decimal? @map("price_override")
 
+  /// 覆盖单价的货币（与 priceOverride 配对，priceOverride 为空时也为空）
+  currencyOverride Currency? @map("currency_override")
+
   /// 原因说明
   reason String?
 

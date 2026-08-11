@@ -1,3 +1,11 @@
+/// 支持的货币
+enum Currency {
+  /// 人民币
+  CNY
+  /// 美元
+  USD
+}
+
 model ClassRule {
   /// 课程规则主键 ID（ULID）
   id String @id @default(ulid())
@@ -34,6 +42,9 @@ model ClassRule {
 
   /// 课程单价
   price Decimal @map("price")
+
+  /// 单价货币
+  currency Currency @default(CNY)
 
   /// 所属课程
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)

@@ -1001,6 +1001,7 @@ export const ClassSessionOverrideScalarFieldEnum = {
   rescheduledStartTime: 'rescheduledStartTime',
   rescheduledEndTime: 'rescheduledEndTime',
   priceOverride: 'priceOverride',
+  currencyOverride: 'currencyOverride',
   reason: 'reason',
 } as const;
 
@@ -1034,6 +1035,7 @@ export const ClassRuleScalarFieldEnum = {
   endTime: 'endTime',
   name: 'name',
   price: 'price',
+  currency: 'currency',
 } as const;
 
 export type ClassRuleScalarFieldEnum =
@@ -1081,6 +1083,7 @@ export const UserScalarFieldEnum = {
   phone: 'phone',
   avatarUrl: 'avatarUrl',
   refreshTokenHash: 'refreshTokenHash',
+  currency: 'currency',
 } as const;
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
@@ -1155,6 +1158,19 @@ export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'Decimal[]'
  */
 export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>;
+
+/**
+ * Reference to a field of type 'Currency'
+ */
+export type EnumCurrencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Currency'>;
+
+/**
+ * Reference to a field of type 'Currency[]'
+ */
+export type ListEnumCurrencyFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'Currency[]'
+>;
 
 /**
  * Reference to a field of type 'CourseStatus'

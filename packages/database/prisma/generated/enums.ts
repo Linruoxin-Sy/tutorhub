@@ -23,6 +23,13 @@ export const CourseStatus = {
 
 export type CourseStatus = (typeof CourseStatus)[keyof typeof CourseStatus];
 
+export const Currency = {
+  CNY: 'CNY',
+  USD: 'USD',
+} as const;
+
+export type Currency = (typeof Currency)[keyof typeof Currency];
+
 export const StudentStatus = {
   ACTIVE: 'ACTIVE',
   DISABLED: 'DISABLED',

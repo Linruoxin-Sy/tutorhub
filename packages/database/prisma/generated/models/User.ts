@@ -36,6 +36,7 @@ export type UserMinAggregateOutputType = {
   phone: string | null;
   avatarUrl: string | null;
   refreshTokenHash: string | null;
+  currency: $Enums.Currency | null;
 };
 
 export type UserMaxAggregateOutputType = {
@@ -50,6 +51,7 @@ export type UserMaxAggregateOutputType = {
   phone: string | null;
   avatarUrl: string | null;
   refreshTokenHash: string | null;
+  currency: $Enums.Currency | null;
 };
 
 export type UserCountAggregateOutputType = {
@@ -64,6 +66,7 @@ export type UserCountAggregateOutputType = {
   phone: number;
   avatarUrl: number;
   refreshTokenHash: number;
+  currency: number;
   _all: number;
 };
 
@@ -79,6 +82,7 @@ export type UserMinAggregateInputType = {
   phone?: true;
   avatarUrl?: true;
   refreshTokenHash?: true;
+  currency?: true;
 };
 
 export type UserMaxAggregateInputType = {
@@ -93,6 +97,7 @@ export type UserMaxAggregateInputType = {
   phone?: true;
   avatarUrl?: true;
   refreshTokenHash?: true;
+  currency?: true;
 };
 
 export type UserCountAggregateInputType = {
@@ -107,6 +112,7 @@ export type UserCountAggregateInputType = {
   phone?: true;
   avatarUrl?: true;
   refreshTokenHash?: true;
+  currency?: true;
   _all?: true;
 };
 
@@ -195,6 +201,7 @@ export type UserGroupByOutputType = {
   phone: string | null;
   avatarUrl: string | null;
   refreshTokenHash: string | null;
+  currency: $Enums.Currency;
   _count: UserCountAggregateOutputType | null;
   _min: UserMinAggregateOutputType | null;
   _max: UserMaxAggregateOutputType | null;
@@ -227,6 +234,7 @@ export type UserWhereInput = {
   phone?: Prisma.StringNullableFilter<'User'> | string | null;
   avatarUrl?: Prisma.StringNullableFilter<'User'> | string | null;
   refreshTokenHash?: Prisma.StringNullableFilter<'User'> | string | null;
+  currency?: Prisma.EnumCurrencyFilter<'User'> | $Enums.Currency;
   students?: Prisma.StudentListRelationFilter;
   courses?: Prisma.CourseListRelationFilter;
   studentCourses?: Prisma.StudentCourseListRelationFilter;
@@ -247,6 +255,7 @@ export type UserOrderByWithRelationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder;
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
   refreshTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder;
+  currency?: Prisma.SortOrder;
   students?: Prisma.StudentOrderByRelationAggregateInput;
   courses?: Prisma.CourseOrderByRelationAggregateInput;
   studentCourses?: Prisma.StudentCourseOrderByRelationAggregateInput;
@@ -271,6 +280,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     passwordSalt?: Prisma.StringFilter<'User'> | string;
     avatarUrl?: Prisma.StringNullableFilter<'User'> | string | null;
     refreshTokenHash?: Prisma.StringNullableFilter<'User'> | string | null;
+    currency?: Prisma.EnumCurrencyFilter<'User'> | $Enums.Currency;
     students?: Prisma.StudentListRelationFilter;
     courses?: Prisma.CourseListRelationFilter;
     studentCourses?: Prisma.StudentCourseListRelationFilter;
@@ -293,6 +303,7 @@ export type UserOrderByWithAggregationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder;
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
   refreshTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder;
+  currency?: Prisma.SortOrder;
   _count?: Prisma.UserCountOrderByAggregateInput;
   _max?: Prisma.UserMaxOrderByAggregateInput;
   _min?: Prisma.UserMinOrderByAggregateInput;
@@ -313,6 +324,7 @@ export type UserScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringNullableWithAggregatesFilter<'User'> | string | null;
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<'User'> | string | null;
   refreshTokenHash?: Prisma.StringNullableWithAggregatesFilter<'User'> | string | null;
+  currency?: Prisma.EnumCurrencyWithAggregatesFilter<'User'> | $Enums.Currency;
 };
 
 export type UserCreateInput = {
@@ -327,6 +339,7 @@ export type UserCreateInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentCreateNestedManyWithoutUserInput;
   courses?: Prisma.CourseCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
@@ -347,6 +360,7 @@ export type UserUncheckedCreateInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutUserInput;
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
@@ -367,6 +381,7 @@ export type UserUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUpdateManyWithoutUserNestedInput;
   courses?: Prisma.CourseUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
@@ -387,6 +402,7 @@ export type UserUncheckedUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUncheckedUpdateManyWithoutUserNestedInput;
   courses?: Prisma.CourseUncheckedUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
@@ -407,6 +423,7 @@ export type UserCreateManyInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
 };
 
 export type UserUpdateManyMutationInput = {
@@ -421,6 +438,7 @@ export type UserUpdateManyMutationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
 };
 
 export type UserUncheckedUpdateManyInput = {
@@ -435,6 +453,7 @@ export type UserUncheckedUpdateManyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
 };
 
 export type UserScalarRelationFilter = {
@@ -454,6 +473,7 @@ export type UserCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder;
   avatarUrl?: Prisma.SortOrder;
   refreshTokenHash?: Prisma.SortOrder;
+  currency?: Prisma.SortOrder;
 };
 
 export type UserMaxOrderByAggregateInput = {
@@ -468,6 +488,7 @@ export type UserMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder;
   avatarUrl?: Prisma.SortOrder;
   refreshTokenHash?: Prisma.SortOrder;
+  currency?: Prisma.SortOrder;
 };
 
 export type UserMinOrderByAggregateInput = {
@@ -482,6 +503,7 @@ export type UserMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder;
   avatarUrl?: Prisma.SortOrder;
   refreshTokenHash?: Prisma.SortOrder;
+  currency?: Prisma.SortOrder;
 };
 
 export type UserCreateNestedOneWithoutClassRuleStudentsInput = {
@@ -652,6 +674,7 @@ export type UserCreateWithoutClassRuleStudentsInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentCreateNestedManyWithoutUserInput;
   courses?: Prisma.CourseCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
@@ -671,6 +694,7 @@ export type UserUncheckedCreateWithoutClassRuleStudentsInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutUserInput;
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
@@ -718,6 +742,7 @@ export type UserUpdateWithoutClassRuleStudentsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUpdateManyWithoutUserNestedInput;
   courses?: Prisma.CourseUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
@@ -737,6 +762,7 @@ export type UserUncheckedUpdateWithoutClassRuleStudentsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUncheckedUpdateManyWithoutUserNestedInput;
   courses?: Prisma.CourseUncheckedUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
@@ -756,6 +782,7 @@ export type UserCreateWithoutClassSessionOverridesInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentCreateNestedManyWithoutUserInput;
   courses?: Prisma.CourseCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
@@ -775,6 +802,7 @@ export type UserUncheckedCreateWithoutClassSessionOverridesInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutUserInput;
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
@@ -822,6 +850,7 @@ export type UserUpdateWithoutClassSessionOverridesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUpdateManyWithoutUserNestedInput;
   courses?: Prisma.CourseUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
@@ -841,6 +870,7 @@ export type UserUncheckedUpdateWithoutClassSessionOverridesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUncheckedUpdateManyWithoutUserNestedInput;
   courses?: Prisma.CourseUncheckedUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
@@ -860,6 +890,7 @@ export type UserCreateWithoutCoursesInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleCreateNestedManyWithoutUserInput;
@@ -879,6 +910,7 @@ export type UserUncheckedCreateWithoutCoursesInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutUserInput;
@@ -926,6 +958,7 @@ export type UserUpdateWithoutCoursesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUpdateManyWithoutUserNestedInput;
@@ -945,6 +978,7 @@ export type UserUncheckedUpdateWithoutCoursesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUncheckedUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutUserNestedInput;
@@ -964,6 +998,7 @@ export type UserCreateWithoutClassRulesInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentCreateNestedManyWithoutUserInput;
   courses?: Prisma.CourseCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
@@ -983,6 +1018,7 @@ export type UserUncheckedCreateWithoutClassRulesInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutUserInput;
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
@@ -1030,6 +1066,7 @@ export type UserUpdateWithoutClassRulesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUpdateManyWithoutUserNestedInput;
   courses?: Prisma.CourseUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
@@ -1049,6 +1086,7 @@ export type UserUncheckedUpdateWithoutClassRulesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUncheckedUpdateManyWithoutUserNestedInput;
   courses?: Prisma.CourseUncheckedUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
@@ -1068,6 +1106,7 @@ export type UserCreateWithoutStudentsInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   courses?: Prisma.CourseCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleCreateNestedManyWithoutUserInput;
@@ -1087,6 +1126,7 @@ export type UserUncheckedCreateWithoutStudentsInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutUserInput;
   studentCourses?: Prisma.StudentCourseUncheckedCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutUserInput;
@@ -1134,6 +1174,7 @@ export type UserUpdateWithoutStudentsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   courses?: Prisma.CourseUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUpdateManyWithoutUserNestedInput;
@@ -1153,6 +1194,7 @@ export type UserUncheckedUpdateWithoutStudentsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   courses?: Prisma.CourseUncheckedUpdateManyWithoutUserNestedInput;
   studentCourses?: Prisma.StudentCourseUncheckedUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutUserNestedInput;
@@ -1172,6 +1214,7 @@ export type UserCreateWithoutStudentCoursesInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentCreateNestedManyWithoutUserInput;
   courses?: Prisma.CourseCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleCreateNestedManyWithoutUserInput;
@@ -1191,6 +1234,7 @@ export type UserUncheckedCreateWithoutStudentCoursesInput = {
   phone?: string | null;
   avatarUrl?: string | null;
   refreshTokenHash?: string | null;
+  currency?: $Enums.Currency;
   students?: Prisma.StudentUncheckedCreateNestedManyWithoutUserInput;
   courses?: Prisma.CourseUncheckedCreateNestedManyWithoutUserInput;
   classRules?: Prisma.ClassRuleUncheckedCreateNestedManyWithoutUserInput;
@@ -1238,6 +1282,7 @@ export type UserUpdateWithoutStudentCoursesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUpdateManyWithoutUserNestedInput;
   courses?: Prisma.CourseUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUpdateManyWithoutUserNestedInput;
@@ -1257,6 +1302,7 @@ export type UserUncheckedUpdateWithoutStudentCoursesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   refreshTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  currency?: Prisma.EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency;
   students?: Prisma.StudentUncheckedUpdateManyWithoutUserNestedInput;
   courses?: Prisma.CourseUncheckedUpdateManyWithoutUserNestedInput;
   classRules?: Prisma.ClassRuleUncheckedUpdateManyWithoutUserNestedInput;
@@ -1369,6 +1415,7 @@ export type UserSelect<
     phone?: boolean;
     avatarUrl?: boolean;
     refreshTokenHash?: boolean;
+    currency?: boolean;
     students?: boolean | Prisma.User$studentsArgs<ExtArgs>;
     courses?: boolean | Prisma.User$coursesArgs<ExtArgs>;
     studentCourses?: boolean | Prisma.User$studentCoursesArgs<ExtArgs>;
@@ -1395,6 +1442,7 @@ export type UserSelectCreateManyAndReturn<
     phone?: boolean;
     avatarUrl?: boolean;
     refreshTokenHash?: boolean;
+    currency?: boolean;
   },
   ExtArgs['result']['user']
 >;
@@ -1414,6 +1462,7 @@ export type UserSelectUpdateManyAndReturn<
     phone?: boolean;
     avatarUrl?: boolean;
     refreshTokenHash?: boolean;
+    currency?: boolean;
   },
   ExtArgs['result']['user']
 >;
@@ -1430,6 +1479,7 @@ export type UserSelectScalar = {
   phone?: boolean;
   avatarUrl?: boolean;
   refreshTokenHash?: boolean;
+  currency?: boolean;
 };
 
 export type UserOmit<
@@ -1445,7 +1495,8 @@ export type UserOmit<
   | 'email'
   | 'phone'
   | 'avatarUrl'
-  | 'refreshTokenHash',
+  | 'refreshTokenHash'
+  | 'currency',
   ExtArgs['result']['user']
 >;
 export type UserInclude<
@@ -1542,6 +1593,10 @@ export type $UserPayload<
        * 刷新令牌哈希值（SHA-256），用于 Refresh Token Rotation
        */
       refreshTokenHash: string | null;
+      /**
+       * 货币偏好（仅作为货币选择表单的默认选项，不强制任何价格的货币）
+       */
+      currency: $Enums.Currency;
     },
     ExtArgs['result']['user']
   >;
@@ -2160,6 +2215,7 @@ export interface UserFieldRefs {
   readonly phone: Prisma.FieldRef<'User', 'String'>;
   readonly avatarUrl: Prisma.FieldRef<'User', 'String'>;
   readonly refreshTokenHash: Prisma.FieldRef<'User', 'String'>;
+  readonly currency: Prisma.FieldRef<'User', 'Currency'>;
 }
 
 // Custom InputTypes

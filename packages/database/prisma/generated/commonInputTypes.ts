@@ -171,6 +171,13 @@ export type DecimalNullableFilter<$PrismaModel = never> = {
     | null;
 };
 
+export type EnumCurrencyNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.Currency | Prisma.EnumCurrencyFieldRefInput<$PrismaModel> | null;
+  in?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel> | null;
+  notIn?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel> | null;
+  not?: Prisma.NestedEnumCurrencyNullableFilter<$PrismaModel> | $Enums.Currency | null;
+};
+
 export type StringNullableFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null;
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null;
@@ -262,6 +269,19 @@ export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedDecimalNullableFilter<$PrismaModel>;
   _min?: Prisma.NestedDecimalNullableFilter<$PrismaModel>;
   _max?: Prisma.NestedDecimalNullableFilter<$PrismaModel>;
+};
+
+export type EnumCurrencyNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Currency | Prisma.EnumCurrencyFieldRefInput<$PrismaModel> | null;
+  in?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel> | null;
+  notIn?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel> | null;
+  not?:
+    | Prisma.NestedEnumCurrencyNullableWithAggregatesFilter<$PrismaModel>
+    | $Enums.Currency
+    | null;
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumCurrencyNullableFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumCurrencyNullableFilter<$PrismaModel>;
 };
 
 export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -361,6 +381,13 @@ export type DecimalFilter<$PrismaModel = never> = {
     | string;
 };
 
+export type EnumCurrencyFilter<$PrismaModel = never> = {
+  equals?: $Enums.Currency | Prisma.EnumCurrencyFieldRefInput<$PrismaModel>;
+  in?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumCurrencyFilter<$PrismaModel> | $Enums.Currency;
+};
+
 export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null;
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null;
@@ -431,6 +458,16 @@ export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedDecimalFilter<$PrismaModel>;
   _min?: Prisma.NestedDecimalFilter<$PrismaModel>;
   _max?: Prisma.NestedDecimalFilter<$PrismaModel>;
+};
+
+export type EnumCurrencyWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Currency | Prisma.EnumCurrencyFieldRefInput<$PrismaModel>;
+  in?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumCurrencyWithAggregatesFilter<$PrismaModel> | $Enums.Currency;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumCurrencyFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumCurrencyFilter<$PrismaModel>;
 };
 
 export type EnumStudentStatusFilter<$PrismaModel = never> = {
@@ -623,6 +660,13 @@ export type NestedDecimalNullableFilter<$PrismaModel = never> = {
     | null;
 };
 
+export type NestedEnumCurrencyNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.Currency | Prisma.EnumCurrencyFieldRefInput<$PrismaModel> | null;
+  in?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel> | null;
+  notIn?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel> | null;
+  not?: Prisma.NestedEnumCurrencyNullableFilter<$PrismaModel> | $Enums.Currency | null;
+};
+
 export type NestedStringNullableFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null;
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null;
@@ -715,6 +759,19 @@ export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDecimalNullableFilter<$PrismaModel>;
 };
 
+export type NestedEnumCurrencyNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Currency | Prisma.EnumCurrencyFieldRefInput<$PrismaModel> | null;
+  in?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel> | null;
+  notIn?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel> | null;
+  not?:
+    | Prisma.NestedEnumCurrencyNullableWithAggregatesFilter<$PrismaModel>
+    | $Enums.Currency
+    | null;
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumCurrencyNullableFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumCurrencyNullableFilter<$PrismaModel>;
+};
+
 export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null;
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null;
@@ -800,6 +857,13 @@ export type NestedDecimalFilter<$PrismaModel = never> = {
     | string;
 };
 
+export type NestedEnumCurrencyFilter<$PrismaModel = never> = {
+  equals?: $Enums.Currency | Prisma.EnumCurrencyFieldRefInput<$PrismaModel>;
+  in?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumCurrencyFilter<$PrismaModel> | $Enums.Currency;
+};
+
 export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null;
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null;
@@ -881,6 +945,16 @@ export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedDecimalFilter<$PrismaModel>;
   _min?: Prisma.NestedDecimalFilter<$PrismaModel>;
   _max?: Prisma.NestedDecimalFilter<$PrismaModel>;
+};
+
+export type NestedEnumCurrencyWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Currency | Prisma.EnumCurrencyFieldRefInput<$PrismaModel>;
+  in?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.Currency[] | Prisma.ListEnumCurrencyFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumCurrencyWithAggregatesFilter<$PrismaModel> | $Enums.Currency;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumCurrencyFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumCurrencyFilter<$PrismaModel>;
 };
 
 export type NestedEnumStudentStatusFilter<$PrismaModel = never> = {
