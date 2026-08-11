@@ -9,7 +9,7 @@ import { prisma } from '@/shared/prisma';
 
 export const registerService = {
   async register(input: z.infer<typeof registerSchema>) {
-    const { name, email, phone, password } = input;
+    const { name, email, phone, password, currency } = input;
 
     if (!email && !phone) {
       throw new ApiError(400, 'either email or phone number must be provided');
@@ -35,6 +35,7 @@ export const registerService = {
         phone,
         passwordSalt: salt,
         passwordHash,
+        currency,
       },
     });
     return await registerService.safetifyUser(user);
