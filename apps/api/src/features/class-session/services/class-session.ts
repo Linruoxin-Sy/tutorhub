@@ -92,6 +92,7 @@ export const classSessionOverrideService = {
           ? new Date(`1970-01-01T${input.rescheduledEndTime}`)
           : null,
         priceOverride: input.priceOverride ?? null,
+        currencyOverride: input.priceOverride != null ? (input.currencyOverride ?? null) : null,
         reason: input.reason ?? null,
       },
       create: {
@@ -107,6 +108,7 @@ export const classSessionOverrideService = {
           ? new Date(`1970-01-01T${input.rescheduledEndTime}`)
           : null,
         priceOverride: input.priceOverride ?? null,
+        currencyOverride: input.priceOverride != null ? (input.currencyOverride ?? null) : null,
         reason: input.reason ?? null,
       },
     });
@@ -138,7 +140,14 @@ export const classSessionOverrideService = {
       updateData.rescheduledEndTime = input.rescheduledEndTime
         ? new Date(`1970-01-01T${input.rescheduledEndTime}`)
         : null;
-    if (input.priceOverride !== undefined) updateData.priceOverride = input.priceOverride;
+    if (input.priceOverride !== undefined) {
+      updateData.priceOverride = input.priceOverride;
+      // 有自定义价格则必须有货币；无自定义价格则清空货币
+      updateData.currencyOverride =
+        input.priceOverride != null ? (input.currencyOverride ?? null) : null;
+    } else if (input.currencyOverride !== undefined) {
+      updateData.currencyOverride = input.currencyOverride;
+    }
     if (input.reason !== undefined) updateData.reason = input.reason;
 
     const override = await prisma.classSessionOverride.update({
