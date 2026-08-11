@@ -1,6 +1,9 @@
+import type { Currency } from '@tutorhub/schema';
+
 export const DEFAULT_FORM_DATA = {
   name: '',
   price: null as number | null,
+  currency: 'CNY' as Currency,
   startDate: '',
   startTime: '',
   endTime: '',

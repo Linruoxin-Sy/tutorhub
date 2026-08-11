@@ -110,6 +110,8 @@ export default {
     from: 'From',
     created: 'Created {date}',
     currencySymbol: '$',
+    currency: 'Currency',
+    approx: '≈ {value}',
   },
   confirmDeletion: {
     title: 'Confirm Deletion',

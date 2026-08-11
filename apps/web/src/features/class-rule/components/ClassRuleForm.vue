@@ -37,14 +37,28 @@
           class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
         />
         <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">
-          <T keypath="common.misc.currencySymbol" />
+          {{ currencySymbol(model.currency) }}
         </span>
+        <SelectInput v-model="model.currency" size="sm" class="w-32 shrink-0">
+          <option v-for="code in currencyOptions" :key="code" :value="code">{{ code }}</option>
+        </SelectInput>
       </div>
       <p
-        v-else
+        v-if="!readonly && model.price != null && previewAmount != null"
+        class="text-xs text-gray-500 dark:text-gray-400"
+      >
+        <T
+          keypath="common.misc.approx"
+          :params="{ value: formatMoney(previewAmount, previewCurrency) }"
+        />
+      </p>
+      <p
+        v-if="readonly"
         class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
       >
-        <template v-if="model.price != null">{{ n(model.price, 'currency') }}</template>
+        <template v-if="model.price != null">
+          {{ formatMoney(model.price, model.currency) }}
+        </template>
         <template v-else>—</template>
       </p>
     </div>
@@ -249,16 +263,30 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import { enUS, zhCN } from 'date-fns/locale';
 import { useI18n } from 'vue-i18n';
 
+import type { Currency } from '@tutorhub/schema';
+
 import { useThemeToggle } from '@/hooks/useThemeToggle';
+import SelectInput from '@/components/SelectInput.vue';
+import { useCurrencyRates } from '@/hooks/useCurrency';
 import { datePickerUi } from '@/features/class-rule/constants/datePickerUi';
 import { useField } from '@/hooks/useField';
+import { currencySymbol, formatMoney } from '@/utils/currency';
 import type { ClassRuleFormData } from '@/features/class-rule/types/classRuleForm';
 
-const { t, n, locale } = useI18n();
+const { t, locale } = useI18n();
 const datePickerLocale = computed(() => (locale.value === 'zh-CN' ? zhCN : enUS));
 
 const model = defineModel<ClassRuleFormData>({
   required: true,
+});
+
+// 汇率（用于价格输入时的另一货币等价预览）
+const { currencyOptions, convert } = useCurrencyRates();
+
+const previewCurrency = computed<Currency>(() => (model.value.currency === 'CNY' ? 'USD' : 'CNY'));
+const previewAmount = computed<number | null>(() => {
+  if (model.value.price == null) return null;
+  return convert(Number(model.value.price), model.value.currency, previewCurrency.value);
 });
 
 withDefaults(

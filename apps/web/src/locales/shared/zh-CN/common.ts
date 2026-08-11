@@ -110,6 +110,8 @@ export default {
     from: '从',
     created: '创建于 {date}',
     currencySymbol: '¥',
+    currency: '货币',
+    approx: '≈ {value}',
   },
   confirmDeletion: {
     title: '确认删除',

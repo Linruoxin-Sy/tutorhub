@@ -32,6 +32,7 @@
         :original-start-time="formRescheduledStartTime || ruleStartTime"
         :original-end-time="formRescheduledEndTime || ruleEndTime"
         :price="formPriceOverride"
+        :currency="formCurrency"
         status="rescheduled"
       />
 
@@ -178,8 +179,11 @@
               class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
             />
             <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">
-              <T keypath="common.misc.currencySymbol" />
+              {{ currencySymbol(formCurrency) }}
             </span>
+            <SelectInput v-model="formCurrency" size="sm" class="w-32 shrink-0">
+              <option v-for="code in currencyOptions" :key="code" :value="code">{{ code }}</option>
+            </SelectInput>
           </div>
         </div>
 
@@ -277,7 +281,7 @@ import { enUS, zhCN } from 'date-fns/locale';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import dayjs from 'dayjs';
-import type { ClassSessionOverrideConflictCheckResponse } from '@tutorhub/schema';
+import type { ClassSessionOverrideConflictCheckResponse, Currency } from '@tutorhub/schema';
 
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
 import {
@@ -285,9 +289,12 @@ import {
   createClassSessionOverride,
 } from '@/features/class-session/api/class-session-api';
 import { useThemeToggle } from '@/hooks/useThemeToggle';
+import SelectInput from '@/components/SelectInput.vue';
+import { useCurrencyRates, usePreferredCurrency } from '@/hooks/useCurrency';
 import { datePickerUi } from '@/features/class-rule/constants/datePickerUi';
 import { useLoading } from '@/hooks/useLoading';
 import { i18n } from '@/locales';
+import { currencySymbol } from '@/utils/currency';
 import SessionItem from '@/features/session/components/SessionItem.vue';
 import CardSection from '@/components/CardSection.vue';
 import PageHeader from '@/components/PageHeader.vue';
@@ -319,6 +326,10 @@ const ruleEndTime = ref('');
 const formState = ref<'CANCELLED' | 'RESCHEDULED'>('CANCELLED');
 const formReason = ref('');
 const formPriceOverride = ref<number | null>(null);
+// 自定义价格的货币（默认 = 用户货币偏好，可自由改选）
+const { preferredCurrency } = usePreferredCurrency();
+const { currencyOptions } = useCurrencyRates();
+const formCurrency = ref<Currency>(preferredCurrency.value);
 const formRescheduledDate = ref('');
 const formRescheduledStartTime = ref('');
 const formRescheduledEndTime = ref('');
@@ -394,6 +405,7 @@ const doCreateOverride = withLoading(async () => {
     originalDate: queryDate + 'T00:00:00.000Z',
     state: formState.value,
     priceOverride: formState.value === 'CANCELLED' ? null : (formPriceOverride.value ?? null),
+    currencyOverride: formState.value === 'CANCELLED' ? null : formCurrency.value,
     reason: formReason.value || null,
   };
 
