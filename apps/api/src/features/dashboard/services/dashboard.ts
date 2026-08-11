@@ -1,7 +1,9 @@
+import Decimal from 'decimal.js';
 import rrulePkg, { type Options as RRuleOptions } from 'rrule';
 
-import type { DashboardRecentSession, DashboardResponse } from '@tutorhub/schema';
+import type { Currency, DashboardRecentSession, DashboardResponse } from '@tutorhub/schema';
 
+import { convert } from '@/shared/currency';
 import { prisma } from '@/shared/prisma';
 
 const { RRule } = rrulePkg;
@@ -52,7 +54,7 @@ function toMinutes(t: string): number {
 }
 
 export const dashboardService = {
-  async getDashboard(userId: string): Promise<DashboardResponse> {
+  async getDashboard(userId: string, currency: Currency = 'CNY'): Promise<DashboardResponse> {
     // ── 并行查询基础统计 ──
     const [activeStudents, activeCourses] = await Promise.all([
       prisma.student.count({
@@ -121,12 +123,12 @@ export const dashboardService = {
 
     // ── 计算总课时和总收入 ──
     let totalHours = 0;
-    let totalIncome = 0;
+    let totalIncome = new Decimal(0);
 
     for (const rule of rules) {
       const startTimeStr = timeToString(rule.startTime);
       const endTimeStr = timeToString(rule.endTime);
-      const price = Number(rule.price);
+      const price = rule.price;
 
       // 生成从 startDate 到今天的所有 occurrence
       const today = new Date(todayStr + 'T00:00:00');
@@ -156,16 +158,21 @@ export const dashboardService = {
             ov.originalDate.toISOString().slice(0, 10) === dateStr &&
             ov.priceOverride !== null,
         );
-        const sessionPrice = priceOverride ? Number(priceOverride.priceOverride) : price;
+        // 金额与货币：有调价则用调价金额/货币，否则用规则单价/货币
+        const sessionAmount = priceOverride ? (priceOverride.priceOverride ?? price) : price;
+        const sessionCurrency: Currency = priceOverride
+          ? (priceOverride.currencyOverride ?? rule.currency)
+          : rule.currency;
 
         totalHours += actualDuration;
-        totalIncome += sessionPrice;
+        // 换算到目标货币后累加（Decimal 精确累加，避免浮点误差）
+        totalIncome = totalIncome.plus(convert(sessionAmount, sessionCurrency, currency));
       }
     }
 
     // 保留 1 位小数
     totalHours = Math.round(totalHours * 10) / 10;
-    totalIncome = Math.round(totalIncome * 10) / 10;
+    const totalIncomeRounded = totalIncome.toDecimalPlaces(1).toNumber();
 
     // ── 获取最近 4 个 upcoming / ongoing session ──
     const upcomingSessions: DashboardRecentSession[] = [];
@@ -245,7 +252,8 @@ export const dashboardService = {
       activeStudents,
       activeCourses,
       totalHours,
-      totalIncome,
+      totalIncome: totalIncomeRounded,
+      currency,
       recentSessions,
     };
   },
