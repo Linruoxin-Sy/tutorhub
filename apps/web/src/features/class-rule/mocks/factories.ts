@@ -16,6 +16,7 @@ export function mockClassRule(overrides?: Partial<ClassRuleListItem>): ClassRule
     startTime: new Date('2025-01-06T09:00:00'),
     endTime: new Date('2025-01-06T10:30:00'),
     price: 200 as unknown as ClassRuleListItem['price'],
+    currency: 'CNY',
     course: { id: ulid(), name: 'Math 101', status: 'ACTIVE' },
     ...overrides,
   };

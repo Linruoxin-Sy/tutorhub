@@ -44,7 +44,7 @@
           class="inline-flex items-center gap-1 text-sm font-semibold text-gray-700 dark:text-gray-200"
         >
           <i class="i-lucide-coins inline size-3.5 align-text-top" />
-          {{ n(price, 'currency') }}
+          {{ formatMoney(price, currency ?? 'CNY') }}
         </span>
       </div>
     </div>
@@ -74,7 +74,7 @@
             :class="display.originalTimeClass"
           >
             <i class="i-lucide-coins inline size-3.5 align-text-top" />
-            {{ n(originalPrice, 'currency') }}
+            {{ formatMoney(originalPrice, originalCurrency ?? 'CNY') }}
           </span>
         </div>
       </div>
@@ -118,7 +118,7 @@
             :class="display.newTimeClass"
           >
             <i class="i-lucide-coins inline size-3.5 align-text-top" />
-            {{ n(price, 'currency') }}
+            {{ formatMoney(price, currency ?? 'CNY') }}
           </span>
         </div>
       </div>
@@ -167,13 +167,12 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
+import type { Currency, SessionStatus } from '@tutorhub/schema';
 
 import { useSessionDisplay } from '@/features/session/composables/useSessionDisplay';
 import type { MessageKey } from '@/locales';
-import type { SessionStatus } from '@tutorhub/schema';
+import { formatMoney } from '@/utils/currency';
 
-const { n } = useI18n();
 const badgeKeypath = (key: string): MessageKey => `session.status.${key}` as MessageKey;
 
 const props = withDefaults(
@@ -193,8 +192,12 @@ const props = withDefaults(
     conflict?: boolean;
     /** 该次 session 的价格 */
     price?: number | null;
+    /** 价格的货币 */
+    currency?: Currency | null;
     /** 修改前原始价格（调课时展示左侧划掉的价格） */
     originalPrice?: number | null;
+    /** 原始价格的货币 */
+    originalCurrency?: Currency | null;
   }>(),
   {
     status: 'default',
@@ -204,7 +207,9 @@ const props = withDefaults(
     originalStartTime: null,
     originalEndTime: null,
     price: null,
+    currency: null,
     originalPrice: null,
+    originalCurrency: null,
   },
 );
 

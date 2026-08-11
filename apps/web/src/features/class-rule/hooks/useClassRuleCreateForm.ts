@@ -12,6 +12,7 @@ import {
   type ClassRuleFormData,
 } from '@/features/class-rule/types/classRuleForm';
 import { computeSessionStatus } from '@/features/session/utils/sessionStatus';
+import { usePreferredCurrency } from '@/hooks/useCurrency';
 import { useLoading } from '@/hooks/useLoading';
 import { i18n } from '@/locales';
 
@@ -19,7 +20,12 @@ export function useClassRuleCreateForm(courseId: string) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const formData = ref<ClassRuleFormData>(cloneDeep(DEFAULT_FORM_DATA));
+  const { preferredCurrency } = usePreferredCurrency();
+
+  const formData = ref<ClassRuleFormData>({
+    ...cloneDeep(DEFAULT_FORM_DATA),
+    currency: preferredCurrency.value,
+  });
 
   const isValidated = ref(false);
   const conflictResult = ref<{ hasConflict: boolean; conflicts: ConflictItem[] } | null>(null);
@@ -96,6 +102,7 @@ export function useClassRuleCreateForm(courseId: string) {
       endTime: formData.value.endTime,
       name: formData.value.name,
       price: formData.value.price,
+      currency: formData.value.currency,
     };
 
     const result = classRuleCreateSchema.safeParse(payload);
@@ -154,7 +161,9 @@ export function useClassRuleCreateForm(courseId: string) {
           formData.value.endTime,
         ),
         price: formData.value.price,
+        currency: formData.value.currency,
         originalPrice: formData.value.price,
+        originalCurrency: formData.value.currency,
       });
       hasMoreRef.value = false;
       return;
@@ -217,7 +226,9 @@ export function useClassRuleCreateForm(courseId: string) {
         endTime,
         status: computeSessionStatus(dateStr, startTime, endTime),
         price: formData.value.price,
+        currency: formData.value.currency,
         originalPrice: formData.value.price,
+        originalCurrency: formData.value.currency,
       });
     }
 
@@ -283,6 +294,7 @@ export function useClassRuleCreateForm(courseId: string) {
       endDate: formData.value.endDate ? new Date(formData.value.endDate) : null,
       name: formData.value.name,
       price: formData.value.price,
+      currency: formData.value.currency,
     };
 
     await createClassRule(apiPayload);

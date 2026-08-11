@@ -103,6 +103,7 @@
               :end-time="item.endTime"
               :status="item.status"
               :price="item.price"
+              :currency="item.currency"
             />
           </template>
         </VirtualList>

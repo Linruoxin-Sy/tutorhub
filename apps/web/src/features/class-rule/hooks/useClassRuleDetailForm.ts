@@ -2,6 +2,8 @@ import dayjs from 'dayjs';
 import { cloneDeep } from 'es-toolkit';
 import { toast } from 'vue-sonner';
 
+import type { Currency } from '@tutorhub/schema';
+
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
 import {
   DEFAULT_FORM_DATA,
@@ -24,6 +26,7 @@ export function useClassRuleDetailForm(ruleId: string) {
       formData.value = {
         name: (raw.name as string) ?? '',
         price: (raw.price as number | null) ?? null,
+        currency: (raw.currency as Currency) ?? 'CNY',
         startDate: dayjs(raw.startDate as string).format('YYYY-MM-DD'),
         startTime: dayjs(raw.startTime as string).format('HH:mm'),
         endTime: dayjs(raw.endTime as string).format('HH:mm'),

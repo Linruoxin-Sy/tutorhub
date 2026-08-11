@@ -4,7 +4,12 @@ import { cloneDeep, isEqual } from 'es-toolkit';
 import { RRule, type Options as RRuleOptions } from 'rrule';
 import { toast } from 'vue-sonner';
 
-import { classRuleUpdateSchema, type ConflictItem, type GeneratedSession } from '@tutorhub/schema';
+import {
+  classRuleUpdateSchema,
+  type ConflictItem,
+  type Currency,
+  type GeneratedSession,
+} from '@tutorhub/schema';
 
 import {
   checkClassRuleConflicts,
@@ -16,6 +21,7 @@ import {
   type ClassRuleFormData,
 } from '@/features/class-rule/types/classRuleForm';
 import { computeSessionStatus } from '@/features/session/utils/sessionStatus';
+import { usePreferredCurrency } from '@/hooks/useCurrency';
 import { useLoading } from '@/hooks/useLoading';
 import { i18n } from '@/locales';
 
@@ -25,7 +31,12 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
 
   const isInitialLoading = ref(true);
 
-  const formData = ref<ClassRuleFormData>(cloneDeep(DEFAULT_FORM_DATA));
+  const { preferredCurrency } = usePreferredCurrency();
+
+  const formData = ref<ClassRuleFormData>({
+    ...cloneDeep(DEFAULT_FORM_DATA),
+    currency: preferredCurrency.value,
+  });
 
   const initialFormData = ref<ClassRuleFormData>(cloneDeep(formData.value));
 
@@ -90,6 +101,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       formData.value = {
         name: (rule.name as string) ?? '',
         price: (rule.price as number | null) ?? null,
+        currency: (rule.currency as Currency) ?? preferredCurrency.value,
         startDate: dayjs(rule.startDate as string).format('YYYY-MM-DD'),
         startTime: dayjs(rule.startTime as string).format('HH:mm'),
         endTime: dayjs(rule.endTime as string).format('HH:mm'),
@@ -142,6 +154,7 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
       endDate: formData.value.endDate || null,
       name: formData.value.name,
       price: formData.value.price,
+      currency: formData.value.currency,
     };
 
     const result = classRuleUpdateSchema.safeParse(payload);
@@ -200,7 +213,9 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
           formData.value.endTime,
         ),
         price: formData.value.price,
+        currency: formData.value.currency,
         originalPrice: formData.value.price,
+        originalCurrency: formData.value.currency,
       });
       hasMoreRef.value = false;
       return;
@@ -262,7 +277,9 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
         endTime,
         status: computeSessionStatus(dateStr, startTime, endTime),
         price: formData.value.price,
+        currency: formData.value.currency,
         originalPrice: formData.value.price,
+        originalCurrency: formData.value.currency,
       });
     }
 
@@ -322,6 +339,8 @@ export function useClassRuleEditForm(courseId: string, ruleId: string) {
     const payload: Record<string, unknown> = {};
     if (formData.value.name !== initialFormData.value.name) payload.name = formData.value.name;
     if (formData.value.price !== initialFormData.value.price) payload.price = formData.value.price;
+    if (formData.value.currency !== initialFormData.value.currency)
+      payload.currency = formData.value.currency;
     if (formData.value.startDate !== initialFormData.value.startDate)
       payload.startDate = new Date(formData.value.startDate);
     if (formData.value.startTime !== initialFormData.value.startTime)

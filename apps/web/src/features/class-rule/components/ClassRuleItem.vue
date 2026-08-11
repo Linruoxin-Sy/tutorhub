@@ -107,7 +107,7 @@
             v-if="rule!.price != null"
             class="self-center text-xl font-bold tracking-tight text-gray-500 dark:text-gray-400"
           >
-            {{ n(Number(rule!.price), 'currency') }}
+            {{ formatMoney(Number(rule!.price), rule!.currency ?? 'CNY') }}
           </span>
         </div>
         <div v-if="actions.length" class="flex shrink-0 gap-1 self-end">
@@ -121,12 +121,10 @@
 
 <script setup lang="ts">
 import { useTemplateRef, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type { ClassRuleListItem } from '@tutorhub/schema';
+import { formatMoney } from '@/utils/currency';
 import { formatDate, formatTime } from '@/utils/date';
 import { useElementInView } from '@/hooks/useElementInView';
-
-const { n } = useI18n();
 
 const props = withDefaults(
   defineProps<{

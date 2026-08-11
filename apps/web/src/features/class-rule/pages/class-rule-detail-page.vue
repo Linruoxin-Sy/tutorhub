@@ -47,7 +47,9 @@
               :end-time="item.endTime"
               :status="item.status"
               :price="item.price"
+              :currency="item.currency"
               :original-price="item.originalPrice"
+              :original-currency="item.originalCurrency"
               :original-date="item.overridden ? item.overriddenDate : null"
               :original-start-time="item.overridden ? item.rescheduledStartTime : null"
               :original-end-time="item.overridden ? item.rescheduledEndTime : null"
@@ -137,7 +139,7 @@ import { toast } from 'vue-sonner';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { RRule, type Options as RRuleOptions } from 'rrule';
-import type { GeneratedSession } from '@tutorhub/schema';
+import type { Currency, GeneratedSession } from '@tutorhub/schema';
 import { fetchClassRuleById } from '@/features/class-rule/api/class-rule-api';
 import { i18n } from '@/locales';
 import {
@@ -207,6 +209,7 @@ let ruleIntervalDays: number | null = null;
 let startUtcHour = 0;
 let startUtcMin = 0;
 let rulePrice: number | null = null;
+let ruleCurrency: Currency = 'CNY';
 
 /** 将 UTC 日期 + 开始时间（UTC）转换为本地日期字符串 */
 function getLocalDate(utcDate: Date): string {
@@ -224,10 +227,16 @@ function getLocalDate(utcDate: Date): string {
 
 // Override 映射（一次性获取）
 const cancelledDates = new Set<string>();
-const priceOverrideMap = new Map<string, number | null>();
+const priceOverrideMap = new Map<string, { price: number | null; currency: Currency | null }>();
 const rescheduledMap = new Map<
   string,
-  { rescheduledDate: string; startTime: string; endTime: string; priceOverride: number | null }
+  {
+    rescheduledDate: string;
+    startTime: string;
+    endTime: string;
+    priceOverride: number | null;
+    currencyOverride: Currency | null;
+  }
 >();
 
 function navigateToSessionEdit(session: GeneratedSession) {
@@ -290,7 +299,9 @@ function regenerateSessions() {
     if (!ruleStartDate) return;
     const singleDateStr = getLocalDate(ruleStartDate);
 
-    const singlePrice = priceOverrideMap.get(singleDateStr) ?? rulePrice;
+    const singleOverride = priceOverrideMap.get(singleDateStr);
+    const singlePrice = singleOverride?.price ?? rulePrice;
+    const singleCurrency = singleOverride?.currency ?? ruleCurrency;
     if (cancelledDates.has(singleDateStr)) {
       generatedSessions.value.push({
         id: `session_detail_${props.ruleId}_${singleDateStr}_0`,
@@ -300,7 +311,9 @@ function regenerateSessions() {
         status: 'cancelled',
         overridden: true,
         price: singlePrice,
+        currency: singleCurrency,
         originalPrice: rulePrice,
+        originalCurrency: ruleCurrency,
       });
     } else if (rescheduledMap.has(singleDateStr)) {
       const rescheduled = rescheduledMap.get(singleDateStr)!;
@@ -316,7 +329,9 @@ function regenerateSessions() {
         rescheduledEndTime: rescheduled.endTime,
         overriddenDate: singleDateStr,
         price: rescheduled.priceOverride ?? rulePrice,
+        currency: rescheduled.currencyOverride ?? ruleCurrency,
         originalPrice: rulePrice,
+        originalCurrency: ruleCurrency,
       });
     } else {
       generatedSessions.value.push({
@@ -326,7 +341,9 @@ function regenerateSessions() {
         endTime: ruleEndTime,
         status: computeSessionStatus(singleDateStr, ruleStartTime, ruleEndTime),
         price: singlePrice,
+        currency: singleCurrency,
         originalPrice: rulePrice,
+        originalCurrency: ruleCurrency,
       });
     }
     hasMoreRef.value = false;
@@ -368,7 +385,9 @@ function appendSessionChunk() {
   for (let i = 0; i < newDates.length; i++) {
     const d = newDates[i];
     const dateStr = getLocalDate(d);
-    const ovPrice = priceOverrideMap.get(dateStr) ?? rulePrice;
+    const overrideEntry = priceOverrideMap.get(dateStr);
+    const ovPrice = overrideEntry?.price ?? rulePrice;
+    const ovCurrency = overrideEntry?.currency ?? ruleCurrency;
 
     if (cancelledDates.has(dateStr)) {
       generatedSessions.value.push({
@@ -379,7 +398,9 @@ function appendSessionChunk() {
         status: 'cancelled',
         overridden: true,
         price: ovPrice,
+        currency: ovCurrency,
         originalPrice: rulePrice,
+        originalCurrency: ruleCurrency,
       });
     } else {
       const rescheduled = rescheduledMap.get(dateStr);
@@ -396,7 +417,9 @@ function appendSessionChunk() {
           rescheduledEndTime: rescheduled.endTime,
           overriddenDate: dateStr,
           price: rescheduled.priceOverride ?? rulePrice,
+          currency: rescheduled.currencyOverride ?? ruleCurrency,
           originalPrice: rulePrice,
+          originalCurrency: ruleCurrency,
         });
       } else {
         generatedSessions.value.push({
@@ -406,7 +429,9 @@ function appendSessionChunk() {
           endTime: ruleEndTime,
           status: computeSessionStatus(dateStr, ruleStartTime, ruleEndTime),
           price: ovPrice,
+          currency: ovCurrency,
           originalPrice: rulePrice,
+          originalCurrency: ruleCurrency,
         });
       }
     }
@@ -449,6 +474,7 @@ async function loadData() {
     formData.value = {
       name: (data.name as string) ?? '',
       price: (data.price as number | null) ?? null,
+      currency: (data.currency as Currency) ?? 'CNY',
       startDate: dayjs(data.startDate as string).format('YYYY-MM-DD'),
       startTime: dayjs(data.startTime as string).format('HH:mm'),
       endTime: dayjs(data.endTime as string).format('HH:mm'),
@@ -458,6 +484,7 @@ async function loadData() {
     };
 
     rulePrice = (data.price as number | null) ?? null;
+    ruleCurrency = (data.currency as Currency) ?? 'CNY';
     ruleStartDate = dayjs(data.startDate as string).toDate();
     ruleEndDate = data.endDate ? dayjs(data.endDate as string).toDate() : null;
     ruleStartTime = dayjs(data.startTime as string).format('HH:mm');
@@ -489,7 +516,8 @@ async function loadData() {
       );
       const dateKey = dayjs(ovDt).format('YYYY-MM-DD');
       const ovPrice = ov.priceOverride != null ? Number(ov.priceOverride) : null;
-      priceOverrideMap.set(dateKey, ovPrice);
+      const ovCurrency = (ov.currencyOverride as Currency | null) ?? null;
+      priceOverrideMap.set(dateKey, { price: ovPrice, currency: ovCurrency });
       if (ov.state === 'CANCELLED') {
         cancelledDates.add(dateKey);
       } else if (ov.state === 'RESCHEDULED') {
@@ -504,6 +532,7 @@ async function loadData() {
             ? dayjs(ov.rescheduledEndTime).format('HH:mm')
             : ruleEndTime,
           priceOverride: ovPrice,
+          currencyOverride: ovCurrency,
         });
       }
     }
