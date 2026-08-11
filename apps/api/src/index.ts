@@ -6,15 +6,17 @@ import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { checkDatabaseConnection, prisma } from '@tutorhub/database';
 
 import { authMiddleware } from '@/features/auth/middlewares/auth';
-import { authRoute } from '@/features/auth/routes';
+import { authProtectedRoute, authRoute } from '@/features/auth/routes';
 import { classRuleRoute } from '@/features/class-rule/routes';
 import { classSessionRoute } from '@/features/class-session/routes';
 import { courseRoute } from '@/features/course/routes';
+import { currencyRoute } from '@/features/currency/routes';
 import { dashboardRoute } from '@/features/dashboard/routes';
 import { enrollmentRoute } from '@/features/enrollment/routes';
 import { storageRoute } from '@/features/storage/routes';
 import { studentRoute } from '@/features/student/routes';
 import { ApiError } from '@/shared/api-error';
+import { startCurrencyRefresh } from '@/shared/currency';
 import { checkStorageConnection } from '@/shared/health';
 import { retry } from '@/shared/retry';
 import { bucketName, ensureBucket, s3Client } from '@/shared/s3';
@@ -26,12 +28,14 @@ const publicApi = new Hono()
 
 const protectedApi = new Hono()
   .use(authMiddleware)
+  .route('/auth', authProtectedRoute)
   .route('/storage', storageRoute)
   .route('/dashboard', dashboardRoute)
   .route('/course', courseRoute)
   .route('/student', studentRoute)
   .route('/class-rule', classRuleRoute)
   .route('/class-session', classSessionRoute)
+  .route('/currency', currencyRoute)
   .route('/', enrollmentRoute);
 
 const app = new Hono()
@@ -93,7 +97,10 @@ async function startServer(): Promise<void> {
   });
   console.log('[startup] ✅ Storage connection OK');
 
-  // 4. 启动 HTTP 服务
+  // 4. 启动汇率定时刷新（失败自动回退默认值，不阻塞启动）
+  startCurrencyRefresh();
+
+  // 5. 启动 HTTP 服务
   serve(
     {
       fetch: app.fetch,
