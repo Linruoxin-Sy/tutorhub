@@ -25,6 +25,7 @@
     "browser-image-compression": "^2.0.2",
     "date-fns": "^4.4.0",
     "dayjs": "^1.11.13",
+    "decimal.js": "^10.6.0",
     "es-toolkit": "^1.47.0",
     "ky": "^2.0.2",
     "p-limit": "^7.3.0",

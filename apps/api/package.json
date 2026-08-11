@@ -19,6 +19,7 @@
     "@hono/zod-validator": "^0.8.0",
     "@tutorhub/database": "workspace:*",
     "@tutorhub/schema": "workspace:*",
+    "decimal.js": "^10.6.0",
     "hono": "^4.12.12",
     "jsonwebtoken": "^9.0.3",
     "mime": "^4.1.0",
