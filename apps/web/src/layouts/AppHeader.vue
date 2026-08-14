@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full items-center justify-between bg-white px-4 dark:bg-[#2c2c2c]">
+  <div class="relative flex h-full items-center justify-between bg-white px-4 dark:bg-[#2c2c2c]">
     <div class="flex items-center gap-3">
       <button
         type="button"
@@ -12,7 +12,11 @@
       >
         <i class="i-lucide-menu text-xl"></i>
       </button>
-      <div class="text-2xl font-bold text-gray-800 dark:text-white">TutorHub</div>
+      <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-gray-800 lg:static lg:translate-x-0 lg:translate-y-0 dark:text-white"
+      >
+        TutorHub
+      </div>
     </div>
 
     <AppNavBar />
