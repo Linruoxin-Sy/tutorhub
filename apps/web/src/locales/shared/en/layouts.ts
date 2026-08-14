@@ -1,6 +1,9 @@
 export default {
   nav: {
     ariaLabel: 'Primary navigation',
+    drawerLabel: 'Navigation menu',
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
     dashboard: 'Dashboard',
     student: 'Student',
     course: 'Course',

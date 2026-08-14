@@ -1,6 +1,9 @@
 export default {
   nav: {
     ariaLabel: '主导航',
+    drawerLabel: '导航菜单',
+    openMenu: '打开菜单',
+    closeMenu: '关闭菜单',
     dashboard: '仪表盘',
     student: '学生',
     course: '课程',
