@@ -49,15 +49,19 @@
           :params="{ value: formatMoney(previewAmount, previewCurrency) }"
         />
       </p>
-      <p
-        v-if="readonly"
-        class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
-      >
-        <template v-if="model.price != null">
-          {{ model.price }}
-        </template>
-        <template v-else>—</template>
-      </p>
+      <div v-else class="grid grid-cols-[8rem_1fr] items-center gap-3">
+        <SelectInput v-model="model.currency" size="sm" class="w-full" disabled>
+          <option v-for="code in currencyOptions" :key="code" :value="code">{{ code }}</option>
+        </SelectInput>
+        <p
+          class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
+        >
+          <template v-if="model.price != null">
+            {{ model.price }}
+          </template>
+          <template v-else>—</template>
+        </p>
+      </div>
     </div>
 
     <!-- Start Date & End Date -->
