@@ -36,9 +36,6 @@
           :placeholder="t('classRule.form.pricePlaceholder')"
           class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
         />
-        <span class="shrink-0 text-sm text-gray-500 dark:text-gray-400">
-          {{ currencySymbol(model.currency) }}
-        </span>
         <SelectInput v-model="model.currency" size="sm" class="w-32 shrink-0">
           <option v-for="code in currencyOptions" :key="code" :value="code">{{ code }}</option>
         </SelectInput>
@@ -270,7 +267,7 @@ import SelectInput from '@/components/SelectInput.vue';
 import { useCurrencyRates } from '@/hooks/useCurrency';
 import { datePickerUi } from '@/features/class-rule/constants/datePickerUi';
 import { useField } from '@/hooks/useField';
-import { currencySymbol, formatMoney } from '@/utils/currency';
+import { formatMoney } from '@/utils/currency';
 import type { ClassRuleFormData } from '@/features/class-rule/types/classRuleForm';
 
 const { t, locale } = useI18n();
