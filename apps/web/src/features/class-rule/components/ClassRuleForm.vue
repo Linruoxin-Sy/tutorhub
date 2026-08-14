@@ -40,15 +40,6 @@
           class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
         />
       </div>
-      <p
-        v-if="!readonly && model.price != null && previewAmount != null"
-        class="text-xs text-gray-500 dark:text-gray-400"
-      >
-        <T
-          keypath="common.misc.approx"
-          :params="{ value: formatMoney(previewAmount, previewCurrency) }"
-        />
-      </p>
       <div v-else class="grid grid-cols-[8rem_1fr] items-center gap-3">
         <SelectInput v-model="model.currency" size="sm" class="w-full" disabled>
           <option v-for="code in currencyOptions" :key="code" :value="code">{{ code }}</option>
@@ -62,6 +53,15 @@
           <template v-else>—</template>
         </p>
       </div>
+      <p
+        v-if="!readonly && model.price != null && previewAmount != null"
+        class="text-xs text-gray-500 dark:text-gray-400"
+      >
+        <T
+          keypath="common.misc.approx"
+          :params="{ value: formatMoney(previewAmount, previewCurrency) }"
+        />
+      </p>
     </div>
 
     <!-- Start Date & End Date -->
