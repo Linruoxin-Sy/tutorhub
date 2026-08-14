@@ -18,7 +18,7 @@ export default {
     name: 'Name',
     namePlaceholder: 'Your name',
     email: 'Email',
-    emailPlaceholder: 'name@example.com',
+    emailPlaceholder: "name{'@'}example.com",
     phone: 'Phone',
     phonePlaceholder: '11-digit phone number',
     password: 'Password',
