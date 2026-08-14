@@ -26,7 +26,10 @@
       <label :for="field.id('price')" class="text-sm font-medium text-gray-700 dark:text-gray-200">
         <T keypath="classRule.form.price" /> <span v-if="!readonly" class="text-red-500">*</span>
       </label>
-      <div v-if="!readonly" class="flex items-center gap-3">
+      <div v-if="!readonly" class="grid grid-cols-[8rem_1fr] items-center gap-3">
+        <SelectInput v-model="model.currency" size="sm" class="w-full">
+          <option v-for="code in currencyOptions" :key="code" :value="code">{{ code }}</option>
+        </SelectInput>
         <input
           :id="field.id('price')"
           v-model.number="model.price"
@@ -36,9 +39,6 @@
           :placeholder="t('classRule.form.pricePlaceholder')"
           class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white dark:placeholder:text-gray-500"
         />
-        <SelectInput v-model="model.currency" size="sm" class="w-32 shrink-0">
-          <option v-for="code in currencyOptions" :key="code" :value="code">{{ code }}</option>
-        </SelectInput>
       </div>
       <p
         v-if="!readonly && model.price != null && previewAmount != null"
