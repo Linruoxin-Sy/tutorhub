@@ -1,4 +1,5 @@
 import { VueQueryPlugin } from '@tanstack/vue-query';
+import { createPinia } from 'pinia';
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
 import { createMemoryHistory, createRouter } from 'vue-router';
@@ -19,7 +20,7 @@ async function renderDashboardPage() {
 
   return render(DashboardPage, {
     global: {
-      plugins: [i18n, router, [VueQueryPlugin, { queryClient }]],
+      plugins: [i18n, router, createPinia(), [VueQueryPlugin, { queryClient }]],
       stubs: { SessionItem: true },
     },
   });
