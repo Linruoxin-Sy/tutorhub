@@ -97,3 +97,15 @@ test('has navigation landmark', async () => {
   const nav = screen.getByRole('navigation');
   await expect.element(nav).toBeVisible();
 });
+
+test('has responsive classes to hide below lg breakpoint', async () => {
+  const router = createMockRouter();
+
+  const screen = await render(AppNavBar, {
+    global: { plugins: [i18n, router] },
+  });
+
+  const nav = screen.getByRole('navigation').element();
+  expect(nav.className).toContain('hidden');
+  expect(nav.className).toContain('lg:inline-flex');
+});

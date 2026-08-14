@@ -1,3 +1,4 @@
+import { page } from '@vitest/browser/context';
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, expect, test } from 'vitest';
 import { render } from 'vitest-browser-vue';
@@ -70,4 +71,39 @@ test('renders logout button', async () => {
   });
 
   await expect.element(screen.getByText('Logout')).toBeVisible();
+});
+
+test('renders menu toggle button on mobile viewport', async () => {
+  await page.viewport(390, 844);
+  try {
+    const router = createMockRouter();
+
+    const screen = await render(AppHeader, {
+      global: { plugins: [i18n, router, createPinia()] },
+    });
+
+    const toggle = screen.getByRole('button', { name: 'Open menu' });
+    await expect.element(toggle).toBeVisible();
+    expect(toggle.element().getAttribute('aria-expanded')).toBe('false');
+    expect(toggle.element().getAttribute('aria-controls')).toBe('mobile-nav-drawer');
+  } finally {
+    await page.viewport(1280, 720);
+  }
+});
+
+test('opens mobile drawer from header menu toggle', async () => {
+  await page.viewport(390, 844);
+  try {
+    const router = createMockRouter();
+
+    const screen = await render(AppHeader, {
+      global: { plugins: [i18n, router, createPinia()] },
+    });
+
+    await screen.getByRole('button', { name: 'Open menu' }).click();
+    await expect.element(screen.getByRole('dialog')).toBeVisible();
+    await expect.element(screen.getByRole('button', { name: 'Close menu' })).toBeVisible();
+  } finally {
+    await page.viewport(1280, 720);
+  }
 });
