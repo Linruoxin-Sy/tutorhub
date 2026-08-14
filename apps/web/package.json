@@ -46,6 +46,7 @@
     "@tutorhub/api": "workspace:*",
     "@types/node": "^24.12.0",
     "@vitejs/plugin-vue": "^6.0.5",
+    "@vitest/browser": "^4.1.9",
     "@vitest/browser-playwright": "^4.1.9",
     "@vitest/coverage-v8": "4.1.9",
     "@vue/tsconfig": "^0.9.1",
