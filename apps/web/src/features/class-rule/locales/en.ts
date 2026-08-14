@@ -59,7 +59,7 @@ export default {
     endTime: 'End Time',
     endTimePlaceholder: 'End time',
     recurring: 'Recurring course',
-    repeatsIndefinitely: 'This rule will repeat indefinitely.',
+    repeatsIndefinitely: 'This course will continue indefinitely.',
     repeatEvery: 'Repeat Every N Days',
     intervalPlaceholder: 'e.g. 7',
     days: 'day(s)',

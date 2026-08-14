@@ -59,7 +59,7 @@ export default {
     endTime: '结束时间',
     endTimePlaceholder: '结束时间',
     recurring: '循环课程',
-    repeatsIndefinitely: '该规则将无限循环。',
+    repeatsIndefinitely: '课程会一直上下去。',
     repeatEvery: '每 N 天重复',
     intervalPlaceholder: '例如：7',
     days: '天',
