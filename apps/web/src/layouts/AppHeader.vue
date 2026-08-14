@@ -10,7 +10,7 @@
         aria-controls="mobile-nav-drawer"
         @click="isMenuOpen = !isMenuOpen"
       >
-        <i class="i-lucide-menu"></i>
+        <i class="i-lucide-menu text-xl"></i>
       </button>
       <div class="text-2xl font-bold text-gray-800 dark:text-white">TutorHub</div>
     </div>

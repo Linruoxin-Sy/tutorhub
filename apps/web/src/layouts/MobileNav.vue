@@ -26,7 +26,7 @@
             :aria-label="t('layouts.nav.closeMenu')"
             @click="close()"
           >
-            <i class="i-lucide-x"></i>
+            <i class="i-lucide-x text-2xl"></i>
           </button>
         </div>
 
