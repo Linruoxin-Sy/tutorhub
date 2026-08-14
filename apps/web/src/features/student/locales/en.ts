@@ -38,7 +38,7 @@ export default {
     namePlaceholder: 'Student name',
     status: 'Status',
     email: 'Email',
-    emailPlaceholder: 'student@example.com',
+    emailPlaceholder: "student{'@'}example.com",
     phone: 'Phone',
     phonePlaceholder: 'Phone number',
     description: 'Description',

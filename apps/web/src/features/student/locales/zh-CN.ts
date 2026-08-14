@@ -38,7 +38,7 @@ export default {
     namePlaceholder: '学生姓名',
     status: '状态',
     email: '邮箱',
-    emailPlaceholder: 'student@example.com',
+    emailPlaceholder: "student{'@'}example.com",
     phone: '手机号',
     phonePlaceholder: '手机号',
     description: '描述',
