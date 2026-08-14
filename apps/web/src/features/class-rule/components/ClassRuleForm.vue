@@ -54,7 +54,7 @@
         class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 dark:border-[#3a3a3a] dark:bg-[#202020] dark:text-white"
       >
         <template v-if="model.price != null">
-          {{ formatMoney(model.price, model.currency) }}
+          {{ model.price }}
         </template>
         <template v-else>—</template>
       </p>
