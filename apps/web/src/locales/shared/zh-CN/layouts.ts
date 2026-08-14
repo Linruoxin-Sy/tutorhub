@@ -4,7 +4,7 @@ export default {
     dashboard: '仪表盘',
     student: '学生',
     course: '课程',
-    classRule: '课规',
+    classRule: '上课规则',
   },
   theme: {
     system: '跟随系统主题',

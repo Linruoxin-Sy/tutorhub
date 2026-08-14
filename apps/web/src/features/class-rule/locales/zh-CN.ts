@@ -1,25 +1,25 @@
 export default {
-  pageTitle: '课规',
-  empty: '未找到课规',
+  pageTitle: '上课规则',
+  empty: '未找到上课规则',
   create: {
-    title: '创建课规',
+    title: '创建上课规则',
     description: '为课程定义新的排课规则。',
-    success: '课规创建成功！',
+    success: '上课规则创建成功！',
   },
   edit: {
-    title: '编辑课规',
+    title: '编辑上课规则',
     description: '修改该报名课程的排课规则。',
-    success: '课规更新成功！',
-    loadError: '加载课规数据失败',
+    success: '上课规则更新成功！',
+    loadError: '加载上课规则数据失败',
   },
   detail: {
-    title: '课规详情',
-    description: '查看该课规生成的课时。',
-    loadError: '加载课规详情失败',
+    title: '上课规则详情',
+    description: '查看该上课规则生成的课时。',
+    loadError: '加载上课规则详情失败',
   },
   addStudent: {
     pageTitle: '添加学生',
-    pageDescription: '选择要添加到该课规的学生。',
+    pageDescription: '选择要添加到该上课规则的学生。',
     availableTitle: '可选学生',
     searchPlaceholder: '搜索学生...',
     empty: '暂无可用学生',
@@ -68,9 +68,9 @@ export default {
   },
   delete: {
     title: '确认删除',
-    message: '确定要删除课程“{course}”的这条课规吗？此操作无法撤销。',
-    success: '课规删除成功！',
-    error: '删除课规失败',
+    message: '确定要删除课程“{course}”的这条上课规则吗？此操作无法撤销。',
+    success: '上课规则删除成功！',
+    error: '删除上课规则失败',
   },
   clearOverrides: {
     title: '清除课时覆盖',
@@ -78,9 +78,9 @@ export default {
   },
   removeStudent: {
     title: '移除学生',
-    message: '确定要将“{student}”从该课规中移除吗？',
-    success: '已成功从课规中移除学生！',
-    error: '从课规中移除学生失败',
+    message: '确定要将“{student}”从该上课规则中移除吗？',
+    success: '已成功从上课规则中移除学生！',
+    error: '从上课规则中移除学生失败',
   },
   restoreSession: {
     title: '恢复课时',

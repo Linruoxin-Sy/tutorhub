@@ -36,8 +36,8 @@ export default {
     empty: '未找到学生',
   },
   classRules: {
-    title: '课规',
-    empty: '未找到课规',
+    title: '上课规则',
+    empty: '未找到上课规则',
   },
   form: {
     name: '名称',
@@ -53,10 +53,10 @@ export default {
     error: '从课程中移除学生失败',
   },
   deleteRule: {
-    title: '删除课规',
-    message: '确定要删除该课规吗？所有未来的课时都将被移除。',
-    success: '课规删除成功！',
-    error: '删除课规失败',
+    title: '删除上课规则',
+    message: '确定要删除该上课规则吗？所有未来的课时都将被移除。',
+    success: '上课规则删除成功！',
+    error: '删除上课规则失败',
   },
   delete: {
     title: '确认删除',
